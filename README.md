@@ -8,7 +8,7 @@ You can get to know our team members, see the details of our meetings, learn our
 
 ## 👋  Team Members 👋 
 
-- [**Abdülkadir Elmacı**](https://github.com/bounswe/2021SpringGroup7/wiki/Abdulkadir-Elmacı)
+- [**Abdulkadir Elmacı**](https://github.com/bounswe/2021SpringGroup7/wiki/Abdulkadir-Elmacı)
 - [**Efe Şabanoğlu**]
 - [**Erencan Uysal**](https://github.com/bounswe/2021SpringGroup7/wiki/Erencan-Uysal)
 - [**Hamza Akyıldız**](https://github.com/bounswe/2021SpringGroup7/wiki/Hamza-Akyıldız)
