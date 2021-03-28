@@ -5,8 +5,8 @@ CMPE-352 or "Fundamentals of Software Engineering" is a course that teach us abo
 
 ## What to Find Here
 You can get to know our team members, see the details of our meetings, learn our communication methods and read our important reports in this repository.
-- You can reach our wiki page [**here**](https://github.com/bounswe/2021SpringGroup7/wiki)
-- You can reach our personal efforts [**here**](https://github.com/bounswe/2021SpringGroup7/wiki/Weekly-Personal-Efforts-of-Team-Members)
+- [**Here**](https://github.com/bounswe/2021SpringGroup7/wiki) is our wiki page.
+- [**Here**](https://github.com/bounswe/2021SpringGroup7/wiki/Weekly-Personal-Efforts-of-Team-Members) is our team members' personal efforts.
 
 ## 👋  Team Members 👋 
 
