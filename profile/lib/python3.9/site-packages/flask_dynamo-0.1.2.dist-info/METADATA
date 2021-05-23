@@ -1,0 +1,41 @@
+Metadata-Version: 2.0
+Name: flask-dynamo
+Version: 0.1.2
+Summary: DynamoDB integration for Flask.
+Home-page: https://github.com/rdegges/flask-dynamo
+Author: Randall Degges
+Author-email: r@rdegges.com
+License: UNLICENSE
+Description-Content-Type: UNKNOWN
+Keywords: python dynamodb dynamo aws amazon flask web database
+Platform: any
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: Public Domain
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Database
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Requires-Dist: Flask (>=0.10.1)
+Requires-Dist: boto3 (>=1.1.4)
+
+flask-dynamo
+~~~~~~~~~~~~
+
+DynamoDB integration for Flask!
+
+Please visit this project's GitHub page to view all docs:
+https://github.com/rdegges/flask-dynamo
+
+-Randall
+
+
