@@ -46,8 +46,8 @@ dynamo.tables['users'].put_item(Item={
 
 dynamo.tables['users'].put_item(Item={
         'username': 'atainan',
-        'first_name': 'Egemen',
-        'last_name': 'Bilgili',
+        'first_name': 'ata',
+        'last_name': 'inan',
         'email': 'bunubir@hocayasorayim.com',
         'location': 'Corum',
         'birthday': '29.02.2000',
@@ -58,7 +58,7 @@ dynamo.tables['users'].put_item(Item={
 
 @app.route('/', methods=['GET'])
 def index():
-    return jsonify({'En sevmedigimiz ders': 'CMPE352', 'En cok zaman alan ders': 'CMPE352'})
+    return jsonify({'Uygulama calisiyor mu': 'evet', 'En iyi grup': 'Grup 7'})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
