@@ -6,7 +6,6 @@
 
 from flask import Flask, jsonify
 from .database import dynamo
-#from flask_dynamo import Dynamo
 from .profile import profile
 
 app = Flask(__name__)

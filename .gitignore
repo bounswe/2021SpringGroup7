@@ -1,0 +1,10 @@
+pyenv.cfg
+gitprocess.txt
+.DS_Store
+.app.py.swp
+.database.py.swp
+.profile.py.swp
+__pycache__
+bin
+lib
+
