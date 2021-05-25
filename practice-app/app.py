@@ -5,35 +5,22 @@
 '''
 
 from flask import Flask, jsonify
-from .database import dynamo
+from .database import mongo
 from .profile import profile
 
 app = Flask(__name__)
 
-app.config['AWS_ACCESS_KEY_ID'] = 'atalanta'
-app.config['AWS_SECRET_ACCESS_KEY'] = 'verysecret'
+app.config["MONGO_URI"] = "mongodb://localhost:27017/db"
 
-app.config['DYNAMO_ENABLE_LOCAL'] = True
-app.config['DYNAMO_LOCAL_HOST'] = 'localhost'
-app.config['DYNAMO_LOCAL_PORT'] = 8042
+mongo.init_app(app)
 
-app.config['DYNAMO_TABLES'] = [
-    {
-         'TableName' : 'users',
-         'KeySchema' : [dict(AttributeName='username', KeyType='HASH')],
-         'AttributeDefinitions' : [dict(AttributeName='username', AttributeType='S')],
-         'ProvisionedThroughput' : dict(ReadCapacityUnits=5, WriteCapacityUnits=5)
-    } 
-]
+db = mongo.db
 
-dynamo.init_app(app)
-
-with app.app_context():
-    dynamo.create_all()
+db.users.drop()
 
 app.register_blueprint(profile.profile_bp)
 
-dynamo.tables['users'].put_item(Item={
+db.users.insert_one({
         'username': 'ryan',
         'first_name': 'Randall',
         'last_name': 'Degges',
@@ -43,7 +30,7 @@ dynamo.tables['users'].put_item(Item={
         'isVisible': 'False'
 })
 
-dynamo.tables['users'].put_item(Item={
+db.users.insert_one({
         'username': 'atainan',
         'first_name': 'ata',
         'last_name': 'inan',
@@ -52,7 +39,6 @@ dynamo.tables['users'].put_item(Item={
         'birthday': '29.02.2000',
         'isVisible': 'True'
 })
-
 
 
 @app.route('/', methods=['GET'])

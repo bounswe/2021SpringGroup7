@@ -5,30 +5,32 @@
 '''
 
 from flask import Blueprint, request, jsonify, abort
-from ..database import dynamo
+from ..database import mongo
 
 profile_bp = Blueprint('User Profiles', __name__)
 
-@profile_bp.route('/user/<string:username>', methods=['GET', 'POST'])
+@profile_bp.route('/user/<string:username>', methods=['GET'])
 def getProfile(username):
+    
+    db = mongo.db
+    dbresponse = db.users.find({'username': username}, {'_id': False})
 
-    dbresponse = dynamo.tables['users'].get_item(Key={'username': username})
-
-    if 'Item' not in dbresponse:
+    if not dbresponse:
         return 'not found xd'
 
-    return jsonify(dbresponse['Item'])
+    return jsonify(list(dbresponse))
 
-@profile_bp.route('/search/user', methods=['POST'])
-def searchUser():
+# bu iptal simdilik
+#@profile_bp.route('/search/user', methods=['POST'])
+#def searchUser():
     # assuming the search string is stored in the key 'value'
-    value = dict(request.form)
+    #value = dict(request.form)
 
-    dbresponse1 = \
-        dynamo.tables['users'].query(KeyConditionExpression=Key('username').eq(value['value']))
-    dbresponse2 = \
-        dynamo.tables['users'].query(KeyConditionExpression=Key('first_name').eq(value['value']))
-    dbresponse3 = \
-        dynamo.tables['users'].query(KeyConditionExpression=Key('last_name').eq(value['value']))
+    #dbresponse1 = \
+        #dynamo.tables['users'].query(KeyConditionExpression=Key('username').eq(value['value']))
+    #dbresponse2 = \
+        #dynamo.tables['users'].query(KeyConditionExpression=Key('first_name').eq(value['value']))
+    #dbresponse3 = \
+        #dynamo.tables['users'].query(KeyConditionExpression=Key('last_name').eq(value['value']))
 
-    return jsonify(items=[dbresponse1['Items'], dbresponse2['Items'], dbresponse3['Items']])
+    #return jsonify(items=[dbresponse1['Items'], dbresponse2['Items'], dbresponse3['Items']])

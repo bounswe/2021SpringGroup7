@@ -4,6 +4,6 @@
 
 '''
 
-from flask_dynamo import Dynamo
+from flask_pymongo import PyMongo
 
-dynamo = Dynamo()
+mongo = PyMongo()
