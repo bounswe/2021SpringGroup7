@@ -1,9 +1,3 @@
-'''
-
-@author Ismail Ata Inan
-
-'''
-
 from flask import Flask, jsonify
 from .database import mongo
 from .profile import profile

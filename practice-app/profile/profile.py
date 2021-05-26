@@ -1,9 +1,3 @@
-'''
-
-@author Ismail Ata Inan
-
-'''
-
 from flask import Blueprint, request, jsonify, abort
 from ..database import mongo
 
