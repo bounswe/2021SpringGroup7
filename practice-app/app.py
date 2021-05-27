@@ -39,17 +39,21 @@ db.users.insert_one({
         'isVisible': 'True'
 })
 
-db.posts.insert_one({
+post_mongo_id = db.posts.insert_one({
         'id'        : 1,
-        'topic'     : "Great Day In Rome...",
-        'story'     : "I was in Rome for about 3 months...",
-        'location'  : "Rome",
-        'postDate'  : datetime.datetime(2021, 5, 27, 12, 59, 40, 2), # date&time
+        'topic'     : 'Great Day In Rome...',
+        'story'     : 'I was in Rome for about 3 months...',
+        'location'  : 'Rome',
+        'postDate'  : datetime.datetime(2021, 5, 27, 12, 59, 40, 2), 
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)}, 
-        'tags'      : ["summer", "bike"],
-        'userComments'  : [{'username': 'atainan', 'comment': 'great memory!'}]
+        'multimedia': ['photo_link_1','photo_link_2'],
+        'tags'      : ['summer', 'bike'],
+        'userComments'  : [{'username': 'atainan', 'comment': 'great memory!'}],
+        'lastEdit'      : ' ' 
 
-})
+}).inserted_id
+
+print(post_mongo_id)
 
 
 @app.route('/', methods=['GET'])
