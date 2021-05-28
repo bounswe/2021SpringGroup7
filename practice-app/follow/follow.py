@@ -25,3 +25,12 @@ def followUser(usernameOfFollower, usernameToFollow):
         db.users.update_one({'_id': userToFollow['_id']}, {'$addToSet': {'followRequests': usernameOfFollower}})
         return "Success", 200
 
+@follow_bp.route("/user/<string:username>/followers", methods=['GET'])
+def getFollowers(username):
+    db = mongo.db
+    user = db.users.find_one({'username': username})
+
+    if not user:
+        abort(404, "User not found")
+
+    return jsonify(user['followers'])
