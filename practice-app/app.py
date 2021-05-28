@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from .database import mongo
 from .profile import profile
+from .follow import follow
 
 app = Flask(__name__)
 
@@ -13,6 +14,7 @@ db = mongo.db
 db.users.drop()
 
 app.register_blueprint(profile.profile_bp)
+app.register_blueprint(follow.follow_bp)
 
 db.users.insert_one({
         'username': 'ryan',
@@ -21,7 +23,10 @@ db.users.insert_one({
         'email': 'r@rdegges.com',
         'location': 'Istanbul',
         'birthday': '29.02.2000',
-        'isVisible': 'False'
+        'isVisible': 'False',
+        'followRequests': [],
+        'followers': [],
+        'followings': []
 })
 
 db.users.insert_one({
@@ -31,7 +36,10 @@ db.users.insert_one({
         'email': 'bunubir@hocayasorayim.com',
         'location': 'Corum',
         'birthday': '29.02.2000',
-        'isVisible': 'True'
+        'isVisible': 'True',
+        'followRequests': [],
+        'followers': [],
+        'followings': []
 })
 
 
