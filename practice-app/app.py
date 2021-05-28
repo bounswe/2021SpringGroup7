@@ -47,7 +47,7 @@ post_mongo_id = db.posts.insert_one({
         'postDate'  : datetime.datetime(2021, 5, 27, 12, 59, 40, 2), 
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)}, 
         'multimedia': ['photo_link_1','photo_link_2'],
-        'tags'      : ['summer', 'bike'],
+        'tags'      : ['summer', 'dreamy', 'days'],
         'userComments'  : [{'username': 'atainan', 'comment': 'great memory!'}],
         'lastEdit'      : ' ' 
 
