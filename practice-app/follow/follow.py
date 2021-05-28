@@ -34,3 +34,14 @@ def getFollowers(username):
         abort(404, "User not found")
 
     return jsonify(user['followers'])
+
+@follow_bp.route("/user/<string:username>/followings", methods=['GET'])
+def getFollowings(username):
+    db = mongo.db
+    user = db.users.find_one({'username': username})
+
+    if not user:
+        abort(404, "User not found")
+
+    return jsonify(user['followings'])
+
