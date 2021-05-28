@@ -7,24 +7,48 @@ profile_bp = Blueprint('User Profiles', __name__)
 def getProfile(username):
     
     db = mongo.db
-    dbresponse = db.users.find({'username': username}, {'_id': False})
+    curUser = db.users.find_one({'username': username}, {'_id': False})
 
-    if not dbresponse:
-        return 'not found xd'
+    if not curUser:
+        abort(404, "User not found")
 
-    return jsonify(list(dbresponse))
+    nofReq = len(curUser['followRequests'])
+    nofFollowers = len(curUser['followers'])
+    nofFollowings = len(curUser['followings'])
 
-# bu iptal simdilik
-#@profile_bp.route('/search/user', methods=['POST'])
-#def searchUser():
-    # assuming the search string is stored in the key 'value'
-    #value = dict(request.form)
+    curUser.update({'nofRequests':nofReq, 'nofFollowers':nofFollowers,
+        'nofFollowings':nofFollowings})
 
-    #dbresponse1 = \
-        #dynamo.tables['users'].query(KeyConditionExpression=Key('username').eq(value['value']))
-    #dbresponse2 = \
-        #dynamo.tables['users'].query(KeyConditionExpression=Key('first_name').eq(value['value']))
-    #dbresponse3 = \
-        #dynamo.tables['users'].query(KeyConditionExpression=Key('last_name').eq(value['value']))
+    return jsonify(curUser)
 
-    #return jsonify(items=[dbresponse1['Items'], dbresponse2['Items'], dbresponse3['Items']])
+@profile_bp.route('/user/<string:username>/update', methods=['POST'])
+def updateProfile(username):
+
+    db = mongo.db
+    
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    email = request.form['email']
+    location = request.form['location']
+    birthday = request.form['birthday']
+    isVisible = request.form['isVisible']
+
+    curUser = db.users.find_one({'username': username}, {'_id': False})
+
+    if not curUser:
+        abort(404, "User not found")
+
+    first_name = curUser['first_name'] if (first_name == '') else first_name
+    last_name = curUser['last_name'] if (last_name == '') else last_name
+    email = curUser['email'] if (email == '') else email
+    location = curUser['location'] if (location == '') else location
+    birthday = curUser['birthday'] if (birthday == '') else birthday
+    isVisible = curUser['isVisible'] if (isVisible == '') else isVisible
+
+    updated = {'$set': {'first_name':first_name, 'last_name':last_name, 'email':email,
+        'location':location, 'birthday':birthday, 'isVisible':isVisible}}
+
+    db.users.update_one(curUser, updated)
+    curUser = db.users.find_one({'username': username}, {'_id': False})
+
+    return jsonify(curUser)

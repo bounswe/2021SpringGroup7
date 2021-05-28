@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, make_response
 from .database import mongo
 from .profile import profile
 
@@ -21,7 +21,11 @@ db.users.insert_one({
         'email': 'r@rdegges.com',
         'location': 'Istanbul',
         'birthday': '29.02.2000',
-        'isVisible': 'False'
+        'isVisible': 'False',
+        'posts': ['postid1', 'postid2'],
+        'followRequests': [],
+        'followers': [],
+        'followings': []
 })
 
 db.users.insert_one({
@@ -31,13 +35,21 @@ db.users.insert_one({
         'email': 'bunubir@hocayasorayim.com',
         'location': 'Corum',
         'birthday': '29.02.2000',
-        'isVisible': 'True'
+        'isVisible': 'True',
+        'posts': ['postid3', 'postid4'],
+        'followRequests': [],
+        'followers': [],
+        'followings': []
 })
 
 
 @app.route('/', methods=['GET'])
 def index():
     return jsonify({'Uygulama calisiyor mu': 'evet', 'En iyi grup': 'Grup 7'})
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Task was not found'}), 404)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
