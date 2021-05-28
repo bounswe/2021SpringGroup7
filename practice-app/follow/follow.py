@@ -11,7 +11,7 @@ def followUser(usernameOfFollower, usernameToFollow):
     userThatFollows = db.users.find_one({'username': usernameOfFollower})
     userToFollow = db.users.find_one({'username': usernameToFollow})
 
-    if not userToFollow and not userThatFollows:
+    if userToFollow is None or userThatFollows is None:
         abort(404, "User not found")
 
     if usernameOfFollower in userToFollow['followers'] or usernameOfFollower in userToFollow['followRequests']:
