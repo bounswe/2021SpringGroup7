@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from .database import mongo
 from .profile import profile
+from .report import reportedUser
 
 app = Flask(__name__)
 
@@ -11,8 +12,11 @@ mongo.init_app(app)
 db = mongo.db
 
 db.users.drop()
+db.reports.drop()
 
 app.register_blueprint(profile.profile_bp)
+app.register_blueprint(reportedUser.report_bp)
+
 
 db.users.insert_one({
         'username': 'ryan',
@@ -32,6 +36,10 @@ db.users.insert_one({
         'location': 'Corum',
         'birthday': '29.02.2000',
         'isVisible': 'True'
+})
+
+db.reports.insert_one({
+        'userId': 4
 })
 
 
