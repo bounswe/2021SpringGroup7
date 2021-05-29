@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
 from ..database import mongo
 import requests
+import os.path
 
 profile_bp = Blueprint('User Profiles', __name__)
 
@@ -16,8 +17,10 @@ def getProfile(username):
     nofReq = len(curUser['followRequests'])
     nofFollowers = len(curUser['followers'])
     nofFollowings = len(curUser['followings']) 
-
-    key = '&key=AIzaSyAhLt4H3iJLpmC0z_ospp1eMuW1efmqJU0'
+    
+    # place your Google Cloud API key to a '.key' file in parent directory
+    with open(os.path.dirname(__file__) + '/../.key') as f:
+        key = '&' + f.read()
 
     searchBase = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=' 
     placeSearch = requests.get(searchBase + curUser['location'] + key)
@@ -59,8 +62,10 @@ def updateProfile(username):
     nofReq = len(curUser['followRequests'])
     nofFollowers = len(curUser['followers'])
     nofFollowings = len(curUser['followings'])
-
-    key = '&key=AIzaSyAhLt4H3iJLpmC0z_ospp1eMuW1efmqJU0'
+    
+    # place your Google Cloud API key to a '.key' file in parent directory
+    with open(os.path.dirname(__file__) + '/../.key') as f:
+        key = '&' + f.read()
 
     searchBase = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=' 
     placeSearch = requests.get(searchBase + location + key)
