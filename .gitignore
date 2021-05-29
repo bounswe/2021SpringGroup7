@@ -161,4 +161,7 @@ bin
 lib
 
 
+# api key file
+./practice-app/postDetails/apiKey.json
+
 # End of https://www.toptal.com/developers/gitignore/api/python
