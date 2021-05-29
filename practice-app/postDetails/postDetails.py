@@ -22,17 +22,18 @@ def postDetails(postId):
     # view post details
     if request.method == 'GET': 
 
-        # get api key
-        #data = json.load(open('apiKey.json'))   # ???
-        #apiKey = data['API_KEY']
-        
         '''
             https://rapidapi.com/dpventures/api/wordsapi     
-            Here, this api is used for getting the synonyms of tags.                      
+            This api is used for getting the synonyms of tags.                      
         '''
         conn = http.client.HTTPSConnection("wordsapiv1.p.rapidapi.com")
+        
+        # get api key
+        with open(os.path.dirname(__file__) + '/../.apiKey') as f:
+            apiKey = f.read()
+        
         headers = {
-            'x-rapidapi-key': "",   #apiKey
+            'x-rapidapi-key': apiKey,
             'x-rapidapi-host': "wordsapiv1.p.rapidapi.com"
             }
 
