@@ -5,7 +5,7 @@ import requests
 savePost_bp = Blueprint('Saving Post', __name__)
 
 
-@savePost_bp.route('/<string:username>/savings/', methods=['POST'])
+@savePost_bp.route('/api/<string:username>/savings/', methods=['POST'])
 def savePost(username):
 
     post = request.form

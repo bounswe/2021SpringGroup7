@@ -1,11 +1,12 @@
 from flask import Blueprint, jsonify, abort
 from ..database import mongo
 from ..follow.follow import getFollowings
+import requests
 
 home_bp = Blueprint('Home Page', __name__)
 
 
-@home_bp.route('/home/<string:username>', methods=['GET'])
+@home_bp.route('/api/home/<string:username>', methods=['GET'])
 def getHome(username):
 	db = mongo.db
 
@@ -28,4 +29,8 @@ def getHome(username):
 		return abort(404,"User does not have any post to see")
 
 	posts_of_the_followings= sorted(posts_of_the_followings, key=lambda i: i['postDate' ], reverse=True)
-	return jsonify(list(posts_of_the_followings))
+
+	advice = requests.get('https://api.adviceslip.com/advice')
+	advice=advice.json()['slip']['advice']
+
+	return jsonify({"posts":list(posts_of_the_followings),"advice":advice})
