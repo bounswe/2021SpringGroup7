@@ -32,7 +32,7 @@ db.users.insert_one({
         'isVisible': 'False',
         'followRequests': [],
         'followers': [],
-        'followings': ['atainan'],
+        'followings': [],
         'savedPost':[]
 })
 
