@@ -40,14 +40,14 @@ db.users.insert_one({
 })
 
 post_mongo_id = db.posts.insert_one({
-        'id'        : 1,
+        #'id'        : 1,
         'topic'     : 'Great Day In Rome...',
         'story'     : 'I was in Rome for about 3 months...',
         'location'  : 'Rome',
         'postDate'  : datetime.datetime(2021, 5, 27, 12, 59, 40, 2), 
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)}, 
         'multimedia': ['photo_link_1','photo_link_2'],
-        'tags'      : ['summer', 'dreamy', 'days'],
+        'tags'      : ['summer', 'musical', 'carnival'],
         'userComments'  : [{'username': 'atainan', 'comment': 'great memory!'}],
         'lastEdit'      : ' ' 
 
