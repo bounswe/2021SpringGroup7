@@ -8,7 +8,8 @@ import http.client
 import json
 import os
 
-postDetails_bp = Blueprint('Post Details', __name__)
+
+postDetails_bp = Blueprint('View and Edit Post Details', __name__)
 
 @postDetails_bp.route('/api/postDetail/<string:postId>', methods=['GET', 'POST'])
 def postDetails(postId):
@@ -23,10 +24,10 @@ def postDetails(postId):
     if request.method == 'GET': 
 
         '''
-            https://rapidapi.com/dpventures/api/wordsapi     
-            This api is used for getting the synonyms of tags.                      
+            https://rapidapi.com/wordgrabbag/api/similar-words    
+            This api is used for getting the words similar to tags.                      
         '''
-        conn = http.client.HTTPSConnection("wordsapiv1.p.rapidapi.com")
+        conn = http.client.HTTPSConnection("similarwords.p.rapidapi.com")
         
         # get api key
         with open(os.path.dirname(__file__) + '/../.apiKey') as f:
@@ -34,24 +35,24 @@ def postDetails(postId):
         
         headers = {
             'x-rapidapi-key': apiKey,
-            'x-rapidapi-host': "wordsapiv1.p.rapidapi.com"
+            'x-rapidapi-host': "similarwords.p.rapidapi.com"
             }
 
         similarTags = []
-        for tag in postToBeViewed['tags']:      # get list of synonyms from 3rd party api for each tag of the post
+        for tag in postToBeViewed['tags']:      # get list of similar words from 3rd party api for each tag of the post
             
-            # make a call for synonyms list of a word 
-            conn.request('GET', '/words/' + tag + '/synonyms', headers=headers)
+            # make a call to get list of similars of a word
+            conn.request("GET", "/moar?query=" + tag, headers=headers)
             res = conn.getresponse()
             data = res.read()
 
             dictData = json.loads(data)                 # convert string data -> dictionary
-            print('dictdata ' + str(dictData))
-            synonymList = []
-            if 'synonyms' in dictData:                  # list of synonyms for a tag
-                synonymList = dictData['synonyms']
 
-            similarTags.extend(synonymList)
+            similarList = []
+            if 'result' in dictData:                  
+                similarList = dictData['result']        # similar list for a tag
+
+            similarTags.extend(similarList)
         
         postToBeViewed['similarTags'] = similarTags     # add similar tags to result
         postToBeViewed['_id'] = str(postToBeViewed['_id'])
