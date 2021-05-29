@@ -34,6 +34,11 @@ class TestStringMethods(unittest.TestCase):
         response = requests.get('http://127.0.0.1:5000/api/home/atainan')
         self.assertGreaterEqual(response.json()['posts'][0]['postDate'], response.json()['posts'][1]['postDate'])
 
+    def test_successful_request(self):
+        response = requests.get('http://127.0.0.1:5000/api/home/atainan')
+        self.assertEqual(len(response.json()['posts']), 3)
+        self.assertEqual(response.status_code, 200)
+
 
 
 
