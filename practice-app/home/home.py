@@ -8,8 +8,8 @@ home_bp = Blueprint('Home Page', __name__)
 
 @home_bp.route('/api/home/<string:username>', methods=['GET'])
 def getHome(username):
-	db = mongo.db
 
+	db = mongo.db
 	if not db.posts.find({'username': username}, {'_id': False}):
 		return abort(404, "User not found")
 
