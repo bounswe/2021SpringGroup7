@@ -160,8 +160,6 @@ __pycache__
 bin
 lib
 
-
-# api key file
-./practice-app/postDetails/apiKey.json
+.apiKey
 
 # End of https://www.toptal.com/developers/gitignore/api/python
