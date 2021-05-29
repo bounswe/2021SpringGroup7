@@ -39,21 +39,34 @@ db.users.insert_one({
         'isVisible': 'True'
 })
 
-post_mongo_id = db.posts.insert_one({
-        #'id'        : 1,
+post1 = {
         'topic'     : 'Great Day In Rome...',
         'story'     : 'I was in Rome for about 3 months...',
         'location'  : 'Rome',
         'postDate'  : datetime.datetime(2021, 5, 27, 12, 59, 40, 2), 
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)}, 
         'multimedia': ['photo_link_1','photo_link_2'],
-        'tags'      : ['summer', 'musical', 'carnival'],
+        'tags'      : ['summer', 'musical', 'day'],
         'userComments'  : [{'username': 'atainan', 'comment': 'great memory!'}],
         'lastEdit'      : ' ' 
 
-}).inserted_id
+}
+post2 = {
+        'topic'     : 'Notre Dame de Paris Fire...',
+        'story'     : 'There was a fire...',
+        'location'  : 'Notre-Dame de Paris',
+        'postDate'  : datetime.datetime(2021, 5, 29, 22, 30, 45, 20), 
+        'storyDate' : {'start': datetime.datetime(2019, 4, 15), 'end': datetime.datetime(2019, 4, 15)}, 
+        'multimedia': ['photo_link_1','photo_link_2'],
+        'tags'      : ['fire', 'damage', 'history'],
+        'userComments'  : [{'username': 'ryan', 'comment': 'it is so sad'}],
+        'lastEdit'      : ' ' 
 
-print(post_mongo_id)
+}
+post_mongoId_1 = str(db.posts.insert_one(post1).inserted_id)
+post_mongoId_2 = str(db.posts.insert_one(post2).inserted_id)
+
+print(post_mongoId_1)
 
 
 @app.route('/', methods=['GET'])
