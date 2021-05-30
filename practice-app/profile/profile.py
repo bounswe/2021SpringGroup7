@@ -5,7 +5,7 @@ import os.path
 
 profile_bp = Blueprint('User Profiles', __name__)
 
-@profile_bp.route('/user/<string:username>', methods=['GET'])
+@profile_bp.route('/api/user/<string:username>', methods=['GET'])
 def getProfile(username):
     
     db = mongo.db
@@ -37,7 +37,7 @@ def getProfile(username):
 
     return jsonify(curUser)
 
-@profile_bp.route('/user/<string:username>/update', methods=['POST'])
+@profile_bp.route('/api/user/<string:username>/update', methods=['POST'])
 def updateProfile(username):
 
     db = mongo.db
