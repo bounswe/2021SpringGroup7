@@ -15,3 +15,8 @@ typing-extensions==3.10.0.0
 urllib3==1.26.5
 Werkzeug==2.0.1
 zipp==3.4.1
+coverage==5.5
+html-testRunner==1.2.1
+logz==0.15
+MarkupSafe==2.0.1
+xmlrunner==1.7.7

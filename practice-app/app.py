@@ -1,6 +1,10 @@
 from flask import Flask, jsonify
 from .database import mongo
 from .profile import profile
+from .story import story
+from .multiMedia import multiMedia
+from .storyTime import storyTime
+
 
 app = Flask(__name__)
 
@@ -13,6 +17,10 @@ db = mongo.db
 db.users.drop()
 
 app.register_blueprint(profile.profile_bp)
+app.register_blueprint(story.story_bp)
+app.register_blueprint(multiMedia.media_bp)
+app.register_blueprint(storyTime.storyTime_bp)
+
 
 db.users.insert_one({
         'username': 'ryan',
