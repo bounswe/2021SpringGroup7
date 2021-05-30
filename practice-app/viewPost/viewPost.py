@@ -17,7 +17,7 @@ def viewPost(postId):
     postToBeViewed = db.posts.find_one({'id': postId}, {'_id': False})     # find post with the given id 
 
     if not postToBeViewed:  
-        abort(500, "Invalid post id")                                           
+        abort(404, "Invalid post id")                                           
 
     '''
         https://rapidapi.com/wordgrabbag/api/similar-words    
@@ -53,4 +53,3 @@ def viewPost(postId):
     postToBeViewed['similarTags'] = similarTags     # add similar tags to result
 
     return jsonify(postToBeViewed)
-
