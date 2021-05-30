@@ -24,8 +24,8 @@ def savePost(username):
 
     user_who_sent_the_request = requests.get(f'http://127.0.0.1:5000/user/{username}').json()[0]
     key = {'username': username}
-    if post.get('id') not in user_who_sent_the_request['savedPost']:
-        user_who_sent_the_request['savedPost'].append(post.get('id'))
+    if post.get('id') not in user_who_sent_the_request['savedPosts']:
+        user_who_sent_the_request['savedPosts'].append(post.get('id'))
         new_image_of_the_user = {'$set': user_who_sent_the_request}
         db.users.update_one(key, new_image_of_the_user, upsert=False)
     return jsonify(200)

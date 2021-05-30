@@ -33,7 +33,7 @@ db.users.insert_one({
         'followRequests': [],
         'followers': [],
         'followings': [],
-        'savedPost':[]
+        'savedPosts':[]
 })
 
 db.users.insert_one({
@@ -47,7 +47,7 @@ db.users.insert_one({
         'followRequests': [],
         'followers': [],
         'followings': ['ryan'],
-        'savedPost':[]
+        'savedPosts':[]
 })
 db.posts.insert_one({
         'owner_username': 'ryan',
@@ -59,7 +59,7 @@ db.posts.insert_one({
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
         'multimedia': ['photo_link_1','photo_link_2'],
         'tags'      : ['summer', 'bike'],
-        'userComments'  : [{'username': 'atainan', 'comment': 'great memory!'}],
+        'userComments'  : '',
         'lastEdit'      : ' ' ,
         'numberOfLikes': '32',
         'numberOfComments': '2'
@@ -75,7 +75,7 @@ db.posts.insert_one({
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
         'multimedia': ['photo_link_1','photo_link_2'],
         'tags'      : ['summer', 'bike'],
-        'userComments'  : [{'username': 'atainan', 'comment': 'great memory!'}],
+        'userComments'  : '',
         'lastEdit'      : ' ' ,
         'numberOfLikes': '362',
         'numberOfComments': '13'
@@ -91,7 +91,7 @@ db.posts.insert_one({
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
         'multimedia': ['photo_link_1','photo_link_2'],
         'tags'      : ['summer', 'bike'],
-        'userComments'  : [{'username': 'atainan', 'comment': 'great memory!'}],
+        'userComments'  : '',
         'lastEdit'      : ' ' ,
         'numberOfLikes': '360',
         'numberOfComments': '15'
@@ -107,7 +107,7 @@ db.posts.insert_one({
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
         'multimedia': ['photo_link_1','photo_link_2'],
         'tags'      : ['summer', 'bike'],
-        'userComments'  : [{'username': 'atainan', 'comment': 'great memory!'}],
+        'userComments'  : ' ',
         'lastEdit'      : ' ' ,
         'numberOfLikes': '362',
         'numberOfComments': '13'
