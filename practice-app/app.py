@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, make_response
 from .database import mongo
 from .profile import profile
+import datetime
 
 app = Flask(__name__)
 
@@ -22,10 +23,11 @@ db.users.insert_one({
         'location': 'Istanbul',
         'birthday': '29.02.2000',
         'isVisible': 'False',
-        'posts': ['postid1', 'postid2'],
+        'postIds': [3],
         'followRequests': [],
         'followers': [],
-        'followings': []
+        'followings': [],
+        'savedPosts':[]
 })
 
 db.users.insert_one({
@@ -36,10 +38,44 @@ db.users.insert_one({
         'location': 'Corum',
         'birthday': '29.02.2000',
         'isVisible': 'True',
-        'posts': ['postid3', 'postid4'],
+        'postIds': [2],
         'followRequests': [],
         'followers': [],
-        'followings': []
+        'followings': [],
+        'savedPosts':[]
+})
+
+db.posts.insert_one({
+        'owner_username': 'ryan',
+        'id'        : 2,
+        'topic'     : 'Great Day In Rome...',
+        'story'     : 'I was in Rome for about 3 months...',
+        'location'  : 'Rome',
+        'postDate'  : datetime.datetime(2020, 6, 12, 19, 59, 40, 2),
+        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
+        'multimedia': ['photo_link_1','photo_link_2'],
+        'tags'      : ['summer', 'bike'],
+        'userComments'  : [{'username': 'atainan', 'comment': 'great memory!'}],
+        'lastEdit'      : ' ' ,
+        'numberOfLikes': '362',
+        'numberOfComments': '13'
+
+})
+
+db.posts.insert_one({
+        'owner_username': 'atainan',
+        'id'        : 3,
+        'topic'     : 'Great Day In Rome...',
+        'story'     : 'I was in Rome for about 3 months...',
+        'location'  : 'Rome',
+        'postDate'  : datetime.datetime(2019, 5, 13, 12, 4, 40, 2),
+        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
+        'multimedia': ['photo_link_1','photo_link_2'],
+        'tags'      : ['summer', 'bike'],
+        'userComments'  : [{'username': 'atainan', 'comment': 'great memory!'}],
+        'lastEdit'      : ' ' ,
+        'numberOfLikes': '360',
+        'numberOfComments': '15'
 })
 
 

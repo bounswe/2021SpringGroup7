@@ -16,7 +16,9 @@ def getProfile(username):
 
     nofReq = len(curUser['followRequests'])
     nofFollowers = len(curUser['followers'])
-    nofFollowings = len(curUser['followings']) 
+    nofFollowings = len(curUser['followings'])
+
+    posts = [db.posts.find_one({'id':postId}, {'_id':False}) for postId in curUser['postIds']]
     
     # place your Google Cloud API key to a '.key' file in parent directory
     with open(os.path.dirname(__file__) + '/../.key') as f:
@@ -30,7 +32,7 @@ def getProfile(username):
     details = requests.get(detailsBase + placeId + key)
 
     curUser.update({'nofRequests':nofReq, 'nofFollowers':nofFollowers,
-        'nofFollowings':nofFollowings, 'locationmap':placeSearch.json(),
+        'nofFollowings':nofFollowings, 'posts':posts, 'locationmap':placeSearch.json(),
         'locationdetails':details.json()})
 
     return jsonify(curUser)
@@ -52,7 +54,7 @@ def updateProfile(username):
     if not curUser:
         abort(404, "User not found")
 
-    first_name = curUser['first_name'] if (first_name == '') else first_name
+    first_name = curUser['first_name'] if (first_name == '') in curUser else first_name
     last_name = curUser['last_name'] if (last_name == '') else last_name
     email = curUser['email'] if (email == '') else email
     location = curUser['location'] if (location == '') else location
@@ -62,6 +64,8 @@ def updateProfile(username):
     nofReq = len(curUser['followRequests'])
     nofFollowers = len(curUser['followers'])
     nofFollowings = len(curUser['followings'])
+
+    posts = [db.posts.find_one({'id':postId}, {'_id':False}) for postId in curUser['postIds']]
     
     # place your Google Cloud API key to a '.key' file in parent directory
     with open(os.path.dirname(__file__) + '/../.key') as f:
@@ -81,7 +85,7 @@ def updateProfile(username):
     curUser = db.users.find_one({'username': username}, {'_id': False})
 
     curUser.update({'nofRequests':nofReq, 'nofFollowers':nofFollowers,
-        'nofFollowings':nofFollowings, 'locationmap':placeSearch.json(),
+        'nofFollowings':nofFollowings, 'posts':posts, 'locationmap':placeSearch.json(),
         'locationdetails':details.json()})
 
     return jsonify(curUser)
