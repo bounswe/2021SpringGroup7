@@ -6,7 +6,7 @@ import datetime
 
 comment_bp = Blueprint('Comments', __name__)
 
-@comment_bp.route('/post/<int:post>/comments', methods=['GET'])
+@comment_bp.route('/api/post/<int:post>/comments', methods=['GET'])
 def getComments(post):
 
     db = mongo.db
@@ -16,7 +16,7 @@ def getComments(post):
         return 'not found xd'
 
     return jsonify(list(dbresponse))
-@comment_bp.route('/post/<int:post>/comments/new/<string:username>', methods=['POST'])
+@comment_bp.route('/api/post/<int:post>/comments/new/<string:username>', methods=['POST'])
 def makeComment(post,username):
 
     db = mongo.db
