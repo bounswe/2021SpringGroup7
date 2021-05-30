@@ -9,8 +9,8 @@ location_bp = Blueprint('Create Location', __name__)
 def createLocation(post,username):
 
     db = mongo.db
-    locationDetails=request.form
-    address = locationDetails.get('address')
+    locationDetails=request.get_json()
+    address = locationDetails['address']
     key = "AIzaSyBUmonTQ91F6jFXZij-JgUmF2t8l8XT0Es"
     
     coordinates =requests.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=' + key)
