@@ -4,7 +4,7 @@ import datetime
 
 likes_bp = Blueprint('Likes of post', __name__)
 
-@likes_bp.route('/post/<int:postId>/likes', methods=['GET'])
+@likes_bp.route('api/post/<int:postId>/likes', methods=['GET'])
 
 def getLikes(post):
 
@@ -21,7 +21,7 @@ def getLikes(post):
 
     return jsonify(data)
 
-@likes_bp.route('/post/<int:postId>/likes/<string:username>', methods=['POST'])
+@likes_bp.route('api/post/<int:postId>/likes/<string:username>', methods=['POST'])
 def like(postId,username):
     db = mongo.db
     dbresponse = db.likes.find({'postId': postId}, {'_id': False})
