@@ -1,6 +1,9 @@
 from flask import Flask, jsonify
 from .database import mongo
 from .profile import profile
+from .likes import likes
+
+import datetime
 
 app = Flask(__name__)
 
@@ -11,8 +14,10 @@ mongo.init_app(app)
 db = mongo.db
 
 db.users.drop()
+db.likes.drop()
 
 app.register_blueprint(profile.profile_bp)
+app.register_blueprint(likes.likes_bp)
 
 db.users.insert_one({
         'username': 'ryan',
@@ -32,6 +37,12 @@ db.users.insert_one({
         'location': 'Corum',
         'birthday': '29.02.2000',
         'isVisible': 'True'
+})
+
+db.likes.insert_one({
+    "username": 'onurcan',
+    "postId": 2,
+    "date": datetime.datetime.now(),
 })
 
 
