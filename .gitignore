@@ -1,6 +1,7 @@
 
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
+.idea/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
@@ -160,6 +161,8 @@ gitprocess.txt
 __pycache__
 bin
 lib
+.key
 
+.apiKey
 
 # End of https://www.toptal.com/developers/gitignore/api/python
