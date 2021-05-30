@@ -1,6 +1,10 @@
 from flask import Flask, jsonify, make_response
 from .database import mongo
 from .profile import profile
+
+from .postDetails import postDetails
+from .comment import comment
+
 from .search import search
 from .likes import likes
 from .follow import follow
@@ -24,16 +28,17 @@ db.users.drop()
 db.locations.drop()
 db.likes.drop()
 db.posts.drop()
+db.comments.drop()
 
 app.register_blueprint(savePost.savePost_bp)
 app.register_blueprint(profile.profile_bp)
+
+app.register_blueprint(postDetails.postDetails_bp)
+app.register_blueprint(comment.comment_bp)
 app.register_blueprint(home.home_bp)
 app.register_blueprint(follow.follow_bp, url_prefix='/api')
 app.register_blueprint(viewPost.viewPostDetails_bp)
 app.register_blueprint(editPost.editPostDetails_bp)
-
-db.likes.drop()
-
 app.register_blueprint(likes.likes_bp)
 
 
@@ -112,8 +117,8 @@ db.posts.insert_one({
         'lastEdit'      : ' ' ,
         'numberOfLikes': '360',
         'numberOfComments': '15'
-
 })
+
 db.posts.insert_one({
         'owner_username': 'ryan',
         'id'        : 1,
