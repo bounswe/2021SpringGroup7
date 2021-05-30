@@ -14,7 +14,7 @@ viewPostDetails_bp = Blueprint('View Post Details', __name__)
 def viewPost(postId):
     
     db = mongo.db
-    postToBeViewed = db.posts.find_one({'_id': ObjectId(postId)})     # find post with the given id 
+    postToBeViewed = db.posts.find_one({'id': postId}, {'_id': False})     # find post with the given id 
 
     if not postToBeViewed:  
         abort(500, "Invalid post id")                                           
@@ -51,7 +51,6 @@ def viewPost(postId):
         similarTags.extend(similarList)
     
     postToBeViewed['similarTags'] = similarTags     # add similar tags to result
-    postToBeViewed['_id'] = str(postToBeViewed['_id'])
 
     return jsonify(postToBeViewed)
 

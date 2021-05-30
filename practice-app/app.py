@@ -41,7 +41,8 @@ db.users.insert_one({
         'isVisible': 'True'
 })
 
-post1 = {
+db.posts.insert_one({
+        'id'        : '1',
         'owner'     : 'atainan',
         'topic'     : 'Great Day In Rome...',
         'story'     : 'I was in Rome for about 3 months...',
@@ -53,8 +54,10 @@ post1 = {
         'userComments'  : [{'username': 'ryan', 'comment': 'great memory!'}],
         'lastEdit'      : ' ' 
 
-}
-post2 = {
+})
+
+db.posts.insert_one({
+        'id'        : '2',
         'owner'     : 'ryan',
         'topic'     : 'Notre Dame de Paris Fire...',
         'story'     : 'There was a fire...',
@@ -65,12 +68,7 @@ post2 = {
         'tags'      : ['fire', 'damage', 'history'],
         'userComments'  : [{'username': 'ryan', 'comment': 'it is so sad'}],
         'lastEdit'      : ' ' 
-
-}
-post_mongoId_1 = str(db.posts.insert_one(post1).inserted_id)
-post_mongoId_2 = str(db.posts.insert_one(post2).inserted_id)
-
-print(post_mongoId_1)
+})
 
 
 @app.route('/', methods=['GET'])
