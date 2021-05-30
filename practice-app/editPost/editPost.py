@@ -17,8 +17,8 @@ def editPost(username, postId):
     if not postToBeEdited:  
         abort(500, "Invalid post id")  
 
-    requested_by = db.users.find_one({'username': username})  
-    if not requested_by:
+    requestedBy = db.users.find_one({'username': username})  
+    if not requestedBy:
         abort(404,'User not found')
 
     if postToBeEdited['owner'] != username:
