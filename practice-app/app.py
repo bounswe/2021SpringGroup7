@@ -4,7 +4,7 @@ from .api.profile import profile
 from .api.story import story
 from .api.multiMedia import multiMedia
 from .api.storyTime import storyTime
-from 
+
 
 app = Flask(__name__)
 
