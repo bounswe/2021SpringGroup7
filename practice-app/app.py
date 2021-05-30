@@ -1,11 +1,10 @@
 from flask import Flask, jsonify, make_response
 from .database import mongo
 from .profile import profile
+from .follow import follow
 from .viewPost import viewPost
 from .editPost import editPost
-
 import datetime
-
 from .likes import likes
 
 app = Flask(__name__)
@@ -17,6 +16,9 @@ mongo.init_app(app)
 db = mongo.db
 
 db.users.drop()
+
+app.register_blueprint(follow.follow_bp, url_prefix='/api')
+
 db.posts.drop()
 
 app.register_blueprint(profile.profile_bp)
@@ -26,6 +28,7 @@ app.register_blueprint(editPost.editPostDetails_bp)
 db.likes.drop()
 
 app.register_blueprint(likes.likes_bp)
+
 
 db.users.insert_one({
         'username': 'ryan',
@@ -122,9 +125,8 @@ db.posts.insert_one({
         'multimedia': ['photo_link_1','photo_link_2'],
         'tags'      : ['fire', 'damage', 'history'],
         'userComments'  : [{'username': 'ryan', 'comment': 'it is so sad'}],
-        'lastEdit'      : ' ' 
+        'lastEdit'      : ' '
 })
-
 
 @app.route('/', methods=['GET'])
 def index():
