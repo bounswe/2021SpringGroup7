@@ -2,9 +2,9 @@ from flask import Blueprint, jsonify
 from ..database import mongo
 import datetime
 
-comment_bp = Blueprint('Likes', __name__)
+likes_bp = Blueprint('Likes of post', __name__)
 
-@comment_bp.route('/post/<int:postId>/likes', methods=['GET'])
+@likes_bp.route('/post/<int:postId>/likes', methods=['GET'])
 
 def getLikes(post):
 
@@ -21,7 +21,7 @@ def getLikes(post):
 
     return jsonify(data)
 
-@comment_bp.route('/post/<int:postId>/likes/<string:username>', methods=['POST'])
+@likes_bp.route('/post/<int:postId>/likes/<string:username>', methods=['POST'])
 def like(postId,username):
     db = mongo.db
     dbresponse = db.likes.find({'postId': postId}, {'_id': False})
