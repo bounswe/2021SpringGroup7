@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify
 from .database import mongo
 from .profile import profile
 from .location import location
@@ -8,8 +8,6 @@ from .storyTime import storyTime
 from .report import reportedUser
 from .postDetails import postDetails
 from .comment import comment
-from .search import search
-from .likes import likes
 from .follow import follow
 from .savePost import savePost
 from .home import home
