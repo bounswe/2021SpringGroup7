@@ -3,7 +3,7 @@ from ..database import mongo
 import requests
 import datetime
 
-
+relatedLocations = []
 location_bp = Blueprint('Create Location', __name__)
 @location_bp.route('/api/locations/<string:address>', methods=['POST'])
 def createLocation(post,username):
@@ -11,18 +11,27 @@ def createLocation(post,username):
     db = mongo.db
     locationDetails=request.form
     address = locationDetails.get('address')
+    key = "AIzaSyBUmonTQ91F6jFXZij-JgUmF2t8l8XT0Es"
+    
+    coordinates =requests.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=' + key)
+    latitude = coordinates['geometry']['location']['lat']
+    longitude = coordinates['geometry']['location']['lng']
 
-    coordinates =requests.get('https://maps.googleapis.com/maps/api/geocode/json?<string:address>&key=AIzaSyBUmonTQ91F6jFXZij-JgUmF2t8l8XT0Es')
+    relatedLocations = requests.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=' + key + '&location=' + latitude + "," + longitude + '&radius=10000')
+    # db.locations.find_one({})
+    # postToBeEdited = db.posts.find_one({'_id': ObjectId(postId)})
 
     if coordinates['status'] != "OK":
         return "Bir hata var!"
 
-    place = {
+    location = {
+        "locationId": (latitude+longitude),
         "address": address,
-        "latitude": coordinates['geometry']['location']['lat'],
-        "longitude":coordinates['geometry']['location']['lng'],
+        "latitude": latitude,
+        "longitude":longitude,
         "date": datetime.datetime.now(),
+        "relatedLocations":relatedLocations
     }
 
-    db.places.insert_one(place)
-    return jsonify(place)
+    db.locations.insert_one(location)
+    return jsonify(location)
