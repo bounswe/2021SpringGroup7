@@ -40,7 +40,7 @@ db.users.insert_one({
 })
 
 db.likes.insert_one({
-    "user": 'onurcan',
+    "username": 'onurcan',
     "postId": 2,
     "date": datetime.datetime.now(),
 })

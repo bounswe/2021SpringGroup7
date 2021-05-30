@@ -6,10 +6,10 @@ likes_bp = Blueprint('Likes of post', __name__)
 
 @likes_bp.route('api/post/<int:postId>/likes', methods=['GET'])
 
-def getLikes(post):
+def getLikes(postId):
 
     db = mongo.db
-    dbresponse = db.likes.find({'postId': post}, {'_id': False})
+    dbresponse = db.likes.find({'postId': postId}, {'_id': False})
 
     if not dbresponse:
         return 'not found xd'
@@ -39,7 +39,7 @@ def like(postId,username):
         })
 
     likeInstance = {
-        "user": username,
+        "username": username,
         "postId": postId,
         "date": datetime.datetime.now(),
     }
