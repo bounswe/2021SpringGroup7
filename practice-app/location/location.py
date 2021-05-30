@@ -34,7 +34,6 @@ def createLocation(post,username):
         }
 
         db.locations.insert_one(location)
-        return jsonify(location)
         return(jsonify({'status': 200, location}))
     except :
         abort(jsonify(404,'create-location-error' ))
