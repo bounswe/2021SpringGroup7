@@ -1,7 +1,8 @@
 from flask import Flask, jsonify
 from .database import mongo
 from .profile import profile
-from .postDetails import postDetails
+from .viewPost import viewPost
+from .editPost import editPost
 
 import datetime #
 
@@ -17,7 +18,8 @@ db.users.drop()
 db.posts.drop()
 
 app.register_blueprint(profile.profile_bp)
-app.register_blueprint(postDetails.postDetails_bp)
+app.register_blueprint(viewPost.viewPostDetails_bp)
+app.register_blueprint(editPost.editPostDetails_bp)
 
 db.users.insert_one({
         'username': 'ryan',
@@ -40,6 +42,7 @@ db.users.insert_one({
 })
 
 post1 = {
+        'owner'     : 'atainan',
         'topic'     : 'Great Day In Rome...',
         'story'     : 'I was in Rome for about 3 months...',
         'location'  : 'Rome',
@@ -47,11 +50,12 @@ post1 = {
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)}, 
         'multimedia': ['photo_link_1','photo_link_2'],
         'tags'      : ['summer', 'musical', 'day'],
-        'userComments'  : [{'username': 'atainan', 'comment': 'great memory!'}],
+        'userComments'  : [{'username': 'ryan', 'comment': 'great memory!'}],
         'lastEdit'      : ' ' 
 
 }
 post2 = {
+        'owner'     : 'ryan',
         'topic'     : 'Notre Dame de Paris Fire...',
         'story'     : 'There was a fire...',
         'location'  : 'Notre-Dame de Paris',
