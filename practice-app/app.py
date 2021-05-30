@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from .database import mongo
 from .profile import profile
+import datetime
 
 app = Flask(__name__)
 
@@ -32,6 +33,12 @@ db.users.insert_one({
         'location': 'Corum',
         'birthday': '29.02.2000',
         'isVisible': 'True'
+})
+
+db.likes.insert_one({
+    "user": 'onurcan',
+    "postId": 2,
+    "date": datetime.datetime.now(),
 })
 
 
