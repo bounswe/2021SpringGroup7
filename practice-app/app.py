@@ -16,10 +16,6 @@ db = mongo.db
 
 db.users.drop()
 db.locations.drop()
-
-app.register_blueprint(profile.profile_bp)
-app.register_blueprint(search.search_bp)
-
 db.likes.drop()
 
 app.register_blueprint(profile.profile_bp)
