@@ -24,19 +24,19 @@ def createMedia():
         return(str(dbresponse.inserted_id))
     except:
         abort(400)
-@media_bp.route('/multimedia/<string:id>',  methods=['GET'])
-def getMedia(id):
-    print(id)
-    db = mongo.db 
+# @media_bp.route('/multimedia/<string:id>',  methods=['GET'])
+# def getMedia(id):
+#     print(id)
+#     db = mongo.db 
 
-    dbresponse = db.multimedias.find_one({'_id' : ObjectId(str(id))})
-    print(dbresponse)
-    return (dbresponse)
-    # print(dbresponse)
-    # if(dbresponse):
+#     dbresponse = db.multimedias.find_one({'_id' : ObjectId(str(id))})
+#     print(dbresponse[id])
+#     return (jsonify(str(dbresponse[id])))
+#     # print(dbresponse)
+#     # if(dbresponse):
         
-    #     print(dbresponse._read_preference)
-    # abort(jsonify(404,'not found' ))
+#     #     print(dbresponse._read_preference)
+#     # abort(jsonify(404,'not found' ))
 
 
 def createMedia_method(data):
