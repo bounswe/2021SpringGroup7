@@ -9,7 +9,7 @@ storyTime_bp = Blueprint('StoryTime', __name__)
 cors = CORS(storyTime_bp, resources={r"/*": {"origins": "*"}})
 
 
-@storyTime_bp.route('/storytime/create-storytime',  methods=['POST'])
+@storyTime_bp.route('api/storytime/create-storytime',  methods=['POST'])
 def createStoryTime():
     print(request)
 

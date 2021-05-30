@@ -16,7 +16,7 @@ CORS(story_bp)
 cors = CORS(story_bp, resources={r"/*": {"origins": "*"}})
 
 
-@story_bp.route('/story/create-story',  methods=['POST'])
+@story_bp.route('/api/story/create-story',  methods=['POST'])
 def createStory():
     data = request.get_json()
     db = mongo.db

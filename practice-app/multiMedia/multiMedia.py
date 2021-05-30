@@ -10,7 +10,7 @@ CORS(media_bp)
 cors = CORS(media_bp, resources={r"/*": {"origins": "*"}})
 
 
-@media_bp.route('/multimedia/create-multimedia',  methods=['POST'])
+@media_bp.route('/api/multimedia/create-multimedia',  methods=['POST'])
 def createMedia():
     data = request.get_json()
     db = mongo.db 

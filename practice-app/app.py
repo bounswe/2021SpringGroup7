@@ -1,9 +1,9 @@
 from flask import Flask, jsonify
 from .database import mongo
-from .api.profile import profile
-from .api.story import story
-from .api.multiMedia import multiMedia
-from .api.storyTime import storyTime
+from .profile import profile
+from .story import story
+from .multiMedia import multiMedia
+from .storyTime import storyTime
 
 
 app = Flask(__name__)
