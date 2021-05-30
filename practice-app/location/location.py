@@ -6,7 +6,8 @@ import datetime
 relatedLocations = []
 location_bp = Blueprint('Create Location', __name__)
 @location_bp.route('/api/locations/<string:address>', methods=['POST'])
-def createLocation(post,username):
+def createLocation():
+
 
     db = mongo.db
     locationDetails=request.get_json()
