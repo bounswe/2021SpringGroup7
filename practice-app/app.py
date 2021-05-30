@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from .database import mongo
 from .profile import profile
 from .postDetails import postDetails
+from .comment import comment
 
 import datetime #
 
@@ -15,9 +16,11 @@ db = mongo.db
 
 db.users.drop()
 db.posts.drop()
+db.comments.drop()
 
 app.register_blueprint(profile.profile_bp)
 app.register_blueprint(postDetails.postDetails_bp)
+app.register_blueprint(comment.comment_bp)
 
 db.users.insert_one({
         'username': 'ryan',
@@ -38,6 +41,7 @@ db.users.insert_one({
         'birthday': '29.02.2000',
         'isVisible': 'True'
 })
+
 
 post_mongo_id = db.posts.insert_one({
         'id'        : 1,
