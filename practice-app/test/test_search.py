@@ -13,11 +13,11 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(len(list(mycol.find())), 15)
 
     def test_empty_endpoint(self):
-        req = requests.get("http://127.0.0.1:5000/search/")
+        req = requests.get("http://127.0.0.1:5000/api/search/")
         self.assertEqual(req.status_code, 404)
 
     def test_first_case(self):
-        req = requests.get("http://127.0.0.1:5000/search/boğaziçi üniversitesi")
+        req = requests.get("http://127.0.0.1:5000/api/search/boğaziçi üniversitesi")
         self.assertEqual(req.status_code, 200)
         req_json = json.loads(req.text)
         self.assertEqual(req_json["exact_match"], "      boğaziçi                        üniversitesi           ")
@@ -25,7 +25,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(req_json["comment"], "Successful Search")
 
     def test_first_harder_case(self):
-        req = requests.get("http://127.0.0.1:5000/search/Bogazıçi UnıverSıtesi")
+        req = requests.get("http://127.0.0.1:5000/api/search/Bogazıçi UnıverSıtesi")
         self.assertEqual(req.status_code, 200)
         req_json = json.loads(req.text)
         self.assertEqual(req_json["exact_match"], "      boğaziçi                        üniversitesi           ")
@@ -34,7 +34,7 @@ class TestStringMethods(unittest.TestCase):
 
     
     def test_second_case(self):
-        req = requests.get("http://127.0.0.1:5000/search/abc universitesi")
+        req = requests.get("http://127.0.0.1:5000/api/search/abc universitesi")
         self.assertEqual(req.status_code, 200)
         req_json = json.loads(req.text)
         self.assertEqual(req_json["exact_match"], "")
@@ -43,7 +43,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(req_json["recommendations"][0], "koç üniversitesi")
 
     def test_second_harder_case(self):
-        req = requests.get("http://127.0.0.1:5000/search/aBc          universitesı     ")
+        req = requests.get("http://127.0.0.1:5000/api/search/aBc          universitesı     ")
         self.assertEqual(req.status_code, 200)
         req_json = json.loads(req.text)
         self.assertEqual(req_json["exact_match"], "")
@@ -52,7 +52,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(req_json["recommendations"][0], "koç üniversitesi")
 
     def test_third_case(self):
-        req = requests.get("http://127.0.0.1:5000/search/london")
+        req = requests.get("http://127.0.0.1:5000/api/search/london")
         self.assertEqual(req.status_code, 200)
         req_json = json.loads(req.text)
         self.assertEqual(req_json["exact_match"], "")
@@ -61,7 +61,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(req_json["recommendations"][0], "Londra")
     
     def test_fourth_case(self):
-        req = requests.get("http://127.0.0.1:5000/search/Taksım       meydanı   ")
+        req = requests.get("http://127.0.0.1:5000/api/search/Taksım       meydanı   ")
         self.assertEqual(req.status_code, 200)
         req_json = json.loads(req.text)
         self.assertEqual(req_json["exact_match"], "          taksim meydanı")
@@ -70,7 +70,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(req_json["recommendations"][0], "          taksim meydanı")
 
     def test_number(self):
-        req = requests.get("http://127.0.0.1:5000/search/1234413")
+        req = requests.get("http://127.0.0.1:5000/api/search/1234413")
         self.assertEqual(req.status_code, 400)
         req_json = json.loads(req.text)
         self.assertEqual(req_json["exact_match"], "")
@@ -78,7 +78,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(req_json["comment"], "Wrong Input")
 
     def test_french(self):
-        req = requests.get("http://127.0.0.1:5000/search/bonjour")
+        req = requests.get("http://127.0.0.1:5000/api/search/bonjour")
         self.assertEqual(req.status_code, 400)
         req_json = json.loads(req.text)
         self.assertEqual(req_json["exact_match"], "")
