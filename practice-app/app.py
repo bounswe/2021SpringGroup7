@@ -12,9 +12,8 @@ mongo.init_app(app)
 db = mongo.db
 
 db.users.drop()
-
 app.register_blueprint(profile.profile_bp)
-app.register_blueprint(follow.follow_bp)
+app.register_blueprint(follow.follow_bp, url_prefix='/api')
 
 db.users.insert_one({
         'username': 'ryan',
@@ -41,7 +40,6 @@ db.users.insert_one({
         'followers': [],
         'followings': []
 })
-
 
 @app.route('/', methods=['GET'])
 def index():
