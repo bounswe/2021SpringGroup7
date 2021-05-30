@@ -6,51 +6,59 @@ follow_bp = Blueprint('Follow Actions and Viewing Followers/Following', __name__
 @follow_bp.route("/user/<string:usernameOfFollower>/follow/<string:usernameToFollow>", methods=['POST'])
 def followUser(usernameOfFollower, usernameToFollow):
 
-    db = mongo.db
-
-    userThatFollows = db.users.find_one({'username': usernameOfFollower})
-    userToFollow = db.users.find_one({'username': usernameToFollow})
+    userThatFollows = getUserFromDb(usernameOfFollower)
+    userToFollow = getUserFromDb(usernameToFollow)
 
     if not userToFollow or not userThatFollows:
         abort(404, "User not found")
 
-    if usernameOfFollower in userToFollow['followers'] or usernameOfFollower in userToFollow['followRequests']:
+    if (usernameOfFollower in userToFollow['followers'] and usernameToFollow in userThatFollows['followings']) or usernameOfFollower in userToFollow['followRequests']:
         return "Already followed", 200
 
     if userToFollow['isVisible'] == "True":
-        db.users.update_one({'_id': userThatFollows['_id']}, {'$addToSet': {'followings': usernameToFollow}})
-        db.users.update_one({'_id': userToFollow['_id']}, {'$addToSet': {'followers': usernameOfFollower}})
+        addToUserArrayInDb(userThatFollows['_id'], userToFollow, 'followings')
+        addToUserArrayInDb(userToFollow['_id'], usernameOfFollower, 'followers')
         return "Success", 200
     else:
-        db.users.update_one({'_id': userToFollow['_id']}, {'$addToSet': {'followRequests': usernameOfFollower}})
+        addToUserArrayInDb(userToFollow['_id'], usernameOfFollower, 'followRequests')
         return "Success", 200
+
 
 @follow_bp.route("/user/<string:username>/followers", methods=['GET'])
 def getFollowers(username):
-    db = mongo.db
-    user = db.users.find_one({'username': username})
+    user = getUserFromDb(username)
 
     if not user:
         abort(404, "User not found")
 
     return jsonify(user['followers'])
 
+
 @follow_bp.route("/user/<string:username>/followings", methods=['GET'])
 def getFollowings(username):
-    db = mongo.db
-    user = db.users.find_one({'username': username})
+    user = getUserFromDb(username)
 
     if not user:
         abort(404, "User not found")
 
     return jsonify(user['followings'])
 
+
 @follow_bp.route("/user/<string:username>/followRequests", methods=['GET'])
 def getFollowRequest(username):
-    db = mongo.db
-    user = db.users.find_one({'username': username})
+    user = getUserFromDb(username)
 
     if not user:
         abort(404, "User not found")
 
     return jsonify(user['followRequests'])
+
+
+def getUserFromDb(username):
+    db = mongo.db
+    return db.users.find_one({'username': username})
+
+
+def addToUserArrayInDb(userId, stringToAdd, fieldName):
+    db = mongo.db
+    db.users.update_one({'_id': userId}, {'$addToSet': {fieldName: stringToAdd}})
