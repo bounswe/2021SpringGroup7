@@ -3,7 +3,7 @@ from ..database import mongo
 
 report_bp = Blueprint('Report', __name__)
 
-@report_bp.route('/report/<int:userId>', methods=['POST'])
+@report_bp.route('/api/report/<int:userId>', methods=['POST'])
 def getProfile(userId):
 
     db = mongo.db
