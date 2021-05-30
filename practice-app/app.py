@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from .database import mongo
 from .profile import profile
+from .location import location
 
 app = Flask(__name__)
 
