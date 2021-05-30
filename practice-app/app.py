@@ -14,6 +14,7 @@ db = mongo.db
 db.users.drop()
 
 app.register_blueprint(profile.profile_bp)
+app.register_blueprint(location.location_bp)
 
 db.users.insert_one({
         'username': 'ryan',
