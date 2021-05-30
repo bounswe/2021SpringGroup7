@@ -3,7 +3,13 @@ from .database import mongo
 from .profile import profile
 from .search import search
 from .likes import likes
+from .follow import follow
+from .savePost import savePost
+from .home import home
+from .viewPost import viewPost
+from .editPost import editPost
 import datetime
+from .likes import likes
 
 app = Flask(__name__)
 
@@ -17,8 +23,17 @@ db = mongo.db
 db.users.drop()
 db.locations.drop()
 db.likes.drop()
+db.posts.drop()
 
+app.register_blueprint(savePost.savePost_bp)
 app.register_blueprint(profile.profile_bp)
+app.register_blueprint(home.home_bp)
+app.register_blueprint(follow.follow_bp, url_prefix='/api')
+app.register_blueprint(viewPost.viewPostDetails_bp)
+app.register_blueprint(editPost.editPostDetails_bp)
+
+db.likes.drop()
+
 app.register_blueprint(likes.likes_bp)
 
 
@@ -48,6 +63,71 @@ db.users.insert_one({
         'postIds': [2],
         'followRequests': [],
         'followers': [],
+        'followings': ['ryan'],
+        'savedPosts':[]
+})
+db.posts.insert_one({
+        'owner_username': 'ryan',
+        'id'        : 4,
+        'topic'     : 'Great Day In Rome...',
+        'story'     : 'I was in Rome for about 3 months...',
+        'location'  : 'Rome',
+        'postDate'  : datetime.datetime(2020, 8, 23, 12, 59, 40, 2),
+        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
+        'multimedia': ['photo_link_1','photo_link_2'],
+        'tags'      : ['summer', 'bike'],
+        'userComments'  : '',
+        'lastEdit'      : ' ' ,
+        'numberOfLikes': '32',
+        'numberOfComments': '2'
+
+})
+db.posts.insert_one({
+        'owner_username': 'ryan',
+        'id'        : 2,
+        'topic'     : 'Great Day In Rome...',
+        'story'     : 'I was in Rome for about 3 months...',
+        'location'  : 'Rome',
+        'postDate'  : datetime.datetime(2020, 6, 12, 19, 59, 40, 2),
+        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
+        'multimedia': ['photo_link_1','photo_link_2'],
+        'tags'      : ['summer', 'bike'],
+        'userComments'  : '',
+        'lastEdit'      : ' ' ,
+        'numberOfLikes': '362',
+        'numberOfComments': '13'
+
+})
+db.posts.insert_one({
+        'owner_username': 'atainan',
+        'id'        : 3,
+        'topic'     : 'Great Day In Rome...',
+        'story'     : 'I was in Rome for about 3 months...',
+        'location'  : 'Rome',
+        'postDate'  : datetime.datetime(2019, 5, 13, 12, 4, 40, 2),
+        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
+        'multimedia': ['photo_link_1','photo_link_2'],
+        'tags'      : ['summer', 'bike'],
+        'userComments'  : '',
+        'lastEdit'      : ' ' ,
+        'numberOfLikes': '360',
+        'numberOfComments': '15'
+
+})
+db.posts.insert_one({
+        'owner_username': 'ryan',
+        'id'        : 1,
+        'topic'     : 'Great Day In Rome...',
+        'story'     : 'I was in Rome for about 3 months...',
+        'location'  : 'Rome',
+        'postDate'  : datetime.datetime(2021, 5, 27, 12, 59, 40, 2),
+        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
+        'multimedia': ['photo_link_1','photo_link_2'],
+        'tags'      : ['summer', 'bike'],
+        'userComments'  : ' ',
+        'lastEdit'      : ' ' ,
+        'numberOfLikes': '362',
+        'numberOfComments': '13',
         'followings': [],
         'savedPosts':[]
 })
@@ -111,6 +191,34 @@ locations_list = [{"location_name": "      boğaziçi                        ün
 
 db.locations.insert_many(locations_list)
 
+db.posts.insert_one({
+        'id'        : '1',
+        'owner'     : 'atainan',
+        'topic'     : 'Great Day In Rome...',
+        'story'     : 'I was in Rome for about 3 months...',
+        'location'  : 'Rome',
+        'postDate'  : datetime.datetime(2021, 5, 27, 12, 59, 40, 2), 
+        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)}, 
+        'multimedia': ['photo_link_1','photo_link_2'],
+        'tags'      : ['summer', 'musical', 'day'],
+        'userComments'  : [{'username': 'ryan', 'comment': 'great memory!'}],
+        'lastEdit'      : ' ' 
+
+})
+
+db.posts.insert_one({
+        'id'        : '2',
+        'owner'     : 'ryan',
+        'topic'     : 'Notre Dame de Paris Fire...',
+        'story'     : 'There was a fire...',
+        'location'  : 'Notre-Dame de Paris',
+        'postDate'  : datetime.datetime(2021, 5, 29, 22, 30, 45, 20), 
+        'storyDate' : {'start': datetime.datetime(2019, 4, 15), 'end': datetime.datetime(2019, 4, 15)}, 
+        'multimedia': ['photo_link_1','photo_link_2'],
+        'tags'      : ['fire', 'damage', 'history'],
+        'userComments'  : [{'username': 'ryan', 'comment': 'it is so sad'}],
+        'lastEdit'      : ' '
+})
 
 @app.route('/', methods=['GET'])
 def index():
