@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, make_response
 from .database import mongo
 from .profile import profile
+from .location import location
 from .story import story
 from .multiMedia import multiMedia
 from .storyTime import storyTime
@@ -16,6 +17,7 @@ from .viewPost import viewPost
 from .editPost import editPost
 import datetime
 from .likes import likes
+
 app = Flask(__name__)
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/db"
@@ -34,6 +36,7 @@ db.comments.drop()
 
 app.register_blueprint(savePost.savePost_bp)
 app.register_blueprint(profile.profile_bp)
+app.register_blueprint(location.location_bp)
 
 app.register_blueprint(story.story_bp)
 app.register_blueprint(multiMedia.media_bp)
