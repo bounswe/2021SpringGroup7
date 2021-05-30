@@ -5,7 +5,8 @@ import datetime
 
 relatedLocations = []
 location_bp = Blueprint('Create Location', __name__)
-@location_bp.route('/api/locations/<string:address>', methods=['POST'])
+@location_bp.route('/api/locations/create', methods=['POST'])
+
 def createLocation():
 
 
