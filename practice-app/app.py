@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, make_response
 from .database import mongo
 from .profile import profile
+from .report import reportedUser
 
 from .postDetails import postDetails
 from .comment import comment
@@ -25,6 +26,7 @@ mongo.init_app(app)
 db = mongo.db
 
 db.users.drop()
+db.reports.drop()
 db.locations.drop()
 db.likes.drop()
 db.posts.drop()
@@ -32,6 +34,8 @@ db.comments.drop()
 
 app.register_blueprint(savePost.savePost_bp)
 app.register_blueprint(profile.profile_bp)
+app.register_blueprint(reportedUser.report_bp)
+
 
 app.register_blueprint(postDetails.postDetails_bp)
 app.register_blueprint(comment.comment_bp)
@@ -168,6 +172,10 @@ db.posts.insert_one({
         'lastEdit'      : ' ' ,
         'numberOfLikes': '360',
         'numberOfComments': '15'
+})
+
+db.reports.insert_one({
+        'userId': 4
 })
 
 db.likes.insert_one({
