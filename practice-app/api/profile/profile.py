@@ -20,9 +20,7 @@ def getProfile(username):
 
     posts = [db.posts.find_one({'id':postId}, {'_id':False}) for postId in curUser['postIds']]
     
-    # place your Google Cloud API key to a '.key' file in parent directory
-    with open(os.path.dirname(__file__) + '/../.key') as f:
-        key = '&' + f.read()
+    key = '&key=AIzaSyAhLt4H3iJLpmC0z_ospp1eMuW1efmqJU0'
 
     searchBase = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=' 
     placeSearch = requests.get(searchBase + curUser['location'] + key)
@@ -67,9 +65,7 @@ def updateProfile(username):
 
     posts = [db.posts.find_one({'id':postId}, {'_id':False}) for postId in curUser['postIds']]
     
-    # place your Google Cloud API key to a '.key' file in parent directory
-    with open(os.path.dirname(__file__) + '/../.key') as f:
-        key = '&' + f.read()
+    key = '&key=AIzaSyAhLt4H3iJLpmC0z_ospp1eMuW1efmqJU0'
 
     searchBase = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=' 
     placeSearch = requests.get(searchBase + location + key)
