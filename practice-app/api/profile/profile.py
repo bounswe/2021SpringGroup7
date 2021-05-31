@@ -24,14 +24,18 @@ def getProfile(username):
 
     searchBase = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=' 
     placeSearch = requests.get(searchBase + curUser['location'] + key)
+    coordinates = placeSearch.json()['results'][0]['geometry']['location']
 
     detailsBase = 'https://maps.googleapis.com/maps/api/place/details/json?place_id='
     placeId = placeSearch.json()['results'][0]['place_id']
     details = requests.get(detailsBase + placeId + key)
+    locationName = details.json()['result']['address_components'][0]['long_name']
+    fullAddress = details.json()['result']['adr_address']
+    formatAddress = details.json()['result']['formatted_address']
 
     curUser.update({'nofRequests':nofReq, 'nofFollowers':nofFollowers,
-        'nofFollowings':nofFollowings, 'posts':posts, 'locationmap':placeSearch.json(),
-        'locationdetails':details.json()})
+        'nofFollowings':nofFollowings, 'posts':posts, 'coordinates':coordinates,
+        'locationName':locationName, 'fullAddress':fullAddress, 'formatAddress':formatAddress})
 
     return jsonify(curUser)
 
@@ -59,29 +63,33 @@ def updateProfile(username):
     birthday = curUser['birthday'] if (birthday == '') else birthday
     isVisible = curUser['isVisible'] if (isVisible == '') else isVisible
 
-    nofReq = len(curUser['followRequests'])
-    nofFollowers = len(curUser['followers'])
-    nofFollowings = len(curUser['followings'])
-
-    posts = [db.posts.find_one({'id':postId}, {'_id':False}) for postId in curUser['postIds']]
-    
-    key = '&key=AIzaSyAhLt4H3iJLpmC0z_ospp1eMuW1efmqJU0'
-
-    searchBase = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=' 
-    placeSearch = requests.get(searchBase + location + key)
-
-    detailsBase = 'https://maps.googleapis.com/maps/api/place/details/json?place_id='
-    placeId = placeSearch.json()['results'][0]['place_id']
-    details = requests.get(detailsBase + placeId + key)
-
     updated = {'$set': {'first_name':first_name, 'last_name':last_name, 'email':email,
         'location':location, 'birthday':birthday, 'isVisible':isVisible}}
 
     db.users.update_one(curUser, updated)
     curUser = db.users.find_one({'username': username}, {'_id': False})
 
+    nofReq = len(curUser['followRequests'])
+    nofFollowers = len(curUser['followers'])
+    nofFollowings = len(curUser['followings'])
+
+    posts = [db.posts.find_one({'id':postId}, {'_id':False}) for postId in curUser['postIds']]
+    
+    key = '&key=AIzaSyAhLt4H3iJLpmC0z_ospp1eMuW1efmqJU0' 
+
+    searchBase = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=' 
+    placeSearch = requests.get(searchBase + curUser['location'] + key)
+    coordinates = placeSearch.json()['results'][0]['geometry']['location']
+
+    detailsBase = 'https://maps.googleapis.com/maps/api/place/details/json?place_id='
+    placeId = placeSearch.json()['results'][0]['place_id']
+    details = requests.get(detailsBase + placeId + key)
+    locationName = details.json()['result']['address_components'][0]['long_name']
+    fullAddress = details.json()['result']['adr_address']
+    formatAddress = details.json()['result']['formatted_address']
+
     curUser.update({'nofRequests':nofReq, 'nofFollowers':nofFollowers,
-        'nofFollowings':nofFollowings, 'posts':posts, 'locationmap':placeSearch.json(),
-        'locationdetails':details.json()})
+        'nofFollowings':nofFollowings, 'posts':posts, 'coordinates':coordinates,
+        'locationName':locationName, 'fullAddress':fullAddress, 'formatAddress':formatAddress}) 
 
     return jsonify(curUser)
