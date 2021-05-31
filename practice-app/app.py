@@ -70,13 +70,55 @@ db.users.insert_one({
         'first_name': 'ata',
         'last_name': 'inan',
         'email': 'bunubir@hocayasorayim.com',
-        'location': 'Corum',
+        'location': 'atasehir',
         'birthday': '29.02.2000',
         'isVisible': 'True',
         'postIds': [2],
         'followRequests': [],
         'followers': [],
         'followings': ['ryan'],
+        'savedPosts':[]
+})
+db.users.insert_one({
+        'username': 'kadirelmaci',
+        'first_name': 'kadir',
+        'last_name': 'elmaci',
+        'email': 'codeblo@yahoo.com',
+        'location': 'bogazici',
+        'birthday': '29.05.1990',
+        'isVisible': 'True',
+        'postIds': [],
+        'followRequests': [],
+        'followers': [],
+        'followings': [],
+        'savedPosts':[]
+})
+db.users.insert_one({
+        'username': 'merverabia',
+        'first_name': 'merve rabia',
+        'last_name': 'barin',
+        'email': 'rabia@boun.edu.tr',
+        'location': 'hisarustu',
+        'birthday': '14.09.1994',
+        'isVisible': 'True',
+        'postIds': [],
+        'followRequests': [],
+        'followers': [],
+        'followings': [],
+        'savedPosts':[]
+})
+db.users.insert_one({
+        'username': 'onurcanavci',
+        'first_name': 'onur can',
+        'last_name': 'avci',
+        'email': 'onurcan@boun.edu.tr',
+        'location': 'bebek',
+        'birthday': '17.01.1991',
+        'isVisible': 'False',
+        'postIds': [],
+        'followRequests': [],
+        'followers': [],
+        'followings': [''],
         'savedPosts':[]
 })
 db.posts.insert_one({
