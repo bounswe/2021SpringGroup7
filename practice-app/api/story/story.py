@@ -5,7 +5,7 @@ from flask import Blueprint, request, jsonify, abort
 from flask_pymongo import ASCENDING
 from pymongo.bulk import _WRITE_CONCERN_ERROR
 from pymongo.son_manipulator import ObjectIdInjector
-from ..database import mongo
+from ...database import mongo
 from flask_cors import CORS
 from ..storyTime.storyTime import createStoryTime_method
 from ..multiMedia.multiMedia import createMedia_method

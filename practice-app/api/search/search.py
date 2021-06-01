@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from ..database import mongo
+from ...database import mongo
 import editdistance
 import json
 import requests

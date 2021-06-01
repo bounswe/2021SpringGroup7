@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from ..database import mongo
+from ...database import mongo
 import datetime
 
 likes_bp = Blueprint('Likes of post', __name__)
@@ -15,7 +15,7 @@ def getLikes(postId):
         return 'not found xd'
 
     data = {
-        'items': dbresponse,
+        'items': list(dbresponse),
         'totalCount': dbresponse.count()
     }
 

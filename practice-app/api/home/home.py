@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, abort
-from ..database import mongo
+from ...database import mongo
 from ..follow.follow import getFollowings
 import requests
 

@@ -2,7 +2,7 @@ from os import abort
 from bson.objectid import ObjectId
 from flask import Blueprint, request,abort
 from flask.json import JSONEncoder, jsonify
-from ..database import mongo
+from ...database import mongo
 from flask_cors import CORS
 
 media_bp = Blueprint('Media', __name__)
