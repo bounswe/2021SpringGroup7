@@ -1,8 +1,10 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from .database import mongo
 from .profile import profile
 from .viewPost import viewPost
 from .editPost import editPost
+
+from flask import make_response
 
 import datetime #
 
@@ -43,7 +45,7 @@ db.users.insert_one({
 
 db.posts.insert_one({
         'id'        : '1',
-        'owner'     : 'atainan',
+        'owner_username'     : 'atainan',
         'topic'     : 'Great Day In Rome...',
         'story'     : 'I was in Rome for about 3 months...',
         'location'  : 'Rome',
@@ -58,7 +60,7 @@ db.posts.insert_one({
 
 db.posts.insert_one({
         'id'        : '2',
-        'owner'     : 'ryan',
+        'owner_username'     : 'ryan',
         'topic'     : 'Notre Dame de Paris Fire...',
         'story'     : 'There was a fire...',
         'location'  : 'Notre-Dame de Paris',
@@ -74,6 +76,24 @@ db.posts.insert_one({
 @app.route('/', methods=['GET'])
 def index():
     return jsonify({'Uygulama calisiyor mu': 'evet', 'En iyi grup': 'Grup 7'})
+
+@app.errorhandler(400)
+def bad_request(error):
+    if request.path.startswith('/api/editPost/'):
+        return make_response(jsonify({'error': 'This attribute\s does not exist or cannot be edited'}), 400)
+
+@app.errorhandler(403)
+def action_forbidden(error):
+    if request.path.startswith('/api/editPost/'):
+        return make_response(jsonify({'error': 'This user is not authorized to edit this post'}), 403)
+
+@app.errorhandler(404)
+def not_found(error):
+    if request.path.startswith('/api/viewPost/'):
+        return make_response(jsonify({'error': 'Post was not found'}), 404)
+    elif request.path.startswith('/api/editPost/'):
+        return make_response(jsonify({'error': 'Post or User was not found'}), 404)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
