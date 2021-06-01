@@ -159,6 +159,7 @@ gitprocess.txt
 __pycache__
 bin
 lib
+.key
 
 .apiKey
 

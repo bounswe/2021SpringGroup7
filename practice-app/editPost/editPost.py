@@ -21,6 +21,7 @@ def editPost(username, postId):
     postToBeEdited = db.posts.find_one({'id':postId}, {'_id': False})     # find post with the given id 
     requestedBy = db.users.find_one({'username': username})
 
+
     if not postToBeEdited or not requestedBy:  
         abort(404)  
 

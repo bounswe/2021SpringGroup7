@@ -47,3 +47,8 @@ def callSimilarTags(postToBeViewed):
             similarList = dictData['result']        # similars of a tag
 
         similarTags.extend(similarList)
+
+    postToBeViewed['similarTags'] = similarTags     # add similar tags to result
+
+    return jsonify(postToBeViewed)
+
