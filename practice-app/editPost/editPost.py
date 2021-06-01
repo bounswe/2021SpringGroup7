@@ -13,7 +13,7 @@ attributesThatCanBeEdited =   [ "location",
 
 
 editPostDetails_bp = Blueprint('Edit Post Details', __name__)
-@editPostDetails_bp.route('/api/editPost/<string:username>/<string:postId>', methods=['POST'])
+@editPostDetails_bp.route('/api/editPost/<string:username>/<int:postId>', methods=['POST'])
 def editPost(username, postId):
     
     db = mongo.db
