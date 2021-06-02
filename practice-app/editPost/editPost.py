@@ -23,16 +23,16 @@ def editPost(username, postId):
 
 
     if not postToBeEdited or not requestedBy:  
-        abort(404)  
+        abort(404, 'Post or User was not found')  
 
     if postToBeEdited['owner_username'] != username:
-        abort(403)
+        abort(403, 'This user is not authorized to edit this post')
 
     editDetails = request.json                                             # get parameters
 
     for attribute in editDetails.keys():
         if attribute not in attributesThatCanBeEdited:
-            abort(400)
+            abort(400,'This attribute\s does not exist or cannot be edited')
         
     editDetails['lastEdit'] = datetime.datetime.now()   # add last edit time as now
     postToBeEdited.update(editDetails)                  # set new values for fields passed as parameter  

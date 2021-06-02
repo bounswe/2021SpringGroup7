@@ -14,7 +14,7 @@ def viewPost(postId):
     postToBeViewed = db.posts.find_one({'id': postId}, {'_id': False})     # find post with the given id 
 
     if not postToBeViewed:  
-        abort(404)                                           
+        abort(404, 'Post not found')                                           
 
     similarTags = callSimilarTags(postToBeViewed)
     postToBeViewed['similarTags'] = similarTags     
