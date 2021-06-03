@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, abort
-from ...database import mongo
+from database import mongo
 import requests
 import datetime
 

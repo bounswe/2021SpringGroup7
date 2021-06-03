@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from ...database import mongo
+from database import mongo
 import datetime
 
 likes_bp = Blueprint('Likes of post', __name__)

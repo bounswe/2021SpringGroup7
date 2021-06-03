@@ -1,5 +1,5 @@
 from flask import Blueprint, abort, request,jsonify
-from ...database import mongo
+from database import mongo
 import requests
 
 savePost_bp = Blueprint('Saving Post', __name__)

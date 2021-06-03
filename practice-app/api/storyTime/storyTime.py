@@ -1,6 +1,6 @@
 from bson.objectid import ObjectId
 from flask import Blueprint, request,abort
-from ...database import mongo
+from database import mongo
 from flask_cors import CORS
 import re
 

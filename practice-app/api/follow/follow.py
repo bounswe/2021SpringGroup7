@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, abort
-from ...database import mongo
+from database import mongo
 
 follow_bp = Blueprint('Follow Actions and Viewing Followers/Following', __name__)
 

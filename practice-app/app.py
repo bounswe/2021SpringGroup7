@@ -1,20 +1,20 @@
 from flask import Flask, jsonify
 import datetime
-from .database import mongo
-from .api.profile import profile
-from .api.location import location
-from .api.story import story
-from .api.multiMedia import multiMedia
-from .api.storyTime import storyTime
-from .api.report import reportedUser
-from .api.comment import comment
-from .api.follow import follow
-from .api.savePost import savePost
-from .api.home import home
-from .api.viewPost import viewPost
-from .api.editPost import editPost
-from .api.likes import likes
-from .api.search import search
+from database import mongo
+from api.profile import profile
+from api.location import location
+from api.story import story
+from api.multiMedia import multiMedia
+from api.storyTime import storyTime
+from api.report import reportedUser
+from api.comment import comment
+from api.follow import follow
+from api.savePost import savePost
+from api.home import home
+from api.viewPost import viewPost
+from api.editPost import editPost
+from api.likes import likes
+from api.search import search
 
 app = Flask(__name__)
 
@@ -59,7 +59,7 @@ db.users.insert_one({
         'isVisible': 'False',
         'postIds': [3],
         'followRequests': [],
-        'followers': [],
+        'followers': ['atainan'],
         'followings': [],
         'savedPosts':[]
 })

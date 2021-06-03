@@ -1,4 +1,4 @@
-from ..follow.follow import *
+from api.follow.follow import *
 from werkzeug.exceptions import HTTPException
 from unittest.mock import patch
 import unittest
@@ -6,8 +6,8 @@ import unittest
 
 class MyTestCase(unittest.TestCase):
 
-    @patch('practice-app.follow.follow.getUserFromDb')
-    @patch('practice-app.follow.follow.addToUserArrayInDb')
+    @patch('api.follow.follow.getUserFromDb')
+    @patch('api.follow.follow.addToUserArrayInDb')
     def test_user_follow(self, mockGet, mockAdd):
         dummyVars = [{'username': 'ryan','isVisible': 'True', 'followRequests': [], 'followers': [], 'followings': []},
                      {'username': 'ata', 'isVisible': 'True', 'followRequests': [], 'followers': [], 'followings': []}]
@@ -16,7 +16,7 @@ class MyTestCase(unittest.TestCase):
         expected = "Success", 200
         self.assertEqual(response, expected)
 
-    @patch('practice-app.follow.follow.getUserFromDb')
+    @patch('api.follow.follow.getUserFromDb')
     def test_user_is_already_followed(self, mockGet):
         dummyVars = [{'username': 'ryan', 'isVisible': 'True', 'followRequests': [], 'followers': [], 'followings': ['ata']},
                      {'username': 'ata', 'isVisible': 'True', 'followRequests': [], 'followers': ['ryan'], 'followings': []}]
@@ -25,7 +25,7 @@ class MyTestCase(unittest.TestCase):
         expected = "Already followed", 200
         self.assertEqual(resp, expected)
 
-    @patch('practice-app.follow.follow.getUserFromDb')
+    @patch('api.follow.follow.getUserFromDb')
     def test_user_none(self, mockGet):
         mockGet.side_effect = [None, None]
         with self.assertRaises(HTTPException):
