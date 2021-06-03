@@ -46,6 +46,7 @@ app.register_blueprint(comment.comment_bp)
 app.register_blueprint(home.home_bp)
 app.register_blueprint(follow.follow_bp, url_prefix='/api')
 app.register_blueprint(likes.likes_bp)
+app.register_blueprint(search.search_bp)
 
 
 db.users.insert_one({
