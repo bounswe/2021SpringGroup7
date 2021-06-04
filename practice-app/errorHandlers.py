@@ -8,7 +8,6 @@ from app import app
 
 @errorHandlers_bp.app_errorhandler(400) 
 def bad_request(error):
-    error.description
     app.logger.error(error)
     return jsonify({'error': error.description}), 400
 
