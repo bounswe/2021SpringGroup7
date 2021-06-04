@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 import datetime
 from database import mongo
+from errorHandlers import errorHandlers_bp
 from api.profile import profile
 from api.location import location
 from api.story import story
@@ -15,11 +16,32 @@ from api.viewPost import viewPost
 from api.editPost import editPost
 from api.likes import likes
 from api.search import search
+import logging
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+
+sentry_sdk.init(
+    dsn="https://0cde92986781428cbdf66f7cdc55f2df@o793703.ingest.sentry.io/5801382",
+    integrations=[FlaskIntegration()],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1,
+
+    # By default the SDK will try to use the SENTRY_RELEASE
+    # environment variable, or infer a git commit
+    # SHA as release, however you may want to set
+    # something more human-readable.
+    # release="myapp@1.0.0",
+)
 
 app = Flask(__name__)
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/db"
 app.config['JSON_AS_ASCII'] = False
+
+logging.basicConfig(filename='output.log', level=logging.ERROR, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 mongo.init_app(app)
 
@@ -31,6 +53,8 @@ db.locations.drop()
 db.likes.drop()
 db.posts.drop()
 db.comments.drop()
+
+app.register_blueprint(errorHandlers_bp)
 
 app.register_blueprint(savePost.savePost_bp)
 app.register_blueprint(profile.profile_bp)
@@ -69,13 +93,55 @@ db.users.insert_one({
         'first_name': 'ata',
         'last_name': 'inan',
         'email': 'bunubir@hocayasorayim.com',
-        'location': 'Corum',
+        'location': 'atasehir',
         'birthday': '29.02.2000',
         'isVisible': 'True',
         'postIds': [2],
         'followRequests': [],
         'followers': [],
         'followings': ['ryan'],
+        'savedPosts':[]
+})
+db.users.insert_one({
+        'username': 'kadirelmaci',
+        'first_name': 'kadir',
+        'last_name': 'elmaci',
+        'email': 'codeblo@yahoo.com',
+        'location': 'bogazici',
+        'birthday': '29.05.1990',
+        'isVisible': 'True',
+        'postIds': [],
+        'followRequests': [],
+        'followers': [],
+        'followings': [],
+        'savedPosts':[]
+})
+db.users.insert_one({
+        'username': 'merverabia',
+        'first_name': 'merve rabia',
+        'last_name': 'barin',
+        'email': 'rabia@boun.edu.tr',
+        'location': 'hisarustu',
+        'birthday': '14.09.1994',
+        'isVisible': 'True',
+        'postIds': [],
+        'followRequests': [],
+        'followers': [],
+        'followings': [],
+        'savedPosts':[]
+})
+db.users.insert_one({
+        'username': 'onurcanavci',
+        'first_name': 'onur can',
+        'last_name': 'avci',
+        'email': 'onurcan@boun.edu.tr',
+        'location': 'bebek',
+        'birthday': '17.01.1991',
+        'isVisible': 'False',
+        'postIds': [],
+        'followRequests': [],
+        'followers': [],
+        'followings': [''],
         'savedPosts':[]
 })
 db.posts.insert_one({
@@ -207,42 +273,12 @@ locations_list = [{"location_name": "      boğaziçi                        ün
 
 db.locations.insert_many(locations_list)
 
-db.posts.insert_one({
-        'id'        : '1',
-        'owner'     : 'atainan',
-        'topic'     : 'Great Day In Rome...',
-        'story'     : 'I was in Rome for about 3 months...',
-        'location'  : 'Rome',
-        'postDate'  : datetime.datetime(2021, 5, 27, 12, 59, 40, 2), 
-        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)}, 
-        'multimedia': ['photo_link_1','photo_link_2'],
-        'tags'      : ['summer', 'musical', 'day'],
-        'userComments'  : [{'username': 'ryan', 'comment': 'great memory!'}],
-        'lastEdit'      : ' ' 
-
-})
-
-db.posts.insert_one({
-        'id'        : '2',
-        'owner'     : 'ryan',
-        'topic'     : 'Notre Dame de Paris Fire...',
-        'story'     : 'There was a fire...',
-        'location'  : 'Notre-Dame de Paris',
-        'postDate'  : datetime.datetime(2021, 5, 29, 22, 30, 45, 20), 
-        'storyDate' : {'start': datetime.datetime(2019, 4, 15), 'end': datetime.datetime(2019, 4, 15)}, 
-        'multimedia': ['photo_link_1','photo_link_2'],
-        'tags'      : ['fire', 'damage', 'history'],
-        'userComments'  : [{'username': 'ryan', 'comment': 'it is so sad'}],
-        'lastEdit'      : ' '
-})
 
 @app.route('/', methods=['GET'])
 def index():
     return jsonify({'Uygulama calisiyor mu': 'evet', 'En iyi grup': 'Grup 7'})
 
-#@app.errorhandler(404)
-#def not_found(error):
-#    return make_response(jsonify({'error': 'Task was not found'}), 404)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
