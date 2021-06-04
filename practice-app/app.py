@@ -249,34 +249,6 @@ locations_list = [{"location_name": "      boğaziçi                        ün
 
 db.locations.insert_many(locations_list)
 
-db.posts.insert_one({
-        'id'        : '1',
-        'owner'     : 'atainan',
-        'topic'     : 'Great Day In Rome...',
-        'story'     : 'I was in Rome for about 3 months...',
-        'location'  : 'Rome',
-        'postDate'  : datetime.datetime(2021, 5, 27, 12, 59, 40, 2), 
-        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)}, 
-        'multimedia': ['photo_link_1','photo_link_2'],
-        'tags'      : ['summer', 'musical', 'day'],
-        'userComments'  : [{'username': 'ryan', 'comment': 'great memory!'}],
-        'lastEdit'      : ' ' 
-
-})
-
-db.posts.insert_one({
-        'id'        : '2',
-        'owner'     : 'ryan',
-        'topic'     : 'Notre Dame de Paris Fire...',
-        'story'     : 'There was a fire...',
-        'location'  : 'Notre-Dame de Paris',
-        'postDate'  : datetime.datetime(2021, 5, 29, 22, 30, 45, 20), 
-        'storyDate' : {'start': datetime.datetime(2019, 4, 15), 'end': datetime.datetime(2019, 4, 15)}, 
-        'multimedia': ['photo_link_1','photo_link_2'],
-        'tags'      : ['fire', 'damage', 'history'],
-        'userComments'  : [{'username': 'ryan', 'comment': 'it is so sad'}],
-        'lastEdit'      : ' '
-})
 
 @app.route('/', methods=['GET'])
 def index():
