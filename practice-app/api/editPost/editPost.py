@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, abort
 #from werkzeug.wrappers import request
-from ..database import mongo
+from database import mongo
 
 import datetime 
 

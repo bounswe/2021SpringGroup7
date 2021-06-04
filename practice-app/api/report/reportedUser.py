@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from ..database import mongo
+from database import mongo
 
 report_bp = Blueprint('Report', __name__)
 
