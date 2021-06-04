@@ -104,6 +104,5 @@ def index():
     return jsonify({'Uygulama calisiyor mu': 'evet', 'En iyi grup': 'Grup 7'})
 
 
-
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
