@@ -5,7 +5,7 @@ from database import mongo
 import datetime 
 
 editPostDetails_bp = Blueprint('Edit Post Details', __name__)
-@editPostDetails_bp.route('/api/postDetail/<string:username>/<string:postId>', methods=['POST'])
+@editPostDetails_bp.route('/api/postDetail/<string:username>/<int:postId>', methods=['POST'])
 def editPost(username, postId):
     
     db = mongo.db
@@ -18,7 +18,7 @@ def editPost(username, postId):
     if not requestedBy:
         abort(404,'User not found')
 
-    if postToBeEdited['owner'] != username:
+    if postToBeEdited['owner_username'] != username:
         abort(400,'This user is not authorized to edit this post')
 
     if not request.json:           
