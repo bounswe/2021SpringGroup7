@@ -16,11 +16,14 @@ from api.viewPost import viewPost
 from api.editPost import editPost
 from api.likes import likes
 from api.search import search
+import logging
 
 app = Flask(__name__)
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/db"
 app.config['JSON_AS_ASCII'] = False
+
+logging.basicConfig(filename='output.log', level=logging.ERROR, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 mongo.init_app(app)
 
@@ -260,4 +263,5 @@ def index():
 
 
 if __name__ == "__main__":
+    fil
     app.run(host='0.0.0.0', port=5000, debug=True)
