@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 import datetime
 from database import mongo
+from .errorHandlers import errorHandlers_bp
 from api.profile import profile
 from api.location import location
 from api.story import story
@@ -31,6 +32,8 @@ db.locations.drop()
 db.likes.drop()
 db.posts.drop()
 db.comments.drop()
+
+app.register_blueprint(errorHandlers_bp)
 
 app.register_blueprint(savePost.savePost_bp)
 app.register_blueprint(profile.profile_bp)
@@ -254,9 +257,7 @@ db.locations.insert_many(locations_list)
 def index():
     return jsonify({'Uygulama calisiyor mu': 'evet', 'En iyi grup': 'Grup 7'})
 
-#@app.errorhandler(404)
-#def not_found(error):
-#    return make_response(jsonify({'error': 'Task was not found'}), 404)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
