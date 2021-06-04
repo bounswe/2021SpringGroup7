@@ -1,20 +1,20 @@
 from flask import Flask, jsonify
-from .database import mongo
-from .profile import profile
-from .location import location
-from .story import story
-from .multiMedia import multiMedia
-from .storyTime import storyTime
-from .report import reportedUser
-from .postDetails import postDetails
-from .comment import comment
-from .follow import follow
-from .savePost import savePost
-from .home import home
-from .viewPost import viewPost
-from .editPost import editPost
 import datetime
-from .likes import likes
+from database import mongo
+from api.profile import profile
+from api.location import location
+from api.story import story
+from api.multiMedia import multiMedia
+from api.storyTime import storyTime
+from api.report import reportedUser
+from api.comment import comment
+from api.follow import follow
+from api.savePost import savePost
+from api.home import home
+from api.viewPost import viewPost
+from api.editPost import editPost
+from api.likes import likes
+from api.search import search
 
 app = Flask(__name__)
 
@@ -41,13 +41,12 @@ app.register_blueprint(multiMedia.media_bp)
 app.register_blueprint(storyTime.storyTime_bp)
 app.register_blueprint(viewPost.viewPostDetails_bp)
 app.register_blueprint(editPost.editPostDetails_bp)
-db.likes.drop()
 app.register_blueprint(reportedUser.report_bp)
-app.register_blueprint(postDetails.postDetails_bp)
 app.register_blueprint(comment.comment_bp)
 app.register_blueprint(home.home_bp)
 app.register_blueprint(follow.follow_bp, url_prefix='/api')
 app.register_blueprint(likes.likes_bp)
+app.register_blueprint(search.search_bp)
 
 
 db.users.insert_one({
@@ -60,7 +59,7 @@ db.users.insert_one({
         'isVisible': 'False',
         'postIds': [3],
         'followRequests': [],
-        'followers': [],
+        'followers': ['atainan'],
         'followings': [],
         'savedPosts':[]
 })

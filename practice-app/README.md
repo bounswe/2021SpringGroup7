@@ -8,7 +8,7 @@ In the project directory, you can run:
 ### Run Flask
 `export FLASK_APP=app`<br />
 `export FLASK_ENV=development`<br />
-`flask run`
+`python -m flask run`
 
 Runs the app <br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.

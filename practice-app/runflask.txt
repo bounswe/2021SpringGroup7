@@ -1,6 +1,6 @@
 export FLASK_APP=app
 export FLASK_ENV=development
-flask run
+python -m flask run
 
 for Windows:
 set FLASK_APP=app

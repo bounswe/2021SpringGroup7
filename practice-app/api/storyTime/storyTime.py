@@ -1,6 +1,6 @@
 from bson.objectid import ObjectId
 from flask import Blueprint, request,abort
-from ..database import mongo
+from database import mongo
 from flask_cors import CORS
 import re
 
@@ -9,7 +9,7 @@ storyTime_bp = Blueprint('StoryTime', __name__)
 cors = CORS(storyTime_bp, resources={r"/*": {"origins": "*"}})
 
 
-@storyTime_bp.route('api/storytime/create-storytime',  methods=['POST'])
+@storyTime_bp.route('/api/storytime/create-storytime',  methods=['POST'])
 def createStoryTime():
     print(request)
 

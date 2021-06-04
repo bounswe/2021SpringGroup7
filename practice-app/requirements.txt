@@ -22,3 +22,4 @@ html-testRunner==1.2.1
 logz==0.15
 MarkupSafe==2.0.1
 xmlrunner==1.7.7
+flask_cors
