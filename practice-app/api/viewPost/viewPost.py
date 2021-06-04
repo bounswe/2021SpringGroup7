@@ -10,7 +10,7 @@ import os
 
 viewPostDetails_bp = Blueprint('View Post Details', __name__)
 
-@viewPostDetails_bp.route('/api/postDetail/<string:postId>', methods=['GET'])
+@viewPostDetails_bp.route('/api/postDetail/<int:postId>', methods=['GET'])
 def viewPost(postId):
     
     db = mongo.db
@@ -26,7 +26,7 @@ def viewPost(postId):
     conn = http.client.HTTPSConnection("similarwords.p.rapidapi.com")
     
     # get api key
-    with open(os.path.dirname(__file__) + '/../.apiKey') as f:
+    with open(os.path.dirname(__file__) + '/../../.apiKey') as f:
         apiKey = f.read()
     
     headers = {
