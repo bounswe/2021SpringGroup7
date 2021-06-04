@@ -99,27 +99,9 @@ db.likes.insert_one({
 })
 
 
-
 @app.route('/', methods=['GET'])
 def index():
     return jsonify({'Uygulama calisiyor mu': 'evet', 'En iyi grup': 'Grup 7'})
-
-@app.errorhandler(400)
-def bad_request(error):
-    if request.path.startswith('/api/editPost/'):
-        return make_response(jsonify({'error': 'This attribute\s does not exist or cannot be edited'}), 400)
-
-@app.errorhandler(403)
-def action_forbidden(error):
-    if request.path.startswith('/api/editPost/'):
-        return make_response(jsonify({'error': 'This user is not authorized to edit this post'}), 403)
-
-@app.errorhandler(404)
-def not_found(error):
-    if request.path.startswith('/api/viewPost/'):
-        return make_response(jsonify({'error': 'Post was not found'}), 404)
-    elif request.path.startswith('/api/editPost/'):
-        return make_response(jsonify({'error': 'Post or User was not found'}), 404)
 
 
 
