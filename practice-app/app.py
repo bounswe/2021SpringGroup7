@@ -18,6 +18,7 @@ from api.likes import likes
 from api.search import search
 import logging
 import sentry_sdk
+from flasgger import Swagger
 from sentry_sdk.integrations.flask import FlaskIntegration
 from flasgger import Swagger
 
