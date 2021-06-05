@@ -20,7 +20,6 @@ import logging
 import sentry_sdk
 from flasgger import Swagger
 from sentry_sdk.integrations.flask import FlaskIntegration
-from flasgger import Swagger
 
 sentry_sdk.init(
     dsn="https://0cde92986781428cbdf66f7cdc55f2df@o793703.ingest.sentry.io/5801382",
