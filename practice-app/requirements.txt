@@ -1,4 +1,4 @@
-
+blinker
 certifi==2020.12.5
 chardet==4.0.0
 click==8.0.1
