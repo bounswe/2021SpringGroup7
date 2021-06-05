@@ -4,85 +4,87 @@ from bson.objectid import ObjectId
 from flask import Blueprint, request, jsonify, abort
 from flask_pymongo import ASCENDING
 from pymongo.bulk import _WRITE_CONCERN_ERROR
-from pymongo.son_manipulator import ObjectIdInjector
 from database import mongo
-from flask_cors import CORS
-from api.storyTime.storyTime import createStoryTime_method
-from api.multiMedia.multiMedia import createMedia_method
+
+# from flask_cors import CORS
 
 
 story_bp = Blueprint('Story', __name__)
-CORS(story_bp)
-cors = CORS(story_bp, resources={r"/*": {"origins": "*"}})
+# CORS(story_bp)
+# cors = CORS(story_bp, resources={r"/*": {"origins": "*"}})
 
 
-@story_bp.route('/api/story/create-story',  methods=['POST'])
-def createStory():
+@story_bp.route('/api/story/create',  methods=['POST'])
+def createStory(): 
     data = request.get_json()
     db = mongo.db
+    print(data)
     
-    try:
-        if('storyTimeId' not in data and data['date']):
-            print("here")
-            id = createStoryTime_method(data['date'])
-            data['storyTimeId'] = id
-        if('mediaId' not in data and data['media']):
-            print("here")
-            id = createMedia_method(data['media'])
-            data['mediaId'] = id
-        if('locationIds' not in data and data['locations']):
-            # call-location
-            print(' ')
-        dbresponse = db.stories.insert_one({
-            'text': data['text'],
-            'title': data['title'],
-            'tags': data['tags'],
-            #    'likes':[ObjectId(person) for person in data['likes']],
-            #    'comments':[ObjectId(person) for person in data['comments']],
-            'mediaId': ObjectId(data['mediaId']),
-            'owner': ObjectId(data['owner']),
-            'locations':[ObjectId(location) for location in data['locationIds']],
-            'date': ObjectId(data['storyTimeId']),
-            'postTime': datetime.datetime.utcnow(),
-            'numberOfLikes':0,
-            'numberOfComments':0,
-            
-        })
-        return(jsonify({'status': 200,
-         'id': str(dbresponse.inserted_id)}))
-    except :
+    if ('story' not in data):
+        abort(400, 'create-story error: empty story')
+    if ('topic' not in data):
+        abort(400, 'create-story error: empty topic')
+    if ('tags' not in data):
+        abort(400, 'create-story error: empty tags')
+    if ('multimedia' not in data):
+        abort(400, 'create-story error: empty media')
+    if ('storyDate' not in data):
+        abort(400, 'create-story error: empty storyDate')
+    if('location' not in data ):
+        abort(400, 'create-story error: empty location')
+    DBValidation(data)
 
-        abort(jsonify(404,'create-story-error' ))
-    
+    count=db.posts.find({}).count()
+    dbresponse = db.posts.insert_one({
+        'id':count+1,
+        'story': data['story'],
+        'topic': data['topic'],
+        'tags': data['tags'],
+        #    'likes':[ObjectId(person) for person in data['likes']],
+        #    'comments':[ObjectId(person) for person in data['comments']],
+        'multimedia': data['multimedia'],
+        'owner_username': data['owner_username'],
+        'location': data['location'],
+        'postTime': datetime.datetime.utcnow(),
+        'storyDate': data['storyDate'],
+        'numberOfLikes': 0,
+        'numberOfComments': 0,
+
+        })
+    return(jsonify({'status': 200,
+        'id': str(dbresponse.inserted_id)}))
    
 
+        
+@story_bp.route('/api/story/<int:id>',  methods=['GET'])
+def getStory(id):
+    db = mongo.db
+    dbResponse = db.posts.find_one({'id': id}, {'_id': False})
+    if not dbResponse:
+        abort(404,'user not found')
+    return jsonify(dbResponse)
 
-# with story_bp.test_create as test1:
-#     response=test1.post('/story/create-story', json={
+def DBValidation(data):
+    db = mongo.db
+    if('owner_username' not in data):
+            abort(400, 'create-story error: empty username ')
+    else:
+        isUserExist = db.users.find_one({'username': data['owner_username']}, {'_id': False})
+        if(not isUserExist):
+            abort(400, 'create-story error: no such user exist')
+    if ('location' not in data):
+            abort(400, 'create-story error: empty location')
+    else:
+        isLocationExist=db.locations.find_one({'_id':  ObjectId(oid=data['location'])} )
+        print(isLocationExist)
+        if(not isLocationExist):
+            abort(400, 'create-story error: specified location does not exist')
 
-#         "text": "galatada bir gün",
-#         "title": "galata",
-#         "tags": [
-#             "asdasd",
-#             "asdasd",
-#             "asdas"
-#         ],
-#         "owner": "60afb2511f252a45c797d5e8",
-#         "likes": [
-#             "60afb2511f252a45c797d5e8",
-#             "60afb2511f252a45c797d5e8"
-#         ],
-#         "comments": [
-#             "60afb2511f252a45c797d5e8",
-#             "60afb2511f252a45c797d5e8",
-#             "60afb2511f252a45c797d5e8"
-#         ],
-#         "date": {
-#             "dateOne": "20.12.2020",
-#             "dateTwo": "27.12.2020",
-#             "dateType": "interval"
-#         },
-#         "mediaId": "60b14f2a782468b38e4c33c3"
 
-#     })
-#     assert response
+
+
+
+
+
+
+
