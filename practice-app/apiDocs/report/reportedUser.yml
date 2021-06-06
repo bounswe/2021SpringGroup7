@@ -1,0 +1,22 @@
+Given a user id, application adds that user to the reported user table.
+---
+parameters:
+  - name: userId
+    in: path
+    type: int
+    required: true
+definitions:
+  reportedUser:
+    type: object
+    properties:
+      userId:
+        type: int
+
+responses:
+  201:
+    description: Returns id of the reported user
+    schema:
+      $ref: '#/definitions/reportedUser'
+    examples:
+      application/json:
+        userId: 7

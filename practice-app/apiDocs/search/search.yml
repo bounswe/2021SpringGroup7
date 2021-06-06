@@ -22,7 +22,7 @@ definitions:
 
 responses:
   200:
-    description: A list of colors (may be filtered by palette)
+    description: Returns exact match if exists, request status and 5 recommendations.
     schema:
       $ref: '#/definitions/searchResults'
     examples:
