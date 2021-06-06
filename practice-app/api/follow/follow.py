@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, abort
 from database import mongo
+from flasgger import swag_from
 
 follow_bp = Blueprint('Follow Actions and Viewing Followers/Following', __name__)
 
 @follow_bp.route("/user/<string:usernameOfFollower>/follow/<string:usernameToFollow>", methods=['POST'])
+@swag_from('../../apidocs/follow/followUser.yml')
 def followUser(usernameOfFollower, usernameToFollow):
 
     userThatFollows = getUserFromDb(usernameOfFollower)

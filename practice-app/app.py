@@ -18,6 +18,7 @@ from api.likes import likes
 from api.search import search
 import logging
 import sentry_sdk
+from flasgger import Swagger
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 sentry_sdk.init(
@@ -37,6 +38,7 @@ sentry_sdk.init(
 )
 
 app = Flask(__name__)
+swagger = Swagger(app)
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/db"
 app.config['JSON_AS_ASCII'] = False
