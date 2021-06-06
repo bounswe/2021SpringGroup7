@@ -1,10 +1,14 @@
+from app import app
 from api.follow.follow import *
 from werkzeug.exceptions import HTTPException
 from unittest.mock import patch
 import unittest
 
 
-class MyTestCase(unittest.TestCase):
+class FollowTestCases(unittest.TestCase):
+
+    def setUp(self):
+        app.config['TESTING'] = True
 
     @patch('api.follow.follow.getUserFromDb')
     @patch('api.follow.follow.addToUserArrayInDb')
