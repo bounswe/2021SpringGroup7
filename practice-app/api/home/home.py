@@ -37,7 +37,7 @@ def getHome(username):
 	if 'isMock' in user.keys():
 		return list(posts_of_the_followings)
 
-	return jsonify({"posts": list(posts_of_the_followings), "advice": advice})
+	return jsonify({"posts": list(posts_of_the_followings), "advice": advice}),200
 
 
 def sortPost(posts_of_the_followings):
