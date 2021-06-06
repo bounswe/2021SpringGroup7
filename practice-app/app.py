@@ -45,12 +45,12 @@ mongo.init_app(app)
 
 db = mongo.db
 
-db.users.drop()
-db.reports.drop()
-db.locations.drop()
-db.likes.drop()
-db.posts.drop()
-db.comments.drop()
+# db.users.drop()
+# db.reports.drop()
+# db.locations.drop()
+# db.likes.drop()
+# db.posts.drop()
+# db.comments.drop()
 
 app.register_blueprint(errorHandlers_bp)
 

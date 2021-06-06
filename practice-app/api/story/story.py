@@ -1,10 +1,12 @@
 import datetime
 from os import error
+from re import A, search
 from bson.objectid import ObjectId
 from flask import Blueprint, request, jsonify, abort
 from flask_pymongo import ASCENDING
 from pymongo.bulk import _WRITE_CONCERN_ERROR
 from database import mongo
+import requests
 
 # from flask_cors import CORS
 
@@ -14,24 +16,13 @@ story_bp = Blueprint('Story', __name__)
 # cors = CORS(story_bp, resources={r"/*": {"origins": "*"}})
 
 
-@story_bp.route('/api/story/create',  methods=['POST'])
+@story_bp.route('/api/story/create/',  methods=['POST'])
 def createStory(): 
     data = request.get_json()
     db = mongo.db
     print(data)
     
-    if ('story' not in data):
-        abort(400, 'create-story error: empty story')
-    if ('topic' not in data):
-        abort(400, 'create-story error: empty topic')
-    if ('tags' not in data):
-        abort(400, 'create-story error: empty tags')
-    if ('multimedia' not in data):
-        abort(400, 'create-story error: empty media')
-    if ('storyDate' not in data):
-        abort(400, 'create-story error: empty storyDate')
-    if('location' not in data ):
-        abort(400, 'create-story error: empty location')
+    inputCheck(data)
     DBValidation(data)
 
     count=db.posts.find({}).count()
@@ -61,7 +52,7 @@ def getStory(id):
     db = mongo.db
     dbResponse = db.posts.find_one({'id': id}, {'_id': False})
     if not dbResponse:
-        abort(404,'user not found')
+        abort(404,'get story info:story not found')
     return jsonify(dbResponse)
 
 def DBValidation(data):
@@ -80,10 +71,50 @@ def DBValidation(data):
         if(not isLocationExist):
             abort(400, 'create-story error: specified location does not exist')
 
+def inputCheck(data):
+    if ('location' not in data):
+        abort(403, 'create-story error: empty location')
+    if('owner_username' not in data):
+        abort(403, 'create-story error: empty username ')
+    if ('story' not in data):
+        abort(403, 'create-story error: empty story')
+    if ('topic' not in data):
+        abort(403, 'create-story error: empty topic')
+    if ('tags' not in data):
+        abort(403, 'create-story error: empty tags')
+    if ('multimedia' not in data):
+        abort(403, 'create-story error: empty media')
+    if ('storyDate' not in data):
+        abort(403, 'create-story error: empty storyDate')
+    if('location' not in data ):
+        abort(403, 'create-story error: empty location')
+    return(True)
 
+# WEATHER API 
+@story_bp.route('/api/story/weather/<int:id>',  methods=['GET'])
+def getWeatherInfo(id):
+    db = mongo.db
+    dbResponse = db.posts.find_one({'id': id}, {'_id': False})
+    
+    if(not dbResponse):
+        abort(404, 'get weather error: story not found ')
+    location=db.locations.find_one({'_id':  ObjectId(oid=dbResponse['location'])} )
 
+    if(not location):
+        abort(404, 'get weather error: location not found ')
+    longitude=location['longitude']
+    latitude=location['latitude']
+    apiResponse= requests.get('https://www.metaweather.com/api/location/search/?lattlong='+str(latitude)+ ','+str(longitude) ).json()
+    apiLocationID=apiResponse[0]
 
+    apiResponse=requests.get('https://www.metaweather.com/api/location/'+str(apiLocationID['woeid']))
+    result=apiResponse.json()
+    result=result['consolidated_weather']
 
+    resultJson=[{'state':days['weather_state_name'],'img':'https://www.metaweather.com/static/img/weather/png/64/'+days['weather_state_abbr'] +'.png','temp':days['the_temp']} for days in result]
+    resultJson=jsonify(resultJson)    
+
+    return resultJson
 
 
 
