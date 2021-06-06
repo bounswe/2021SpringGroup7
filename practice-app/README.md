@@ -1,23 +1,38 @@
 # Practice App
 Welcome to Practice App!
 
+## Docker Commands
+For start docker 
+
+`docker-compose up -d`
+
+For close docker 
+
+`docker-compose down`
+
 ## Available Scripts
 
 In the project directory, you can run:
 
-### Run Flask
+#### Run Flask
+For Ubuntu and OS 
+
 `export FLASK_APP=app`<br />
 `export FLASK_ENV=development`<br />
 `python -m flask run`
 
-Runs the app <br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+For Windows:
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+`set FLASK_APP=app`<br />
+`set FLASK_ENV=development`<br />
+`flask run`
 
-### Run Test
+#### Run Test
+Launches the all tests <br />
+
 `python -m unittest discover -s test -v`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](www.google.com) for more information.
+Launches the test which is "test_XYZ.py" <br />
+
+`python -m unittest discover test "test_XYZ.py"`
+
