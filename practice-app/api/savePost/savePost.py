@@ -1,9 +1,11 @@
 from flask import Blueprint, abort, request,jsonify
 from database import mongo
+from flasgger import swag_from
 
 savePost_bp = Blueprint('Saving Post', __name__)
 
 @savePost_bp.route('/api/<string:username>/savings/', methods=['POST'])
+@swag_from('../../apidocs/savePost/savePost.yml')
 def savePost(username):
 
     post = getRequest()
@@ -16,10 +18,10 @@ def savePost(username):
     post=getPostFromDb(id)
 
     if not user or not user['username']==username:
-        abort(400, "User not found")
+        abort(404, "User not found")
 
     if not post or not post['id']==id:
-        abort(400, "Post not found")
+        abort(404, "Post not found")
 
     response=addPostToUserArchieve(user, post)
 
