@@ -25,7 +25,7 @@ For Windows:
 
 `set FLASK_APP=app`<br />
 `set FLASK_ENV=development`<br />
-`flask run`
+`python -m flask run`
 
 #### Run Test
 Launches the all tests <br />
