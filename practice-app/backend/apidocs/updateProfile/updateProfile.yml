@@ -1,0 +1,44 @@
+Takes an username as input and user fields from the post request. Updates the user information in
+the database and returns 'Success' with the HTTP Status Code 200 to confirm the update.
+---
+parameters:
+  - name: username
+    in: path
+    type: string
+    required: true
+      
+  - name: first_name
+    in: body
+    type: string
+
+  - name: last_name
+    in: body
+    type: string
+
+  - name: email
+    in: body
+    type: string
+
+  - name: location
+    in: body
+    type: string
+
+  - name: birthday
+    in: body
+    type: string
+
+  - name: isVisible
+    in: body
+    type: boolean
+
+responses:
+  200:
+    description: User profile information is updated successfully
+    schema:
+      type: string
+    examples:
+      application/json:
+        'Success'
+
+  404:
+    description: User with the given username can not be found in the database

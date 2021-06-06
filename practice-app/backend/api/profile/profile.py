@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
-from database import mongo
 import requests
-import os.path
+from database import mongo
+from flasgger import swag_from
 
 # Blueprint for the profile page routes in the application
 profile_bp = Blueprint('User Profiles', __name__)
@@ -11,6 +11,7 @@ profile_bp = Blueprint('User Profiles', __name__)
 # returned json. This information contains the number of follow requests, followers, followings;
 # coordinates, name and address of the user's location, all fields of the posts of the user.
 @profile_bp.route('/api/user/<string:username>', methods=['GET'])
+@swag_from('../../apidocs/viewProfile/viewProfile.yml')
 def getProfile(username):
     
     curUser = getUserFromDB(username)
@@ -34,6 +35,7 @@ def getProfile(username):
 # Takes an username as input and user fields from the post request. Updates the user information in
 # the database and returns 'Success' with the HTTP Status Code 200 to confirm the update.
 @profile_bp.route('/api/user/<string:username>/update', methods=['POST'])
+@swag_from('../../apidocs/updateProfile/updateProfile.yml')
 def updateProfile(username):
 
     post = getRequest()

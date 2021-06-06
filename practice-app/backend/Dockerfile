@@ -7,11 +7,6 @@ ENV GROUP_ID=1001 \
 
 WORKDIR /var/www/
 
-
-#RUN groupadd --gid $GROUP_ID apper
-#RUN useradd --uid $USER_ID --gid $GROUP_ID apper --shell /bin/sh
-#RUN chown -R $USER_ID /home/www
-
 USER root
 
 ADD ./requirements.txt /var/www/requirements.txt
@@ -22,4 +17,4 @@ ENV FLASK_ENV=development
 
 EXPOSE 5000
 
-CMD ["python", "-m", "flask", "run"]
+CMD ["python3", "-m", "flask", "run", "-h", "0.0.0.0"]
