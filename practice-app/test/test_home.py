@@ -1,43 +1,49 @@
 import unittest
-import pymongo
-import requests
+import datetime
+from api.home.home import *
+from werkzeug.exceptions import HTTPException
+from unittest.mock import patch
+import mock
 
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["db"]
-users = mydb["users"]
 
-class TestStringMethods(unittest.TestCase):
-    def test_empty_endpoint(self):
-        response = requests.get("http://127.0.0.1:5000/api/home/")
-        self.assertEqual(response.status_code, 404)
 
-    def test_user_existence(self):
-        self.assertGreaterEqual(len(list(users.find())), 1)
+class MyTestCase(unittest.TestCase):
 
-    def test_user_feed(self):
-        response = requests.get('http://127.0.0.1:5000/api/home/atainan')
-        self.assertGreaterEqual(len(response.json()['posts']),2)
+    @patch('api.home.home.getUserFromDb')
+    @patch('api.home.home.get_post_of_a_user')
+    def test_homepage(self, mockPost,mockUser):
+        dummyVars1 = [{'username': 'ryan','isVisible': 'True', 'followRequests': [], 'followers': [], 'followings': ['atainan'], 'isMock':True}]
+        mockUser.side_effect = dummyVars1
+        dummyVars2=[{'posts':[{'id': '1','owner_username': 'atainan','postDate': 2022},{'id': '2','owner_username': 'atainan','postDate': 2021},{'id': '3','owner_username': 'atainan','postDate': 2019}]}]
+        mockPost.side_effect = dummyVars2
+        response =getHome('ryan')
+        self.assertEqual(response[0]['id'], '1')
+        self.assertEqual(response[2]['id'], '3')
 
-    def test_bad_request1(self):
-        response = requests.get(f'http://127.0.0.1:5000/api/home/{1}')
-        self.assertEqual(response.status_code, 404)
+    @patch('api.home.home.getUserFromDb')
+    def test_none_user(self,mockUser):
+        mockUser.side_effect = None
+        with self.assertRaises(HTTPException):
+            getHome("notexisting")
 
-    def test_bad_request2(self):
-        response = requests.get(f'http://127.0.0.1:5000/api/home/{1.213}')
-        self.assertEqual(response.status_code, 404)
+    @patch('api.home.home.getUserFromDb')
+    def test_none_followings(self,mockUser):
+        dummyVars1 = [{'username': 'ryan','isVisible': 'True', 'followRequests': [], 'followers': [], 'followings': [], 'isMock':True}]
+        mockUser.side_effect = dummyVars1
+        with self.assertRaises(HTTPException):
+            getHome("ryan")
 
-    def test_bad_request3(self):
-        response = requests.get('http://127.0.0.1:5000/api/home/let\'s say this is a/ very very long text that might cause /some problem for the application')
-        self.assertEqual(response.status_code, 404)
+    @patch('api.home.home.getUserFromDb')
+    @patch('api.home.home.get_post_of_a_user')
+    def test_none_posts(self,mockPost,mockUser):
+        dummyVars1 = [{'username': 'ryan','isVisible': 'True', 'followRequests': [], 'followers': [], 'followings': ['atainan'], 'isMock':True}]
+        mockUser.side_effect = dummyVars1
+        dummyVars2=None
+        mockPost.side_effect = dummyVars2
+        with self.assertRaises(HTTPException):
+            getHome("ryan")
 
-    def test_sorted_post(self):
-        response = requests.get('http://127.0.0.1:5000/api/home/atainan')
-        self.assertGreaterEqual(response.json()['posts'][0]['postDate'], response.json()['posts'][1]['postDate'])
 
-    def test_successful_request(self):
-        response = requests.get('http://127.0.0.1:5000/api/home/atainan')
-        self.assertEqual(len(response.json()['posts']), 3)
-        self.assertEqual(response.status_code, 200)
 
 
 
