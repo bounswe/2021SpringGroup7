@@ -1,38 +1,77 @@
 import unittest
-from bson.objectid import ObjectId
-import pymongo
-import requests
+from unittest.mock import patch
+from werkzeug.exceptions import HTTPException
+from api.editPost.editPost import *
+from errorHandlers import app
 
 import datetime
 
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["db"]
-posts = mydb["posts"]
-
 class TestPostDetail(unittest.TestCase):
 
-    def test_empty_endpoint(self):
-        response = requests.get("http://127.0.0.1:5000/api/postDetail/")
-        self.assertEqual(response.status_code, 404)
+    def setUp(self):
+        app.config['TESTING'] = True
 
-    def test_db_post_existence(self):
-         self.assertGreaterEqual(len(list(posts.find())), 1)
+    @patch('api.editPost.editPost.getUserInDb')
+    @patch('api.editPost.editPost.getPostInDb')
+    def test_post_not_found(self,  mockPost, mockUser):
+        mockPost.side_effect = [None]
+        mockUser.side_effect = [{'username' : 'atainan'}]
+        with self.assertRaises(HTTPException):
+            editPost('atainan', 1)
 
-    def test_post_notfound(self):
-        postId = str(posts.find_one({},{"_id":1}))
-        posts.delete_one({'_id' : postId})
-        response = requests.get(f"http://127.0.0.1:5000/api/postDetail/{postId}")
-        self.assertEqual(response.status_code, 500)
-    
-    def test_badrequest_editpost(self):
-        postId = str(posts.find_one({},{"_id":1})['_id'])
-        response = requests.post(f'http://127.0.0.1:5000/api/postDetail/{postId}', {"postDate":datetime.datetime(2021, 5, 27, 12, 59, 40, 2)})
-        self.assertEqual(response.status_code, 405)
+    @patch('api.editPost.editPost.getUserInDb')
+    @patch('api.editPost.editPost.getPostInDb')
+    def test_requested_by_not_found(self, mockPost, mockUser):
+        postsFromDb = [{'owner_username': ' ', 'id': 3}]
+        mockPost.side_effect = postsFromDb
+        mockUser.side_effect = [None]
+        with self.assertRaises(HTTPException):
+            editPost('atainan', 3)
 
-    def test_not_owner(self):
-        postId = str(posts.find_one({'owner':'atainan'},{'_id':1})['_id'])
-        response = requests.get(f"http://127.0.0.1:5000/api/postDetail/ryan/{postId}")
-        self.assertEqual(response.status_code, 405)
+    @patch('api.editPost.editPost.getUserInDb')
+    @patch('api.editPost.editPost.getPostInDb')
+    def test_user_not_authorized(self, mockPost, mockUser): 
+        postsFromDb = [ {'owner_username': 'ryan',  'id': 1},
+                        {'owner_username': 'rabia', 'id': 2} ]
+        usersFromDb = [{'username': 'ryan'}, {'username': 'rabia'}]
+        mockPost.side_effect = postsFromDb
+        mockUser.side_effect = usersFromDb
+        with self.assertRaises(HTTPException):
+            editPost('rabia',1)
+
+    @patch('api.editPost.editPost.getRequest')
+    @patch('api.editPost.editPost.getUserInDb')
+    @patch('api.editPost.editPost.getPostInDb')
+    def test_bad_edit_request(self, mockPost, mockUser, mockRequest):
+        postsFromDb   = [ {'owner_username': 'rabia', 'id': 1, 'postDate' : datetime.datetime(2020, 8, 19, 12, 59, 40, 32)}]
+        usersFromDb   = [ {'username': 'rabia'}]
+        requestedEdit = [ {'postDate' : ''}]                # postDate cannot be edited
+        mockPost.side_effect = postsFromDb
+        mockUser.side_effect = usersFromDb
+        mockRequest.side_effect = requestedEdit
+
+        with self.assertRaises(HTTPException):
+            editPost('rabia', 1)
+
+    @patch('api.editPost.editPost.updatePostInDb')
+    @patch('api.editPost.editPost.getRequest')
+    @patch('api.editPost.editPost.getUserInDb')
+    @patch('api.editPost.editPost.getPostInDb')
+    def test_bad_edit_request(self, mockPost, mockUser, mockRequest, mockUpdate):
+        postsFromDb   = [ {'owner_username': 'rabia', 'id': 1, 
+                            'story' : 'When I was studying in Venice...', 'topic' : 'Interesting Coincidence'}]
+        usersFromDb   = [ {'username': 'rabia'}]
+        requestedEdit = [ {'story' : 'I changed my story for some reason...', 'topic' : 'Also topic was not good enough'}]               
+       
+        mockPost.side_effect = postsFromDb
+        mockUser.side_effect = usersFromDb
+        mockRequest.side_effect = requestedEdit
+
+        with app.app_context():
+            response = editPost('rabia',1)
+
+        expectedResponse = 'Successful Edit', 200
+        self.assertEqual(response, expectedResponse)
        
 
 if __name__ == '__main__':
