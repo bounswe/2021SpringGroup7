@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 import datetime
 from database import mongo
-from .errorHandlers import errorHandlers_bp
+from errorHandlers import errorHandlers_bp
 from api.profile import profile
 from api.location import location
 from api.story import story
