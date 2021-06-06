@@ -1,0 +1,116 @@
+Get recent posts of the followings of the given user
+This endpoints It takes a path parameter
+---
+parameters:
+  - name: username
+    in: path
+    type: string
+    required: true
+definitions:
+  homePage:
+    type: object
+    properties:
+      posts:
+        type: list
+        items:
+          $ref: '#/definitions/post'
+      advice:
+        type: string
+  post:
+    type: object
+    required:
+      - id
+    properties:
+      owner_username:
+        type: string
+      id:
+        type: integer
+      topic:
+        type: string
+      story:
+        type: string
+      location:
+        type:
+        $ref: '#/definitions/location'
+      postDate:
+        type: object
+      storyDate:
+        type:
+        $ref: '#/definitions/interval'
+      multimedia:
+        type: list
+        items:
+          $ref: '#/definitions/image'
+      tags:
+        type: list
+        items:
+          $ref: '#/definitions/tag'
+      userComments:
+        type: list
+        items:
+          $ref: '#/definitions/tag'
+      lastEdit:
+        type: object
+      numberOfLikes:
+        type: integer
+      numberOfComments:
+        type: integer
+  interval:
+    type:
+      object
+    required:
+      - start
+      - end
+    properties:
+      start:
+        type: object
+      end:
+        type: object
+  image:
+    type: string
+  tag:
+    type: string
+  comment:
+    type: object
+    required:
+      - comment_owner
+      - comment
+    properties:
+      comment_owner:
+        type: string
+      comment:
+        type: string
+  location:
+    type: object
+    required:
+      - location_id
+    properties:
+      location_id:
+        type: string
+
+responses:
+  200:
+    description: User have followings who have posts
+    schema:
+      $ref: '#/definitions/homePage'
+    examples:
+      application/json:
+        posts: [{
+            'owner_username': 'atainan',
+            'id'        : 3,
+            'topic'     : 'Great Day In Rome...',
+            'story'     : 'I was in Rome for about 3 months...',
+            'location'  : 'Rome',
+            'postDate'  : datetime.datetime(2019, 5, 13, 12, 4, 40, 2),
+            'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
+            'multimedia': ['photo_link_1','photo_link_2'],
+            'tags'      : ['summer', 'bike'],
+            'userComments'  : '',
+            'lastEdit'      : ' ' ,
+            'numberOfLikes': '360',
+            'numberOfComments': '15'
+        }]
+        advice: 'brevity is the soul of wit'
+
+  404:
+    description: User has no post to see

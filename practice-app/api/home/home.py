@@ -1,11 +1,13 @@
 from flask import Blueprint, jsonify, abort
 from database import mongo
+from flasgger import swag_from
 import datetime
 import requests
 
 home_bp = Blueprint('Home Page', __name__)
 
 @home_bp.route('/api/home/<string:username>/', methods=['GET'])
+@swag_from('../../apidocs/home/homePage.yml')
 def getHome(username):
 
 	user = getUserFromDb(username)
@@ -36,8 +38,8 @@ def getHome(username):
 
 	if 'isMock' in user.keys():
 		return list(posts_of_the_followings)
-
-	return jsonify({"posts": list(posts_of_the_followings), "advice": advice}),200
+	posts=list(posts_of_the_followings)
+	return jsonify({"posts":posts , "advice": advice}),200
 
 
 def sortPost(posts_of_the_followings):
