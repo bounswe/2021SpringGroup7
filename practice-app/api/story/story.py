@@ -20,13 +20,13 @@ story_bp = Blueprint('Story', __name__)
 def createStory(): 
     data = request.get_json()
     db = mongo.db
-    print(data)
+    
     
     inputCheck(data)
     DBValidation(data)
-
-    count=db.posts.find({}).count()
-    dbresponse = db.posts.insert_one({
+    try:
+        count=db.posts.find({}).count()
+        dbresponse = db.posts.insert_one({
         'id':count+1,
         'story': data['story'],
         'topic': data['topic'],
@@ -42,8 +42,13 @@ def createStory():
         'numberOfComments': 0,
 
         })
-    return(jsonify({'status': 200,
-        'id': str(dbresponse.inserted_id)}))
+       
+
+
+        return ({'status':200,'id':(count+1)})
+    except:
+        abort(400,'DB error')
+    
    
 
         
@@ -67,9 +72,12 @@ def DBValidation(data):
             abort(400, 'create-story error: empty location')
     else:
         isLocationExist=db.locations.find_one({'_id':  ObjectId(oid=data['location'])} )
-        print(isLocationExist)
+        
         if(not isLocationExist):
             abort(400, 'create-story error: specified location does not exist')
+
+
+
 
 def inputCheck(data):
     if ('location' not in data):
