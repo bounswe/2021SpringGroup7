@@ -1,4 +1,4 @@
-from errorHandlers import app
+from app import app
 from flask import json
 from api.profile.profile import *
 from werkzeug.exceptions import HTTPException

@@ -1,0 +1,24 @@
+Follow or send a follow request to given user
+This endpoints It takes a 2 path parameters
+---
+parameters:
+  - name: usernameOfFollower
+    in: path
+    type: string
+    required: true
+
+  - name: usernameToFollow
+    in: path
+    type: string
+    required: true
+
+responses:
+  200:
+    description: User followed the other user or user is already being followed
+    schema:
+        type: 'string'
+    examples:
+      application/json:
+        'Success'
+  404:
+    description: User to follow or user that follows is not found

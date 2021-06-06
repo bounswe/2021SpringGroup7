@@ -3,7 +3,6 @@ from database import mongo
 import editdistance
 import json
 import requests
-from flasgger import swag_from
 
 search_bp = Blueprint('Search', __name__)
 
@@ -16,10 +15,8 @@ def preprocess_text(text):
     text = " ".join(text.lower().split())
     return text.translate(translation_table)
 
-
 @search_bp.route('/api/search/<string:searchText>', methods=['GET'])
-@swag_from('../../apiDocs/search/search.yml')
-def search(searchText):
+def getProfile(searchText):
 
     # I use the language detection api from "https://detectlanguage.com/". It detects the language of a given text. I detect the language of the search text and if it not Turkish or English, I give a warning response.
     language_results = requests.get("https://ws.detectlanguage.com/0.2/detect", headers={"Authorization": "Bearer 9a517e959f9d74f49390456b06b3c076"}, params={"q":searchText})
