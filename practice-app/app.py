@@ -5,8 +5,6 @@ from errorHandlers import errorHandlers_bp
 from api.profile import profile
 from api.location import location
 from api.story import story
-from api.multiMedia import multiMedia
-from api.storyTime import storyTime
 from api.report import reportedUser
 from api.comment import comment
 from api.follow import follow
@@ -63,8 +61,6 @@ app.register_blueprint(profile.profile_bp)
 app.register_blueprint(location.location_bp)
 
 app.register_blueprint(story.story_bp)
-app.register_blueprint(multiMedia.media_bp)
-app.register_blueprint(storyTime.storyTime_bp)
 app.register_blueprint(viewPost.viewPostDetails_bp)
 app.register_blueprint(editPost.editPostDetails_bp)
 app.register_blueprint(reportedUser.report_bp)
