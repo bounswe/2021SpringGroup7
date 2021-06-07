@@ -48,7 +48,7 @@ definitions:
       userComments:
         type: list
         items:
-          $ref: '#/definitions/tag'
+          $ref: '#/definitions/userComments'
       lastEdit:
         type: object
       numberOfLikes:
@@ -70,7 +70,7 @@ definitions:
     type: string
   tag:
     type: string
-  comment:
+  userComments:
     type: object
     required:
       - comment_owner
@@ -95,22 +95,30 @@ responses:
       $ref: '#/definitions/homePage'
     examples:
       application/json:
-        posts: [{
-            'owner_username': 'atainan',
-            'id'        : 3,
-            'topic'     : 'Great Day In Rome...',
-            'story'     : 'I was in Rome for about 3 months...',
-            'location'  : 'Rome',
-            'postDate'  : datetime.datetime(2019, 5, 13, 12, 4, 40, 2),
-            'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
-            'multimedia': ['photo_link_1','photo_link_2'],
-            'tags'      : ['summer', 'bike'],
-            'userComments'  : '',
-            'lastEdit'      : ' ' ,
-            'numberOfLikes': '360',
-            'numberOfComments': '15'
-        }]
-        advice: 'brevity is the soul of wit'
+        posts:
+          value:
+            owner_username: 'atainan'
+            id      : 3
+            topic    : 'Great Day In Rome...'
+            story   : 'I was in Rome for about 3 months...'
+            location  : 'Rome'
+            postDate  : '05/13/2019, 12:04:40'
+            storyDate :
+              value:
+                start: '05/13/2016, 12:04:40'
+                end: '05/13/2016, 15:04:40'
+            multimedia: ['photo_link_1','photo_link_2']
+            tags     : ['summer', 'bike']
+            userComments  :
+              value:
+                comment_owner: 'ryan'
+                comment: 'this one hell of a story'
+            lastEdit'      : '09/13/2019, 12:04:40'
+            numberOfLikes': 360
+            numberOfComments': 15
+        advice:
+          value:
+            advice: 'brevity is the soul of wit'
 
   404:
     description: User has no post to see
