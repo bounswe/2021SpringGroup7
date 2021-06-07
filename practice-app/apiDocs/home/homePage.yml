@@ -1,5 +1,5 @@
 Get recent posts of the followings of the given user
-This endpoints It takes a path parameter
+This endpoints It takes a path parameter and a body parameter
 ---
 parameters:
   - name: username

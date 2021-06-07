@@ -7,7 +7,7 @@ import mock
 
 
 
-class MyTestCase(unittest.TestCase):
+class TestStringMethods(unittest.TestCase):
 
     @patch('api.home.home.getUserFromDb')
     @patch('api.home.home.get_post_of_a_user')
