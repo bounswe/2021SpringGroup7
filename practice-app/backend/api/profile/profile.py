@@ -3,13 +3,17 @@ import requests
 from database import mongo
 from flasgger import swag_from
 
-# Blueprint for the profile page routes in the application
+'''
+    Blueprint for the profile page routes in the application
+'''
 profile_bp = Blueprint('User Profiles', __name__)
 
-# Takes an username as input and returns the necessary information about the user to show in the
-# frontend. User information is stored in the database, but more information is also added to the
-# returned json. This information contains the number of follow requests, followers, followings;
-# coordinates, name and address of the user's location, all fields of the posts of the user.
+'''
+    Takes an username as input and returns the necessary information about the user to show in the
+    frontend. User information is stored in the database, but more information is also added to the
+    returned json. This information contains the number of follow requests, followers, followings;
+    coordinates, name and address of the user's location, all fields of the posts of the user.
+'''
 @profile_bp.route('/api/user/<string:username>', methods=['GET'])
 @swag_from('../../apidocs/viewProfile/viewProfile.yml')
 def getProfile(username):
@@ -32,8 +36,10 @@ def getProfile(username):
     return jsonify(curUser)
 
 
-# Takes an username as input and user fields from the post request. Updates the user information in
-# the database and returns 'Success' with the HTTP Status Code 200 to confirm the update.
+'''
+    Takes an username as input and user fields from the post request. Updates the user information in
+    the database and returns 'Success' with the HTTP Status Code 200 to confirm the update.
+'''
 @profile_bp.route('/api/user/<string:username>/update', methods=['POST'])
 @swag_from('../../apidocs/updateProfile/updateProfile.yml')
 def updateProfile(username):
@@ -64,27 +70,35 @@ def updateProfile(username):
     return 'Success', 200
 
 
-# Takes an username as input and returns the user information having this username from the
-# database.
+'''
+    Takes an username as input and returns the user information having this username from the
+    database.
+'''
 def getUserFromDB(username):
     db = mongo.db
     return db.users.find_one({'username': username}, {'_id': False})
 
 
-# Takes an user as input returns their number of follow requests, followers and followings.
+'''
+    Takes an user as input returns their number of follow requests, followers and followings.
+'''
 def getCountsOfUser(curUser):
     return len(curUser['followRequests']), len(curUser['followers']), len(curUser['followings'])
 
 
-# Takes an user as input and returns their posts as list from the database.
+'''
+    Takes an user as input and returns their posts as list from the database.
+'''
 def getPostsOfUser(curUser):
     db = mongo.db
     return [db.posts.find_one({'id':postId}, {'_id':False}) for postId in curUser['postIds']]
 
 
-# Takes a location as string as input and returns information about it using the Google Maps API.
-# This information includes the coordinates, the full name of the location, the full address and the
-# formatted address of the location.
+'''
+    Takes a location as string as input and returns information about it using the Google Maps API.
+    This information includes the coordinates, the full name of the location, the full address and the
+    formatted address of the location.
+'''
 def getLocationInfo(location):
     key = '&key=AIzaSyAhLt4H3iJLpmC0z_ospp1eMuW1efmqJU0'
 
@@ -114,7 +128,9 @@ def getRequest():
     return request.form
 
 
-# Updates the fields of the user in the database.
+'''
+    Updates the fields of the user in the database.
+'''
 def updateUserInDB(curUser, first_name, last_name, email, location, birthday, isVisible):
     db = mongo.db
     updated = {'$set': {'first_name':first_name, 'last_name':last_name, 'email':email,
