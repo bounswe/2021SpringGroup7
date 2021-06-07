@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, abort
 from database import mongo
+from flasgger import swag_from
 
 import http.client
 import json
@@ -15,6 +16,7 @@ viewPostDetails_bp = Blueprint('View Post Details', __name__)
     the post's tags. Returns this with other information. 
 '''
 @viewPostDetails_bp.route('/api/viewPost/<int:postId>', methods=['GET'])
+@swag_from('../../apiDocs/viewPost/viewPost.yml')
 def viewPost(postId):
 
     postToBeViewed = getPostInDb(postId)   
