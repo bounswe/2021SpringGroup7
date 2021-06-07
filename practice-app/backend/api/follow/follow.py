@@ -47,7 +47,7 @@ def getFollowings(username):
 
 
 @follow_bp.route("/user/<string:username>/followRequests", methods=['GET'])
-def getFollowRequest(username):
+def getFollowRequests(username):
     user = getUserFromDb(username)
 
     if not user:

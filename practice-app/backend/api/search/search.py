@@ -22,7 +22,7 @@ def preprocess_text(text):
 def search(searchText):
 
     # I use the language detection api from "https://detectlanguage.com/". It detects the language of a given text. I detect the language of the search text and if it not Turkish or English, I give a warning response.
-    language_results = requests.get("https://ws.detectlanguage.com/0.2/detect", headers={"Authorization": "Bearer 9a517e959f9d74f49390456b06b3c076"}, params={"q":searchText})
+    language_results = requests.get("https://ws.detectlanguage.com/0.2/detect", headers={"Authorization": "Bearer 515ff19407cc6ea50107f2f93c2487f6"}, params={"q":searchText})
     
     if language_results.ok:
         detected_languages = json.loads(language_results.text)['data']['detections']
