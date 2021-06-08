@@ -1,5 +1,4 @@
-from app import app
-from flask import json
+from flask import json, Flask
 from api.follow.follow import *
 from unittest.mock import patch
 from werkzeug.exceptions import HTTPException
@@ -9,13 +8,15 @@ import unittest
 class FollowDetailsTestCases(unittest.TestCase):
 
     def setUp(self):
-        app.config['TESTING'] = True
+        self.app = Flask(__name__)
+        self.app.config['JSON_AS_ASCII'] = False
+        self.app.config['TESTING'] = True
 
     @patch('api.follow.follow.getUserFromDb')
     def test_user_followings(self, mock_getUserFromDb):
         mock_getUserFromDb.side_effect = [
             {'username': 'ryan', 'isVisible': 'True', 'followRequests': [], 'followers': [], 'followings': ['ata']}]
-        with app.app_context():
+        with self.app.app_context():
             resp = getFollowings("ryan")
             data = json.loads(resp.get_data())
 
@@ -33,7 +34,7 @@ class FollowDetailsTestCases(unittest.TestCase):
     def test_user_followers(self, mock_getUserFromDb):
         mock_getUserFromDb.side_effect = [
             {'username': 'ryan', 'isVisible': 'True', 'followRequests': [], 'followers': ['ata', 'onur'], 'followings': ['ata']}]
-        with app.app_context():
+        with self.app.app_context():
             resp = getFollowers("ryan")
             data = json.loads(resp.get_data())
 
@@ -51,7 +52,7 @@ class FollowDetailsTestCases(unittest.TestCase):
     def test_user_follow_requests(self, mock_getUserFromDb):
         mock_getUserFromDb.side_effect = [
             {'username': 'ryan', 'isVisible': 'True', 'followRequests': ['umut', 'ramazan', 'rabia'], 'followers': [], 'followings': ['ata']}]
-        with app.app_context():
+        with self.app.app_context():
             resp = getFollowRequests("ryan")
             data = json.loads(resp.get_data())
 
