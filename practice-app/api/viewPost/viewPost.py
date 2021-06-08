@@ -35,14 +35,10 @@ def viewPost(postId):
     This 3rd party API is used for getting similar words to tags of the story post.                      
 '''
 def callSimilarTags(postToBeViewed):
-
-    # get api key
-    with open(os.path.dirname(__file__) + '/../../.apiKey') as f:
-        apiKey = f.read()
     
     conn = http.client.HTTPSConnection("similarwords.p.rapidapi.com")
     headers = {
-        'x-rapidapi-key': apiKey,
+        'x-rapidapi-key': "c82f823c13msh143b11a6a17f116p16edfbjsn6393ce655c52",
         'x-rapidapi-host': "similarwords.p.rapidapi.com"
         }
 
