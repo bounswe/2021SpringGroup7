@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, abort
 from database import mongo
 from flasgger import swag_from
-import datetime
 import requests
 
 home_bp = Blueprint('Home Page', __name__)

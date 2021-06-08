@@ -1,13 +1,10 @@
 import unittest
-import datetime
 from api.home.home import *
 from werkzeug.exceptions import HTTPException
 from unittest.mock import patch
-import mock
 
 
-
-class TestStringMethods(unittest.TestCase):
+class HomePageTestCases(unittest.TestCase):
 
     @patch('api.home.home.getUserFromDb')
     @patch('api.home.home.get_post_of_a_user')
@@ -43,7 +40,8 @@ class TestStringMethods(unittest.TestCase):
         with self.assertRaises(HTTPException):
             getHome("ryan")
 
-
+if __name__ == '__main__':
+    unittest.main()
 
 
 
