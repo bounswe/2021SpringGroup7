@@ -21,21 +21,8 @@ If you have changed any files but the application
 continues working according to your old files,
 
 `docker compose down`
-`docker volume prune`
-
-This process deletes all the volumes in currently
-unused containers. If you have some older images
-that you do not want to lose its cached volumes,
-use
-
-`docker compose down`
-`docker volume ls`
-`docker volume rm practice-app_appdata`
-`docker volume rm practice-app_mongodbdata`
-
-We are most likely to do not care about them, so the
-first option is more efficient. It is also faster and
-saves more space.
+`docker compose build --no-cache`
+`docker compose up -d --force-recreate`
 
 #### Run Test
 Launches the all tests <br />
