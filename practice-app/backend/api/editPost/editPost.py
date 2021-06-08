@@ -22,7 +22,7 @@ editPostDetails_bp = Blueprint('Edit Post Details', __name__)
     authorized to perform this action.
 '''
 @editPostDetails_bp.route('/api/editPost/<string:ownerUsername>/<int:postId>', methods=['POST'])
-@swag_from('../../apiDocs/editPost/editPost.yml')
+@swag_from('../../apidocs/editPost/editPost.yml')
 def editPost(ownerUsername, postId):
 
     postToBeEdited = getPostInDb(postId)      
