@@ -1,8 +1,8 @@
+from app import app
 import unittest
 from unittest.mock import patch
 from werkzeug.exceptions import HTTPException
 from api.editPost.editPost import *
-from errorHandlers import app
 
 import datetime
 

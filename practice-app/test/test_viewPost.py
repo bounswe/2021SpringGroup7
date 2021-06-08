@@ -1,8 +1,9 @@
+from app import app
 import unittest
 from unittest.mock import patch
 from api.viewPost.viewPost import *
 from werkzeug.exceptions import HTTPException
-from errorHandlers import app
+
 
 import json
 
