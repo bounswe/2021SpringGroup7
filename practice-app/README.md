@@ -25,8 +25,9 @@ continues working according to your old files,
 `docker compose up -d --force-recreate`
 
 #### Run Test
-Launches the all tests <br />
+After starting the application, launch all the tests by<br />
 
+`docker exec -it $(docker ps -f name=flask --format '{{.ID}}') /bin/bash`
 `python -m unittest discover -s test -v`
 
 Launches the test which is "test_XYZ.py" <br />

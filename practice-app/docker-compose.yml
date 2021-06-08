@@ -5,6 +5,7 @@ services:
     build: backend
     image: flask
     restart: unless-stopped
+    container_name: flask
     ports:
     - "5000:5000"
     volumes:
