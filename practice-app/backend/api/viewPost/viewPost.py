@@ -16,7 +16,7 @@ viewPostDetails_bp = Blueprint('View Post Details', __name__)
     the post's tags. Returns this with other information. 
 '''
 @viewPostDetails_bp.route('/api/viewPost/<int:postId>', methods=['GET'])
-@swag_from('../../apiDocs/viewPost/viewPost.yml')
+@swag_from('../../apidocs/viewPost/viewPost.yml')
 def viewPost(postId):
 
     postToBeViewed = getPostInDb(postId)   
