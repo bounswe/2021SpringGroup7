@@ -1,16 +1,10 @@
 import unittest
-import pymongo
 import requests
 import json
 
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["db"]
-mycol = mydb["locations"]
 
 class TestStringMethods(unittest.TestCase):
 
-    def test_initial_database_check(self):
-        self.assertEqual(len(list(mycol.find())), 15)
 
     def test_empty_endpoint(self):
         req = requests.get("http://127.0.0.1:5000/api/search/")
