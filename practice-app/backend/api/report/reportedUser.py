@@ -5,7 +5,7 @@ from flasgger import swag_from
 report_bp = Blueprint('Report', __name__)
 
 @report_bp.route('/api/report/<int:userId>', methods=['POST'])
-@swag_from('../../apiDocs/report/reportedUser.yml')
+@swag_from('../../apidocs/report/reportedUser.yml')
 def postReport(userId):
 
     db = mongo.db

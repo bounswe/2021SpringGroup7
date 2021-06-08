@@ -18,7 +18,7 @@ def preprocess_text(text):
 
 
 @search_bp.route('/api/search/<string:searchText>', methods=['GET'])
-@swag_from('../../apiDocs/search/search.yml')
+@swag_from('../../apidocs/search/search.yml')
 def search(searchText):
 
     # I use the language detection api from "https://detectlanguage.com/". It detects the language of a given text. I detect the language of the search text and if it not Turkish or English, I give a warning response.

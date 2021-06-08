@@ -39,7 +39,7 @@ sentry_sdk.init(
 app = Flask(__name__)
 swagger = Swagger(app)
 
-app.config["MONGO_URI"] = "mongodb://localhost:27017/db"
+app.config["MONGO_URI"] = "mongodb://mongo:27017/db"
 app.config['JSON_AS_ASCII'] = False
 
 logging.basicConfig(filename='output.log', level=logging.ERROR, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
@@ -80,7 +80,7 @@ db.users.insert_one({
         'location': 'Istanbul',
         'birthday': '29.02.2000',
         'isVisible': 'False',
-        'postIds': [3],
+        'postIds': [1,2,4],
         'followRequests': [],
         'followers': ['atainan'],
         'followings': [],
@@ -91,11 +91,11 @@ db.users.insert_one({
         'username': 'atainan',
         'first_name': 'ata',
         'last_name': 'inan',
-        'email': 'bunubir@hocayasorayim.com',
+        'email': 'inanata15@gmail.com',
         'location': 'atasehir',
         'birthday': '29.02.2000',
         'isVisible': 'True',
-        'postIds': [2],
+        'postIds': [3],
         'followRequests': [],
         'followers': [],
         'followings': ['ryan'],

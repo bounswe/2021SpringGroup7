@@ -1,4 +1,4 @@
-from app import app
+from flask import json, Flask
 from api.follow.follow import *
 from werkzeug.exceptions import HTTPException
 from unittest.mock import patch, call
@@ -8,7 +8,10 @@ import unittest
 class FollowTestCases(unittest.TestCase):
 
     def setUp(self):
-        app.config['TESTING'] = True
+        self.app = Flask(__name__)
+        self.app.config['JSON_AS_ASCII'] = False
+        self.app.config['TESTING'] = True
+
 
     @patch('api.follow.follow.getUserFromDb')
     @patch('api.follow.follow.addToUserArrayInDb')

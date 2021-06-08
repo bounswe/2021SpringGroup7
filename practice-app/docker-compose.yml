@@ -1,9 +1,38 @@
 version: '3.9'
 
 services:
+  flask:
+    build: backend
+    image: flask
+    restart: unless-stopped
+    container_name: flask
+    ports:
+    - "5000:5000"
+    volumes:
+    - appdata:/python-flask
+    depends_on:
+      - mongo
+    networks:
+      - frontend
+      - backend
+
   mongo:
     image: mongo
-    hostname: mongo
+    restart: unless-stopped
     container_name: mongo
-    ports:
-      - "27017:27017"
+    volumes:
+    - mongodbdata:/data/db
+    networks:
+      - backend
+
+volumes:
+  mongodbdata:
+    driver: local
+  appdata:
+    driver: local
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge
