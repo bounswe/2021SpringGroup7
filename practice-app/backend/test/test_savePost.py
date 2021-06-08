@@ -1,36 +1,81 @@
 import unittest
-import pymongo
-import requests
-
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["db"]
-users = mydb["users"]
-posts = mydb["posts"]
-
-#'/api/<string:username>/savings/'
-
+from flask import Blueprint,Flask
+from api.savePost.savePost import *
+from werkzeug.exceptions import HTTPException
+from unittest.mock import patch
+import mock
 class TestStringMethods(unittest.TestCase):
-    def test_user_existence(self):
-        self.assertGreaterEqual(len(list(users.find())), 1)
+    @patch('api.savePost.savePost.getUserFromDb')
+    @patch('api.savePost.savePost.getPostFromDb')
+    @patch('api.savePost.savePost.setUserInDb')
+    @patch('api.savePost.savePost.getRequest')
+    def test_successful_savePost(self, mockRequest,mockAdd,mockPost,mockUser):
+        userFromDb = [{'username': 'ryan','isVisible': 'True', 'followRequests': [], 'followers': [], 'followings': [], 'savedPosts':[],'isMock':True}]
+        postsFromDb =[{'id':1}]
+        postRequest=[{'id':1}]
+        mockUser.side_effect=userFromDb
+        mockPost.side_effect=postsFromDb
+        mockRequest.side_effect=postRequest
+        response=savePost('ryan')
+        expected=('Successful Add', 200)
+        self.assertEqual(expected,response)
 
-    def test_post_existence(self):
-        self.assertGreaterEqual(len(list(posts.find())), 1)
+    @patch('api.savePost.savePost.getUserFromDb')
+    @patch('api.savePost.savePost.getPostFromDb')
+    @patch('api.savePost.savePost.setUserInDb')
+    @patch('api.savePost.savePost.getRequest')
+    def test_post_notInDb(self, mockRequest, mockAdd, mockPost, mockUser):
+        userFromDb = [{'username': 'ryan', 'isVisible': 'True', 'followRequests': [], 'followers': [], 'followings': [],
+                       'savedPosts': [], 'isMock': True}]
+        postsFromDb = [{'id': 1}]
+        postRequest = [{'id': 2}]
+        mockUser.side_effect = userFromDb
+        mockPost.side_effect = postsFromDb
+        mockRequest.side_effect = postRequest
+        with self.assertRaises(HTTPException):
+            savePost('ryan')
 
-    def test_bad_request1(self):
-        response = requests.post('http://127.0.0.1:5000/api/atainan/savings/', {"id":"dummy"})
-        self.assertEqual(response.status_code, 400)
+    @patch('api.savePost.savePost.getUserFromDb')
+    @patch('api.savePost.savePost.getPostFromDb')
+    @patch('api.savePost.savePost.setUserInDb')
+    @patch('api.savePost.savePost.getRequest')
+    def test_post_duplicate_saving(self, mockRequest, mockAdd, mockPost, mockUser):
+        userFromDb = [{'username': 'ryan', 'isVisible': 'True', 'followRequests': [], 'followers': [], 'followings': [],
+                       'savedPosts': [1], 'isMock': True}]
+        postsFromDb = [{'id': 1}]
+        postRequest = [{'id': 1}]
+        mockUser.side_effect = userFromDb
+        mockPost.side_effect = postsFromDb
+        mockRequest.side_effect = postRequest
+        response=savePost('ryan')
+        expected = ('The post is already saved', 200)
+        self.assertEqual(response,expected)
 
-    def test_multiple_saving_for_one_post(self):
-        response = requests.post('http://127.0.0.1:5000/api/atainan/savings/', {'id': 1})
-        self.assertEqual(response.status_code, 200)
-        response = requests.post('http://127.0.0.1:5000/api/atainan/savings/', {'id': 1})
-        self.assertEqual(response.status_code, 200)
-        response = requests.get('http://127.0.0.1:5000/user/atainan').json()[0]['savedPost']
-        check=(len(response) == len(set(response)))
-        self.assertTrue(check)
+    @patch('api.savePost.savePost.getUserFromDb')
+    @patch('api.savePost.savePost.getPostFromDb')
+    @patch('api.savePost.savePost.setUserInDb')
+    @patch('api.savePost.savePost.getRequest')
+    def test_user_badRequest(self, mockRequest, mockAdd, mockPost, mockUser):
+        userFromDb = [{'username': 'ryan', 'isVisible': 'True', 'followRequests': [], 'followers': [], 'followings': [],
+                       'savedPosts': [1], 'isMock': True}]
+        postsFromDb = [{'id': 1}]
+        postRequest = [{'id': 1}]
+        mockUser.side_effect = userFromDb
+        mockPost.side_effect = postsFromDb
+        mockRequest.side_effect = postRequest
+        with self.assertRaises(HTTPException):
+            savePost('atainan')
 
-    def test_successful_request(self):
-        response = requests.post('http://127.0.0.1:5000/api/atainan/savings/', {'id': 1})
-        self.assertEqual(response.status_code, 200)
+
+
+
+
+
+
+
+
+
+
+
 
 

@@ -1,0 +1,30 @@
+Add the given post to the given user's saved post list
+This endpoints takes a path parameter and a body parameter
+---
+parameters:
+  - name: username
+    in: path
+    type: string
+    required: true
+  - name: post
+    in: body
+    required: true
+    scheme:
+      type: object
+      required: id
+      properties:
+        id:
+          type: integer
+responses:
+  200:
+    description: The post id is in user's saved post list
+    schema:
+      type: string
+    examples:
+      application/json:
+        "Successful Add"
+
+  404:
+    description: Given post id or given username are not in data base
+  400:
+    description: Bad request
