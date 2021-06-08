@@ -1,4 +1,3 @@
-from flask import Flask
 import unittest
 from unittest.mock import patch
 from api.viewPost.viewPost import *
@@ -6,13 +5,6 @@ from werkzeug.exceptions import HTTPException
 
 
 class TestPostDetail(unittest.TestCase):
-
-
-    def setUp(self):
-        self.app = Flask(__name__)
-        self.app.config['JSON_AS_ASCII'] = False
-        self.app.config['TESTING'] = True
-
 
     @patch('api.viewPost.viewPost.getPostInDb')
     def test_post_not_found(self, mockPost):
