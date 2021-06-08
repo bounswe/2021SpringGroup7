@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify,request
 import datetime
 from database import mongo
 from errorHandlers import errorHandlers_bp
@@ -18,6 +18,7 @@ import logging
 import sentry_sdk
 from flasgger import Swagger
 from sentry_sdk.integrations.flask import FlaskIntegration
+import requests
 
 sentry_sdk.init(
     dsn="https://0cde92986781428cbdf66f7cdc55f2df@o793703.ingest.sentry.io/5801382",
@@ -274,8 +275,23 @@ db.locations.insert_many(locations_list)
 
 @app.route('/', methods=['GET'])
 def index():
-    return jsonify({'Uygulama calisiyor mu': 'evet', 'En iyi grup': 'Grup 7'})
+    try:
+        response = requests.get("https://api.countapi.xyz/get/columbusgroup7/apihitcount")
+        hit_count = response.json()
+    except requests.exceptions.RequestException as e:
+        logging.getLogger("app").error(e)
 
+    return jsonify({'Uygulama calisiyor mu': 'evet', 'En iyi grup': 'Grup 7',"API Hit Count": hit_count['value']})
+
+@app.after_request
+def increase_hit_count(response):
+    if request.path != "/":
+        try:
+            requests.get("https://api.countapi.xyz/hit/columbusgroup7/apihitcount")
+        except requests.exceptions.RequestException as e:
+            logging.getLogger("app").error(e)
+
+    return response
 
 
 if __name__ == "__main__":
