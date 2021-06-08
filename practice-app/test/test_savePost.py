@@ -1,10 +1,9 @@
 import unittest
-from flask import Blueprint,Flask
 from api.savePost.savePost import *
 from werkzeug.exceptions import HTTPException
 from unittest.mock import patch
-import mock
-class TestStringMethods(unittest.TestCase):
+
+class SavePostTestCases(unittest.TestCase):
     @patch('api.savePost.savePost.getUserFromDb')
     @patch('api.savePost.savePost.getPostFromDb')
     @patch('api.savePost.savePost.setUserInDb')
@@ -66,7 +65,8 @@ class TestStringMethods(unittest.TestCase):
         with self.assertRaises(HTTPException):
             savePost('atainan')
 
-
+if __name__ == '__main__':
+    unittest.main()
 
 
 
