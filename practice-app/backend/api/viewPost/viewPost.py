@@ -24,8 +24,11 @@ def viewPost(postId):
     if not postToBeViewed:  
         abort(404, 'Post not found')                                           
 
+    if 'isMock' in postToBeViewed.keys():
+        return postToBeViewed , 200 
+
     similarTags = callSimilarTags(postToBeViewed)[0]
-    postToBeViewed['similarTags'] = similarTags     
+    postToBeViewed['similarTags'] = similarTags 
 
     return jsonify(postToBeViewed)
 

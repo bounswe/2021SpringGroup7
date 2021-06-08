@@ -1,4 +1,3 @@
-from app import app
 import unittest
 from unittest.mock import patch
 from werkzeug.exceptions import HTTPException
@@ -8,8 +7,6 @@ import datetime
 
 class TestPostDetail(unittest.TestCase):
 
-    def setUp(self):
-        app.config['TESTING'] = True
 
     @patch('api.editPost.editPost.getUserInDb')
     @patch('api.editPost.editPost.getPostInDb')
@@ -67,8 +64,7 @@ class TestPostDetail(unittest.TestCase):
         mockUser.side_effect = usersFromDb
         mockRequest.side_effect = requestedEdit
 
-        with app.app_context():
-            response = editPost('rabia',1)
+        response = editPost('rabia',1)
 
         expectedResponse = 'Successful Edit', 200
         self.assertEqual(response, expectedResponse)
