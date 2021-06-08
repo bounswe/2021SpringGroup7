@@ -1,0 +1,19 @@
+Follow or send a follow request to given user
+This endpoints It takes a 2 path parameters
+---
+parameters:
+  - name: address
+    in: path
+    type: string
+    required: true
+
+responses:
+  200:
+    description: Location is created
+    schema:
+        type: 'string'
+    examples:
+      application/json:
+        'Success'
+  404:
+    description: Location is not found
