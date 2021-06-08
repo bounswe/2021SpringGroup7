@@ -153,10 +153,9 @@ db.posts.insert_one({
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
         'multimedia': ['photo_link_1','photo_link_2'],
         'tags'      : ['summer', 'bike'],
-        'userComments'  : '',
         'lastEdit'      : ' ' ,
         'numberOfLikes': '32',
-        'numberOfComments': '2'
+        'numberOfComments': 2
 
 })
 db.posts.insert_one({
@@ -169,10 +168,9 @@ db.posts.insert_one({
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
         'multimedia': ['photo_link_1','photo_link_2'],
         'tags'      : ['summer', 'bike'],
-        'userComments'  : '',
         'lastEdit'      : ' ' ,
         'numberOfLikes': '362',
-        'numberOfComments': '13'
+        'numberOfComments': 13
 
 })
 db.posts.insert_one({
@@ -185,10 +183,9 @@ db.posts.insert_one({
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
         'multimedia': ['photo_link_1','photo_link_2'],
         'tags'      : ['summer', 'bike'],
-        'userComments'  : '',
         'lastEdit'      : ' ' ,
         'numberOfLikes': '360',
-        'numberOfComments': '15'
+        'numberOfComments': 15
 })
 
 db.posts.insert_one({
@@ -201,10 +198,9 @@ db.posts.insert_one({
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
         'multimedia': ['photo_link_1','photo_link_2'],
         'tags'      : ['summer', 'bike'],
-        'userComments'  : ' ',
         'lastEdit'      : ' ' ,
         'numberOfLikes': '362',
-        'numberOfComments': '13',
+        'numberOfComments': 13,
         'followings': [],
         'savedPosts':[]
 })
@@ -219,10 +215,9 @@ db.posts.insert_one({
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
         'multimedia': ['photo_link_1','photo_link_2'],
         'tags'      : ['summer', 'bike'],
-        'userComments'  : [{'username': 'atainan', 'comment': 'great memory!'}],
         'lastEdit'      : ' ' ,
         'numberOfLikes': '362',
-        'numberOfComments': '13'
+        'numberOfComments': 13
 
 })
 
@@ -236,10 +231,9 @@ db.posts.insert_one({
         'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
         'multimedia': ['photo_link_1','photo_link_2'],
         'tags'      : ['summer', 'bike'],
-        'userComments'  : [{'username': 'atainan', 'comment': 'great memory!'}],
         'lastEdit'      : ' ' ,
         'numberOfLikes': '360',
-        'numberOfComments': '15'
+        'numberOfComments': 15
 })
 
 db.reports.insert_one({
