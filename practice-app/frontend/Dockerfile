@@ -8,7 +8,7 @@ COPY package.json /app/package.json
 
 ADD . /app
 
-EXPOSE 3000
+EXPOSE 80
 EXPOSE 35729
 
 RUN yarn --silent

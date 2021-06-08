@@ -10,10 +10,11 @@ services:
     tty: true
     container_name: react
     ports:
-      - "3000:3000"
+      - "80:3000"
     volumes: 
-      - ./frontend:/app
       - /app/node_modules
+    depends_on:
+      - flask
     networks:
       - frontend
 
@@ -24,8 +25,6 @@ services:
     container_name: flask
     ports:
       - "5000:5000"
-    volumes:
-    - appdata:/python-flask
     depends_on:
       - mongo
     networks:
