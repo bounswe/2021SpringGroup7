@@ -19,7 +19,7 @@ def getComments(post):
     if not dbresponse:
         abort(404, 'get comment error:no comments in this post')
 
-    return jsonify(dbresponse)
+    return jsonify(list(dbresponse))
 #This endpoint takes a string from user and create a comment
 @comment_bp.route('/api/post/<int:post>/comments/new/<string:username>', methods=['POST'])
 @swag_from('../../apidocs/comment/makeComment.yml')
