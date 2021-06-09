@@ -2,12 +2,13 @@ from flask import Blueprint, request, jsonify, abort
 from database import mongo
 import requests
 from datetime import datetime
-
+from flasgger import swag_from
 
 
 comment_bp = Blueprint('Comments', __name__)
 
 @comment_bp.route('/api/post/<int:post>/comments', methods=['GET'])
+@swag_from('../../apidocs/comment/getComment.yml')
 def getComments(post):
 
     db = mongo.db
@@ -20,6 +21,7 @@ def getComments(post):
 
     return jsonify(dbresponse)
 @comment_bp.route('/api/post/<int:post>/comments/new/<string:username>', methods=['POST'])
+@swag_from('../../apidocs/comment/makeComment.yml')
 def makeComment(post,username):
 
     db = mongo.db

@@ -1,0 +1,60 @@
+Takes post id and username from path and text from request. Add a comment to database and return this comment.
+It also add language information coming from detectlanguage api.
+If there is no post with given id or no user for given username, it returns HTTP Status Code 404 .
+---
+parameters:
+  - name: post
+    in: path
+    type: integer
+    required: true
+
+  - name: username
+    in: path
+    required: true
+    type: string
+
+  - name: text
+    in: body
+    type: string
+
+  - name: language
+      in: body
+      type: string
+
+  - name: dt_string
+      in: body
+      type: string
+
+definitions:
+  comment:
+    type: object
+    properties:
+      username:
+        type: string
+      comment:
+        type: string
+      postId:
+        type: integer
+      date:
+        type: string
+      language:
+        type: string
+      
+responses:
+  200:
+    description: Add comment to database and return recently added comment
+      schema:
+        $ref: '#/definitions/comment'
+      examples:
+        application/json:
+          comment:
+            value:
+              username: 'atainan'
+              comment: 'I love this post'
+              postId: 1
+              date: '15/11/2021 11:15'
+              language: 'en'
+
+
+  404:
+    description: Given post id or username is not in database
