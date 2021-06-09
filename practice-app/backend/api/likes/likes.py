@@ -83,3 +83,4 @@ def removeLikePostFromDb(likedPostData):
 def likedPostInfo(postId, username):
     db = mongo.db
     return db.likes.find({ "postId": postId,'username': username})
+
