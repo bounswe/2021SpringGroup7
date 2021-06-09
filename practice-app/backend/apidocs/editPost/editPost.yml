@@ -10,7 +10,7 @@ parameters:
 
   - name: postId
     in: path
-    type: int
+    type: integer
     required: true
 
   - name: location
