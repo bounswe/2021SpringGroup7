@@ -11,7 +11,7 @@ responses:
   200:
     description: Returns post details of the post with given id
     schema:
-      $ref: "#/definitions/postToBeViewed"
+      type: object
     examples:
       application/json:
         postToBeViewed:
