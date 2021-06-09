@@ -206,7 +206,7 @@ export default function PostCard(props) {
       
       
     </div>  
-    <SimpleMap></SimpleMap>
+    {/* <SimpleMap></SimpleMap> */}
                 </CardContent>
             </Collapse>
         </Card>

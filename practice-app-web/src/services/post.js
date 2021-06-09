@@ -12,7 +12,9 @@ const POST_SERVICE = {
     Accept: "multipart/form-data",
     "x-applicationid": "1",
   },}),
-  GET_COMMENTS : (data) => API_INSTANCE.get(`/post/${data}/comments`)
+  GET_COMMENTS : (data) => API_INSTANCE.get(`/post/${data}/comments`),
+  CREATE_POST: (data)=> API_INSTANCE.post('/story/create',data),
+  CREATE_LOCATION: (data)=> API_INSTANCE.post('/locations/create',data)
 
 };
 
