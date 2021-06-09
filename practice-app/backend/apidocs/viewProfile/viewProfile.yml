@@ -1,7 +1,4 @@
-Takes an username as input and returns the necessary information about the user to show in the
-frontend. User information is stored in the database, but more information is also added to the
-returned json. This information contains the number of follow requests, followers, followings;
-coordinates, name and address of the user's location, all fields of the posts of the user.
+Takes an username as input and returns the necessary information about the user to show in the frontend. User information is stored in the database, but more information is also added to the returned json. This information contains the number of follow requests, followers, followings; coordinates, name and address of the user's location, all fields of the posts of the user.
 ---
 parameters:
   - name: username
