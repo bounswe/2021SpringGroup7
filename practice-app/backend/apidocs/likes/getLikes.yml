@@ -1,0 +1,45 @@
+Takes post id as parameter, returns details of the likes of post with given post id.
+---
+parameters:
+  - name: postId
+    in: path
+    type: integer
+    required: true
+
+definitions:
+  likesToBeViewed:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object
+          properties:
+            date:
+              type: string
+            postId:
+              type: integer
+            username:
+              type: string
+      totalCount:
+        type: string
+
+responses:
+  200:
+    description: Returns users who likes post and date of like post
+    schema:
+      $ref: "#/definitions/likesToBeViewed"
+    examples:
+      application/json:
+        items:
+          [
+            {
+              "date": "Wed, 09 Jun 2021 08:58:17 GMT",
+              "postId": 2,
+              "username": "onurcanavci",
+            },
+          ]
+        totalCount: 2
+
+  404:
+    description: Post or username is not found
