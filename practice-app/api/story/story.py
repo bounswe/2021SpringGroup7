@@ -16,12 +16,12 @@ story_bp = Blueprint('Story', __name__)
 # cors = CORS(story_bp, resources={r"/*": {"origins": "*"}})
 
 
-@story_bp.route('/api/story/create/',  methods=['POST'])
+@story_bp.route('/api/story/create',  methods=['POST'])
 def createStory(): 
     data = request.get_json()
     db = mongo.db
     
-    
+    print(data)
     inputCheck(data)
     DBValidation(data)
     try:
@@ -42,6 +42,10 @@ def createStory():
         'numberOfComments': 0,
 
         })
+        updated = {'$push': { 'postIds':count+1
+            }}
+
+        db.users.update_one({'username':data['owner_username']},updated)
        
 
 
@@ -68,13 +72,13 @@ def DBValidation(data):
         isUserExist = db.users.find_one({'username': data['owner_username']}, {'_id': False})
         if(not isUserExist):
             abort(400, 'create-story error: no such user exist')
-    if ('location' not in data):
-            abort(400, 'create-story error: empty location')
-    else:
-        isLocationExist=db.locations.find_one({'_id':  ObjectId(oid=data['location'])} )
+    # if ('location' not in data):
+    #         abort(400, 'create-story error: empty location')
+    # else:
+    #     isLocationExist=db.locations.find_one({'_id':  ObjectId(oid=data['location'])} )
         
-        if(not isLocationExist):
-            abort(400, 'create-story error: specified location does not exist')
+        # if(not isLocationExist):
+        #     abort(400, 'create-story error: specified location does not exist')
 
 
 
