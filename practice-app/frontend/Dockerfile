@@ -15,4 +15,6 @@ RUN yarn --silent
 
 RUN yarn build
 
-CMD ["yarn", "start"]
+RUN yarn global add serve
+
+CMD ["serve", "-s", "-n", "build"]

@@ -10,7 +10,7 @@ services:
     tty: true
     container_name: react
     ports:
-      - "80:3000"
+      - "80:5000"
     volumes: 
       - /app/node_modules
     depends_on:

@@ -13,7 +13,6 @@ ADD ./requirements.txt /var/www/requirements.txt
 RUN pip3 install -r requirements.txt
 ADD . /var/www/
 ENV FLASK_APP=app
-ENV FLASK_ENV=development
 
 EXPOSE 5000
 
