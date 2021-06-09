@@ -14,16 +14,9 @@ parameters:
     type: string
 
   - name: text
-    in: body
+    in: formData
     type: string
 
-  - name: language
-      in: body
-      type: string
-
-  - name: dt_string
-      in: body
-      type: string
 
 definitions:
   comment:
@@ -43,17 +36,17 @@ definitions:
 responses:
   200:
     description: Add comment to database and return recently added comment
-      schema:
-        $ref: '#/definitions/comment'
-      examples:
-        application/json:
-          comment:
-            value:
-              username: 'atainan'
-              comment: 'I love this post'
-              postId: 1
-              date: '15/11/2021 11:15'
-              language: 'en'
+    schema:
+      $ref: '#/definitions/comment'
+    examples:
+      application/json:
+        comment:
+          value:
+            username: 'atainan'
+            comment: 'I love this post'
+            postId: 1
+            date: '15/11/2021 11:15'
+            language: 'en'
 
 
   404:

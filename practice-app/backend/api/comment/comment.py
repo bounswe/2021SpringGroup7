@@ -33,12 +33,17 @@ def makeComment(post,username):
     if not user:
         abort(400,'no such user exists')
 
-    commentText=request.form
+    commentText = getRequest()
     text = commentText.get('text')
 
     #I used detectlanguage as third party api. It returns possible language of text.
-    lang=requests.post('https://ws.detectlanguage.com/0.2/detect',{'q':text},auth=('a133a45152facfa243ff514da79b9a09','')).json()
-    language=lang['data']['detections'][0]['language']
+    lang = requests.post('https://ws.detectlanguage.com/0.2/detect',{'q':text},auth=('a133a45152facfa243ff514da79b9a09','')).json()
+    detection = lang['data']['detections']
+    if len(detection)==0:
+        language = 'unknown'
+    else:
+        language = detection[0]['language']
+
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M")          #Date of comment day/month/year hour:minute
     commentj = {
@@ -64,6 +69,9 @@ def getCommentFromDb(post):
     db=mongo.db
     dbresponse = db.comments.find({'postId': post}, {'_id': False})
     return dbresponse
+
+def getRequest():
+    return request.form
 
 def getPostFromDb(post):
     db=mongo.db
