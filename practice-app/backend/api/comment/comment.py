@@ -8,7 +8,7 @@ from flasgger import swag_from
 comment_bp = Blueprint('Comments', __name__)
 
 @comment_bp.route('/api/post/<int:post>/comments', methods=['GET'])
-@swag_from('../../apidocs/comment/getComment.yml')
+@swag_from('../../apidocs/comment/getComments.yml')
 def getComments(post):
 
     db = mongo.db
