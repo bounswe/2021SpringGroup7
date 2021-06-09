@@ -29,9 +29,9 @@ def makeComment(post,username):
     user = getUserFromDb(username)
     postinfo = getPostFromDb(post)
     if not postinfo:
-        abort(400, 'no such post exists')
+        abort(404, 'no such post exists')
     if not user:
-        abort(400,'no such user exists')
+        abort(404,'no such user exists')
 
     commentText = getRequest()
     text = commentText.get('text')
