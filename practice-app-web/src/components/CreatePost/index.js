@@ -92,6 +92,7 @@ export default function CreatePostDialog() {
     };
     const handleClose = () => {
         
+    
         const storyData={
             'story':story,
             'topic':topic,

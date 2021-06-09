@@ -10,6 +10,7 @@ import api from '../../services/post'
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Card from '@material-ui/core/Card';
+import CreatePostDialog from '../../components/CreatePost/index'
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
@@ -60,7 +61,7 @@ function Profile() {
   };
 
   // const getFollowing=()=>{
-  //   console.log('here')
+  //   console.log('here')https://mediaim.expedia.com/destination/1/89db3ef5edce6577db2504603c8a383d.jpg?impolicy=fcrop&w=536&h=384&q=highcre
   //   if (username==''){
   //     return <div></div>
   //   }
@@ -94,7 +95,7 @@ function Profile() {
     <Wrapper>
       <Paper elevation={3} style={{ width: '100%', minHeight: 1090, padding: '4%', borderRadius: 10 ,marginBottom:40}}>
         <Container style={{ display: 'flex', flexDirection: 'row' }}>
-       
+
           <Avatar alt="Remy Sharp" src="https://i.internethaber.com/storage/files/images/2019/05/08/avatar-2-3-ve-4un-vizyon-tarihle-lna9_cover.jpg" elevation={10} style={{
             width: 100,
             height: 100,
@@ -165,7 +166,7 @@ function Profile() {
           </div>
           
         </Container>
-       
+       <CreatePostDialog></CreatePostDialog>
           {postIds.map((item)=>{
             return(<PostCard props={{'id':item}}></PostCard>)
           })}
