@@ -1,16 +1,16 @@
 from flask import Blueprint, request, abort
-from pymongo.message import update
 from database import mongo
+from flasgger import swag_from
+from datetime import datetime
 
-import datetime 
 
 attributesThatCanBeEdited =   [ "location", 
                                 "multimedia", 
                                 "story", 
                                 "storyDate", 
                                 "tags", 
-                                "topic", 
-                                "userComments"]
+                                "topic"
+                                ]
 
 
 editPostDetails_bp = Blueprint('Edit Post Details', __name__)
@@ -21,26 +21,27 @@ editPostDetails_bp = Blueprint('Edit Post Details', __name__)
     message and HTTP 200 code. If not, returns HTTP 403 error indicating that the user is not 
     authorized to perform this action.
 '''
-@editPostDetails_bp.route('/api/editPost/<string:username>/<int:postId>', methods=['POST'])
-def editPost(username, postId):
+@editPostDetails_bp.route('/api/editPost/<string:ownerUsername>/<int:postId>', methods=['POST'])
+@swag_from('../../apidocs/editPost/editPost.yml')
+def editPost(ownerUsername, postId):
 
     postToBeEdited = getPostInDb(postId)      
 
     if not postToBeEdited:  
         abort(404, 'Post not found')  
 
-    requestedBy = getUserInDb(username)
+    requestedBy = getUserInDb(ownerUsername)
     if not requestedBy:
         abort(404, 'User who requested post edit not found')  
     
-    if postToBeEdited['owner_username'] != username:
+    if postToBeEdited['owner_username'] != ownerUsername:
         abort(403, 'This user is not authorized to edit this post')
 
     editDetails = getRequest()                                             # get parameters
 
     for attribute in editDetails.keys():
         if attribute not in attributesThatCanBeEdited:
-            abort(400,'This attribute\s does not exist or cannot be edited')
+            abort(400, str(attribute) + ' does not exist or cannot be edited')
         
     updatePostInDb(postToBeEdited, editDetails)
 
@@ -59,7 +60,12 @@ def getUserInDb(username):
 
 def updatePostInDb(postToBeEdited, editDetails):
     db = mongo.db
-    editDetails['lastEdit'] = datetime.datetime.now()  
+    editDetails['lastEdit'] = datetime.now()  
+
+    if 'storyDate' in editDetails.keys():
+        datetime_str = editDetails['storyDate']    # '18.09.19 01:55:19'
+        editDetails['storyDate'] = datetime.strptime(datetime_str, '%d.%m.%y %H:%M:%S')
+
     postToBeEdited.update(editDetails)
 
 

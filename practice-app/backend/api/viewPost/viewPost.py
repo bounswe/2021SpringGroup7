@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, abort
 from database import mongo
+from flasgger import swag_from
 
 import http.client
 import json
@@ -15,6 +16,7 @@ viewPostDetails_bp = Blueprint('View Post Details', __name__)
     the post's tags. Returns this with other information. 
 '''
 @viewPostDetails_bp.route('/api/viewPost/<int:postId>', methods=['GET'])
+@swag_from('../../apidocs/viewPost/viewPost.yml')
 def viewPost(postId):
 
     postToBeViewed = getPostInDb(postId)   
@@ -22,8 +24,11 @@ def viewPost(postId):
     if not postToBeViewed:  
         abort(404, 'Post not found')                                           
 
+    if 'isMock' in postToBeViewed.keys():
+        return postToBeViewed , 200 
+
     similarTags = callSimilarTags(postToBeViewed)[0]
-    postToBeViewed['similarTags'] = similarTags     
+    postToBeViewed['similarTags'] = similarTags 
 
     return jsonify(postToBeViewed)
 
@@ -33,14 +38,10 @@ def viewPost(postId):
     This 3rd party API is used for getting similar words to tags of the story post.                      
 '''
 def callSimilarTags(postToBeViewed):
-
-    # get api key
-    with open(os.path.dirname(__file__) + '/../../.apiKey') as f:
-        apiKey = f.read()
     
     conn = http.client.HTTPSConnection("similarwords.p.rapidapi.com")
     headers = {
-        'x-rapidapi-key': apiKey,
+        'x-rapidapi-key': "c82f823c13msh143b11a6a17f116p16edfbjsn6393ce655c52",
         'x-rapidapi-host': "similarwords.p.rapidapi.com"
         }
 

@@ -1,0 +1,72 @@
+Performs post editing action for user.
+Takes username, post id and post fields that will be updated as input,
+then updates requested fields of the post with given id in database.
+---
+parameters:
+  - name: ownerUsername
+    in: path
+    type: string
+    required: true
+
+  - name: postId
+    in: path
+    type: int
+    required: true
+
+  - name: location
+    in: body
+    type: string
+    required: false
+    example: "123456"
+
+  - name: story
+    in: body
+    type: string
+    required: false
+    example: "When I was 8 years old, something interesting happened to me at this place..."
+
+  - name: storyDate
+    in: body
+    type: string
+    required: false
+    example: "18.09.19 01:55:19"
+
+  - name: tags
+    in: body
+    type: array
+    required: false
+    example: ["summer", "bike"]
+
+  - name: topic
+    in: body
+    type: string
+    required: false
+    example: "Great Day In Rome..."
+
+responses:
+  200:
+    description: Requested post fields is updated successfuly
+    schema:
+      type: string
+    examples:
+      application/json: "Successful Edit"
+  400:
+    description: Given field of post cannot be edited or such field does not exists
+    schema:
+      type: string
+    examples:
+      application/json: "postDate does not exist or cannot be edited"
+
+  403:
+    description: Post's owner is not the one with the given owner username
+    schema:
+      type: string
+    examples:
+      application/json: "This user is not authorized to edit this post"
+
+  404:
+    description: Post with given id or user with given username cannot be found in database
+    schema:
+      type: string
+    examples:
+      application/json: "Post not found"
