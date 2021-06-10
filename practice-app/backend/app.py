@@ -95,7 +95,7 @@ db.users.insert_one({
         'location': 'atasehir',
         'birthday': '29.02.2000',
         'isVisible': 'True',
-        'postIds': [3],
+        'postIds': [3, 5],
         'followRequests': [],
         'followers': [],
         'followings': ['ryan'],
@@ -109,7 +109,7 @@ db.users.insert_one({
         'location': 'bogazici',
         'birthday': '29.05.1990',
         'isVisible': 'True',
-        'postIds': [],
+        'postIds': [8],
         'followRequests': [],
         'followers': [],
         'followings': [],
@@ -123,7 +123,7 @@ db.users.insert_one({
         'location': 'hisarustu',
         'birthday': '14.09.1994',
         'isVisible': 'True',
-        'postIds': [],
+        'postIds': [6,7],
         'followRequests': [],
         'followers': [],
         'followings': [],
@@ -137,7 +137,7 @@ db.users.insert_one({
         'location': 'bebek',
         'birthday': '17.01.1991',
         'isVisible': 'False',
-        'postIds': [],
+        'postIds': [9],
         'followRequests': [],
         'followers': [],
         'followings': [''],
@@ -145,95 +145,133 @@ db.users.insert_one({
 })
 db.posts.insert_one({
         'owner_username': 'ryan',
-        'id'        : 4,
-        'topic'     : 'Great Day In Rome...',
-        'story'     : 'I was in Rome for about 3 months...',
-        'location'  : 'Rome',
-        'postDate'  : datetime.datetime(2020, 8, 23, 12, 59, 40, 2),
-        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
-        'multimedia': ['photo_link_1','photo_link_2'],
-        'tags'      : ['summer', 'bike'],
-        'lastEdit'      : ' ' ,
-        'numberOfLikes': '32',
-        'numberOfComments': 2
-
-})
-db.posts.insert_one({
-        'owner_username': 'ryan',
-        'id'        : 2,
-        'topic'     : 'Great Day In Rome...',
-        'story'     : 'I was in Rome for about 3 months...',
-        'location'  : 'Rome',
-        'postDate'  : datetime.datetime(2020, 6, 12, 19, 59, 40, 2),
-        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
-        'multimedia': ['photo_link_1','photo_link_2'],
-        'tags'      : ['summer', 'bike'],
-        'lastEdit'      : ' ' ,
-        'numberOfLikes': '362',
-        'numberOfComments': 13
-
-})
-db.posts.insert_one({
-        'owner_username': 'atainan',
-        'id'        : 3,
-        'topic'     : 'Great Day In Rome...',
-        'story'     : 'I was in Rome for about 3 months...',
-        'location'  : 'Rome',
-        'postDate'  : datetime.datetime(2019, 5, 13, 12, 4, 40, 2),
-        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
-        'multimedia': ['photo_link_1','photo_link_2'],
-        'tags'      : ['summer', 'bike'],
-        'lastEdit'      : ' ' ,
-        'numberOfLikes': '360',
-        'numberOfComments': 15
-})
-
-db.posts.insert_one({
-        'owner_username': 'ryan',
         'id'        : 1,
         'topic'     : 'Great Day In Rome...',
-        'story'     : 'I was in Rome for about 3 months...',
+        'story'     : 'I was in Rome for about 3 months... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
         'location'  : 'Rome',
-        'postDate'  : datetime.datetime(2021, 5, 27, 12, 59, 40, 2),
-        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
+        'postDate'  : datetime.datetime(2020, 6, 10, 12, 00, 40, 2),
+        'storyDate' : {'start': datetime.datetime(2010, 1, 1), 'end': datetime.datetime(2010, 4, 1)},
         'multimedia': ['photo_link_1','photo_link_2'],
         'tags'      : ['summer', 'bike'],
         'lastEdit'      : ' ' ,
-        'numberOfLikes': '362',
-        'numberOfComments': 13,
-        'followings': [],
-        'savedPosts':[]
+        'numberOfLikes': '3',
+        'numberOfComments': 2,
 })
-
 db.posts.insert_one({
         'owner_username': 'ryan',
         'id'        : 2,
-        'topic'     : 'Great Day In Rome...',
-        'story'     : 'I was in Rome for about 3 months...',
-        'location'  : 'Rome',
-        'postDate'  : datetime.datetime(2020, 6, 12, 19, 59, 40, 2),
-        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
-        'multimedia': ['photo_link_1','photo_link_2'],
-        'tags'      : ['summer', 'bike'],
+        'topic'     : 'A Cat in Ankara',
+        'story'     : 'In my last visit to Ankara, I came across a strange cat... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        'location'  : 'Ankara - Turkey',
+        'postDate'  : datetime.datetime(2020, 6, 11, 19, 59, 40, 2),
+        'storyDate' : {'start': datetime.datetime(2011, 1, 1), 'end': datetime.datetime(2011, 4, 1)},
+        'multimedia': ['photo_link_1'],
+        'tags'      : ['cat', 'strange'],
         'lastEdit'      : ' ' ,
-        'numberOfLikes': '362',
-        'numberOfComments': 13
+        'numberOfLikes': '2',
+        'numberOfComments': 1
 
 })
-
 db.posts.insert_one({
         'owner_username': 'atainan',
         'id'        : 3,
-        'topic'     : 'Great Day In Rome...',
-        'story'     : 'I was in Rome for about 3 months...',
-        'location'  : 'Rome',
-        'postDate'  : datetime.datetime(2019, 5, 13, 12, 4, 40, 2),
-        'storyDate' : {'start': datetime.datetime(2017, 1, 1), 'end': datetime.datetime(2017, 3, 1)},
-        'multimedia': ['photo_link_1','photo_link_2'],
-        'tags'      : ['summer', 'bike'],
+        'topic'     : 'A Student In Denmark...',
+        'story'     : 'I had a chance to study in Denmark... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        'location'  : 'Denmark',
+        'postDate'  : datetime.datetime(2021, 8, 21, 16, 4, 42, 2),
+        'storyDate' : {'start': datetime.datetime(2021, 1, 1), 'end': datetime.datetime(2021, 4, 1)},
+        'multimedia': ['photo_link_1','photo_link_2','photo_link_3'],
+        'tags'      : ['student'],
         'lastEdit'      : ' ' ,
-        'numberOfLikes': '360',
-        'numberOfComments': 15
+        'numberOfLikes': '2',
+        'numberOfComments': 2
+})
+db.posts.insert_one({
+        'owner_username': 'ryan',
+        'id'        : 4,
+        'topic'     : 'Remembering Childhood Days',
+        'story'     : 'When I was a child... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ',
+        'location'  : 'Texas',
+        'postDate'  : datetime.datetime(2020, 8, 23, 12, 59, 40, 2),
+        'storyDate' : {'start': datetime.datetime(1980, 1, 1), 'end': datetime.datetime(1980, 1, 1)},
+        'multimedia': ['photo_link_1'],
+        'tags'      : ['nostalgic', 'childhood'],
+        'lastEdit'      : ' ' ,
+        'numberOfLikes': '1',
+        'numberOfComments': 1
+
+})
+db.posts.insert_one({
+        'owner_username': 'atainan',
+        'id'        : 5,
+        'topic'     : 'First Day In Bogazici',
+        'story'     : 'It was my first day in Bogazici... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        'location'  : 'Bogazici University',
+        'postDate'  : datetime.datetime(2021, 8, 21, 16, 4, 42, 2),
+        'storyDate' : {'start': datetime.datetime(2017, 9,9), 'end': datetime.datetime(2017, 9,9)},
+        'multimedia': ['photo_link_1'],
+        'tags'      : ['college', 'life'],
+        'lastEdit'      : ' ' ,
+        'numberOfLikes': '4',
+        'numberOfComments': 0
+})
+
+db.posts.insert_one({
+        'owner_username': 'merverabia',
+        'id'        : 6,
+        'topic'     : 'A Dream Come True',
+        'story'     : 'This place is where everything has changed for me... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        'location'  : 'Grönland',
+        'postDate'  : datetime.datetime(2016, 2, 12, 19, 59, 40, 2),
+        'storyDate' : {'start': datetime.datetime(2016, 2, 12), 'end': datetime.datetime(2016, 2, 12)},
+        'multimedia': ['photo_link_1','photo_link_2'],
+        'tags'      : ['northern', 'lights'],
+        'lastEdit'      : ' ' ,
+        'numberOfLikes': '2',
+        'numberOfComments': 1
+})
+
+db.posts.insert_one({
+        'owner_username': 'merverabia',
+        'id'        : 7,
+        'topic'     : 'Relaxing Sunset in Izmir',
+        'story'     : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        'location'  : 'Izmir',
+        'postDate'  : datetime.datetime(2021, 5, 13, 12, 4, 40, 2),
+        'storyDate' : {'start': datetime.datetime(2021, 1, 1), 'end': datetime.datetime(2021, 3, 1)},
+        'multimedia': ['photo_link_1'],
+        'tags'      : ['peace'],
+        'lastEdit'      : ' ' ,
+        'numberOfLikes': '1',
+        'numberOfComments': 0
+})
+db.posts.insert_one({
+        'owner_username': 'kadirelmaci',
+        'id'        : 8,
+        'topic'     : '',
+        'story'     : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        'location'  : 'Istanbul',
+        'postDate'  : datetime.datetime(2020, 9, 21, 12, 4, 40, 2),
+        'storyDate' : {'start': datetime.datetime(2018, 1, 5), 'end': datetime.datetime(2017, 3, 5)},
+        'multimedia': ['photo_link_1'],
+        'tags'      : ['fun'],
+        'lastEdit'      : ' ' ,
+        'numberOfLikes': '2',
+        'numberOfComments': 1
+})
+db.posts.insert_one({
+        'owner_username': 'onurcanavci',
+        'id'        : 9,
+        'topic'     : 'Last Day In Bogazici',
+        'story'     : 'It was both sad and a proudful day... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        'location'  : 'Bogazici University',
+        'postDate'  : datetime.datetime(2021, 7, 13, 12, 4, 40, 2),
+        'storyDate' : {'start': datetime.datetime(2021, 6, 1), 'end': datetime.datetime(2017, 6, 1)},
+        'multimedia': ['photo_link_1','photo_link_2'],
+        'tags'      : ['graduation'],
+        'lastEdit'      : ' ' ,
+        'numberOfLikes': '3',
+        'numberOfComments': 3
 })
 
 db.reports.insert_one({
@@ -242,7 +280,102 @@ db.reports.insert_one({
 
 db.likes.insert_one({
     "username": 'onurcan',
+    "postId": 1,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'merverabia',
+    "postId": 1,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'atainan',
+    "postId": 1,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'onurcan',
     "postId": 2,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'atainan',
+    "postId": 2,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'kadirelmacı',
+    "postId": 3,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'merverabia',
+    "postId": 3,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'merverabia',
+    "postId": 4,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'ryan',
+    "postId": 5,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'onurcan',
+    "postId": 5,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'merverabia',
+    "postId": 5,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'kadirelmacı',
+    "postId": 5,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'kadirelmacı',
+    "postId": 6,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'atainan',
+    "postId": 6,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'ryan',
+    "postId": 7,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'ryan',
+    "postId": 8,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'onurcan',
+    "postId": 8,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'ryan',
+    "postId": 9,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'merverabia',
+    "postId": 9,
+    "date": datetime.datetime.now(),
+})
+db.likes.insert_one({
+    "username": 'kadirelmacı',
+    "postId": 9,
     "date": datetime.datetime.now(),
 })
 
@@ -254,13 +387,75 @@ db.comments.insert_one({
         "language": 'en'
 })
 db.comments.insert_one({
-    "username": 'ryan',
+    "username": 'merverabia',
         "comment": 'I liked it.',
         "postId": 1,
         "date": '11/12/2021',
         "language": 'en'
 })
-
+db.comments.insert_one({
+    "username": 'atainan',
+        "comment": 'It seems awesome!',
+        "postId": 2,
+        "date": '11/09/2021',
+        "language": 'en'
+})
+db.comments.insert_one({
+    "username": 'merverabia',
+        "comment": 'Good Luck.',
+        "postId": 3,
+        "date": '11/12/2021',
+        "language": 'en'
+})
+db.comments.insert_one({
+    "username": 'onurcanavci',
+        "comment": 'That is a big oppurtunity, I am soo happy.',
+        "postId": 3,
+        "date": '11/12/2021',
+        "language": 'en'
+})
+db.comments.insert_one({
+    "username": 'kadirelmaci',
+        "comment": 'That was a good memory, made me feel nostalgic...',
+        "postId": 4,
+        "date": '11/12/2021',
+        "language": 'en'
+})
+db.comments.insert_one({
+    "username": 'atainan',
+        "comment": 'I want to see it too, you are so lucky',
+        "postId": 6,
+        "date": '11/12/2021',
+        "language": 'en'
+})
+db.comments.insert_one({
+    "username": 'onurcanavci',
+        "comment": 'Lorem ipsum, too!!!',
+        "postId": 8,
+        "date": '11/12/2021',
+        "language": 'en'
+})
+db.comments.insert_one({
+    "username": 'kadirelmaci',
+        "comment": 'We had great memories there',
+        "postId": 9,
+        "date": '11/12/2021',
+        "language": 'en'
+})
+db.comments.insert_one({
+    "username": 'merverabia',
+        "comment": 'It was emotional',
+        "postId": 9,
+        "date": '11/12/2021',
+        "language": 'en'
+})
+db.comments.insert_one({
+    "username": 'atainan',
+        "comment": 'We had great dayss',
+        "postId": 9,
+        "date": '11/12/2021',
+        "language": 'en'
+})
 locations_list = [{"location_name": "      boğaziçi                        üniversitesi           ", "story_ids": [3, 5, 7, 14, 53, 1356], "latitude": 38, "longitude": 45},
 {"location_name": "koç üniversitesi", "story_ids": [8, 5, 635, 8758, 53764], "latitude": 39, "longitude": 35},
 {"location_name": "istanbul     ", "story_ids": [1, 8, 7653, 64, 1356], "latitude": 32, "longitude": 55},
