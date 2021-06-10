@@ -7,7 +7,7 @@ from flask_pymongo import ASCENDING
 from pymongo.bulk import _WRITE_CONCERN_ERROR
 from database import mongo
 import requests
-from flasgger import swag_from
+
 # from flask_cors import CORS
 
 
@@ -16,13 +16,12 @@ story_bp = Blueprint('Story', __name__)
 # cors = CORS(story_bp, resources={r"/*": {"origins": "*"}})
 
 
-@story_bp.route('/api/story/create/',  methods=['POST'])
-@swag_from('../../apidocs/story/createStory.yml')
+@story_bp.route('/api/story/create',  methods=['POST'])
 def createStory(): 
     data = request.get_json()
     db = mongo.db
     
-    
+    print(data)
     inputCheck(data)
     DBValidation(data)
     try:
@@ -43,6 +42,10 @@ def createStory():
         'numberOfComments': 0,
 
         })
+        updated = {'$push': { 'postIds':count+1
+            }}
+
+        db.users.update_one({'username':data['owner_username']},updated)
        
 
 
@@ -54,7 +57,6 @@ def createStory():
 
         
 @story_bp.route('/api/story/<int:id>',  methods=['GET'])
-@swag_from('../../apidocs/story/getStory.yml')
 def getStory(id):
     db = mongo.db
     dbResponse = db.posts.find_one({'id': id}, {'_id': False})
@@ -75,8 +77,8 @@ def DBValidation(data):
     # else:
     #     isLocationExist=db.locations.find_one({'_id':  ObjectId(oid=data['location'])} )
         
-    #     if(not isLocationExist):
-    #         abort(400, 'create-story error: specified location does not exist')
+        # if(not isLocationExist):
+        #     abort(400, 'create-story error: specified location does not exist')
 
 
 

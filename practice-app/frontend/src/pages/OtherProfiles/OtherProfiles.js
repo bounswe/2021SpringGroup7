@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Profile(props) {
+function OtherProfiles(props) {
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
@@ -72,7 +72,7 @@ function Profile(props) {
 
   useEffect(() => {
     api
-      .GET_PROFILE("atainan")
+      .GET_PROFILE(props.match.params.username)
       .then((resp) => {
         setLoading(false);
         setUsername(resp.username);
@@ -90,7 +90,7 @@ function Profile(props) {
   const renderEmptyPost = () => {
     return (
       <Box className={classes.emptyPost}>
-        <Typography>You do not shared story yet!</Typography>
+        <Typography>This user is not shared story yet!</Typography>
       </Box>
     );
   };
@@ -241,12 +241,10 @@ function Profile(props) {
               </Container>
             </div>
           </Container>
-          <CreatePostDialog></CreatePostDialog>
           {postIds.length === 0 && renderEmptyPost()}
           {postIds.length !== 0 &&
             postIds.map((item, index) => {
-              console.log("item: ", item.id);
-              return <PostCard key={index} props={{ id: 3 }}></PostCard>;
+              return <PostCard key={index} props={{ id: item.id }}></PostCard>;
             })}
         </Paper>
       </Wrapper>
@@ -254,4 +252,4 @@ function Profile(props) {
   );
 }
 
-export default Profile;
+export default OtherProfiles;

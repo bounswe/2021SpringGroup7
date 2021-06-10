@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
-import { Switch, Toolbar, Typography, Link, Button } from "@material-ui/core";
+import { Toolbar, Typography, Link, Button } from "@material-ui/core";
 import ExploreIcon from "@material-ui/icons/Explore";
 
 const useStyles = makeStyles((theme) => ({
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header(props) {
   const classes = useStyles();
-  const { sections, title, theme } = props;
+  const { sections, title } = props;
 
   return (
     <React.Fragment>
@@ -38,10 +38,6 @@ export default function Header(props) {
           className={classes.toolbarTitle}
         >
           {title}
-        </Typography>
-        <Switch checked={theme} onChange={() => props.onChange(theme)} />
-        <Typography variant="h6">
-          {theme ? "Dark Mode" : "Light Mode"}
         </Typography>
       </Toolbar>
       <Toolbar
