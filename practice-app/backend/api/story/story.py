@@ -16,13 +16,13 @@ story_bp = Blueprint('Story', __name__)
 # cors = CORS(story_bp, resources={r"/*": {"origins": "*"}})
 
 
-@story_bp.route('/api/story/create/',  methods=['POST'])
+@story_bp.route('/api/story/create',  methods=['POST'])
 @swag_from('../../apidocs/story/createStory.yml')
 def createStory(): 
     data = request.get_json()
     db = mongo.db
     
-    
+    print(data)
     inputCheck(data)
     DBValidation(data)
     try:
@@ -43,6 +43,10 @@ def createStory():
         'numberOfComments': 0,
 
         })
+        updated = {'$push': { 'postIds':count+1
+            }}
+
+        db.users.update_one({'username':data['owner_username']},updated)
        
 
 
@@ -75,11 +79,6 @@ def DBValidation(data):
     # else:
     #     isLocationExist=db.locations.find_one({'_id':  ObjectId(oid=data['location'])} )
         
-    #     if(not isLocationExist):
-    #         abort(400, 'create-story error: specified location does not exist')
-
-
-
 
 def inputCheck(data):
     if ('location' not in data):

@@ -5,11 +5,20 @@ import {
   CssBaseline,
   Paper,
   ThemeProvider,
+  makeStyles,
 } from "@material-ui/core";
 
-import useStyles from "./Wrapper.style";
 import Header from "../Header";
 import Footer from "../Footer";
+
+const useStyles = makeStyles(() => ({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "100vh",
+    backgroundColor: "#e6e5dc",
+  },
+}));
 
 const Wrapper = ({ children }) => {
   const classes = useStyles();
@@ -29,10 +38,7 @@ const Wrapper = ({ children }) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Paper
-        className={classes.root}
-        style={{ backgroundColor: theme.palette.background.default }}
-      >
+      <Paper className={classes.root}>
         <Container maxWidth="lg">
           <Header
             title="Home Page"
