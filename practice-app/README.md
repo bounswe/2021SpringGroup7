@@ -1,8 +1,10 @@
 # Practice App
+
 Welcome to Practice App!
 
 ## Docker Commands to Run the Application
-To start docker in the background 
+
+To start docker in the background
 
 `docker compose up -d`
 
@@ -13,7 +15,7 @@ To start docker in the terminal and see the logs
 This is useful for debugging, flask container shows
 all the requests and errors.
 
-To close docker 
+To close docker
 
 `docker compose down`
 
@@ -25,6 +27,7 @@ continues working according to your old files,
 `docker compose up -d --force-recreate`
 
 #### Run Test
+
 After starting the application, launch all the tests by<br />
 
 `docker exec -it $(docker ps -f name=flask --format '{{.ID}}') /bin/bash`
