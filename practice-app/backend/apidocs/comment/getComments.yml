@@ -1,0 +1,53 @@
+Takes a post id and returns comments of this post if there are any.
+A comment object has username of commenter, postId, comment, time of comment and language of comment.
+If there are no post with given id or no comments for given post, it returns HTTP Status Code 404 .
+---
+parameters:
+  - name: post
+    in: path
+    type: integer
+    required: true
+
+definitions:
+  comment:
+    type: object
+    properties:
+      username:
+        type: string
+      comment:
+        type: string
+      postId:
+        type: integer
+      date:
+        type: string
+      language:
+        type: string
+  comments:
+    type: list
+    items:
+      $ref: '#/definitions/comment'
+
+responses:
+  200:
+    description: Return comments for given post id
+    schema:
+      $ref: '#/definitions/comments'
+    examples:
+      application/json:
+        comments: ['{
+          "username": "atainan",
+          "comment": "I love this post",
+          "postId": 1,
+          "date": "15/11/2021 11:15",
+          "language": "en"
+          }',
+          '{
+          "username": "ryan",
+          "comment": "çok güzel bir hikaye",
+          "postId": 2,
+          "date": "15/11/2021 11:35",
+          "language": "tr"
+        }']
+
+  404:
+    description: Given post id is not in data base or there are not any comments for this post
