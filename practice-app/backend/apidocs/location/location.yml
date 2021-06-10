@@ -1,0 +1,16 @@
+parameters:
+  - name: address
+    in: path
+    type: string
+    required: true
+
+responses:
+  200:
+    description: Location is created
+    schema:
+        type: 'string'
+    examples:
+      application/json:
+        'Success'
+  404:
+    description: Location is not found 
