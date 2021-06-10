@@ -16,12 +16,8 @@ story_bp = Blueprint('Story', __name__)
 # cors = CORS(story_bp, resources={r"/*": {"origins": "*"}})
 
 
-<<<<<<< HEAD:practice-app/api/story/story.py
 @story_bp.route('/api/story/create',  methods=['POST'])
-=======
-@story_bp.route('/api/story/create/',  methods=['POST'])
 @swag_from('../../apidocs/story/createStory.yml')
->>>>>>> ee6b08a079629dd0a39be6e6911a8eaa6e382684:practice-app/backend/api/story/story.py
 def createStory(): 
     data = request.get_json()
     db = mongo.db
@@ -83,16 +79,6 @@ def DBValidation(data):
     # else:
     #     isLocationExist=db.locations.find_one({'_id':  ObjectId(oid=data['location'])} )
         
-<<<<<<< HEAD:practice-app/api/story/story.py
-        # if(not isLocationExist):
-        #     abort(400, 'create-story error: specified location does not exist')
-=======
-    #     if(not isLocationExist):
-    #         abort(400, 'create-story error: specified location does not exist')
->>>>>>> ee6b08a079629dd0a39be6e6911a8eaa6e382684:practice-app/backend/api/story/story.py
-
-
-
 
 def inputCheck(data):
     if ('location' not in data):
