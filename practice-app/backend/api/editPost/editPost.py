@@ -63,11 +63,11 @@ def updatePostInDb(postToBeEdited, editDetails):
     editDetails['lastEdit'] = datetime.now()  
 
     if 'storyDate' in editDetails.keys():
-        datetime_str = editDetails['storyDate']    # '18.09.19 01:55:19'
-        editDetails['storyDate'] = datetime.strptime(datetime_str, '%d.%m.%y %H:%M:%S')
+        start_datetime_str = editDetails['storyDate']['start']             # ex. 'storyDate' : { "start": "18.09.19 01:55:19", "end": "19.09.19 01:55:19" }
+        end_datetime_str = editDetails['storyDate']['end']    
+        editDetails['storyDate'] = { 'start': datetime.strptime(start_datetime_str, '%d.%m.%y %H:%M:%S'), 'end' : datetime.strptime(end_datetime_str, '%d.%m.%y %H:%M:%S')}
 
     postToBeEdited.update(editDetails)
-
 
 def getRequest():
     return request.json
