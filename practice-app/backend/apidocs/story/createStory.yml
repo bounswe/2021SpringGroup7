@@ -1,0 +1,76 @@
+Performs post creating action for user.
+Takes username, location,story etc 
+then creates the post with given arguments.
+---
+parameters:
+  - name: owner_username
+    in: body
+    type: string
+    required: true
+    example: 'atainan'
+
+  - name: location
+    in: body
+    type: string
+    required: true
+    example: "123456"
+
+  - name: story
+    in: body
+    type: string
+    required: true
+    example: "When I was 8 years old, something interesting happened to me at this place..."
+
+  - name: storyDate
+    in: body
+    type: object
+    required: true
+    schema:
+      href: "#/definitions/storyDate"
+        
+  - name: tags
+    in: body
+    type: array
+    required: true
+    example: ["summer", "bike"]
+
+  - name: topic
+    in: body
+    type: string
+    required: true
+    example: "Great Day In Rome..."
+
+definitions:
+  storyDate:
+    type: object
+    properties:
+      start:
+        type: string
+        example: "18.09.19 01:55:19"
+      end:
+        type: string
+        example: "18.09.19 01:55:19"
+     
+responses:
+  200:
+    description: requested post is created successfuly
+    schema:
+        type: string
+    examples:
+      application/json:
+        'Success'
+  400:
+    description: given username does not exist
+    schema:
+      type: string
+    examples:
+      application/json: "create-story error: no such user exist"
+
+  403:
+    description: one or more required field is missing in arguments
+    schema:
+      type: string
+    examples:
+      application/json: "create-story error: empty location"
+
+  

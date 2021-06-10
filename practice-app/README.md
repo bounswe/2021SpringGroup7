@@ -1,38 +1,38 @@
 # Practice App
+
 Welcome to Practice App!
 
-## Docker Commands
-For start docker 
+## Docker Commands to Run the Application
 
-`docker-compose up -d`
+To start docker in the background
 
-For close docker 
+`docker compose up -d`
 
-`docker-compose down`
+To start docker in the terminal and see the logs
 
-## Available Scripts
+`docker compose up`
 
-In the project directory, you can run:
+This is useful for debugging, flask container shows
+all the requests and errors.
 
-#### Run Flask
-For Ubuntu and OS 
+To close docker
 
-`export FLASK_APP=app`<br />
-`export FLASK_ENV=development`<br />
-`python -m flask run`
+`docker compose down`
 
-For Windows:
+If you have changed any files but the application
+continues working according to your old files,
 
-`set FLASK_APP=app`<br />
-`set FLASK_ENV=development`<br />
-`flask run`
+`docker compose down`
+`docker compose build --no-cache`
+`docker compose up -d --force-recreate`
 
 #### Run Test
-Launches the all tests <br />
 
+After starting the application, launch all the tests by<br />
+
+`docker exec -it $(docker ps -f name=flask --format '{{.ID}}') /bin/bash`
 `python -m unittest discover -s test -v`
 
 Launches the test which is "test_XYZ.py" <br />
 
 `python -m unittest discover test "test_XYZ.py"`
-
