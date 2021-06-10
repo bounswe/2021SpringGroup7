@@ -19,6 +19,7 @@ import sentry_sdk
 from flasgger import Swagger
 from sentry_sdk.integrations.flask import FlaskIntegration
 import requests
+from flask_cors import CORS
 
 sentry_sdk.init(
     dsn="https://0cde92986781428cbdf66f7cdc55f2df@o793703.ingest.sentry.io/5801382",
@@ -37,6 +38,7 @@ sentry_sdk.init(
 )
 
 app = Flask(__name__)
+CORS(app)
 swagger = Swagger(app)
 
 app.config["MONGO_URI"] = "mongodb://mongo:27017/db"
