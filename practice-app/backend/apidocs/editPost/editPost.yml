@@ -10,7 +10,7 @@ parameters:
 
   - name: postId
     in: path
-    type: int
+    type: integer
     required: true
 
   - name: location
@@ -27,9 +27,9 @@ parameters:
 
   - name: storyDate
     in: body
-    type: string
+    type: object
     required: false
-    example: "18.09.19 01:55:19"
+    example: { "start": "18.09.19 01:55:19", "end": "19.09.19 01:55:19" }
 
   - name: tags
     in: body

@@ -4,14 +4,14 @@ Also calls 3rd party API to get similar words to given post's tags and returns t
 parameters:
   - name: postId
     in: path
-    type: int
+    type: integer
     required: true
 
 responses:
   200:
     description: Returns post details of the post with given id
     schema:
-      $ref: "#/definitions/postToBeViewed"
+      type: object
     examples:
       application/json:
         postToBeViewed:
