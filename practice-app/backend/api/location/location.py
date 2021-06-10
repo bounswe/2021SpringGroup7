@@ -9,7 +9,7 @@ import json
 relatedLocations = []
 location_bp = Blueprint('Create Location', __name__)
 @location_bp.route('/api/locations/<string:address>', methods=['POST'])
-@swag_from('../../apiDocs/locations/locations.yml')
+@swag_from('../../apiDocs/location/location.yml')
 
 # '''
 #     Takes address , send a request to google geocoding API and get information about this address in json format.
