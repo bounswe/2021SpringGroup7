@@ -1,0 +1,113 @@
+Takes an username as input and returns the necessary information about the user to show in the frontend. User information is stored in the database, but more information is also added to the returned json. This information contains the number of follow requests, followers, followings; coordinates, name and address of the user's location, all fields of the posts of the user.
+---
+parameters:
+  - name: username
+    in: path
+    type: string
+    required: true
+
+definitions:
+  profilePage:
+    type: object
+    properties:
+      username:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      email:
+        type: string
+      location:
+        type: string
+      birthday:
+        type: string
+      isVisible:
+        type: boolean
+      postIds:
+        type: array
+        items:
+          type: integer
+      followRequests:
+        type: array
+        items:
+          type: string
+      followers:
+        type: array
+        items:
+          type: string
+      followings:
+        type: array
+        items:
+          type: string
+      nofRequests:
+        type: integer
+      nofFollowers:
+        type: integer
+      nofFollowings:
+        type: integer
+      posts:
+        type: array
+        items:
+          type: object
+      coordinates:
+        type: object
+      locationName:
+        type: string
+      fullAddress:
+        type: string
+      formatAddress:
+        type: string
+
+responses:
+  200:
+    description: Profile page of the user with the given username
+    schema:
+      $ref: '#/definitions/profilePage'
+    examples:
+      application/json:
+        username: 'akyildizhamza'
+        first_name: 'hamza'
+        last_name: 'akyildiz'
+        email: 'hamzaakyildiz@protonmail.com'
+        location: 'istanbul'
+        birthday: '17.09.1998'
+        isVisible: true
+        postIds: [287]
+        followRequests: ['atainan', 'erencanuysal']
+        followers: ['mrabiabarin', 'onurcanavci']
+        followings: ['onurcanavci', 'kadirelmaci']
+        nofRequests: 2
+        nofFollowers: 2
+        nofFollowings: 2
+        posts: ['{
+          "id": 287, 
+          "lastEdit": " ", 
+          "location": "Rome", 
+          "multimedia": [
+            "photo_link_1", 
+            "photo_link_2"
+          ], 
+          "numberOfComments": "13", 
+          "numberOfLikes": "362", 
+          "owner_username": "ryan", 
+          "postDate": "Fri, 12 Jun 2020 19:59:40 GMT", 
+          "story": "I was in Rome for about 3 months...", 
+          "storyDate": {
+            "end": "Wed, 01 Mar 2017 00:00:00 GMT", 
+            "start": "Sun, 01 Jan 2017 00:00:00 GMT"
+          }, 
+          "tags": [
+            "summer", 
+            "bike"
+          ], 
+          "topic": "Great Day In Rome...", 
+          "userComments": ""
+        }']
+      coordinates: '{"lat": 41.0082376, "lng": 28.9783589}'
+      locationName: 'Istanbul'
+      fullAddress: 'Istanbul, <span class=\"country-name\">Turkey</span>'
+      formatAddress: 'Istanbul, Turkey'
+        
+  404:
+    description: The user can not be found on the database

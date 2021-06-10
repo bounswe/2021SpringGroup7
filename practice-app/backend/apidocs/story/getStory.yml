@@ -1,0 +1,38 @@
+Takes post id as parameter, returns details of the post with given id.
+Also calls 3rd party API to get similar words to given post's tags and returns these words in 'similarTags' field.
+---
+parameters:
+  - name: postId
+    in: path
+    type: int
+    required: true
+
+responses:
+  200:
+    description: Returns post details of the post with given id
+    schema:
+      $ref: "#/definitions/postToBeViewed"
+    examples:
+      application/json:
+        postToBeViewed:
+          {
+            "id": 3,
+            "lastEdit": "Mon, 13 May 2019 13:04:40 GMT",
+            "location": "Rome",
+            "numberOfComments": "15",
+            "numberOfLikes": "360",
+            "owner_username": "atainan",
+            "postDate": "Mon, 13 May 2019 12:04:40 GMT",
+            "story": "I was in Rome for about 3 months...",
+            "storyDate":
+              {
+                "end": "Wed, 01 Mar 2017 00:00:00 GMT",
+                "start": "Sun, 01 Jan 2017 00:00:00 GMT",
+              },
+            "tags": ["summer", "bike"],
+            "topic": "Great Day In Rome...",
+            "userComments": [],
+          }
+
+  404:
+    description: Post that is requested to be viewed is not found

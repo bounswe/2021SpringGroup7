@@ -1,0 +1,23 @@
+Takes post id and username as parameter, returns successfully like or revert like.
+---
+parameters:
+  - name: postId
+    in: path
+    type: integer
+    required: true
+
+  - name: username
+    in: path
+    type: string
+    required: true
+
+responses:
+  200:
+    description: Returns users who likes post and date of like post
+    schema:
+      type: "string"
+    examples:
+      application/json: "Post liked successfully"
+
+  404:
+    description: Post or username is not found
