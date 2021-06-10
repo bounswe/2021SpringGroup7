@@ -1,0 +1,28 @@
+Get the follow requests for the given username
+This endpoint takes a path parameter and returns the given users follow requests. If the user not found gives 404.
+---
+parameters:
+  - name: username
+    in: path
+    type: string
+    required: true
+
+responses:
+  200:
+    description: User is found and follow requests are returned
+    schema:
+        type: array
+        items:
+          type: string
+    examples:
+      application/json:
+        - 'efe'
+        - 'hamza'
+        - 'kadir'
+  404:
+    description: User not found for the given username
+    schema:
+      $ref: '#/definitions/notfounderror'
+      examples:
+        application/json:
+          error: 'User not found'

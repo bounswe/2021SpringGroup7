@@ -27,6 +27,7 @@ def followUser(usernameOfFollower, usernameToFollow):
 
 
 @follow_bp.route("/user/<string:username>/followers", methods=['GET'])
+@swag_from('../../apidocs/follow/getFollowers.yml')
 def getFollowers(username):
     user = getUserFromDb(username)
 
@@ -37,6 +38,7 @@ def getFollowers(username):
 
 
 @follow_bp.route("/user/<string:username>/followings", methods=['GET'])
+@swag_from('../../apidocs/follow/getFollowings.yml')
 def getFollowings(username):
     user = getUserFromDb(username)
 
@@ -47,6 +49,7 @@ def getFollowings(username):
 
 
 @follow_bp.route("/user/<string:username>/followRequests", methods=['GET'])
+@swag_from('../../apidocs/follow/getFollowRequests.yml')
 def getFollowRequests(username):
     user = getUserFromDb(username)
 
