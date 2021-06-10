@@ -1,15 +1,30 @@
 version: '3.9'
 
 services:
+
+  react:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    image: node
+    tty: true
+    container_name: react
+    ports:
+      - "80:5000"
+    volumes: 
+      - /app/node_modules
+    depends_on:
+      - flask
+    networks:
+      - frontend
+
   flask:
     build: backend
     image: flask
     restart: unless-stopped
     container_name: flask
     ports:
-    - "5000:5000"
-    volumes:
-    - appdata:/python-flask
+      - "5000:5000"
     depends_on:
       - mongo
     networks:
@@ -27,8 +42,6 @@ services:
 
 volumes:
   mongodbdata:
-    driver: local
-  appdata:
     driver: local
 
 networks:

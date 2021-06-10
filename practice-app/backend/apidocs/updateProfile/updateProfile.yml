@@ -1,5 +1,4 @@
-Takes an username as input and user fields from the post request. Updates the user information in
-the database and returns 'Success' with the HTTP Status Code 200 to confirm the update.
+Takes an username as input and user fields from the post request. Updates the user information in the database and returns 'Success' with the HTTP Status Code 200 to confirm the update.
 ---
 parameters:
   - name: username
