@@ -246,6 +246,21 @@ db.likes.insert_one({
     "date": datetime.datetime.now(),
 })
 
+db.comments.insert_one({
+    "username": 'atainan',
+        "comment": 'What a great story!',
+        "postId": 1,
+        "date": '11/11/2021',
+        "language": 'en'
+})
+db.comments.insert_one({
+    "username": 'ryan',
+        "comment": 'I liked it.',
+        "postId": 1,
+        "date": '11/12/2021',
+        "language": 'en'
+})
+
 locations_list = [{"location_name": "      boğaziçi                        üniversitesi           ", "story_ids": [3, 5, 7, 14, 53, 1356], "latitude": 38, "longitude": 45},
 {"location_name": "koç üniversitesi", "story_ids": [8, 5, 635, 8758, 53764], "latitude": 39, "longitude": 35},
 {"location_name": "istanbul     ", "story_ids": [1, 8, 7653, 64, 1356], "latitude": 32, "longitude": 55},
