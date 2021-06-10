@@ -47,8 +47,14 @@ def locations(address):
 
   except :
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     return jsonify({'status':404,'comment':'create-location-error'} ),404
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     return jsonify({'status':404,'comment':'create-location-error'} ),404
     
 >>>>>>> Stashed changes
