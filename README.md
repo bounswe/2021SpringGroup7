@@ -4,7 +4,7 @@ We are Bogazici University Computer Engineering students. This repository mainly
 CMPE-352 or "Fundamentals of Software Engineering" is a course that teach us about the issues, practices, and tools associated with developing software as a team.
 
 # Practice-app
-The URI of the practice app could be found here: http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/
+The URI of the practice app could be found here: http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/ \
 The APIs could be found here: http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:5000
 
 ## What to Find Here
