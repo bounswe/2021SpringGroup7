@@ -18,7 +18,7 @@ def followUser(usernameOfFollower, usernameToFollow):
         return "Already followed", 200
 
     if userToFollow['isVisible'] == "True":
-        addToUserArrayInDb(userThatFollows['_id'], userToFollow, 'followings')
+        addToUserArrayInDb(userThatFollows['_id'], usernameToFollow, 'followings')
         addToUserArrayInDb(userToFollow['_id'], usernameOfFollower, 'followers')
         return "Success", 200
     else:

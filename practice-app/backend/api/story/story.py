@@ -20,7 +20,7 @@ def createStory():
     print(data)
     inputCheck(data)
     DBValidation(data)
-    storyImage = requests.get('https://api.adviceslip.com/advice')
+
     access_key = "3sKPGrmSrj112Z2Msu71wFyA-KIuIvyHEs6aJN4iMVA"
     responseOfRandomphoto = requests.get('https://api.unsplash.com/photos/random?client_id=' + access_key).json()
     image_url = responseOfRandomphoto["urls"]["regular"]

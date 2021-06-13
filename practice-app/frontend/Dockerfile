@@ -6,15 +6,15 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 COPY package.json /app/package.json
 
-ADD . /app
-
 EXPOSE 80
 EXPOSE 35729
 
 RUN yarn --silent
 
+ADD . /app
+
 RUN yarn build
 
-RUN yarn global add serve
+RUN set NODE_ENV="production"
 
-CMD ["serve", "-s", "-n", "build"]
+CMD ["node","server.js"]
