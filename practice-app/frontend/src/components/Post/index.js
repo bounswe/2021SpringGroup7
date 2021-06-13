@@ -90,14 +90,16 @@ export default function PostCard(props) {
       .catch((error) => alert(error));
     api.GET_LIKES(props.props.id)
       .then((response) => {
-        setNumberOfLike(response.items.length)
-        response.items.map((item)=>{
-          if(item.username ==="atainan"){
-            setLiked(true);
-          }
-        })
+        if(response && response.items){
+          setNumberOfLike(response.items.length)
+          response.items?.map((item)=>{
+            if(item.username ==="atainan"){
+              setLiked(true);
+            }
+          })
+        }
       })
-      .catch((error) => alert(error));
+      .catch((error) => console.log(error));
   }, [props.props.id]);
 
   const handleExpandClick = () => {

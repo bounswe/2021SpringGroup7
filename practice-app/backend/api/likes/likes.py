@@ -7,14 +7,18 @@ likes_bp = Blueprint('Like action and viewing user which likes post', __name__)
 @swag_from('../../apidocs/likes/getLikes.yml')
 def getLikes(postId):
     postExist = findPostFromDb(postId)
+    
     if not postExist:
         abort(404, 'Post is not found')
+
     userThatLikesPost = getLikesFromDb(postId)
     if not userThatLikesPost:
         abort(404, 'Post is not liked')
+
     postLikes = list(userThatLikesPost)
     if len(postLikes) == 0:
         abort(404, 'Post is not liked')
+        
     data = {
         'items': postLikes,
         'totalCount': len(postLikes)
@@ -26,11 +30,15 @@ def likePost(postId,username):
     postExist = findPostFromDb(postId)
     if not postExist:
         abort(404, 'Post is not found')
+
     userExist = findUserFromDb(username)
     if not userExist:
         abort(404, 'User is not found')
+        
     likedPostData = list(likedPostInfo(postId, username))
     numberOfLikes = len(list(getLikesFromDb(postId)))
+
+
     if not len(likedPostData) == 0:
         removeLikePostFromDb(likedPostData[0])
         updatePostLikesDb(postId, numberOfLikes)
@@ -44,6 +52,7 @@ def likePost(postId,username):
         addLikePostToDb(likeInstance)
         updatePostLikesDb(postId, numberOfLikes)
         return { "message" : "Post liked successfully", "status" : 200}
+    
 def updatePostLikesDb(postId, numberOfLikes):
     db = mongo.db
     query = { 'id' : postId }            
