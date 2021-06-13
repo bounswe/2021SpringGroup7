@@ -29,9 +29,6 @@ import CloseIcon from "@material-ui/icons/Close";
 import api from "../../services/post";
 // import SimpleMap from "../Map/index";
 
-const imgLink =
-  "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260";
-
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: "90%",
@@ -66,6 +63,7 @@ export default function PostCard(props) {
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [liked, setLiked] = useState(false);
+  const [numberOfLike, setNumberOfLike] = useState(0);
 
   useEffect(() => {
     api
@@ -90,6 +88,16 @@ export default function PostCard(props) {
         ]);
       })
       .catch((error) => alert(error));
+    api.GET_LIKES(props.props.id)
+      .then((response) => {
+        setNumberOfLike(response.items.length)
+        response.items.map((item)=>{
+          if(item.username ==="atainan"){
+            setLiked(true);
+          }
+        })
+      })
+      .catch((error) => alert(error));
   }, [props.props.id]);
 
   const handleExpandClick = () => {
@@ -100,6 +108,11 @@ export default function PostCard(props) {
     api
       .LIKE_POST({ postId: storyData.id, username: "atainan" })
       .then((response) => {
+        if(liked){
+          setNumberOfLike(numberOfLike-1)
+        }else{
+          setNumberOfLike(numberOfLike+1)
+        }
         setSnackBarMessage(response.message);
         setOpenSnackBar(true);
         setLiked(!liked);
@@ -231,6 +244,7 @@ export default function PostCard(props) {
           onClick={handleLike}
         >
           <FavoriteIcon />
+          {numberOfLike}
         </IconButton>
         <Snackbar
           anchorOrigin={{
