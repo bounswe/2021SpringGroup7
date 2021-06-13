@@ -9,18 +9,21 @@ likes_bp = Blueprint('Like action and viewing user which likes post', __name__)
 @swag_from('../../apidocs/likes/getLikes.yml')
 def getLikes(postId):
     postExist = findPostFromDb(postId)
-    userThatLikesPost = getLikesFromDb(postId)
-    postLikes = list(userThatLikesPost)
-
+    
     if not postExist:
         abort(404, 'Post is not found')
 
-    if userThatLikesPost.count() == 0:
+    userThatLikesPost = getLikesFromDb(postId)
+    if not userThatLikesPost:
         abort(404, 'Post is not liked')
 
+    postLikes = list(userThatLikesPost)
+    if len(postLikes) == 0:
+        abort(404, 'Post is not liked')
+        
     data = {
         'items': postLikes,
-        'totalCount': userThatLikesPost.count()
+        'totalCount': len(postLikes)
     }
     
     return jsonify(data)
@@ -29,20 +32,21 @@ def getLikes(postId):
 @swag_from('../../apidocs/likes/likePost.yml')
 def likePost(postId,username):
     postExist = findPostFromDb(postId)
-    userExist = findUserFromDb(username)
-    likedPostData = list(likedPostInfo(postId, username))
-    
     if not postExist:
         abort(404, 'Post is not found')
 
+    userExist = findUserFromDb(username)
     if not userExist:
         abort(404, 'User is not found')
+        
+    likedPostData = list(likedPostInfo(postId, username))
+    numberOfLikes = len(list(getLikesFromDb(postId)))
+
 
     if not len(likedPostData) == 0:
         removeLikePostFromDb(likedPostData[0])
-        numberOfLikes = getLikesFromDb(postId).count()
         updatePostLikesDb(postId, numberOfLikes)
-        return "Like is reverted", 200
+        return { "message" : "Like is reverted", "status" : 200}
     else:
         likeInstance = {
             "username": username,
@@ -50,9 +54,8 @@ def likePost(postId,username):
             "date": datetime.datetime.now(),
         }
         addLikePostToDb(likeInstance)
-        numberOfLikes = getLikesFromDb(postId).count()
         updatePostLikesDb(postId, numberOfLikes)
-        return "Post liked successfully", 200
+        return { "message" : "Post liked successfully", "status" : 200}
 
 def updatePostLikesDb(postId, numberOfLikes):
     db = mongo.db
