@@ -1,6 +1,8 @@
 # Practice App
 
-Welcome to Practice App!
+Welcome to Practice App! 
+
+Practice app is a simple demo application of our columbus project. You can preview practice-app in [here](http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/).
 
 ## Docker Commands to Run the Application
 
@@ -23,7 +25,9 @@ If you have changed any files but the application
 continues working according to your old files,
 
 `docker compose down`
+
 `docker compose build --no-cache`
+
 `docker compose up -d --force-recreate`
 
 #### Run Test
@@ -31,6 +35,7 @@ continues working according to your old files,
 After starting the application, launch all the tests by<br />
 
 `docker exec -it $(docker ps -f name=flask --format '{{.ID}}') /bin/bash`
+
 `python -m unittest discover -s test -v`
 
 Launches the test which is "test_XYZ.py" <br />
