@@ -10,6 +10,7 @@ import {
   DialogTitle,
   Dialog,
   makeStyles,
+  Link
 } from "@material-ui/core";
 import PostCard from "../../components/Post";
 import api from "../../services/post";
@@ -97,7 +98,7 @@ function Profile(props) {
 
   if (loading) {
     return (
-      <Wrapper>
+      <Wrapper pageTitle="Profile Page">
         <Box className={classes.emptyBody}>
           <CircularProgress />
         </Box>
@@ -106,7 +107,7 @@ function Profile(props) {
   }
   return (
     <div>
-      <Wrapper>
+      <Wrapper pageTitle="Profile Page">
         <Paper
           elevation={3}
           style={{
@@ -163,30 +164,32 @@ function Profile(props) {
                   </DialogTitle>
                   {following.map((item, index) => {
                     return (
-                      <Container
-                        key={index}
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          padding: "4%",
-                          textAlign: "center",
-                        }}
-                      >
-                        <Avatar
-                          alt="r b"
-                          src=""
-                          elevation={10}
+                      <Link href={`/profile/${item ? item : null}`}>
+                        <Container
+                          key={index}
                           style={{
-                            width: 40,
-                            height: 40,
-
-                            marginRight: "4%",
+                            display: "flex",
+                            flexDirection: "row",
+                            padding: "4%",
+                            textAlign: "center",
                           }}
                         >
-                          {item.substring(0, 2).toUpperCase()}
-                        </Avatar>
-                        <h3 style={{ margin: 0, marginTop: "3%" }}>{item}</h3>
-                      </Container>
+                          <Avatar
+                            alt="r b"
+                            src=""
+                            elevation={10}
+                            style={{
+                              width: 40,
+                              height: 40,
+
+                              marginRight: "4%",
+                            }}
+                          >
+                            {item.substring(0, 2).toUpperCase()}
+                          </Avatar>
+                          <h3 style={{ margin: 0, marginTop: "3%" }}>{item}</h3>
+                        </Container>
+                      </Link>
                     );
                   })}
                   {/* {getFollowing()} */}
@@ -210,30 +213,32 @@ function Profile(props) {
                   </DialogTitle>
                   {follower.map((item, index) => {
                     return (
-                      <Container
-                        key={index}
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          padding: "4%",
-                          textAlign: "center",
-                        }}
-                      >
-                        <Avatar
-                          alt="r b"
-                          src=""
-                          elevation={10}
+                      <Link href={`/profile/${item ? item : null}`}>
+                        <Container
+                          key={index}
                           style={{
-                            width: 40,
-                            height: 40,
-
-                            marginRight: "4%",
+                            display: "flex",
+                            flexDirection: "row",
+                            padding: "4%",
+                            textAlign: "center",
                           }}
                         >
-                          {item.substring(0, 2).toUpperCase()}
-                        </Avatar>
-                        <h3 style={{ margin: 0, marginTop: "3%" }}>{item}</h3>
-                      </Container>
+                          <Avatar
+                            alt="r b"
+                            src=""
+                            elevation={10}
+                            style={{
+                              width: 40,
+                              height: 40,
+
+                              marginRight: "4%",
+                            }}
+                          >
+                            {item.substring(0, 2).toUpperCase()}
+                          </Avatar>
+                          <h3 style={{ margin: 0, marginTop: "3%" }}>{item}</h3>
+                        </Container>
+                      </Link>
                     );
                   })}
                   {/* {getFollowing()} */}
@@ -245,8 +250,7 @@ function Profile(props) {
           {postIds.length === 0 && renderEmptyPost()}
           {postIds.length !== 0 &&
             postIds.map((item, index) => {
-              console.log("item: ", item.id);
-              return <PostCard key={index} props={{ id: 3 }}></PostCard>;
+              return <PostCard key={index} props={{ id: item }}></PostCard>;
             })}
         </Paper>
       </Wrapper>
