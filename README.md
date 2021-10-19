@@ -1,4 +1,4 @@
-# Columbus Project
+# 	:earth_asia: Columbus Project 	:earth_africa:
 We are Bogazici University Computer Engineering students. This repository mainly contains our group work in CMPE-352 and CMPE-451.
 ## What is Columbus
 Our project, COLUMBUS, is a location stories platform where users can share stories about locations and interact with each other on these stories. To achieve this, we organize periodic meetings to assign weekly tasks to team members and finish them as a group. You can see our [wiki page](https://github.com/bounswe/2021SpringGroup7/wiki) for further information.
