@@ -1,5 +1,7 @@
 # Columbus Project
 We are Bogazici University Computer Engineering students. This repository mainly contains our group work in CMPE-352 and CMPE-451.
+##What is Columbus
+Our project, COLUMBUS, is a location stories platform where users can share stories about locations and interact with each other on these stories. To achieve this, we organize periodic meetings to assign weekly tasks to team members and finish them as a group. You can see our [wiki page](https://github.com/bounswe/2021SpringGroup7/wiki) for further information.
 ## CMPE 352
 CMPE-352 or "Fundamentals of Software Engineering" is a course that teach us about the issues, practices, and tools associated with developing software as a team.
 ## CMPE 451
