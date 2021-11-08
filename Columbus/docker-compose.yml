@@ -4,20 +4,22 @@ services:
     container_name: backend
     restart: always
     build: ./backend
+    links:
+      - postgresql:postgresql
     ports:
       - "8000:8000"
     depends_on:
-      - mongo
-  mongo:
-    container_name: mongoDB
-    image: mongo
-    expose:
-      - "27017"
+      - postgresql
+  postgresql:
+    container_name: postgresql
+    restart: always
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
     ports:
-      - "27017:27027"
+      - "5432:5432"
     volumes:
       - backendDB:/data/db
-
 volumes:
   backendDB:
     driver: local

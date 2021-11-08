@@ -1,3 +1,8 @@
 ## Compose only only mongo with backend
 docker-compose build
 docker-compose up -d
+
+## after compose up, remember the migrate the changes for the changes in db
+
+docker-compose run --rm backend python3 manage.py makemigrations
+docker-compose run --rm backend python3 manage.py migrate

@@ -1,7 +1,6 @@
 from django.db import models
-from pymongo import MongoClient
 
-url = 'mongodb://mongo:27017'
-client = MongoClient(url)
-db = client['db_name']
+class Test(models.Model):
+    user_name = models.CharField(max_length=200)
+    message = models.CharField(max_length=200)
 # Create your models here.
