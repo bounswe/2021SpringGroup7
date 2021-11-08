@@ -15,7 +15,8 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: docker.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: columbusgroup7/
+  BACKEND_IMAGE_NAME: columbusgroup7/backend
+  FRONTEND_IMAGE_NAME: columbusgroup7/frontend
 
 
 jobs:
@@ -31,21 +32,21 @@ jobs:
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
-      #- name: Log into registry ${{ env.REGISTRY }}
-      #  if: github.event_name != 'pull_request'
-      #  uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-      #  with:
-      #    registry: ${{ env.REGISTRY }}
-      #    username: columbusgroup7
-      #    password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
-      #- name: Extract Docker metadata
-      #  id: meta
-      #  uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-      #  with:
-      #    images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -54,8 +55,8 @@ jobs:
         with:
           context: ./Columbus/frontend
           push: ${{ github.event_name != 'pull_request' }}
-          #tags: ${{ steps.meta.outputs.tags }}
-          #labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
   Backend-Build:
     runs-on: ubuntu-latest
     permissions:
@@ -68,21 +69,21 @@ jobs:
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
-      #- name: Log into registry ${{ env.REGISTRY }}
-      #  if: github.event_name != 'pull_request'
-      #  uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-      #  with:
-      #    registry: ${{ env.REGISTRY }}
-      #    username: columbusgroup7
-      #    password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
-      #- name: Extract Docker metadata
-      #  id: meta
-      #  uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-      #  with:
-      #    images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -91,8 +92,8 @@ jobs:
         with:
           context: ./Columbus/backend
           push: ${{ github.event_name != 'pull_request' }}
-          #tags: ${{ steps.meta.outputs.tags }}
-          #labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
   EC2-Deployment:
     runs-on: ubuntu-latest
     needs: [Backend-Build, Frontend-Build]
@@ -103,10 +104,10 @@ jobs:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY_ED25519 }}
-          port: ${{ secrets.PORT }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PEM }}
+          port: ${{ secrets.EC2_PORT }}
           script: sh deploy.sh
           
   
