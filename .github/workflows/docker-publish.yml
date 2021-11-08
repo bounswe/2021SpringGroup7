@@ -93,8 +93,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           #tags: ${{ steps.meta.outputs.tags }}
           #labels: ${{ steps.meta.outputs.labels }}
-  EC2-Deployment:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+  #EC2-Deployment:
+  #  runs-on: ubuntu-latest
+  #  permissions:
+  #    contents: read
+  #    packages: write
