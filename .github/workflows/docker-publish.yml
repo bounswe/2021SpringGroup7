@@ -108,3 +108,20 @@ jobs:
           key: ${{ secrets.KEY_ED25519 }}
           port: ${{ secrets.PORT }}
           script: sh deploy.sh
+          
+  
+
+  slackNotification:
+    name: Slack Notification
+    runs-on: ubuntu-latest
+    needs: [Frontend-Build, Backend-Build, EC2-Deployment]
+    if: always()
+    steps:
+    - uses: actions/checkout@v2
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_TITLE: Status F-B - ${{ needs.Frontend-Build.result }} - B-B - ${{ needs.Backend-Build.result }} - EC2 - ${{ needs.EC2-Deployment.result }} 
+        
+        
