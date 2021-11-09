@@ -96,6 +96,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
   EC2-Deployment:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
     needs: [Backend-Build, Frontend-Build]
     permissions:
       contents: read
