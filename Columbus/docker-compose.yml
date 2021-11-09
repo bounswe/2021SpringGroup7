@@ -24,16 +24,16 @@ services:
       - "5432:5432"
     volumes:
       - backendDB:/data/db
-    frontend:
-      container_name: react
-      restart: always
-      build: ./frontend
-      links:
-        - backend:backend
-      ports:
-        - "80:80"
-      depends_on:
-        - backend
+  frontend:
+    container_name: react
+    restart: always
+    build: ./frontend
+    links:
+      - backend:backend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
 volumes:
   backendDB:
     driver: local
