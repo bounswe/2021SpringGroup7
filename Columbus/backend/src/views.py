@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
 from django.http import HttpResponse
+from django.http import JsonResponse
 
 
 def home(request):
-    return HttpResponse('Django has started. Go to /test/hello/{your_name}')
+    return JsonResponse({'return': 'Django has started. Go to /test/hello/{your_name}')
