@@ -2,6 +2,7 @@
 
 # Virtual Environment
 /env
+/nenv
 
 # dependencies
 /node_modules
