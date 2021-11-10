@@ -28,7 +28,7 @@ function App() {
       .then(result => {
         setIsLoaded(true)
         setItem(result)
-      })
+      }, [])
 
   })
 
