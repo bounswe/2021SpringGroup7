@@ -1,4 +1,4 @@
-name: Docker Deploy Production
+name: Docker Deploy Test
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -7,9 +7,9 @@ name: Docker Deploy Production
 
 on:
   push:
-    branches: [ master ]
+    branches: [ development ]
   pull_request:
-    branches: [ master ]
+    branches: [ development ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -105,10 +105,10 @@ jobs:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PEM }}
-          port: ${{ secrets.EC2_PORT }}
+          host: ${{ secrets.EC2_DEV_HOST }}
+          username: ${{ secrets.EC2_DEV_USERNAME }}
+          key: ${{ secrets.EC2_DEV_PEM }}
+          port: ${{ secrets.EC2_DEV_PORT }}
           script: sh deploy.sh
           
   
@@ -124,6 +124,6 @@ jobs:
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_TITLE: Status F-B - ${{ needs.Frontend-Build.result }} - B-B - ${{ needs.Backend-Build.result }} - EC2 - ${{ needs.EC2-Deployment.result }} 
+        SLACK_TITLE: Test Status F-B - ${{ needs.Frontend-Build.result }} - B-B - ${{ needs.Backend-Build.result }} - EC2 - ${{ needs.EC2-Deployment.result }} 
         
         
