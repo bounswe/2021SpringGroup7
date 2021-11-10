@@ -32,7 +32,6 @@ function App() {
 
   })
 
-  console.log(item)
   if (!isLoaded) {
     return <div>Loading...</div>;
   } else {
