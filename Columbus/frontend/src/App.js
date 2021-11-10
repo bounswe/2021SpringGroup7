@@ -12,12 +12,12 @@ import React, { useState, useEffect } from 'react';
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false)
-  const [item, setItem] = useState({})
+  const [item, setItem] = useState([])
 
   useEffect(() => {
 
-
-    fetch("https://jsonplaceholder.typicode.com/posts/1")
+    let message = '! FRONT TEAM !'
+    fetch("http://localhost:8000/test/hello/" + message)
       .then((result) => result.json())
       .then(result => {
         setIsLoaded(true)
@@ -26,6 +26,7 @@ function App() {
 
   })
 
+  console.log(item)
   if (!isLoaded) {
     return <div>Loading...</div>;
   } else {
@@ -34,7 +35,8 @@ function App() {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
-            {item.body}
+            {item['return']}
+           
           </p>
         </header>
       </div>
