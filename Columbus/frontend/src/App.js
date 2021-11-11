@@ -28,9 +28,9 @@ function App() {
       .then(result => {
         setIsLoaded(true)
         setItem(result)
-      }, [])
+      })
 
-  })
+  }, [])
 
   if (!isLoaded) {
     return <div>Loading...</div>;
