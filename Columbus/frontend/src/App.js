@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import React, { useState, useEffect } from 'react';
+import Button from '@material-ui/core/Button';
+import ModalDialog from './pages/Register/ModalDialog';
 
 
 // {
@@ -10,43 +12,63 @@ import React, { useState, useEffect } from 'react';
 //         "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
 // }
 
-var API_BASE="http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000/test/hello/";
+var API_BASE = "http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000/test/hello/";
 
-if (process.env.NODE_ENV==="development") {
-  API_BASE="http://localhost:8000/test/hello/";
+if (process.env.NODE_ENV === "development") {
+    API_BASE = "http://localhost:8000/test/hello/";
 }
 
 function App() {
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [item, setItem] = useState([])
+    const [isLoaded, setIsLoaded] = useState(false)
+    const [item, setItem] = useState([])
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
+    useEffect(() => {
 
-  useEffect(() => {
+        let message = '! FRONT TEAM !'
+        fetch(API_BASE + message)
+            .then((result) => result.json())
+            .then(result => {
+                setIsLoaded(true)
+                setItem(result)
+            })
 
-    let message = '! FRONT TEAM !'
-    fetch(API_BASE + message)
-      .then((result) => result.json())
-      .then(result => {
-        setIsLoaded(true)
-        setItem(result)
-      })
+    })
 
-  }, [])
+    console.log(item)
+    if (!isLoaded) {
+        return <div > Loading... < /div>;
+    } else {
+        return ( <
+            div className = "App" >
+            <
+            header className = "App-header" >
+            <
+            img src = { logo }
+            className = "App-logo"
+            alt = "logo" / >
+            <
+            p > { item['return'] }
 
-  if (!isLoaded) {
-    return <div>Loading...</div>;
-  } else {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            {item['return']}
-           
-          </p>
-        </header>
-      </div>
-    );
-  }
+            <
+            /p> < /
+            header > <
+            Button variant = "contained"
+            color = "primary"
+            onClick = { handleOpen } >
+            Signup <
+            /Button> <
+            ModalDialog open = { open }
+            handleClose = { handleClose }
+            /> < /
+            div >
+        );
+    }
 
 }
 
