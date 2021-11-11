@@ -28,11 +28,10 @@ function App() {
       .then(result => {
         setIsLoaded(true)
         setItem(result)
-      })
+      }, [])
 
   })
 
-  console.log(item)
   if (!isLoaded) {
     return <div>Loading...</div>;
   } else {
