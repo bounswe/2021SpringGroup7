@@ -6,6 +6,7 @@ import LoginForm from '../../components/Forms/LoginForm/LoginForm';
 const useStyles = makeStyles(theme => ({
     Applogo: {
         'height': '20vmin',
+        'padding': '2em',
         'pointer-events': 'none',
     },
     root: {
