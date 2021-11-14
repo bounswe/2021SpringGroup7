@@ -8,9 +8,14 @@
   pointer-events: none;
 }
 
+.App-logo-spin {
+  height: 20vmin;
+  padding: 3em;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        position: absolute;
+    .App-logo-spin {
         animation: App-logo-spin infinite 10s linear;
     }
     .Letter {
@@ -27,6 +32,14 @@
     justify-content: center;
     font-size: calc(10px + 2vmin);
     color: white;
+}
+
+.App-Buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-width: 20vh;
+    justify-content: space-evenly;
 }
 
 .App-link {
