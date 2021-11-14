@@ -37,10 +37,12 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "90%",
     borderRadius: 10,
     margin: "5%",
+   flexDirection: 'column',
   },
   media: {
     height: 0,
     paddingTop: "56.25%", // 16:9
+    paddingRight: 30,
   },
   expand: {
     transform: "rotate(0deg)",
@@ -142,6 +144,7 @@ export default function Post(props) {
 
   return (
     <Card className={classes.root} elevation={1}>
+
       <CardHeader
         avatar={
           <Link
@@ -159,32 +162,49 @@ export default function Post(props) {
             <MoreVertIcon />
           </IconButton>
         }
-        title={storyData ? storyData.title : ""}
+        title={storyData
+                ? storyData.owner_username
+                : "?"}
       />
-      <CardMedia
-        className={classes.media}
-        image={storyData ? storyData.multimedia[0] : ""}
-        title={storyData ? storyData.title : ""}
-      />
-      <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {storyData ? storyData.story : ""}
-          <div></div>
-          {storyData
-            ? storyData.tags.map((item, index) => {
-                return (
-                  <Chip
-                    key={index}
-                    onClick={() => console.log("we will add go to tag later")}
-                    color="secondary"
-                    size="small"
-                    label={item}
-                  />
-                );
-              })
-            : ""}
-        </Typography>
-      </CardContent>
+
+      <Grid container columns={2} spacing={0.5}>
+
+            <Grid item xs={5}>
+              <CardMedia
+                className={classes.media}
+                image={storyData ? storyData.multimedia[0] : ""}
+                title={storyData ? storyData.title : ""}
+              />
+            </Grid>
+    
+            <Grid item xs>
+              <CardContent>
+                <Typography variant="subtitle1">
+                  {storyData ? storyData.title : ""}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  {storyData ? storyData.story : ""}
+                  <div></div>
+                  {storyData
+                    ? storyData.tags.map((item, index) => {
+                        return (
+                          <Chip
+                            key={index}
+                            onClick={() => console.log("we will add go to tag later")}
+                            color="secondary"
+                            size="small"
+                            label={item}
+                          />
+                        );
+                      })
+                    : ""}
+                </Typography>
+              </CardContent>
+          </Grid>
+      </Grid>
+
+
+      
       <CardActions disableSpacing>
         <IconButton
           aria-label="add to favorites"
@@ -263,6 +283,8 @@ export default function Post(props) {
           </div>
         </CardContent>
       </Collapse>
+
+      
     </Card>
   );
 }
