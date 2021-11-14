@@ -21,7 +21,7 @@ export default function Login(){
     const classes= useStyles();
     const handleClose = (email, password) => {
         console.log(email, password);
-        sessionStorage.setItem('jwtToken', 'bearer 123');
+        localStorage.setItem('jwtToken', 'bearer 123');
     };
 
     return (
