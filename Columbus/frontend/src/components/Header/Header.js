@@ -57,7 +57,7 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   Reference : https://mui.com/components/app-bar/
 */
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
+  color: 'default',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 5),
     // vertical padding + font size from searchIcon
@@ -65,8 +65,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
-      width: '20ch',
+      width: '30ch',
     },
+    fontSize: 15,
   },
 }));
 
@@ -196,13 +197,20 @@ const renderMenu = (
 
          <Search>
             <SearchIconWrapper>
-              <SearchIcon />
+              <LocationOnIcon
+                color="action"
+              />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search Location…"
+              placeholder="Search Location Stories…"
               inputProps={{ 'aria-label': 'search' }}
             />
-            <LocationOnIcon/>
+            <Button
+              variant="contained"
+              disableElevation
+            >
+              <SearchIcon />
+            </Button>
         </Search>
         
 
