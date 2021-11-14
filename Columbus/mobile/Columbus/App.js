@@ -1,15 +1,9 @@
 import React from 'react';
-import {StatusBar, Text, View} from 'react-native';
+
+import Navigation from './src/navigation';
 
 const App = () => {
-  return (
-    <View>
-      <StatusBar />
-      <View style={{padding: 40}}>
-        <Text>Main Page</Text>
-      </View>
-    </View>
-  );
+  return <Navigation />;
 };
 
 export default App;
