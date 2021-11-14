@@ -38,9 +38,9 @@ const LoginForm = ({ handleClose }) => {
     onSubmit = { handleSubmit } 
     >
         <TextField 
-        label = "Email"
+        label = "Username"
         variant = "filled"
-        type = "email"
+        type = "text"
         required value = { email }
         onChange = { e => setEmail(e.target.value) }
         /> 
@@ -60,7 +60,7 @@ const LoginForm = ({ handleClose }) => {
         color = "primary" 
         >
             Login 
-        </Button> 
+        </Button>
         </div> 
     </form>
     );
