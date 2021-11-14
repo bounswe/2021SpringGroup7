@@ -47,7 +47,6 @@ export default function Login({setAuthenticated}){
     };
 
     const handleLogin = (username, password) => {
-        console.log(username, password);
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
