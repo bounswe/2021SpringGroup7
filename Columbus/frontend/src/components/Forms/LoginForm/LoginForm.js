@@ -19,9 +19,12 @@ const useStyles = makeStyles(theme => ({
             margin: theme.spacing(2),
         },
     },
+    error: {
+        color: 'red',
+    }
 }));
 
-const LoginForm = ({ handleClose }) => {
+const LoginForm = ({ handleClose, showError}) => {
     const classes = useStyles();
  
     const [username, setUsername] = useState('');
@@ -50,10 +53,11 @@ const LoginForm = ({ handleClose }) => {
         variant = "filled"
         type = "password"
         required value = { password }
-        onChange = { e => setPassword(e.target.value) }
+        onChange = { e => setPassword(e.target.value)
+        }
         /> 
         <div>
-        
+        {showError ? <p className={classes.error}>Email or Password is wrong!</p> : null}
         <Button 
         type = "submit"
         variant = "contained"
