@@ -1,11 +1,14 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {Button} from 'native-base';
+import AuthLayout from '../../layout/AuthLayout';
 
-const Register = () => {
+const Register = ({navigation}) => {
   return (
-    <View>
-      <Text>Register Page</Text>
-    </View>
+    <AuthLayout pageHeader="Columbus Register">
+      <Button onPress={() => navigation.navigate('Login')}>
+        Go To Register
+      </Button>
+    </AuthLayout>
   );
 };
 
