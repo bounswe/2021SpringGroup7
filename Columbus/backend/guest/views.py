@@ -41,13 +41,35 @@ def login(request):
 
 
         user = authenticate(request, username=user_name, password=password)
-        print(user)
 
         if user is not None:
             auth_login(request, user)
-            return JsonResponse({'return': 'login is successful'})
+            return JsonResponse({'return': 'Login is successful'})
         else:
-            return JsonResponse({'return': 'login is invalid'}, status=400)
+            return JsonResponse({'return': 'Login is invalid'}, status=400)
 
     else:
-        return JsonResponse({'return': 'Send a Post request'})
+        return JsonResponse({'return': 'Send a Post request'}, status=400)
+
+
+def change_password(request):
+    if request.method == 'POST':
+        
+        required_areas = {'user_name', 'password'}
+        if set(request.POST.keys())!=required_areas:
+            return JsonResponse({'return':'Required areas are:'+str(required_areas)}, status=400)
+
+        user_name = request.POST.get('user_name')
+        password = request.POST.get('password')
+
+        try:
+            user = User.objects.get(username=user_name)
+        except User.DoesNotExist:
+            return JsonResponse({'return': 'User not found'}, status=400)
+
+        user.set_password(password)
+        user.save()
+
+        return JsonResponse({'return': 'Changing password is successful'})
+    else:
+        return JsonResponse({'return': 'Send a Post request'}, status=400)
