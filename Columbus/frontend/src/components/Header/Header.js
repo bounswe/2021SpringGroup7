@@ -113,9 +113,14 @@ export default function Header(props) {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    
     //handleMobileMenuClose();
   };
 
+  const handleLogOut = () => {
+    setAnchorEl(null);
+    localStorage.removeItem("jwtToken");
+  };
 const menuId = 'primary-search-account-menu';
 
 const renderMenu = (
@@ -169,7 +174,7 @@ const renderMenu = (
             </IconButton>
           Settings
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
+      <MenuItem onClick={handleLogOut}>
            <Button 
             variant="contained"
             color="default"
