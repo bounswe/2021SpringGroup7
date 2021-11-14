@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import columbusLogo from '../../columbus-logo.svg';
 
 import { makeStyles, styled } from "@material-ui/core/styles";
-import { AppBar, Box, InputBase, Toolbar, Button, ButtonGroup } from "@material-ui/core";
+import { AppBar, Box, InputBase, Toolbar, Button, ButtonGroup, Link } from "@material-ui/core";
 
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
@@ -24,13 +24,13 @@ import AddBoxRoundedIcon from '@material-ui/icons/AddBoxRounded';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 
-/* 
+/*********************************************************** 
   Reference : https://mui.com/components/app-bar/
-*/
+************************************************************/
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor:"#c2d4dd",
+  backgroundColor:"#e6e5dc",
   marginRight: theme.spacing(2),
   marginLeft: 0,
   width: '100%',
@@ -40,9 +40,6 @@ const Search = styled('div')(({ theme }) => ({
   },
 }));
 
-/* 
-  Reference : https://mui.com/components/app-bar/
-*/
 const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 1.5),
   height: '100%',
@@ -53,9 +50,6 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   justifyContent: 'center',
 }));
 
-/* 
-  Reference : https://mui.com/components/app-bar/
-*/
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'default',
   '& .MuiInputBase-input': {
@@ -71,6 +65,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+/************************************************************/
 
 const useStyles = makeStyles((theme) => ({
   appbar: {
@@ -192,8 +187,11 @@ const renderMenu = (
       <AppBar className={classes.appbar}>
       <Toolbar className={classes.toolbar}>
         
+        <Link
+            href={`/`}
+          >
         <img src={columbusLogo} className={classes.logo} alt="logo" />
-        
+        </Link>
 
          <Search>
             <SearchIconWrapper>
@@ -205,12 +203,14 @@ const renderMenu = (
               placeholder="Search Location Stories…"
               inputProps={{ 'aria-label': 'search' }}
             />
-            <Button
-              variant="contained"
-              disableElevation
-            >
-              <SearchIcon />
-            </Button>
+            <Tooltip title="Search" arrow>
+              <Button
+                variant="contained"
+                disableElevation
+              >
+                <SearchIcon />
+              </Button>
+            </Tooltip>
         </Search>
         
 
