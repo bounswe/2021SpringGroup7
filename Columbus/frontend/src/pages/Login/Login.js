@@ -5,7 +5,7 @@ import LoginForm from '../../components/Forms/LoginForm/LoginForm';
 
 const useStyles = makeStyles(theme => ({
     Applogo: {
-        'height': '50vmin',
+        'height': '20vmin',
         'pointer-events': 'none',
     },
     root: {
@@ -17,11 +17,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Login(){
-    console.log("in login")
     const classes= useStyles();
     const handleClose = (email, password) => {
         console.log(email, password);
-        localStorage.setItem('jwtToken', 'bearer 123');
+        localStorage.setItem('jwtToken', 'bearer ' + password);
     };
 
     return (
