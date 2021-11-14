@@ -1,5 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
+
+import columbusLogo from '../../logo.svg';
+
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
@@ -11,7 +14,8 @@ function Copyright() {
       {"Copyright © "}
       <Link color="inherit" href="https://github.com/bounswe">
         Boun Swe
-      </Link>{" "}
+      </Link>
+      {" "}
       {new Date().getFullYear()}
       {"."}
     </Typography>
@@ -20,9 +24,13 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
   footer: {
-    backgroundColor: "#e6e5dc",
+    backgroundColor: "white",
     padding: theme.spacing(6, 0),
   },
+  logo: {
+    height: 100,
+    width : 100,
+  }
 }));
 
 export default function Footer(props) {
@@ -31,9 +39,9 @@ export default function Footer(props) {
 
   return (
     <footer className={classes.footer}>
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" backgroundColor="white">
         <Typography variant="h6" align="center" gutterBottom>
-          {title}
+          <img src={columbusLogo} className={classes.logo} alt="logo" />
         </Typography>
         <Typography
           variant="subtitle1"

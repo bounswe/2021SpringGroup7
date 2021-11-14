@@ -240,7 +240,6 @@ export default function CreatePostDialog() {
           />
           {/* <div style={{ width: "250px" }}>
             <span style={{ color: "black" }}>Location</span>
-
             <Input
               fullWidth
               style={{ marginBottom: 30, zIndex: 100000 }}
