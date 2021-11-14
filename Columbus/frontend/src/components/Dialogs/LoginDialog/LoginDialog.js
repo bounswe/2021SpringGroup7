@@ -2,7 +2,7 @@ import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import Form from '../../../pages/Login/Login';
 
-const ModalDialog = ({ open, handleClose}) => {
+const LoginDialog = ({ open, handleClose}) => {
     return ( 
         <Dialog 
             open = { open }
@@ -13,4 +13,4 @@ const ModalDialog = ({ open, handleClose}) => {
     );
 };
 
-export default ModalDialog;
+export default LoginDialog;
