@@ -24,12 +24,12 @@ const useStyles = makeStyles(theme => ({
 const LoginForm = ({ handleClose }) => {
     const classes = useStyles();
  
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const handleSubmit = e => {
         e.preventDefault();
-        handleClose(email, password);
+        handleClose(username, password);
     };
 
     return ( 
@@ -41,8 +41,8 @@ const LoginForm = ({ handleClose }) => {
         label = "Username"
         variant = "filled"
         type = "text"
-        required value = { email }
-        onChange = { e => setEmail(e.target.value) }
+        required value = { username }
+        onChange = { e => setUsername(e.target.value) }
         /> 
         
         <TextField 
