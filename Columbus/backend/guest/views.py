@@ -18,6 +18,6 @@ def register(request):
                     user_email=user_email,
                     password=password)
         user.save()
-        return JsonResponse({'return': '{} is succesfully created'.format(user.user_name)})
+        return JsonResponse({'response': '{} is succesfully created'.format(user.user_name),'status':200})
     else:
-        return JsonResponse({'return':'Send a Post request'})
+        return JsonResponse({'response':'Send a Post request','status':400})
