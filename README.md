@@ -1,9 +1,14 @@
-# 2021 Spring Group 7
+# 	:earth_asia: Columbus Project 	:earth_africa:
 We are Bogazici University Computer Engineering students. This repository mainly contains our group work in CMPE-352 and CMPE-451.
-# CMPE 352
+## What is Columbus
+Our project, COLUMBUS, is a location stories platform where users can share stories about locations and interact with each other on these stories. To achieve this, we organize periodic meetings to assign weekly tasks to team members and finish them as a group. You can see our [wiki page](https://github.com/bounswe/2021SpringGroup7/wiki) for further information.
+## CMPE 352
 CMPE-352 or "Fundamentals of Software Engineering" is a course that teach us about the issues, practices, and tools associated with developing software as a team.
-
-# Practice-app
+## CMPE 451
+CMPE-451 focuses on the successful application of the practices for managing the lifecycle of the
+development of a software product. It is about applying the fundamental principles gained during
+Cmpe352. 
+## Practice-app
 The URI of the practice app could be found here: http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/ \
 The APIs could be found here: http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:5000
 

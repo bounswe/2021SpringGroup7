@@ -1,0 +1,39 @@
+version : '3.8'
+services:
+  backend:
+    container_name: backend
+    restart: always
+    build: ./backend
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    links:
+      - postgresql:postgresql
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgresql
+  postgresql:
+    container_name: postgresql
+    restart: always
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - backendDB:/data/db
+  frontend:
+    container_name: react
+    restart: always
+    build: ./frontend
+    links:
+      - backend:backend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+volumes:
+  backendDB:
+    driver: local
