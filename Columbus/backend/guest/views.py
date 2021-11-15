@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect,JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import authenticate, login as auth_login
@@ -117,6 +117,6 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        return JsonResponse({'response':'Thank you for your email confirmation. Now you can login your account.'},status=200)
+        return redirect('ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation')
     else:
-        return JsonResponse({'response':'Activation link is invalid!'},status=403)
+        return redirect('ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation?error=true')
