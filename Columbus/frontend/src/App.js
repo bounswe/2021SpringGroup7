@@ -2,6 +2,7 @@ import "./App.css";
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
+import EmailConfirmation from "./pages/EmailConfirmationPage";
 import Home from "./pages/Home";
 // {
 //   "userId": 1,
@@ -40,7 +41,10 @@ function App() {
             path="/Home"
             element={Authenticated ?  <Home /> : <Navigate replace to="/" />}
           />
-          
+          <Route
+            path="/email-confirmation"
+            element={<EmailConfirmation />}
+          />
         </Routes>
       </Router>
     </div>

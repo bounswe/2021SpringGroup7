@@ -3,7 +3,7 @@ import MessageDialog from '../../components/Dialogs/MessageDialog'
 import { makeStyles } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-var API_BASE = 'http://ec2-18-197-57-123.eu-central-1.compute.amazonaws.com:8000';
+var API_BASE = 'http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000';
 if (process.env.NODE_ENV === 'development') {
 	API_BASE = 'http://localhost:8000';
 }
