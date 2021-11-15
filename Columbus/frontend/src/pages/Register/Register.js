@@ -49,7 +49,7 @@ const Form = ({ handleClose }) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({'user_name': userName,  'first_name':firstName, 'last_name':lastName, 'user_email':email, 'password':password})
         };
-        fetch('http://ec2-18-197-57-123.eu-central-1.compute.amazonaws.com:8000' + '/guest/register/', requestOptions)
+        fetch(API_BASE + '/guest/register/', requestOptions)
         .then(res => {
 			if(res.ok) {
 				setMessage('Successfull Register! \n You should login')
