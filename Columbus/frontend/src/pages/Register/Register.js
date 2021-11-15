@@ -55,10 +55,16 @@ const Form = ({ handleClose }) => {
 				setOpenRegister(true)
 			}
 			else{
-				if(res.json()['response']){
+				if(isJson(res)){
+				  if(res.json()['response']){
 					setMessage(res.json()['response'])
 					setOpenRegister(true)
 				}
+				else{
+				  setMessage("Unsuccessful Register!")
+			      setOpenRegister(true)
+				}
+			}
 
 			}
 		}
@@ -125,5 +131,12 @@ const Form = ({ handleClose }) => {
 		</form>
 	);
 };
-
+function isJson(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
 export default Form;
