@@ -49,16 +49,23 @@ const Form = ({ handleClose }) => {
             body: JSON.stringify({'user_name': userName,  'first_name':firstName,'last_name':lastName,'user_email':email,'password':password})
         };
         fetch(API_BASE + '/guest/register', requestOptions)
-        .then(response => {
-			setMessage('Successfull Register! \n You should login')
-			setOpenRegister(true)
-			if(!openRegister)
-				handleClose();
+        .then(res => {
+			if(res.ok) {
+				setMessage('Successfull Register! \n You should login')
+				setOpenRegister(true)
+			}
+			else{
+				if(res.json()['response']){
+					setMessage(res.json()['response'])
+					setOpenRegister(true)
+				}
+
+			}
 		}
 		)
         .catch((error) => {
-			setMessage('Unsuccessfull Register!')
-			setOpenRegister(true)
+			  setMessage("Unsuccessful Register!")
+			  setOpenRegister(true)
 			
         }).finally(()=>{
 			setIsLoading(false)
