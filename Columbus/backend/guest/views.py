@@ -28,8 +28,8 @@ def register(request):
         try:
             user = User.objects.create_user(username = user_name, email = user_email, password = password, first_name = first_name, last_name = last_name)
             user.save()
-            #user.is_active = False
-            #confirmEmail(request,user)
+            user.is_active = False
+            confirmEmail(request, user)
             return JsonResponse({'return': '{} is succesfully created'.format(user.username)})
         except IntegrityError as e:
             return JsonResponse({'return':str(e)}, status=400)
@@ -91,7 +91,7 @@ def confirmEmail(request,user):
     print(user.id)
     message = render_to_string('acc_active_email.html', {
         'user': user,
-        'domain': '127.0.0.1:8000',
+        'domain': 'ec2-35-158-103-6.eu-central-1.compute.amazonaws.com',
         'uid': user.id,
         'token': account_activation_token.make_token(user),
     })
