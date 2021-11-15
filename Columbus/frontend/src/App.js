@@ -23,6 +23,7 @@ function App() {
 
   useEffect(() => {
     setAuthenticated(!!localStorage.getItem("jwtToken"));
+    document.title="Columbus"
   }, [])
 
   
