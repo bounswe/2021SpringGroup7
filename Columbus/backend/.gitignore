@@ -1,3 +1,5 @@
 default_django_db
 script.sh
-script.sh
+/postgres.sh
+/django.sh
+/src/.env

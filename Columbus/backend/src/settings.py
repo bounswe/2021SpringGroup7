@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8ilanq3gx*4+lhgst8iwt^jll@vit^$3#kjs4nc8+f5%=f$a+)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.get_value('DEBUG',default=False)
 
 ALLOWED_HOSTS = ['*']
 
@@ -78,13 +82,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'src.wsgi.application'
 
 
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST':'localhost',
+        'HOST':env.get_value("HOST", default='postgresql'),
         'NAME':'postgres',
         'USER':'postgres',
         'PASSWORD':'mysecretpassword',
