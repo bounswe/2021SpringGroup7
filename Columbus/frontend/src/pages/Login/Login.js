@@ -55,7 +55,7 @@ export default function Login({setAuthenticated}){
         fetch(API_BASE + '/guest/login/', requestOptions)
         .then(response => {
             if(response.ok){
-                response.json()
+                return response.json()
             }
             throw new Error(response.json()['return'])
         })
