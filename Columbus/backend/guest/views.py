@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect,JsonResponse,HttpResponse
+from django.http import HttpResponseRedirect,JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.db import IntegrityError
@@ -30,7 +30,7 @@ def register(request):
             user.save()
             user.is_active = False
             confirmEmail(request, user)
-            return JsonResponse({'return': '{} is succesfully created'.format(user.username)})
+            return JsonResponse({'return': '{} is succesfully created. Please confirm your e-mail to login'.format(user.username)})
         except IntegrityError as e:
             return JsonResponse({'return':str(e)}, status=400)
 
@@ -79,7 +79,6 @@ def change_password(request):
         user.set_password(password)
         user.save()
 
-
         return JsonResponse({'return': 'Changing password is successful'})
     else:
         return JsonResponse({'return': 'Send a Post request'}, status=400)
@@ -99,7 +98,7 @@ def confirmEmail(request,user):
         mail_subject, message, to=[user.email]
     )
     email.send()
-    return HttpResponse('Please confirm your email address to complete the registration')
+    return JsonResponse({'return':'Please confirm your email address to complete the registration'})
 
 def activate(request, uidb64, token):
     try:
