@@ -3,7 +3,7 @@ import MessageDialog from '../../components/Dialogs/MessageDialog'
 import { makeStyles } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-var API_BASE = 'http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000';
+var API_BASE = 'http://ec2-18-197-57-123.eu-central-1.compute.amazonaws.com:8000';
 if (process.env.NODE_ENV === 'development') {
 	API_BASE = 'http://localhost:8000';
 }
@@ -43,34 +43,24 @@ const Form = ({ handleClose }) => {
 	const handleSubmit = (e) => {
 		setIsLoading(true);
 		e.preventDefault();
+
 		const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({'user_name': userName,  'first_name':firstName,'last_name':lastName,'user_email':email,'password':password})
+            body: JSON.stringify({'user_name': userName,  'first_name':firstName, 'last_name':lastName, 'user_email':email, 'password':password})
         };
-        fetch(API_BASE + '/guest/register', requestOptions)
+        fetch(API_BASE + '/guest/register/', requestOptions)
         .then(res => {
 			if(res.ok) {
 				setMessage('Successfull Register! \n You should login')
 				setOpenRegister(true)
 			}
-			else{
-				if(isJson(res)){
-				  if(res.json()['response']){
-					setMessage(res.json()['response'])
-					setOpenRegister(true)
-				}
-				else{
-				  setMessage("Unsuccessful Register!")
-			      setOpenRegister(true)
-				}
-			}
-
-			}
+			return res.json().then(text => {
+				throw new Error(text['return'])})
 		}
 		)
         .catch((error) => {
-			  setMessage("Unsuccessful Register!")
+			  setMessage(error.message)
 			  setOpenRegister(true)
 			
         }).finally(()=>{
