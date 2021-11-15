@@ -1,14 +1,13 @@
 import React from 'react';
-import {StatusBar, Text, View} from 'react-native';
+import {NativeBaseProvider} from 'native-base';
+
+import Navigation from './src/navigation';
 
 const App = () => {
   return (
-    <View>
-      <StatusBar />
-      <View style={{padding: 40}}>
-        <Text>Main Page</Text>
-      </View>
-    </View>
+    <NativeBaseProvider>
+      <Navigation />
+    </NativeBaseProvider>
   );
 };
 
