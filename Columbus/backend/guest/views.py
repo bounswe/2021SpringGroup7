@@ -15,16 +15,13 @@ from django.core.mail import EmailMessage
 
 def register(request):
     if request.method == 'POST':
-
-
-
-        required_areas = {'user_name', 'user_email', 'password'}
-        if set(request.POST.keys()) != required_areas:
-            return JsonResponse({'return': 'Cannot be Empty:' + str(required_areas-set(request.POST.keys()))}, status=400)
+        required_areas = {'user_name','user_email', 'password'}
+        if len(set(request.POST.keys()).intersection(required_areas))!=3:
+            return JsonResponse({'return': 'Cannot be Empty:' + str(required_areas-set(request.POST.keys()))}, status = 400)
 
         user_name = request.POST.get('user_name')
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
+        first_name = request.POST.get('first_name','')
+        last_name = request.POST.get('last_name','')
         user_email = request.POST.get('user_email')
         password = request.POST.get('password')
 
