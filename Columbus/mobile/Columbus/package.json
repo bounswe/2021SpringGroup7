@@ -10,6 +10,15 @@
     "lint": "eslint ."
   },
   "dependencies": {
+<<<<<<< Updated upstream
+=======
+    "@react-native-community/masked-view": "^0.1.11",
+    "@react-navigation/bottom-tabs": "^6.0.9",
+    "@react-navigation/native": "^6.0.6",
+    "@react-navigation/stack": "^6.0.11",
+    "axios": "^0.24.0",
+    "native-base": "^3.2.2",
+>>>>>>> Stashed changes
     "react": "17.0.2",
     "react-native": "0.66.2"
   },
@@ -21,6 +30,7 @@
     "eslint": "^8.2.0",
     "jest": "^27.3.1",
     "metro-react-native-babel-preset": "^0.66.2",
+    "react-native-svg-transformer": "^0.14.3",
     "react-test-renderer": "17.0.2"
   },
   "jest": {
