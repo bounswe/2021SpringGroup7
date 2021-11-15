@@ -7,12 +7,11 @@ import AuthLayout from '../../layout/AuthLayout';
 const Register = ({navigation}) => {
   
   const url='http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000/api/guest/register'
-  const [firstName, setFirstName]=useState('')
-  const [lastName, setLastName]=useState( '')
+  const [username, setUsername]=useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [render,setRender]=useState(false)
-  const [errors, setErrors] = useState({firstName:false,lastName:false,email:false,password:false});
+  const [errors, setErrors] = useState({username:false,email:false,password:false});
   
 
   
@@ -20,16 +19,16 @@ const Register = ({navigation}) => {
   // This effect uses the `value` variable,
   // so it "depends on" `value`.
   console.log(errors);
-  }, [firstName,lastName,email,password])
+  }, [username,email,password])
 
   const sendRequest=()=>{
     const params = JSON.stringify({
-      'user_name':'john_sim ',
-    "user_email": email,
-'second_name':'Can ',
-    "password": password,
-    'first_name':firstName,
-    'last_name':lastName,
+      'user_name':username,
+      "user_email": email,
+      'second_name':'',
+      "password": password,
+      'first_name':'',
+      'last_name':'',
 
     });
     console.log(params)
@@ -43,10 +42,12 @@ const Register = ({navigation}) => {
     })
     .then((response)=> {
       console.log(response);
+      
     })
     .catch((error)=> {
       console.log(error);
     });
+    navigation.navigate('Home')
     
 
 
@@ -56,19 +57,14 @@ const Register = ({navigation}) => {
   const validate = () => {
     console.log(errors)
     temp=errors
-    if ((firstName ===undefined) || (firstName.length < 3)) {
+    if ((username ===undefined) || (username.length < 3)) {
       
-      temp.firstName=true
+      temp.username=true
     }
     else{
-      temp.firstName=false
+      temp.username=false
     }
-    if ((lastName ===undefined) || (lastName.length < 3)) {
-      temp.lastName=true
-    } 
-    else{
-      temp.lastName=false
-    }
+    
     
     if ((password===undefined) | (password.length <8) ) {
       temp.password=true
@@ -83,12 +79,11 @@ const Register = ({navigation}) => {
     else{
       temp.email=false
     }
-    if(temp.firstName==false && temp.lastName==false && temp.email==false && temp.password==false ){
+    if(temp.username==false  && temp.email==false && temp.password==false ){
       sendRequest()
       
     }
     setRender(!render)
-    setErrors(temp)
     setErrors(temp)
 
 
@@ -108,24 +103,17 @@ const Register = ({navigation}) => {
       style={{  maxHeight: 200}} 
       alt='Columbus Registerr'/>
       </View>
-      <FormControl isRequired isInvalid={getErrors().firstName}>
-        <FormControl.Label _text={{bold: true}}>First Name</FormControl.Label>
+      <FormControl isRequired isInvalid={getErrors().username}>
+        <FormControl.Label _text={{bold: true}}>Username</FormControl.Label>
         <Input
-          placeholder="John"
-          onChangeText={(value) => setFirstName( value )}
+          placeholder="JohnSmith"
+          onChangeText={(value) => setUsername( value )}
         />
-        <FormControl.ErrorMessage _text={{fontSize: 'xs'}}>First Name should contain at least 3 character.</FormControl.ErrorMessage>
+        <FormControl.ErrorMessage _text={{fontSize: 'xs'}}>Username should contain at least 3 character.</FormControl.ErrorMessage>
       
         
       </FormControl>
-      <FormControl isRequired isInvalid={getErrors().lastName}>
-        <FormControl.Label _text={{bold: true}}>Last Name</FormControl.Label>
-        <Input
-          placeholder="Smith"
-          onChangeText={(value) => setLastName( value )}
-        />
-        <FormControl.ErrorMessage _text={{fontSize: 'xs'}}>Last Name should contain at least 3 character.</FormControl.ErrorMessage>
-      </FormControl>
+      
       <FormControl isRequired isInvalid={getErrors().email}>
         <FormControl.Label _text={{bold: true}}>Email</FormControl.Label>
         <Input
@@ -149,9 +137,7 @@ const Register = ({navigation}) => {
       <Button onPress={() => validate()}>
         Register
       </Button>
-      <Button onPress={() => navigation.navigate('Login')}>
-        Go To Login
-      </Button>
+      
     </AuthLayout>
   );
 };
