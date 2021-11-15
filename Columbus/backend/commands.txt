@@ -1,2 +1,6 @@
-docker build --tag backend .
-docker run -d --name backend --publish 8000:8000 backend
+#docker build --tag backend .
+#docker run -d --name backend --publish 8000:8000 backend
+
+docker run --name postgresql -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
+python3 manage.py makemigrations
+python3 manage.py migrate
