@@ -52,7 +52,7 @@ export default function Login({setAuthenticated}){
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({'user_name': username,  password})
         };
-        fetch(API_BASE + '/guest/login', requestOptions)
+        fetch(API_BASE + '/guest/login/', requestOptions)
         .then(response => {
             if(response.ok){
                 response.json()
