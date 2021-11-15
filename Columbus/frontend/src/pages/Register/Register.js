@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Dialog from '@material-ui/core/Dialog';
+import MessageDialog from '../../components/Dialogs/MessageDialog'
 import { makeStyles } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -34,8 +34,12 @@ const Form = ({ handleClose }) => {
 	const [ email, setEmail ] = useState('');
 	const [ password, setPassword ] = useState('');
 	const [ message, setMessage] = useState('');
-	const [ error, setError] = useState(false);
+	const [ openRegister, setOpenRegister] = useState(false);
 	const [ isLoaded, setIsLoading] = useState(false);
+	const handleCloseRegister = () => {
+		setOpenRegister(false);
+		handleClose();
+		};
 	const handleSubmit = (e) => {
 		setIsLoading(true);
 		e.preventDefault();
@@ -46,14 +50,19 @@ const Form = ({ handleClose }) => {
         };
         fetch(API_BASE + '/guest/register', requestOptions)
         .then(response => {
-			setMessage({items : response.response})
-			handleClose();
+			setMessage('Successfull Register! \n You should login')
+			setOpenRegister(true)
+			if(!openRegister)
+				handleClose();
 		}
 		)
-        .catch((error) => {setError(true)
+        .catch((error) => {
+			setMessage('Unsuccessfull Register!')
+			setOpenRegister(true)
 			
         }).finally(()=>{
-			setIsLoading(false)});;
+			setIsLoading(false)
+		});;
 		
 	};
 
@@ -105,7 +114,7 @@ const Form = ({ handleClose }) => {
 				</Button>
 			</div>
 			{isLoaded ? <p >Loading...</p> : null}
-			{error ? <p className={classes.error}>Unsuccessfull register!</p> : null}
+			<MessageDialog open={openRegister} handleClose={handleCloseRegister} txt={message} />  
 		</form>
 	);
 };
