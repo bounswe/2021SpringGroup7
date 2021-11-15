@@ -117,6 +117,6 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        return redirect('ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation')
+        return redirect('http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation')
     else:
-        return redirect('ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation?error=true')
+        return redirect('http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation?error=true')
