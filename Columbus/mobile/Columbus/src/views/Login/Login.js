@@ -11,29 +11,64 @@ import {
   Link,
   Image,
   Center,
+  Modal,
 } from 'native-base';
+import axios from 'axios';
 
 import AuthLayout from '../../layout/AuthLayout';
 
 const Login = ({navigation}) => {
-  const [formData, setData] = useState({});
+  const [formData, setData] = useState({username: '', password: ''});
   const [errors, setErrors] = useState({});
-  const [disableButton, setDisableButton] = useState(true);
+  const [isDisableButton, setIsDisableButton] = useState(true);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   useEffect(() => {
-    let reg =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (reg.test(formData.email) === true) {
-      setDisableButton(true);
+    if (formData?.username.length > 3 && formData?.password.length > 2) {
+      setIsDisableButton(false);
     } else {
-      setDisableButton(false);
+      setIsDisableButton(true);
     }
   }, [formData]);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setIsButtonLoading(true);
-    console.log('formData: ', formData);
+
+    const apiUrl =
+      'http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000/guest/login/';
+
+    const data = JSON.stringify({
+      user_name: formData.username,
+      password: formData.password,
+    });
+
+    axios
+      .post(apiUrl, data, {
+        headers: {
+          'content-type': 'application/json',
+          Accept: 'application/json',
+          'x-applicationid': '1',
+        },
+      })
+      .then(response => {
+        console.log('response: ', response);
+        if (response.status === 200) {
+          setIsButtonLoading(false);
+          navigation.navigate('HomePage');
+        } else {
+          setModalMessage('Username or password is not correct');
+          setShowModal(true);
+          setIsButtonLoading(false);
+        }
+      })
+      .catch(error => {
+        setModalMessage('Username or password is not correct');
+        setShowModal(true);
+        setIsButtonLoading(false);
+        console.log('error: ', error);
+      });
   };
 
   return (
@@ -60,33 +95,31 @@ const Login = ({navigation}) => {
         </Heading>
         <Center mt={5}>
           <Image
-            borderRadius={100}
-            source={{
-              uri: 'https://wallpaperaccess.com/full/317501.jpg',
-            }}
-            alt="Alternate Text"
-            size="xl"
+            source={require('../../assets/Logo/Columbus.png')}
+            alt="Columbus Registerr"
           />
         </Center>
         <VStack space={3} mt="5">
           <FormControl>
-            <FormControl.Label>Email</FormControl.Label>
+            <FormControl.Label>Username</FormControl.Label>
             <Input
               variant="filled"
-              placeholder="test@gmail.com"
-              onChangeText={value => setData({...formData, mail: value})}
+              placeholder="username"
+              onChangeText={value => setData({...formData, username: value})}
             />
           </FormControl>
           <FormControl>
             <FormControl.Label>Password</FormControl.Label>
             <Input
               variant="filled"
+              placeholder="Minimum 2 character"
               type="password"
               onChangeText={value => setData({...formData, password: value})}
             />
           </FormControl>
           <Button
-            isDisabled={disableButton}
+            disabled={isDisableButton}
+            isDisabled={isDisableButton}
             isLoading={isButtonLoading}
             mt="2"
             onPress={handleLogin}>
@@ -112,6 +145,25 @@ const Login = ({navigation}) => {
             </Link>
           </HStack>
         </VStack>
+        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+          <Modal.Content maxWidth="400px">
+            <Modal.CloseButton />
+            <Modal.Header>Info</Modal.Header>
+            <Modal.Body>
+              <Text style={{textAlign: 'center'}}>{modalMessage}</Text>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button.Group space={2}>
+                <Button
+                  onPress={() => {
+                    setShowModal(false);
+                  }}>
+                  Ok
+                </Button>
+              </Button.Group>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
       </Box>
     </AuthLayout>
   );

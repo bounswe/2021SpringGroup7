@@ -1,9 +1,9 @@
 import React from 'react';
-import {Center, Flex, Heading, Stack} from 'native-base';
+import {Center, Stack} from 'native-base';
 
 const AuthLayout = ({children}) => {
   return (
-    <Center backgroundColor="orange.500">
+    <Center backgroundColor="white">
       <Stack
         space={4}
         w={{
