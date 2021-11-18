@@ -12,6 +12,10 @@ RUN npm run build
 # production environment
 FROM nginx:stable-alpine
 COPY --from=build /app/build /usr/share/nginx/html
+
+COPY ./manifests/favicon.ico /usr/share/nginx/html/favicon.ico
+COPY ./manifests/manifest.json /usr/share/nginx/html/manifest.json
+
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
