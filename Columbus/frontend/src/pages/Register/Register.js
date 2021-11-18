@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import MessageDialog from "../../components/Dialogs/MessageDialog";
+import MessageDialog from "../../components/Dialogs/MessageDialog/MessageDialog";
 import { makeStyles } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
