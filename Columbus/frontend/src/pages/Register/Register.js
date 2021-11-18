@@ -31,8 +31,31 @@ const Form = ({ handleClose }) => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log(firstName, lastName, email, password);
-		handleClose();
+
+
+		const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({'user_name': userName,  'first_name':firstName, 'last_name':lastName, 'user_email':email, 'password':password})
+        };
+        fetch(API_BASE + '/guest/register/', requestOptions)
+        .then(res => {
+			if(res.ok) {
+				setMessage('Successfull Register! \n You should login')
+				setOpenRegister(true)
+			}
+			return res.json().then(text => {
+				throw new Error(text['return'])})
+		}
+		)
+        .catch((error) => {
+			  setMessage(error.message)
+			  setOpenRegister(true)
+			
+        }).finally(()=>{
+			setIsLoading(false)
+		});;
+		
 	};
 
 	return (
