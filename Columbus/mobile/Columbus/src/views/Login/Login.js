@@ -11,15 +11,14 @@ import {
   Link,
   Image,
   Center,
-  Modal,
 } from 'native-base';
-import axios from 'axios';
 
 import AuthLayout from '../../layout/AuthLayout';
+import {SERVICE} from '../../services/services';
+import CustomModal from '../../components/CustomModal';
 
 const Login = ({navigation}) => {
   const [formData, setData] = useState({username: '', password: ''});
-  const [errors, setErrors] = useState({});
   const [isDisableButton, setIsDisableButton] = useState(true);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -33,41 +32,33 @@ const Login = ({navigation}) => {
     }
   }, [formData]);
 
+  const closeModal = () => {
+    setShowModal(false);
+    setModalMessage('');
+  };
+
   const handleLogin = async () => {
     setIsButtonLoading(true);
-
-    const apiUrl =
-      'http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000/guest/login/';
 
     const data = JSON.stringify({
       user_name: formData.username,
       password: formData.password,
     });
 
-    axios
-      .post(apiUrl, data, {
-        headers: {
-          'content-type': 'application/json',
-          Accept: 'application/json',
-          'x-applicationid': '1',
-        },
-      })
+    await SERVICE.loginRequest(data)
       .then(response => {
-        console.log('response: ', response);
+        setIsButtonLoading(false);
         if (response.status === 200) {
-          setIsButtonLoading(false);
           navigation.navigate('HomePage');
         } else {
-          setModalMessage('Username or password is not correct');
+          setModalMessage(response.return);
           setShowModal(true);
-          setIsButtonLoading(false);
         }
       })
-      .catch(error => {
-        setModalMessage('Username or password is not correct');
+      .catch(() => {
+        setModalMessage('Beklenmedik bir hata oluştu!');
         setShowModal(true);
         setIsButtonLoading(false);
-        console.log('error: ', error);
       });
   };
 
@@ -145,25 +136,11 @@ const Login = ({navigation}) => {
             </Link>
           </HStack>
         </VStack>
-        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-          <Modal.Content maxWidth="400px">
-            <Modal.CloseButton />
-            <Modal.Header>Info</Modal.Header>
-            <Modal.Body>
-              <Text style={{textAlign: 'center'}}>{modalMessage}</Text>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button.Group space={2}>
-                <Button
-                  onPress={() => {
-                    setShowModal(false);
-                  }}>
-                  Ok
-                </Button>
-              </Button.Group>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
+        <CustomModal
+          showModal={showModal}
+          closeModal={closeModal}
+          message={modalMessage}
+        />
       </Box>
     </AuthLayout>
   );

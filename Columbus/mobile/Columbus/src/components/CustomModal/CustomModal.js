@@ -1,4 +1,5 @@
-import {Modal, Text} from 'native-base';
+import React from 'react';
+import {Modal, Text, Button} from 'native-base';
 
 const CustomModal = props => {
   return (
@@ -7,7 +8,7 @@ const CustomModal = props => {
         <Modal.CloseButton />
         <Modal.Header>Info</Modal.Header>
         <Modal.Body>
-          <Text>{props.message}</Text>
+          <Text style={{textAlign: 'center'}}>{props.message}</Text>
         </Modal.Body>
         <Modal.Footer>
           <Button.Group space={2}>
