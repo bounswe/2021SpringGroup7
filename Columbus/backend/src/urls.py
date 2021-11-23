@@ -15,13 +15,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
+from rest_framework.schemas import get_schema_view
+from rest_framework_swagger.views import get_swagger_view
+
 from . import views
 
+schema_view = get_swagger_view(title='API Documentation')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('test/',include('test.urls')),
     path('user/',include('user.urls')),
     path('guest/',include('guest.urls')),
-    path('',views.home)
+    path('docs/', schema_view),
+    path('openapi/', get_schema_view(
+        title="Your Project",
+        description="API for all things …",
+        version="1.0.0"
+    ), name='openapi-schema'),
 
 ]
