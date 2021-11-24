@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 export const API_INSTANCE = axios.create({
+  baseURL: 'http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000',
   withCredentials: true,
+  timeout: 1000 * 2,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -9,12 +11,32 @@ export const API_INSTANCE = axios.create({
   },
 });
 
-const apiUrl =
-  'http://ec2-18-197-57-123.eu-central-1.compute.amazonaws.com:8000';
-
-export const loginRequest = data => {
-  console.log('asdasdasd');
-  return API_INSTANCE.post(`${apiUrl}/guest/login/`, data)
-    .then(result => result)
-    .catch(error => error);
+const handleResponseInterceptor = ({status, data, ...response}) => {
+  if (status >= 200) {
+    return {
+      status,
+      ...data,
+    };
+  }
+  return {
+    status,
+    ...data,
+  };
 };
+
+const errorInterceptor = error => {
+  const status = error.response?.status;
+  const data = error.response?.data;
+  if (status < 500) {
+    return {
+      status,
+      ...data,
+    };
+  }
+  return Promise.reject(error);
+};
+
+API_INSTANCE.interceptors.response.use(
+  handleResponseInterceptor,
+  errorInterceptor,
+);

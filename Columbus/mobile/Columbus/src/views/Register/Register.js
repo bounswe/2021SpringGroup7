@@ -15,10 +15,9 @@ import axios from 'axios';
 
 import AuthLayout from '../../layout/AuthLayout';
 import CustomModal from '../../components/CustomModal';
+import {SERVICE} from '../../services/services';
 
 const Register = ({navigation}) => {
-  const url =
-    'http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000/guest/register/';
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -45,7 +44,7 @@ const Register = ({navigation}) => {
     setErrors('');
   };
 
-  const sendRequest = () => {
+  const sendRequest = async () => {
     const params = JSON.stringify({
       user_name: username,
       user_email: email,
@@ -54,37 +53,26 @@ const Register = ({navigation}) => {
       first_name: '',
       last_name: '',
     });
-    console.log(params);
 
-    axios
-      .post(url, params, {
-        headers: {
-          'content-type': 'application/json',
-          Accept: 'application/json',
-          'x-applicationid': '1',
-        },
-      })
+    await SERVICE.registerRequest(params)
       .then(response => {
-        console.log('response: ', response.status);
+        setIsButtonLoading(false);
         if (response.status === 200) {
-          setModalMessage('Successfully Register!');
+          setModalMessage(response.return);
           handleResetAllState();
         } else {
-          setModalMessage('Register Failed!');
+          setModalMessage(response.return);
         }
         setShowModal(true);
-        setIsButtonLoading(false);
       })
-      .catch(error => {
-        // console.log(error);
-        setIsButtonLoading(false);
+      .catch(() => {
+        setModalMessage('Beklenmedik bir hata oluştu!');
         setShowModal(true);
-        setModalMessage('Register Failed!');
+        setIsButtonLoading(false);
       });
   };
 
   const validate = () => {
-    setIsButtonLoading(true);
     console.log(errors);
     temp = errors;
     if (username === undefined || username.length < 3) {
@@ -109,6 +97,7 @@ const Register = ({navigation}) => {
       temp.email == false &&
       temp.password == false
     ) {
+      setIsButtonLoading(true);
       sendRequest();
     }
     setRender(!render);
@@ -116,6 +105,11 @@ const Register = ({navigation}) => {
   };
   const getErrors = () => {
     return errors;
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setModalMessage('');
   };
 
   return (
@@ -166,7 +160,9 @@ const Register = ({navigation}) => {
           </FormControl.ErrorMessage>
         </FormControl>
 
-        <Button onPress={() => validate()}>Register</Button>
+        <Button onPress={() => validate()} isLoading={isButtonLoading}>
+          Register
+        </Button>
         <HStack mt="6" justifyContent="center">
           <Text
             fontSize="sm"
@@ -186,25 +182,11 @@ const Register = ({navigation}) => {
             Sign In
           </Link>
         </HStack>
-        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-          <Modal.Content maxWidth="400px">
-            <Modal.CloseButton />
-            <Modal.Header>Info</Modal.Header>
-            <Modal.Body>
-              <Text style={{textAlign: 'center'}}>{modalMessage}</Text>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button.Group space={2}>
-                <Button
-                  onPress={() => {
-                    setShowModal(false);
-                  }}>
-                  Ok
-                </Button>
-              </Button.Group>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
+        <CustomModal
+          showModal={showModal}
+          closeModal={closeModal}
+          message={modalMessage}
+        />
       </Box>
     </AuthLayout>
   );
