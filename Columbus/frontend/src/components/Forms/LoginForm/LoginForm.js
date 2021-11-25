@@ -57,7 +57,7 @@ const LoginForm = ({ handleClose, showError}) => {
         }
         /> 
         <div>
-        {showError ? <p className={classes.error}>Email or Password is wrong!</p> : null}
+        {showError ? <p className={classes.error}>Username or Password is wrong!</p> : null}
         <Button 
         type = "submit"
         variant = "contained"
