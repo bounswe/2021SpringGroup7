@@ -2,6 +2,7 @@ import * as React from 'react';
 import columbusLogo from '../../assets/logo.svg';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import MessageDialog from '../../components/Dialogs/MessageDialog'
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -30,6 +31,11 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
+  const [ message, setMessage] = React.useState('');
+  const [ openRegister, setOpenRegister] = React.useState(false);
+  const handleCloseRegister = () => {
+		setOpenRegister(false);
+		};
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -48,7 +54,8 @@ export default function SignUp() {
 	}
 	)
 	.catch((error) => {
-		
+		setMessage(error.message)
+		setOpenRegister(true)
 	}).finally(()=>{
 	});
   };
@@ -129,7 +136,7 @@ export default function SignUp() {
               <Grid item xs={12}>
                 <FormControlLabel
                   control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
+                  label="I agree to the Terms and Conditions."
                 />
               </Grid>
             </Grid>
@@ -143,7 +150,7 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
@@ -151,6 +158,7 @@ export default function SignUp() {
           </Box>
         </Box>
         <Copyright sx={{ mb: 2,mt: 2}} />
+        <MessageDialog open={openRegister} handleClose={handleCloseRegister} txt={message} />
       </Container>
     </ThemeProvider>
   );
