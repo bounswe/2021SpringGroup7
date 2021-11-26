@@ -28,7 +28,21 @@ function Copyright(props) {
   );
 }
 
-const theme = createTheme();
+
+const { palette } = createTheme();
+const { augmentColor } = palette;
+const createColor = (mainColor) => augmentColor({ color: { main: mainColor } });
+const theme = createTheme({
+  palette: {
+    brown: createColor('#a67c52'),
+    green: createColor('#009245'),
+    darkGreen: createColor('#007c3b'),
+    blue: createColor('#0071bc'),
+    darkBlue: createColor('#0060a0'),
+    pink: createColor('#f5e1dc'),
+    grey: createColor('#6c746e'),
+  },
+});
 
 export default function SignUp() {
   const [ message, setMessage] = React.useState('');
@@ -73,7 +87,7 @@ export default function SignUp() {
         >
         <img src={columbusLogo}  alt="logo" height = "100" />
           
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5" style={{color:"#a67c52"}}>
             Sign up
           </Typography>
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -141,6 +155,7 @@ export default function SignUp() {
               </Grid>
             </Grid>
             <Button
+              color="blue"
               type="submit"
               fullWidth
               variant="contained"
