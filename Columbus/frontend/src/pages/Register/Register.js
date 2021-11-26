@@ -2,7 +2,7 @@ import * as React from 'react';
 import columbusLogo from '../../assets/logo.svg';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import MessageDialog from '../../components/Dialogs/MessageDialog'
+import MessageDialog from '../../components/Dialogs/MessageDialog/MessageDialog'
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';

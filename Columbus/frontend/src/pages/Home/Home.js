@@ -63,6 +63,7 @@ function Home() {
   useEffect(() => {
         setLoading(false);
         setPosts([post1,post2]);
+        document.title="Columbus"
   }, []);
 
   const renderEmptyPost = () => {
