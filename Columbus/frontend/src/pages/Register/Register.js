@@ -1,132 +1,157 @@
-import React, { useState } from 'react';
-import MessageDialog from '../../components/Dialogs/MessageDialog'
-import { makeStyles } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-var API_BASE = 'http://ec2-18-197-57-123.eu-central-1.compute.amazonaws.com:8000';
-if (process.env.NODE_ENV === 'development') {
-	API_BASE = 'http://localhost:8000';
+import * as React from 'react';
+import columbusLogo from '../../assets/logo.svg';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+var API_BASE = 'http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000';
+function Copyright(props) {
+  return (
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+      {'Copyright © '}
+      <Link color="inherit" href="https://github.com/bounswe/2021SpringGroup7">
+        Columbus
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
 }
-const useStyles = makeStyles((theme) => ({
-	root: {
-		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'center',
-		alignItems: 'center',
-		padding: theme.spacing(2),
 
-		'& .MuiTextField-root': {
-			margin: theme.spacing(1),
-			width: '300px',
-		},
-		'& .MuiButtonBase-root': {
-			margin: theme.spacing(2),
-		},
-	},
-}));
+const theme = createTheme();
 
-const Form = ({ handleClose }) => {
-	const classes = useStyles();
-	// create state variables for each input
-	const [ firstName, setFirstName ] = useState('');
-	const [ userName, setUserName ] = useState('');
-	const [ lastName, setLastName ] = useState('');
-	const [ email, setEmail ] = useState('');
-	const [ password, setPassword ] = useState('');
-	const [ message, setMessage] = useState('');
-	const [ openRegister, setOpenRegister] = useState(false);
-	const [ isLoaded, setIsLoading] = useState(false);
-	const handleCloseRegister = () => {
-		setOpenRegister(false);
-		handleClose();
-		};
-	const handleSubmit = (e) => {
-		setIsLoading(true);
-		e.preventDefault();
-
-		const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({'user_name': userName,  'first_name':firstName, 'last_name':lastName, 'user_email':email, 'password':password})
-        };
-        fetch(API_BASE + '/guest/register/', requestOptions)
-        .then(res => {
-			if(res.ok) {
-				setMessage('Successfull Register! \n You should login')
-				setOpenRegister(true)
-			}
-			return res.json().then(text => {
-				throw new Error(text['return'])})
-		}
-		)
-        .catch((error) => {
-			  setMessage(error.message)
-			  setOpenRegister(true)
-			
-        }).finally(()=>{
-			setIsLoading(false)
-		});;
-		
+export default function SignUp() {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    // eslint-disable-next-line no-console
+    const requestOptions = {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({'user_name': data.get('userName'),  'first_name':data.get('firstName'), 'last_name':data.get('lastName'), 'user_email':data.get('email'), 'password':data.get('password')})
 	};
+	fetch(API_BASE + '/guest/register/', requestOptions)
+	.then(res => {
+		if(res.ok) {
+		}
+		return res.json().then(text => {
+			throw new Error(text['return'])})
+	}
+	)
+	.catch((error) => {
+		
+	}).finally(()=>{
+	});
+  };
 
-	return (
-		<form className={classes.root} onSubmit={handleSubmit} showError={message} >
-			<TextField
-				label="User Name"
-				variant="filled"
-				required
-				value={userName}
-				onChange={(e) => setUserName(e.target.value)}
-			/>
-			<TextField
-				label="First Name"
-				variant="filled"
-				required
-				value={firstName}
-				onChange={(e) => setFirstName(e.target.value)}
-			/>
-			<TextField
-				label="Last Name"
-				variant="filled"
-				required
-				value={lastName}
-				onChange={(e) => setLastName(e.target.value)}
-			/>
-			<TextField
-				label="Email"
-				variant="filled"
-				type="email"
-				required
-				value={email}
-				onChange={(e) => setEmail(e.target.value)}
-			/>
-			<TextField
-				label="Password"
-				variant="filled"
-				type="password"
-				required
-				value={password}
-				onChange={(e) => setPassword(e.target.value)}
-			/>
-			<div>
-				<Button variant="contained" onClick={handleClose}>
-					Cancel 
-				</Button>
-				<Button type="submit" variant="contained" color="primary">
-					Signup 
-				</Button>
-			</div>
-			{isLoaded ? <p >Loading...</p> : null}
-			<MessageDialog open={openRegister} handleClose={handleCloseRegister} txt={message} />  
-		</form>
-	);
-};
-function isJson(str) {
-    try {
-        JSON.parse(str);
-    } catch (e) {
-        return false;
-    }
-    return true;
+  return (
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+        <img src={columbusLogo}  alt="logo" height = "100" />
+          
+          <Typography component="h1" variant="h5">
+            Sign up
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+			<Grid item xs={12} >
+                <TextField
+                  autoComplete="user-name"
+                  name="userName"
+                  required
+                  fullWidth
+                  id="userName"
+                  label="Username"
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  autoComplete="given-name"
+                  name="firstName"
+                  required
+                  fullWidth
+                  id="firstName"
+                  label="First Name"
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="lastName"
+                  label="Last Name"
+                  name="lastName"
+                  autoComplete="family-name"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  type="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                />
+              </Grid>
+              <Grid item xs={12} >
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                />
+				
+              </Grid>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={<Checkbox value="allowExtraEmails" color="primary" />}
+                  label="I want to receive inspiration, marketing promotions and updates via email."
+                />
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign Up
+            </Button>
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                <Link href="#" variant="body2">
+                  Already have an account? Sign in
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+        <Copyright sx={{ mb: 2,mt: 2}} />
+      </Container>
+    </ThemeProvider>
+  );
 }
-export default Form;
