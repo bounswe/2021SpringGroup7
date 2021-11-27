@@ -12,10 +12,12 @@ import {
   Image,
   Center,
 } from 'native-base';
+import {useMutation} from 'react-query';
 
 import AuthLayout from '../../layout/AuthLayout';
 import {SERVICE} from '../../services/services';
 import CustomModal from '../../components/CustomModal';
+import {useAuth} from '../../context/AuthContext';
 
 const Login = ({navigation}) => {
   const [formData, setData] = useState({username: '', password: ''});
@@ -23,6 +25,8 @@ const Login = ({navigation}) => {
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+
+  const {login} = useAuth();
 
   useEffect(() => {
     if (formData?.username.length > 3 && formData?.password.length > 2) {
@@ -37,6 +41,20 @@ const Login = ({navigation}) => {
     setModalMessage('');
   };
 
+  const submitLogin = useMutation(params => SERVICE.loginRequest({params}), {
+    onSuccess(response) {
+      login();
+      setIsButtonLoading(false);
+      // navigation.navigate('HomePage');
+    },
+    onError({response}) {
+      console.log('res: ', response);
+      setIsButtonLoading(false);
+      setModalMessage(response.data.return);
+      setShowModal(true);
+    },
+  });
+
   const handleLogin = async () => {
     setIsButtonLoading(true);
 
@@ -44,22 +62,14 @@ const Login = ({navigation}) => {
       user_name: formData.username,
       password: formData.password,
     });
-
-    await SERVICE.loginRequest(data)
-      .then(response => {
-        setIsButtonLoading(false);
-        if (response.status === 200) {
-          navigation.navigate('HomePage');
-        } else {
-          setModalMessage(response.return);
-          setShowModal(true);
-        }
-      })
-      .catch(() => {
-        setModalMessage('Beklenmedik bir hata oluştu!');
-        setShowModal(true);
-        setIsButtonLoading(false);
-      });
+    try {
+      await submitLogin.mutateAsync(data);
+    } catch (e) {
+      console.log('e: ', e);
+      setIsButtonLoading(false);
+      setModalMessage('Beklenmedik bir hata oluştu!');
+      setShowModal(true);
+    }
   };
 
   return (
@@ -109,7 +119,6 @@ const Login = ({navigation}) => {
             />
           </FormControl>
           <Button
-            disabled={isDisableButton}
             isDisabled={isDisableButton}
             isLoading={isButtonLoading}
             mt="2"

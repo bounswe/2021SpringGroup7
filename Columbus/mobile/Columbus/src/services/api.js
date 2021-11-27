@@ -1,4 +1,8 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
+import STATUS_CODES from '../constants/statusCodes';
+import {AUTH_KEY, TEMP_MESSAGE_KEY} from '../constants/storageKeys';
 
 export const API_INSTANCE = axios.create({
   baseURL: 'http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000',
@@ -11,32 +15,25 @@ export const API_INSTANCE = axios.create({
   },
 });
 
-const handleResponseInterceptor = ({status, data, ...response}) => {
-  if (status >= 200) {
-    return {
-      status,
-      ...data,
-    };
-  }
-  return {
-    status,
-    ...data,
-  };
+const redirectToLogin = navigation => {
+  navigation.navigate('Login');
 };
 
-const errorInterceptor = error => {
+const errorInterceptor = async error => {
   const status = error.response?.status;
   const data = error.response?.data;
-  if (status < 500) {
-    return {
-      status,
-      ...data,
-    };
+  if (status === STATUS_CODES.UNAUTHORIZED) {
+    const navigation = useNavigation();
+    await AsyncStorage.setItem(
+      TEMP_MESSAGE_KEY,
+      data.return || 'Beklenmedik bir hata oluştu.',
+    );
+
+    await AsyncStorage.removeItem(AUTH_KEY);
+
+    redirectToLogin(navigation);
   }
   return Promise.reject(error);
 };
 
-API_INSTANCE.interceptors.response.use(
-  handleResponseInterceptor,
-  errorInterceptor,
-);
+API_INSTANCE.interceptors.response.use(undefined, errorInterceptor);
