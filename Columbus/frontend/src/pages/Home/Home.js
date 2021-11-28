@@ -65,8 +65,15 @@ function Home() {
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
     
   const fetchData = () => {
+
+    if (posts.length == dummyPosts.length) {
+        setHasMore(false);
+        return;
+    }
+
     setTimeout(() => {
     setPosts(dummyPosts.slice(0,posts.length+2));
       }, 600);
@@ -111,43 +118,26 @@ function Home() {
   return (
     <Wrapper>
       <InfiniteScroll
-            dataLength={posts.length} // 20
-            next={fetchData}
-            hasMore={true}
-
-            loader={<h4>Loading...</h4>}
-            endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-            }
-
-          
+        dataLength={posts.length} // 20
+        next={fetchData}
+        hasMore={hasMore}
+        loader={<h4>Loading...</h4>}
+        endMessage={
+                    <p style={{ textAlign: 'center' }}>
+                      <b>You have seen all of your stories!</b>
+                    </p>
+                    } 
         >
         {posts.map((item) => {
-                    return (
-                      <Post post={item} curUser={"Salih Yılmaz"}></Post>
+                                return (
+                                  <Post post={item} curUser={"Salih Yılmaz"}></Post>
 
-                    );
-                  })}
+                                );
+                              })
+          }
       </InfiniteScroll>
   </Wrapper>
 );
-  /*
-  return (
-    <Wrapper>
-      <Box className={classes.body}>
-         {posts.map((item) => {
-                return (
-                  <Post post={item} curUser={"Salih Yılmaz"}></Post>
-
-                );
-              })}
-              
-
-      </Box>
-    </Wrapper>
-  );*/
 }
 
 export default Home;
