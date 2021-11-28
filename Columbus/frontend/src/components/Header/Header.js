@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import columbusLogo from '../../columbus-logo.svg';
 
 import { makeStyles, styled } from "@material-ui/core/styles";
-import { AppBar, Box, InputBase, Toolbar, Button, ButtonGroup, Link } from "@material-ui/core";
+import { AppBar, Box, InputBase, Toolbar, Button, ButtonGroup, Link, Typography } from "@material-ui/core";
 
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
@@ -193,9 +193,12 @@ const renderMenu = (
       <Toolbar className={classes.toolbar}>
         
         <Link
-            href={`/`}
+            href={`/Home`}
           >
-        <img src={columbusLogo} className={classes.logo} alt="logo" />
+            <Button>
+              <img src={columbusLogo} className={classes.logo} alt="logo" />
+            </Button>
+        
         </Link>
 
          <Search>
@@ -224,39 +227,40 @@ const renderMenu = (
         <ButtonGroup variant="text">
           <Tooltip title="Home Page" arrow>
             <Button
-              variant="contained"
-              size="large"
+              variant="outlined"
+              size="medium"
               aria-label="home page of the current user"
               color="default"
               edge="start"
               href="/"
               className={classes.navigationButtons}
-            >
-              <HomeIcon />
+              startIcon={<HomeIcon />}>
+              Home
             </Button>
           </Tooltip>
 
           <Tooltip title="Explore" arrow>
             <Button
               variant="contained"
-              size="large"
+              size="medium"
               aria-label="explore"
               color="default"
               href="/"
-            >
-              <ExploreIcon />
+              startIcon={<ExploreIcon />}>
+              Explore
             </Button>
           </Tooltip>
 
           <Tooltip title="Add Story" arrow>
             <Button
               variant="contained"
-              size="large"
+              size="medium"
               aria-label="explore"
               color="default"
               href="/"
+              startIcon={<AddBoxRoundedIcon />}
             >
-              <AddBoxRoundedIcon />
+              Share
             </Button>
           </Tooltip>
         
@@ -265,14 +269,12 @@ const renderMenu = (
             color="default" 
             variant="contained"
             onClick={handleProfileMenuOpen}
+            startIcon={ <Badge badgeContent={1} color="error">
+                              <Avatar sx={{ width: 25, height: 25 }}>S</Avatar>
+                        </Badge>}
             >
-               
-              <Badge badgeContent={1} color="error">
-                <Tooltip title="Salih Yılmaz" arrow>
-                  <Avatar sx={{ width: 25, height: 25 }}>S</Avatar>
-                </Tooltip>
-              </Badge>
-
+              
+              <Typography>Salih Yılmaz</Typography>
               <IconButton
               size="small"
               aria-label="account of current user"
