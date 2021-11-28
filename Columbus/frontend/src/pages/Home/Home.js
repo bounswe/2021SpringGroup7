@@ -4,6 +4,7 @@ import { Box, makeStyles, CircularProgress, Typography } from "@material-ui/core
 import api from "../../services/post";
 import Wrapper from "../../components/Wrapper/Wrapper";
 import Post from "../../components/Post/Post";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -42,12 +43,34 @@ const useStyles = makeStyles((theme) => ({
                   tags: ['cat','love','terminal'],
                   multimedia: ['https://images.pexels.com/photos/8264394/pexels-photo-8264394.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940']   
                   }
+    const post3 = {owner_username : 'tarkankuzu', 
+                  story:'I love Haydarpasa Cat. Etiam volutpat ornare arcu, eu tincidunt massa auctor et. Pellentesque a congue diam, eu euismod eros. Quisque felis massa, posuere ultricies eros ut, scelerisque aliquam tortor. Pellentesque et hendrerit nunc.  Morbi est ipsum, viverra a ullamcorper quis, tempor quis sem.',
+                  start: '01.01.1999', 
+                  end: '01.02.1999',
+                  title: 'Cats are Amazing',
+                  tags: ['cat','love','terminal'],
+                  multimedia: ['https://images.pexels.com/photos/8264394/pexels-photo-8264394.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940']   
+                  }
+    const post4 = {owner_username : 'tarkankuzu', 
+                  story:'I love Haydarpasa Cat. Etiam volutpat ornare arcu, eu tincidunt massa auctor et. Pellentesque a congue diam, eu euismod eros. Quisque felis massa, posuere ultricies eros ut, scelerisque aliquam tortor. Pellentesque et hendrerit nunc.  Morbi est ipsum, viverra a ullamcorper quis, tempor quis sem.',
+                  start: '01.01.1999', 
+                  end: '01.02.1999',
+                  title: 'Cats are Amazing',
+                  tags: ['cat','love','terminal'],
+                  multimedia: ['https://images.pexels.com/photos/8264394/pexels-photo-8264394.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940']   
+                  }
+    const dummyPosts = [post1,post2,post3,post4]
 
 function Home() {
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
     
+  const fetchData = () => {
+    setTimeout(() => {
+    setPosts(dummyPosts.slice(0,posts.length+2));
+      }, 600);
+  };
                   /*
   useEffect(() => {
     api
@@ -62,7 +85,7 @@ function Home() {
 
   useEffect(() => {
         setLoading(false);
-        setPosts([post1,post2]);
+        setPosts(dummyPosts.slice(0,2));   //[post1,post2]);
         document.title="Columbus"
   }, []);
 
@@ -87,6 +110,32 @@ function Home() {
 
   return (
     <Wrapper>
+      <InfiniteScroll
+            dataLength={posts.length} // 20
+            next={fetchData}
+            hasMore={true}
+
+            loader={<h4>Loading...</h4>}
+            endMessage={
+            <p style={{ textAlign: 'center' }}>
+              <b>Yay! You have seen it all</b>
+            </p>
+            }
+
+          
+        >
+        {posts.map((item) => {
+                    return (
+                      <Post post={item} curUser={"Salih Yılmaz"}></Post>
+
+                    );
+                  })}
+      </InfiniteScroll>
+  </Wrapper>
+);
+  /*
+  return (
+    <Wrapper>
       <Box className={classes.body}>
          {posts.map((item) => {
                 return (
@@ -98,7 +147,7 @@ function Home() {
 
       </Box>
     </Wrapper>
-  );
+  );*/
 }
 
 export default Home;
