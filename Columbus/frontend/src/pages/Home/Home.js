@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
                   tags: ['cat','love','terminal'],
                   multimedia: ['https://images.pexels.com/photos/8264394/pexels-photo-8264394.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940']   
                   }
-    const dummyPosts = [] //[post1,post2,post3,post4]
+    const dummyPosts = [post1,post2,post3,post4] // [] 
 
 function Home() {
   const classes = useStyles();
@@ -95,8 +95,6 @@ function Home() {
   useEffect(() => {
         setLoading(false);
         setPosts(dummyPosts.slice(0,2));   //[post1,post2]);
-        console.log(posts)
-        console.log(posts)
         document.title="Columbus"
   }, []);
 
@@ -122,9 +120,10 @@ function Home() {
   return (
     <Wrapper>
       {
-      posts.length == 0 ? <p style={{ textAlign: 'center' }}>You do not have any stories to view yet. 
-                                                            <NavLink to="/Home">Explore</NavLink> 
-                          </p> 
+      posts.length == 0 ? <Box className={classes.emptyBody}>
+                              <Typography>You do not have any stories to view.</Typography>
+                              <NavLink to="/Home">Explore Stories</NavLink> 
+                          </Box>
                         : <InfiniteScroll
                               dataLength={posts.length} // 20
                               next={fetchData}
