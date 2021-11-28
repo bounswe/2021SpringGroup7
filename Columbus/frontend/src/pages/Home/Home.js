@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { NavLink } from 'react-router-dom'
+
 import { Box, makeStyles, CircularProgress, Typography } from "@material-ui/core";
 
 import api from "../../services/post";
@@ -59,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
                   tags: ['cat','love','terminal'],
                   multimedia: ['https://images.pexels.com/photos/8264394/pexels-photo-8264394.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940']   
                   }
-    const dummyPosts = [post1,post2,post3,post4]
+    const dummyPosts = [] //[post1,post2,post3,post4]
 
 function Home() {
   const classes = useStyles();
@@ -93,6 +95,8 @@ function Home() {
   useEffect(() => {
         setLoading(false);
         setPosts(dummyPosts.slice(0,2));   //[post1,post2]);
+        console.log(posts)
+        console.log(posts)
         document.title="Columbus"
   }, []);
 
@@ -117,26 +121,31 @@ function Home() {
 
   return (
     <Wrapper>
-      <InfiniteScroll
-        dataLength={posts.length} // 20
-        next={fetchData}
-        hasMore={hasMore}
-        loader={<h4>Loading...</h4>}
-        endMessage={
-                    <p style={{ textAlign: 'center' }}>
-                      <b>You have seen all of your stories!</b>
-                    </p>
-                    } 
-        >
-        {posts.map((item) => {
-                                return (
-                                  <Post post={item} curUser={"Salih Yılmaz"}></Post>
+      {
+      posts.length == 0 ? <p style={{ textAlign: 'center' }}>You do not have any stories to view yet. 
+                                                            <NavLink to="/Home">Explore</NavLink> 
+                          </p> 
+                        : <InfiniteScroll
+                              dataLength={posts.length} // 20
+                              next={fetchData}
+                              hasMore={hasMore}
+                              loader={<h4>Loading...</h4>}
+                              endMessage={
+                                          <p style={{ textAlign: 'center' }}>
+                                            <b>You have seen all of your stories!</b>
+                                          </p>
+                                          } 
+                              >
+                              {posts.map((item) => {
+                                                      return (
+                                                        <Post post={item} curUser={"Salih Yılmaz"}></Post>
 
-                                );
-                              })
-          }
-      </InfiniteScroll>
-  </Wrapper>
+                                                      );
+                                                    })
+                                }
+                            </InfiniteScroll>
+      }
+    </Wrapper>
 );
 }
 
