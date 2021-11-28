@@ -1,25 +1,11 @@
 import axios from "axios";
+import {API_DEV_URL, API_PROD_URL} from "./application.json"
 
 export const API_INSTANCE = axios.create({
-  baseURL: "/api",
-  withCredentials: true,
+  baseURL: process.env.NODE_ENV==="production" ? API_PROD_URL : API_DEV_URL,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
-    "x-applicationid": "1",
   },
-  validateStatus: (status) => status < 500,
+  validateStatus: (status) => status>=200 && status < 300,
 });
-
-function handleResponseInterceptor({ status, data, ...response }) {
-  if (status === 401 || (data.error && data.error.code === 403)) {
-    if (data.error.code === 403) alert(data.error.message);
-  }
-
-  return {
-    success: status >= 200 && status < 500,
-    ...data,
-  };
-}
-
-API_INSTANCE.interceptors.response.use(handleResponseInterceptor);
