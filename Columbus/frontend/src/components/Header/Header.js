@@ -89,8 +89,8 @@ const useStyles = makeStyles((theme) => ({
   },
   logo: {
     padding: 10,
-    height: 80,
-    width: 120,
+    height: 90,
+    width: 130,
   },
   profilePic: {
     borderRadius: 50,
@@ -143,11 +143,11 @@ const renderMenu = (
     >
       <MenuItem onClick={handleMenuClose}>
          <IconButton
-              size="large"
+              size="small"
               aria-label="show 1 new notifications"
               color="default"  
             >
-              <Badge badgeContent={1} color="error">
+              <Badge badgeContent={0} color="error">
                 <NotificationsIcon />
               </Badge>
           </IconButton>
@@ -155,7 +155,7 @@ const renderMenu = (
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>
            <IconButton
-              size="large"
+              size="small"
               aria-label="account of current user"
               aria-controls={'primary-search-account-menu'}
               aria-haspopup="true"
@@ -167,7 +167,7 @@ const renderMenu = (
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>
            <IconButton
-              size="large"
+              size="small"
               aria-label="account settings"
               aria-haspopup="true"
               color="default"
