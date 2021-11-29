@@ -20,7 +20,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Wrapper = ({ children }) => {
+const Wrapper = ({ pageTitle, children }) => {
   const classes = useStyles();
   const [darkMode, setDarkMode] = useState(false);
 
@@ -41,7 +41,7 @@ const Wrapper = ({ children }) => {
       <Paper className={classes.root}>
         <Container maxWidth="lg">
           <Header
-            title="Home Page"
+            title={pageTitle}
             sections={sections}
             theme={darkMode}
             onChange={(theme) => setDarkMode(!theme)}

@@ -74,6 +74,8 @@ app.register_blueprint(likes.likes_bp)
 app.register_blueprint(search.search_bp)
 
 
+access_key = "3sKPGrmSrj112Z2Msu71wFyA-KIuIvyHEs6aJN4iMVA"
+
 db.users.insert_one({
         'username': 'ryan',
         'first_name': 'Randall',
@@ -88,7 +90,6 @@ db.users.insert_one({
         'followings': [],
         'savedPosts':[]
 })
-
 db.users.insert_one({
         'username': 'atainan',
         'first_name': 'ata',
@@ -100,7 +101,7 @@ db.users.insert_one({
         'postIds': [3, 5],
         'followRequests': [],
         'followers': [],
-        'followings': ['ryan'],
+        'followings': ['ryan','kadirelmaci'],
         'savedPosts':[]
 })
 db.users.insert_one({
@@ -113,7 +114,7 @@ db.users.insert_one({
         'isVisible': 'True',
         'postIds': [8],
         'followRequests': [],
-        'followers': [],
+        'followers': ['atainan'],
         'followings': [],
         'savedPosts':[]
 })
@@ -153,10 +154,10 @@ db.posts.insert_one({
         'location'  : 'Rome',
         'postDate'  : datetime.datetime(2020, 6, 10, 12, 00, 40, 2),
         'storyDate' : {'start': datetime.datetime(2010, 1, 1), 'end': datetime.datetime(2010, 4, 1)},
-        'multimedia': ['photo_link_1','photo_link_2'],
+        'multimedia': requests.get('https://api.unsplash.com/photos/random?client_id=' + access_key).json()["urls"]["regular"].split(),
         'tags'      : ['summer', 'bike'],
         'lastEdit'      : ' ' ,
-        'numberOfLikes': '3',
+        'numberOfLikes': 3,
         'numberOfComments': 2,
 })
 db.posts.insert_one({
@@ -167,12 +168,11 @@ db.posts.insert_one({
         'location'  : 'Ankara - Turkey',
         'postDate'  : datetime.datetime(2020, 6, 11, 19, 59, 40, 2),
         'storyDate' : {'start': datetime.datetime(2011, 1, 1), 'end': datetime.datetime(2011, 4, 1)},
-        'multimedia': ['photo_link_1'],
+        'multimedia': requests.get('https://api.unsplash.com/photos/random?client_id=' + access_key).json()["urls"]["regular"].split(),
         'tags'      : ['cat', 'strange'],
         'lastEdit'      : ' ' ,
-        'numberOfLikes': '2',
+        'numberOfLikes': 2,
         'numberOfComments': 1
-
 })
 db.posts.insert_one({
         'owner_username': 'atainan',
@@ -182,10 +182,10 @@ db.posts.insert_one({
         'location'  : 'Denmark',
         'postDate'  : datetime.datetime(2021, 8, 21, 16, 4, 42, 2),
         'storyDate' : {'start': datetime.datetime(2021, 1, 1), 'end': datetime.datetime(2021, 4, 1)},
-        'multimedia': ['photo_link_1','photo_link_2','photo_link_3'],
+        'multimedia': requests.get('https://api.unsplash.com/photos/random?client_id=' + access_key).json()["urls"]["regular"].split(),
         'tags'      : ['student'],
         'lastEdit'      : ' ' ,
-        'numberOfLikes': '2',
+        'numberOfLikes': 3,
         'numberOfComments': 2
 })
 db.posts.insert_one({
@@ -196,12 +196,11 @@ db.posts.insert_one({
         'location'  : 'Texas',
         'postDate'  : datetime.datetime(2020, 8, 23, 12, 59, 40, 2),
         'storyDate' : {'start': datetime.datetime(1980, 1, 1), 'end': datetime.datetime(1980, 1, 1)},
-        'multimedia': ['photo_link_1'],
+        'multimedia': requests.get('https://api.unsplash.com/photos/random?client_id=' + access_key).json()["urls"]["regular"].split(),
         'tags'      : ['nostalgic', 'childhood'],
         'lastEdit'      : ' ' ,
-        'numberOfLikes': '1',
+        'numberOfLikes': 1,
         'numberOfComments': 1
-
 })
 db.posts.insert_one({
         'owner_username': 'atainan',
@@ -211,13 +210,12 @@ db.posts.insert_one({
         'location'  : 'Bogazici University',
         'postDate'  : datetime.datetime(2021, 8, 21, 16, 4, 42, 2),
         'storyDate' : {'start': datetime.datetime(2017, 9,9), 'end': datetime.datetime(2017, 9,9)},
-        'multimedia': ['photo_link_1'],
+        'multimedia': requests.get('https://api.unsplash.com/photos/random?client_id=' + access_key).json()["urls"]["regular"].split(),
         'tags'      : ['college', 'life'],
         'lastEdit'      : ' ' ,
-        'numberOfLikes': '4',
+        'numberOfLikes': 4,
         'numberOfComments': 0
 })
-
 db.posts.insert_one({
         'owner_username': 'merverabia',
         'id'        : 6,
@@ -226,13 +224,12 @@ db.posts.insert_one({
         'location'  : 'Grönland',
         'postDate'  : datetime.datetime(2016, 2, 12, 19, 59, 40, 2),
         'storyDate' : {'start': datetime.datetime(2016, 2, 12), 'end': datetime.datetime(2016, 2, 12)},
-        'multimedia': ['photo_link_1','photo_link_2'],
+        'multimedia': requests.get('https://api.unsplash.com/photos/random?client_id=' + access_key).json()["urls"]["regular"].split(),
         'tags'      : ['northern', 'lights'],
         'lastEdit'      : ' ' ,
-        'numberOfLikes': '2',
+        'numberOfLikes': 2,
         'numberOfComments': 1
 })
-
 db.posts.insert_one({
         'owner_username': 'merverabia',
         'id'        : 7,
@@ -241,10 +238,10 @@ db.posts.insert_one({
         'location'  : 'Izmir',
         'postDate'  : datetime.datetime(2021, 5, 13, 12, 4, 40, 2),
         'storyDate' : {'start': datetime.datetime(2021, 1, 1), 'end': datetime.datetime(2021, 3, 1)},
-        'multimedia': ['photo_link_1'],
+        'multimedia': requests.get('https://api.unsplash.com/photos/random?client_id=' + access_key).json()["urls"]["regular"].split(),
         'tags'      : ['peace'],
         'lastEdit'      : ' ' ,
-        'numberOfLikes': '1',
+        'numberOfLikes': 1,
         'numberOfComments': 0
 })
 db.posts.insert_one({
@@ -255,10 +252,10 @@ db.posts.insert_one({
         'location'  : 'Istanbul',
         'postDate'  : datetime.datetime(2020, 9, 21, 12, 4, 40, 2),
         'storyDate' : {'start': datetime.datetime(2018, 1, 5), 'end': datetime.datetime(2017, 3, 5)},
-        'multimedia': ['photo_link_1'],
+        'multimedia': requests.get('https://api.unsplash.com/photos/random?client_id=' + access_key).json()["urls"]["regular"].split(),
         'tags'      : ['fun'],
         'lastEdit'      : ' ' ,
-        'numberOfLikes': '2',
+        'numberOfLikes': 2,
         'numberOfComments': 1
 })
 db.posts.insert_one({
@@ -269,10 +266,10 @@ db.posts.insert_one({
         'location'  : 'Bogazici University',
         'postDate'  : datetime.datetime(2021, 7, 13, 12, 4, 40, 2),
         'storyDate' : {'start': datetime.datetime(2021, 6, 1), 'end': datetime.datetime(2017, 6, 1)},
-        'multimedia': ['photo_link_1','photo_link_2'],
+        'multimedia': requests.get('https://api.unsplash.com/photos/random?client_id=' + access_key).json()["urls"]["regular"].split(),
         'tags'      : ['graduation'],
         'lastEdit'      : ' ' ,
-        'numberOfLikes': '3',
+        'numberOfLikes': 3,
         'numberOfComments': 3
 })
 

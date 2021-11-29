@@ -9,22 +9,21 @@ from database import mongo
 import requests
 from flasgger import swag_from
 # from flask_cors import CORS
-
-
 story_bp = Blueprint('Story', __name__)
 # CORS(story_bp)
 # cors = CORS(story_bp, resources={r"/*": {"origins": "*"}})
-
-
 @story_bp.route('/api/story/create',  methods=['POST'])
 @swag_from('../../apidocs/story/createStory.yml')
 def createStory(): 
     data = request.get_json()
     db = mongo.db
-    
     print(data)
     inputCheck(data)
     DBValidation(data)
+
+    access_key = "3sKPGrmSrj112Z2Msu71wFyA-KIuIvyHEs6aJN4iMVA"
+    responseOfRandomphoto = requests.get('https://api.unsplash.com/photos/random?client_id=' + access_key).json()
+    image_url = responseOfRandomphoto["urls"]["regular"]
     try:
         count=db.posts.find({}).count()
         dbresponse = db.posts.insert_one({
@@ -34,29 +33,20 @@ def createStory():
         'tags': data['tags'],
         #    'likes':[ObjectId(person) for person in data['likes']],
         #    'comments':[ObjectId(person) for person in data['comments']],
-        'multimedia': data['multimedia'],
+        'multimedia': image_url.split(),
         'owner_username': data['owner_username'],
         'location': data['location'],
         'postTime': datetime.datetime.utcnow(),
         'storyDate': data['storyDate'],
         'numberOfLikes': 0,
         'numberOfComments': 0,
-
         })
         updated = {'$push': { 'postIds':count+1
             }}
-
         db.users.update_one({'username':data['owner_username']},updated)
-       
-
-
         return ({'status':200,'id':(count+1)})
     except:
         abort(400,'DB error')
-    
-   
-
-        
 @story_bp.route('/api/story/<int:id>',  methods=['GET'])
 @swag_from('../../apidocs/story/getStory.yml')
 def getStory(id):
@@ -65,7 +55,6 @@ def getStory(id):
     if not dbResponse:
         abort(404,'get story info:story not found')
     return jsonify(dbResponse)
-
 def DBValidation(data):
     db = mongo.db
     if('owner_username' not in data):
@@ -78,8 +67,6 @@ def DBValidation(data):
     #         abort(400, 'create-story error: empty location')
     # else:
     #     isLocationExist=db.locations.find_one({'_id':  ObjectId(oid=data['location'])} )
-        
-
 def inputCheck(data):
     if ('location' not in data):
         abort(403, 'create-story error: empty location')
@@ -98,33 +85,23 @@ def inputCheck(data):
     if('location' not in data ):
         abort(403, 'create-story error: empty location')
     return(True)
-
 # WEATHER API 
 @story_bp.route('/api/story/weather/<int:id>',  methods=['GET'])
 def getWeatherInfo(id):
     db = mongo.db
     dbResponse = db.posts.find_one({'id': id}, {'_id': False})
-    
     if(not dbResponse):
         abort(404, 'get weather error: story not found ')
     location=db.locations.find_one({'_id':  ObjectId(oid=dbResponse['location'])} )
-
     if(not location):
         abort(404, 'get weather error: location not found ')
     longitude=location['longitude']
     latitude=location['latitude']
     apiResponse= requests.get('https://www.metaweather.com/api/location/search/?lattlong='+str(latitude)+ ','+str(longitude) ).json()
     apiLocationID=apiResponse[0]
-
     apiResponse=requests.get('https://www.metaweather.com/api/location/'+str(apiLocationID['woeid']))
     result=apiResponse.json()
     result=result['consolidated_weather']
-
     resultJson=[{'state':days['weather_state_name'],'img':'https://www.metaweather.com/static/img/weather/png/64/'+days['weather_state_abbr'] +'.png','temp':days['the_temp']} for days in result]
     resultJson=jsonify(resultJson)    
-
     return resultJson
-
-
-
-
