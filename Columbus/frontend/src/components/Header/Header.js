@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import columbusLogo from '../../assets/Columbus.svg';
+import columbusLogo from '../../columbus-logo.svg';
+import NotificationsDialog from "../Dialogs/NotificationsDialog/NotificationsDialog";
 
 import { makeStyles, styled } from "@material-ui/core/styles";
 import { AppBar, Box, InputBase, Toolbar, Button, ButtonGroup, Link, Typography } from "@material-ui/core";
@@ -23,6 +24,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import SettingsIcon from '@material-ui/icons/Settings';
 import AddBoxRoundedIcon from '@material-ui/icons/AddBoxRounded';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
+
 
 
 /*********************************************************** 
@@ -108,6 +110,7 @@ export default function Header(props) {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(null);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -119,10 +122,19 @@ export default function Header(props) {
     //handleMobileMenuClose();
   };
 
+  const handleNotificationsOpen = () => {
+    setIsNotificationsOpen(true);
+  }
+  const handleNotificationsClose = () => {
+    setIsNotificationsOpen(false);
+  }
+  
+
   const handleLogOut = () => {
     setAnchorEl(null);
     localStorage.removeItem("jwtToken");
   };
+
 const menuId = 'primary-search-account-menu';
 
 const renderMenu = (
@@ -141,7 +153,7 @@ const renderMenu = (
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>
+      <MenuItem onClick={handleNotificationsOpen}>
          <IconButton
               size="small"
               aria-label="show 1 new notifications"
@@ -153,6 +165,7 @@ const renderMenu = (
           </IconButton>
           Notifications
       </MenuItem>
+      
       <MenuItem onClick={handleMenuClose}>
            <IconButton
               size="small"
@@ -187,6 +200,8 @@ const renderMenu = (
         </MenuItem>
     </Menu>
   );
+
+
 
   return (
     <React.Fragment>
@@ -287,6 +302,13 @@ const renderMenu = (
       </AppBar>
       {renderMenu}
       </Box>
+      
+      <NotificationsDialog
+        notifications={[{'message':'Gandalf followed you!'},{'message':'Gandalf unfollowed you!'}]}
+        open={isNotificationsOpen}
+        onClose={handleNotificationsClose}
+      />
+
     </React.Fragment>
   );
 }
