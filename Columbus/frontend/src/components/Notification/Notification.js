@@ -1,6 +1,7 @@
 import React from 'react'
 
-import Paper from '@mui/material/Paper';
+import { Box } from "@material-ui/core";
+
 import Typography from '@mui/material/Typography';
 
 export default function Notification(props) {
@@ -8,10 +9,10 @@ export default function Notification(props) {
     const { notification } = props;
 
     return (
-        <Paper>
-            <Typography>
+        <Box>
+        <Typography>
                 {notification['message']}
-            </Typography>
-        </Paper>
+        </Typography>
+        </Box>
     )
 }
