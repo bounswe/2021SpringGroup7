@@ -4,19 +4,6 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import Login from "./pages/Login";
 import EmailConfirmation from "./pages/EmailConfirmationPage";
 import Home from "./pages/Home";
-// {
-//   "userId": 1,
-//     "id": 1,
-//       "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-//         "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
-// }
-
-var API_BASE = "http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000/test/hello/";
-
-if (process.env.NODE_ENV === "development") {
-  API_BASE = "http://localhost:8000/test/hello/";
-}
-
 
 function App() {
   const [Authenticated, setAuthenticated] = useState(false)

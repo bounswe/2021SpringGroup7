@@ -4,6 +4,7 @@ import Logo from '../../components/Logos/LogoWithText'
 import LoginForm from '../../components/Forms/LoginForm/LoginForm';
 import ModalDialog from '../Register/ModalDialog'
 import Button from "@material-ui/core/Button";
+import AUTHENTICATION_SERVICE from '../../services/authentication';
 
 const useStyles = makeStyles(theme => ({
     Applogo: {
@@ -26,12 +27,6 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-var API_BASE = "http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000";
-
-if (process.env.NODE_ENV === "development") {
-  API_BASE = "http://localhost:8000";
-}
-
 export default function Login({setAuthenticated}){
     const classes= useStyles();
     
@@ -47,29 +42,17 @@ export default function Login({setAuthenticated}){
     };
 
     const handleLogin = (username, password) => {
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({'user_name': username,  password})
-        };
-        fetch(API_BASE + '/guest/login/', requestOptions)
+        AUTHENTICATION_SERVICE.LOG_IN(username, password)
         .then(response => {
-            if(response.ok){
-                return response.json()
-            }
-            throw new Error(response.json()['return'])
-        })
-        .then(data => {
             setAuthenticated(true)
             localStorage.setItem('jwtToken', 'bearer ' + password);
         })
-        .catch((reason) => {
+        .catch((error) => {
             setError(true);
-            console.error(reason);
+            console.error(error.response.data.return);
         });
     
     };
-    
 
     return (
         <div className={classes.root}>

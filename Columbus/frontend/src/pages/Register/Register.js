@@ -14,7 +14,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-var API_BASE = 'http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000';
+import AUTHENTICATION_SERVICE from "../../services/authentication";
+
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -53,26 +54,17 @@ export default function SignUp() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    const requestOptions = {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({'user_name': data.get('userName'),  'first_name':data.get('firstName'), 'last_name':data.get('lastName'), 'user_email':data.get('email'), 'password':data.get('password')})
+    
+    AUTHENTICATION_SERVICE.REGISTER(JSON.stringify({'user_name': data.get('userName'),  'first_name':data.get('firstName'), 'last_name':data.get('lastName'), 'user_email':data.get('email'), 'password':data.get('password')}))
+    .then((res) => {
+          setMessage("Successfull Register! \n Please confirm your email!");
+          setOpenRegister(true);
+      })
+      .catch((error) => {
+        setMessage(error.response.data.return);
+        setOpenRegister(true);
+      })
 	};
-	fetch(API_BASE + '/guest/register/', requestOptions)
-	.then(res => {
-		if(res.ok) {
-		}
-		return res.json().then(text => {
-			throw new Error(text['return'])})
-	}
-	)
-	.catch((error) => {
-		setMessage(error.message)
-		setOpenRegister(true)
-	}).finally(()=>{
-	});
-  };
 
   return (
     <ThemeProvider theme={theme}>

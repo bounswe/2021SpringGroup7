@@ -1,3 +1,4 @@
 {
-  "API_URL": "http://flask:5000/api"
+  "API_PROD_URL": "http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000",
+  "API_DEV_URL": "http://ec2-18-197-57-123.eu-central-1.compute.amazonaws.com:8000"
 }
