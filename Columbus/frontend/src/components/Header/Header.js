@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import columbusLogo from '../../columbus-logo.svg';
+import columbusLogo from '../../assets/Columbus.svg';
 
 import { makeStyles, styled } from "@material-ui/core/styles";
 import { AppBar, Box, InputBase, Toolbar, Button, ButtonGroup, Link, Typography } from "@material-ui/core";
@@ -12,6 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import Tooltip from '@mui/material/Tooltip';
 import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
 
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -87,8 +88,9 @@ const useStyles = makeStyles((theme) => ({
     flexShrink: 0,
   },
   logo: {
-    height: 150,
-    width: 150,
+    padding: 10,
+    height: 80,
+    width: 120,
   },
   profilePic: {
     borderRadius: 50,
@@ -190,6 +192,7 @@ const renderMenu = (
     <React.Fragment>
       <Box sx={{ flexGrow: 1 }}>
       <AppBar className={classes.appbar}>
+      
       <Toolbar className={classes.toolbar}>
         
         <Link
@@ -223,26 +226,11 @@ const renderMenu = (
         
 
         <Box sx={{ flexGrow: 1 }} />
-
-        <ButtonGroup variant="text">
-          <Tooltip title="Home Page" arrow>
-            <Button
-              variant="outlined"
-              size="medium"
-              aria-label="home page of the current user"
-              color="default"
-              edge="start"
-              href="/"
-              className={classes.navigationButtons}
-              startIcon={<HomeIcon />}>
-              Home
-            </Button>
-          </Tooltip>
-
+        <Stack direction="row" spacing={1}>
           <Tooltip title="Explore" arrow>
             <Button
               variant="contained"
-              size="medium"
+              size="small"
               aria-label="explore"
               color="default"
               href="/"
@@ -254,7 +242,7 @@ const renderMenu = (
           <Tooltip title="Add Story" arrow>
             <Button
               variant="contained"
-              size="medium"
+              size="small"
               aria-label="explore"
               color="default"
               href="/"
@@ -265,13 +253,14 @@ const renderMenu = (
           </Tooltip>
         
           <Button 
-            size="medium"
+            size="small"
             color="default" 
             variant="contained"
             onClick={handleProfileMenuOpen}
-            startIcon={ <Badge badgeContent={1} color="error">
-                              <Avatar sx={{ width: 25, height: 25 }}>S</Avatar>
+            startIcon={ <Badge badgeContent={0} color="error">
+                              <Avatar sx={{ width: 30, height:30 }}>S</Avatar>
                         </Badge>}
+             style={{textTransform: 'none'}} 
             >
               
               <Typography>Salih Yılmaz</Typography>
@@ -284,10 +273,9 @@ const renderMenu = (
             >
               <KeyboardArrowDownIcon />
             </IconButton>  
-         </Button>
-        </ButtonGroup>
-
-      </Toolbar>
+          </Button>
+          </Stack>
+        </Toolbar>
 
       
       <Toolbar
