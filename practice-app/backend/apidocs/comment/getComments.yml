@@ -34,20 +34,20 @@ responses:
       $ref: '#/definitions/comments'
     examples:
       application/json:
-        comments: [{
+        comments: ['{
           "username": "atainan",
           "comment": "I love this post",
           "postId": 1,
           "date": "15/11/2021 11:15",
           "language": "en"
-          },
-          {
+          }',
+          '{
           "username": "ryan",
           "comment": "çok güzel bir hikaye",
           "postId": 2,
           "date": "15/11/2021 11:35",
           "language": "tr"
-        }]
+        }']
 
   404:
     description: Given post id is not in data base or there are not any comments for this post

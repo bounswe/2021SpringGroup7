@@ -8,7 +8,7 @@ home_bp = Blueprint('Home Page', __name__)
 CORS(home_bp)
 cors = CORS(home_bp, resources={r"/*": {"origins": "*"}})
 
-@home_bp.route('/api/home/<string:username>', methods=['GET'])
+@home_bp.route('/api/home/<string:username>/', methods=['GET'])
 @swag_from('../../apidocs/home/homePage.yml')
 def getHome(username):
 

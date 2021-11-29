@@ -10,7 +10,6 @@ flasgger==0.9.5
 Flask==2.0.1
 Flask-Cors==3.0.10
 Flask-PyMongo==2.3.0
-freezegun==1.1.0
 html-testRunner==1.2.1
 idna==2.10
 importlib-metadata==4.2.0

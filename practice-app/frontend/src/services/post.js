@@ -20,7 +20,6 @@ const POST_SERVICE = {
       }
     ),
   GET_COMMENTS: (data) => API_INSTANCE.get(`/post/${data}/comments`),
-  GET_LIKES: (postId) => API_INSTANCE.get(`/post/${postId}/likes`),
   CREATE_POST: (data) => API_INSTANCE.post("/story/create", data),
   CREATE_LOCATION: (data) => API_INSTANCE.post("/locations/create", data),
 };

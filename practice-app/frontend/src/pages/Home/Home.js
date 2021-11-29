@@ -55,7 +55,7 @@ function Home() {
 
   if (loading) {
     return (
-      <Wrapper pageTitle="Home Page">
+      <Wrapper>
         <Box className={classes.emptyBody}>
           <CircularProgress />
         </Box>
@@ -64,7 +64,7 @@ function Home() {
   }
 
   return (
-    <Wrapper pageTitle="Home Page">
+    <Wrapper>
       <Box className={classes.body}>
         {posts.length === 0 && renderEmptyPost()}
         {posts.length !== 0 &&

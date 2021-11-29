@@ -10,10 +10,10 @@ import {
   DialogTitle,
   Dialog,
   makeStyles,
-  Link
 } from "@material-ui/core";
 import PostCard from "../../components/Post";
 import api from "../../services/post";
+import CreatePostDialog from "../../components/CreatePost/index";
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
@@ -97,7 +97,7 @@ function OtherProfiles(props) {
 
   if (loading) {
     return (
-      <Wrapper pageTitle="Followings Profile Page">
+      <Wrapper>
         <Box className={classes.emptyBody}>
           <CircularProgress />
         </Box>
@@ -106,7 +106,7 @@ function OtherProfiles(props) {
   }
   return (
     <div>
-      <Wrapper pageTitle="Followings Profile Page">
+      <Wrapper>
         <Paper
           elevation={3}
           style={{
@@ -163,32 +163,30 @@ function OtherProfiles(props) {
                   </DialogTitle>
                   {following.map((item, index) => {
                     return (
-                      <Link href={`/profile/${item ? item : null}`}>
-                        <Container
-                          key={index}
+                      <Container
+                        key={index}
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          padding: "4%",
+                          textAlign: "center",
+                        }}
+                      >
+                        <Avatar
+                          alt="r b"
+                          src=""
+                          elevation={10}
                           style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            padding: "4%",
-                            textAlign: "center",
+                            width: 40,
+                            height: 40,
+
+                            marginRight: "4%",
                           }}
                         >
-                          <Avatar
-                            alt="r b"
-                            src=""
-                            elevation={10}
-                            style={{
-                              width: 40,
-                              height: 40,
-
-                              marginRight: "4%",
-                            }}
-                          >
-                            {item.substring(0, 2).toUpperCase()}
-                          </Avatar>
-                          <h3 style={{ margin: 0, marginTop: "3%" }}>{item}</h3>
-                        </Container>
-                      </Link>
+                          {item.substring(0, 2).toUpperCase()}
+                        </Avatar>
+                        <h3 style={{ margin: 0, marginTop: "3%" }}>{item}</h3>
+                      </Container>
                     );
                   })}
                   {/* {getFollowing()} */}
@@ -212,32 +210,30 @@ function OtherProfiles(props) {
                   </DialogTitle>
                   {follower.map((item, index) => {
                     return (
-                      <Link href={`/profile/${item ? item : null}`}>
-                        <Container
-                          key={index}
+                      <Container
+                        key={index}
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          padding: "4%",
+                          textAlign: "center",
+                        }}
+                      >
+                        <Avatar
+                          alt="r b"
+                          src=""
+                          elevation={10}
                           style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            padding: "4%",
-                            textAlign: "center",
+                            width: 40,
+                            height: 40,
+
+                            marginRight: "4%",
                           }}
                         >
-                          <Avatar
-                            alt="r b"
-                            src=""
-                            elevation={10}
-                            style={{
-                              width: 40,
-                              height: 40,
-
-                              marginRight: "4%",
-                            }}
-                          >
-                            {item.substring(0, 2).toUpperCase()}
-                          </Avatar>
-                          <h3 style={{ margin: 0, marginTop: "3%" }}>{item}</h3>
-                        </Container>
-                      </Link>
+                          {item.substring(0, 2).toUpperCase()}
+                        </Avatar>
+                        <h3 style={{ margin: 0, marginTop: "3%" }}>{item}</h3>
+                      </Container>
                     );
                   })}
                   {/* {getFollowing()} */}
@@ -248,7 +244,7 @@ function OtherProfiles(props) {
           {postIds.length === 0 && renderEmptyPost()}
           {postIds.length !== 0 &&
             postIds.map((item, index) => {
-              return <PostCard key={index} props={{ id: item }}></PostCard>;
+              return <PostCard key={index} props={{ id: item.id }}></PostCard>;
             })}
         </Paper>
       </Wrapper>
