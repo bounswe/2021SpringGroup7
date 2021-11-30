@@ -153,19 +153,6 @@ const renderMenu = (
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleNotificationsOpen}>
-         <IconButton
-              size="small"
-              aria-label="show 1 new notifications"
-              color="default"  
-            >
-              <Badge badgeContent={0} color="error">
-                <NotificationsIcon />
-              </Badge>
-          </IconButton>
-          Notifications
-      </MenuItem>
-      
       <MenuItem onClick={handleMenuClose}>
            <IconButton
               size="small"
@@ -241,7 +228,9 @@ const renderMenu = (
         
 
         <Box sx={{ flexGrow: 1 }} />
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" spacing={5}>
+
+          <Stack direction="row" spacing={0.5}>
           <Tooltip title="Explore" arrow>
             <Button
               variant="contained"
@@ -254,16 +243,32 @@ const renderMenu = (
             </Button>
           </Tooltip>
 
-          <Tooltip title="Add Story" arrow>
+          <Tooltip title="Share Story" arrow>
             <Button
               variant="contained"
               size="small"
-              aria-label="explore"
+              aria-label="share-story"
               color="default"
               href="/"
               startIcon={<AddBoxRoundedIcon />}
             >
               Share
+            </Button>
+          </Tooltip>
+          </Stack>
+
+          <Stack direction="row" spacing={0.5}>
+          <Tooltip title="Notifications" arrow>
+            <Button
+              variant="contained"
+              size="small"
+              aria-label="notifications"
+              color="default"
+              onClick={handleNotificationsOpen}
+            >
+              <Badge badgeContent={1} color="error" variant="dot">
+                <NotificationsIcon />
+              </Badge>
             </Button>
           </Tooltip>
         
@@ -289,6 +294,7 @@ const renderMenu = (
               <KeyboardArrowDownIcon />
             </IconButton>  
           </Button>
+           </Stack>
           </Stack>
         </Toolbar>
 
