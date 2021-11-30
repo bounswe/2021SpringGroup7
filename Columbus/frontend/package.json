@@ -28,7 +28,8 @@
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts --openssl-legacy-provider build",
+    "build:prod": "react-scripts --openssl-legacy-provider build",
+    "build:dev": "REACT_APP_API_URL='http://ec2-18-197-57-123.eu-central-1.compute.amazonaws.com:8000' react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
