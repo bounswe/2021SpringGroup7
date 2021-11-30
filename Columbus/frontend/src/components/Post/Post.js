@@ -21,10 +21,15 @@ import {
 import clsx from "clsx";
 import { red } from "@material-ui/core/colors";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import DateRange from "@material-ui/icons/DateRange";
+import LocationOn from "@material-ui/icons/LocationOn";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AddCommentIcon from "@material-ui/icons/AddComment";
 import CloseIcon from "@material-ui/icons/Close";
+import ArrowForward from "@material-ui/icons/ArrowForward";
+import Add from "@material-ui/icons/Add";
+import LocationDialog from '../../components/Dialogs/LocationDialog/LocationDialog'
 
 import api from "../../services/post";
 
@@ -69,18 +74,19 @@ export default function Post(props) {
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [liked, setLiked] = useState(false);
-
+  const [openLocation, setOpenLocation] = useState(false);
   
 
   useEffect(() => {
     setStoryData(props.post);
     setCurUser(props.curUser);
-  }, [props]);
+  }, [props,openLocation]);
 
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+  
 
 
   const handleClose = (event, reason) => {
@@ -95,6 +101,12 @@ export default function Post(props) {
         setOpenSnackBar(true);
         setLiked(!liked);
     };
+    const handleOpenLocation = () => {
+      setOpenLocation(true);
+  };
+  const handleCloseLocation = () => {
+    setOpenLocation(false);
+};
 
 
   const handleComment = () => {
@@ -144,17 +156,24 @@ export default function Post(props) {
 
   return (
     <Card className={classes.root} elevation={1}>
-
-      <CardHeader
+      <LocationDialog open={openLocation} handleClose={handleCloseLocation}  txt={"locations"} />
+      <CardHeader 
         avatar={
           <Link
             href={`/`}
           >
+            <Grid container alignItems="center" spacing={2}>
+            <Grid item>
             <Avatar aria-label="recipe" className={classes.avatar}>
               {storyData
                 ? storyData.owner_username?.substring(0, 2).toUpperCase()
                 : "?"}
             </Avatar>
+            </Grid>
+            <Grid>
+            <Typography variant="h8" style={{color:"#000000"}} >{storyData
+          ? storyData.owner_username
+          : "?"}</Typography></Grid></Grid>
           </Link>
         }
         action={
@@ -162,28 +181,47 @@ export default function Post(props) {
             <MoreVertIcon />
           </IconButton>
         }
-        title={storyData
-                ? storyData.owner_username
-                : "?"}
-      />
+        title={<Typography variant="h5" >{storyData
+          ? storyData.title
+          : "?"}</Typography> }
 
-      <Grid container columns={2} spacing={0.5}>
-
-            <Grid item xs={5}>
-              <CardMedia
-                className={classes.media}
-                image={storyData ? storyData.multimedia[0] : ""}
-                title={storyData ? storyData.title : ""}
-              />
-            </Grid>
+        subheader={
+          <Grid container columns={2} justifyContent="center" spacing = {3}>
+            <Grid item columns={2}  justifyContent="center" alignItems="center" spacing = {3}>
+            <Button>
+        <DateRange />
+        <Typography variant="h10"> {storyData
+        ? storyData.start.substring(0, 17) +
+          " - " +
+          storyData.end.substring(0, 17)
+        : " "} </Typography></Button></Grid>
+        <Grid item columns={2} alignItems= "center"  alignItems="center" spacing = {3} >
+          <Button onClick={handleOpenLocation} style={{textTransform: 'none'}} >
+          {storyData
+        ?(<><LocationOn/><Typography variant="body2">{storyData.locations[0]}</Typography>
+          { storyData.locations.length > 1 ? 
+          (<><ArrowForward/>
+          { storyData.locations.length > 2 ?
+          (<><Typography variant="body2">{"+"+(storyData.locations.length-2)}</Typography>
+          <ArrowForward/></>) : null}
+          <Typography variant="body2">{storyData.locations[storyData.locations.length-1]}</Typography></>) : null}</>):""}
+          </Button>
+        </Grid>
+        </Grid>
+        }
+      >
+        
+      </CardHeader>
+      {expanded ?
+      (<Grid container justifyContent="center" spacing={2}>
     
-            <Grid item xs>
+            <Grid item xs={11}>
               <CardContent>
                 <Typography variant="subtitle1">
                   {storyData ? storyData.title : ""}
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  {storyData ? storyData.story : ""}
+                  {storyData ? (expanded ? storyData.story : (storyData.story.substring(0,500)+"...")) : ""}
                   <div></div>
                   {storyData
                     ? storyData.tags.map((item, index) => {
@@ -201,7 +239,30 @@ export default function Post(props) {
                 </Typography>
               </CardContent>
           </Grid>
-      </Grid>
+          <Grid item xs={10}>
+              <CardMedia
+                className={classes.media}
+                image={storyData ? storyData.multimedia[0] : ""}
+                title={storyData ? storyData.title : ""}
+              />
+            </Grid>
+      </Grid>) :(<Grid container  justifyContent="center" ><Typography variant="body2" color="textSecondary" component="p" >
+                  {storyData ? (expanded ? storyData.story : (storyData.story.substring(0,500)+"...")) : ""}
+                  <div></div>
+                  {storyData
+                    ? storyData.tags.map((item, index) => {
+                        return (
+                          <Chip
+                            key={index}
+                            onClick={() => console.log("we will add go to tag later")}
+                            color="secondary"
+                            size="small"
+                            label={item}
+                          />
+                        );
+                      })
+                    : ""}
+                </Typography> </Grid>) }
 
 
       
@@ -213,6 +274,8 @@ export default function Post(props) {
         >
           <FavoriteIcon />
         </IconButton>
+       
+        
         <Snackbar
           anchorOrigin={{
             vertical: "bottom",
@@ -235,10 +298,11 @@ export default function Post(props) {
             </React.Fragment>
           }
         />
+         
         <IconButton onClick={(e) => setExpanded(true)}>
           <AddCommentIcon />
         </IconButton>
-
+        
         <IconButton
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
