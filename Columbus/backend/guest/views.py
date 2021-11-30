@@ -38,9 +38,9 @@ class Register(generics.CreateAPIView):
         try:
             user = User.objects.create_user(username=user_name, email=user_email, password=password,
                                             first_name=first_name, last_name=last_name)
+            user.is_active = False
             user.save()
-            user.is_active = True
-            # confirmEmail(request, user)
+            confirmEmail(request, user)
             return JsonResponse(
                 {'return': '{} is succesfully created. Please confirm your e-mail to login'.format(user.username)})
         except IntegrityError as e:
@@ -88,6 +88,35 @@ class ChangePassword(generics.CreateAPIView):
         user.save()
 
         return JsonResponse({'return': 'Changing password is successful'})
+
+
+def confirmEmail(request, user):
+    mail_subject = 'Activate your blog account.'
+    print(user.id)
+    message = render_to_string('acc_active_email.html', {
+        'user': user,
+        'domain': 'ec2-35-158-103-6.eu-central-1.compute.amazonaws.com',
+        'uid': user.id,
+        'token': account_activation_token.make_token(user),
+    })
+    email = EmailMessage(
+        mail_subject, message, to=[user.email]
+    )
+    email.send()
+    return JsonResponse({'return': 'Please confirm your email address to complete the registration'})
+
+
+def activate(request, uidb64, token):
+    try:
+        user = User.objects.get(id=uidb64)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return redirect('http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation')
+    else:
+        return redirect('http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation?error=true')
 
 
 class Test(generics.RetrieveAPIView):
