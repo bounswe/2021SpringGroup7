@@ -2,6 +2,7 @@ import React, { useState , useEffect } from 'react'
 
 import { Box } from "@material-ui/core";
 import Typography from '@mui/material/Typography';
+import Avatar from '@mui/material/Avatar';
 
 export default function Notification(props) {
 
@@ -20,10 +21,12 @@ export default function Notification(props) {
     }, [])
 
     return (
-        <Box>
+    <>
+        <Avatar sx={{ width: 30, height:30}}>{notification['actionTaker'][0]}</Avatar>
+        <Box sx={{flexGrow: 1}}></Box>
         <Typography>
                 {message}
         </Typography>
-        </Box>
+    </>
     )
 }

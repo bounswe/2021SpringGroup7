@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import columbusLogo from '../../columbus-logo.svg';
-import NotificationsDialog from "../Dialogs/NotificationsDialog/NotificationsDialog";
+import columbusLogo from '../../assets/Columbus.svg';
 
 import { makeStyles, styled } from "@material-ui/core/styles";
 import { AppBar, Box, InputBase, Toolbar, Button, ButtonGroup, Link, Typography } from "@material-ui/core";
@@ -14,18 +13,19 @@ import Menu from '@mui/material/Menu';
 import Tooltip from '@mui/material/Tooltip';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
+import Divider from '@mui/material/Divider';
 
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import ExploreIcon from "@material-ui/icons/Explore"
-import HomeIcon from '@material-ui/icons/Home';
+
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import SettingsIcon from '@material-ui/icons/Settings';
 import AddBoxRoundedIcon from '@material-ui/icons/AddBoxRounded';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
-import {notifications} from './Notifications.data'
+import NotificationMenu from "../Notifications/NotificationMenu";
 
 /*********************************************************** 
   Reference : https://mui.com/components/app-bar/
@@ -111,6 +111,7 @@ export default function Header(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(null);
+  const isNotificationMenuOpen = Boolean(isNotificationsOpen);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -118,33 +119,28 @@ export default function Header(props) {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    
-    //handleMobileMenuClose();
   };
-
-  const handleNotificationsOpen = () => {
-    setIsNotificationsOpen(true);
-  }
-  const handleNotificationsClose = () => {
-    setIsNotificationsOpen(false);
-  }
   
-
+  const handleNotificationsOpen = (event) => {
+    setIsNotificationsOpen(event.currentTarget);
+  }
   const handleLogOut = () => {
     setAnchorEl(null);
     localStorage.removeItem("jwtToken");
   };
 
-const menuId = 'primary-search-account-menu';
+
+
 
 const renderMenu = (
     <Menu
+      elevation={5}
       anchorEl={anchorEl}
       anchorOrigin={{
-        vertical: 'top',
+        vertical: 'bottom',
         horizontal: 'right',
       }}
-      id={menuId}
+      id={'primary-search-account-menu'}
       keepMounted
       transformOrigin={{
         vertical: 'top',
@@ -176,6 +172,7 @@ const renderMenu = (
             </IconButton>
           Settings
       </MenuItem>
+      <Divider />
       <MenuItem onClick={handleLogOut}>
            <Button 
             variant="contained"
@@ -307,13 +304,12 @@ const renderMenu = (
       </Toolbar>
       </AppBar>
       {renderMenu}
+      <NotificationMenu 
+          isNotificationsOpen={isNotificationsOpen} 
+          setIsNotificationsOpen={setIsNotificationsOpen} 
+          isNotificationMenuOpen={isNotificationMenuOpen}
+        />
       </Box>
-      
-      <NotificationsDialog
-        notifications={notifications}
-        open={isNotificationsOpen}
-        onClose={handleNotificationsClose}
-      />
 
     </React.Fragment>
   );
