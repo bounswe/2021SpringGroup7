@@ -25,7 +25,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import AddBoxRoundedIcon from '@material-ui/icons/AddBoxRounded';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
-import notifications from './Notifications.data'
+import {notifications} from './Notifications.data'
 
 /*********************************************************** 
   Reference : https://mui.com/components/app-bar/

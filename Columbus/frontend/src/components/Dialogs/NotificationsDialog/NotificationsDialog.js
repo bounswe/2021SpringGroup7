@@ -9,14 +9,26 @@ import DialogActions from '@mui/material/DialogActions';
 import CloseIcon from '@material-ui/icons/Close';
 import Notification from '../../Notification/Notification';
 
+import { makeStyles, styled } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+ 
+  
+}));
+
+
 export default function NotificationsDialog(props) {
+    const classes = useStyles();
     const { notifications, open, onClose} = props;
 
     return (
-        <Box>
+
     <Dialog onClose={onClose} 
             open={open}
-            scroll={'body'}>
+            scroll={'paper'}
+            className={classes.dialog}
+            fullWidth
+            >
         <DialogTitle 
             sx={{bgcolor: 'text.disabled'}}
             >
@@ -43,7 +55,6 @@ export default function NotificationsDialog(props) {
         ))}
 
     </Dialog>
-    </Box>
   );
 
 }
