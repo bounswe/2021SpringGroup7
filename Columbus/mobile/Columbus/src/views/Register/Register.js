@@ -13,7 +13,7 @@ import {
 } from 'native-base';
 import axios from 'axios';
 
-import AuthLayout from '../../layout/AuthLayout';
+import AuthLayout from '../../layouts/AuthLayout';
 import CustomModal from '../../components/CustomModal';
 import {SERVICE} from '../../services/services';
 
