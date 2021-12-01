@@ -1,31 +1,44 @@
 import * as React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
-import HomePage from '../views/HomePage';
-import Profile from '../views/Profile';
+import {useAuth} from '../context/AuthContext';
+
 import Login from '../views/Login';
 import Register from '../views/Register';
-import {useAuth} from '../context/AuthContext';
-import {CircleIcon, HamburgerIcon} from 'native-base';
+
+import Home from '../views/Home';
+import CreatePost from '../views/CreatePost';
+import Search from '../views/Search';
+import Profile from '../views/Profile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const pageSettings = {
-  Home: <HamburgerIcon size="5" />,
-  Profile: <CircleIcon size="5" />,
+  Home: 'home',
+  Search: 'search',
+  CreatePost: 'plus',
+  Profile: 'user',
 };
 
 const screenOptions = ({route}) => ({
-  tabBarIcon() {
-    return pageSettings[route.name];
+  tabBarIcon: ({color, size}) => {
+    return <Icon name={pageSettings[route.name]} size={size} color={color} />;
   },
+  tabBarActiveTintColor: 'tomato',
+  tabBarInactiveTintColor: 'gray',
 });
 
 const BottomTabNavigation = () => (
-  <Tab.Navigator initialRouteName={'Home'} screenOptions={screenOptions}>
-    <Tab.Screen name="Home" component={HomePage} />
+  <Tab.Navigator
+    initialRouteName={'Home'}
+    tabBarActiveTintColor="red"
+    screenOptions={screenOptions}>
+    <Tab.Screen name="Home" component={Home} />
+    <Tab.Screen name="Search" component={Search} />
+    <Tab.Screen name="CreatePost" component={CreatePost} />
     <Tab.Screen name="Profile" component={Profile} />
   </Tab.Navigator>
 );
