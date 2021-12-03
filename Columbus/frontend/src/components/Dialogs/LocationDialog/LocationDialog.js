@@ -14,7 +14,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-const LocationDialog = ({ open, handleClose,  txt }) => {
+const LocationDialog = ({ open, handleClose,  locations }) => {
   return (
     <Dialog
       open={open}
@@ -23,22 +23,16 @@ const LocationDialog = ({ open, handleClose,  txt }) => {
       <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
       <nav aria-label="main mailbox folders">
         <List>
+        {locations ? locations.map((item) => {
+          return (
           <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
                 <LocationOn />
               </ListItemIcon>
-              <ListItemText primary="Ankara" />
+              <ListItemText primary={item} />
             </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <LocationOn />
-              </ListItemIcon>
-              <ListItemText primary="İstanbul" />
-            </ListItemButton>
-          </ListItem>
+          </ListItem>);}):null }
         </List>
       </nav>
     </Box>

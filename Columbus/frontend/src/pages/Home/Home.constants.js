@@ -6,7 +6,7 @@ export const post1 = {
     title: 'A Story about Craziness',
     locations: ['Ankara'],
     tags: ['summer', 'lifelong', 'learning'],
-    multimedia: ['https://images.pexels.com/photos/207691/pexels-photo-207691.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940', 'https://images.pexels.com/photos/3747505/pexels-photo-3747505.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940']
+    multimedia: ['https://images.pexels.com/photos/207691/pexels-photo-207691.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940', 'https://images.pexels.com/photos/8264394/pexels-photo-8264394.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940', 'https://images.pexels.com/photos/3747505/pexels-photo-3747505.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940']
 }
 export const post2 = {
     owner_username: 'tarkankuzu',
@@ -16,7 +16,7 @@ export const post2 = {
     title: 'Cats are Amazing',
     locations: ['Ankara', 'İstanbul'],
     tags: ['cat', 'love', 'terminal'],
-    multimedia: ['https://images.pexels.com/photos/8264394/pexels-photo-8264394.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940']
+    multimedia: ['https://images.pexels.com/photos/8264394/pexels-photo-8264394.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940', ]
 }
 export const post3 = {
     owner_username: 'tarkankuzu',
@@ -26,7 +26,7 @@ export const post3 = {
     title: 'Cats are Amazing',
     locations: ['Ankara', 'İstanbul', 'Edirne'],
     tags: ['cat', 'love', 'terminal'],
-    multimedia: ['https://images.pexels.com/photos/8264394/pexels-photo-8264394.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940']
+    multimedia: []
 }
 export const post4 = {
     owner_username: 'tarkankuzu',

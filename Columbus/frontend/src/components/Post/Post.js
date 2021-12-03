@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "90%",
     borderRadius: 10,
     margin: "5%",
-   flexDirection: 'column',
+    flexDirection: 'column',
   },
   media: {
     height: 0,
@@ -75,18 +75,18 @@ export default function Post(props) {
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [liked, setLiked] = useState(false);
   const [openLocation, setOpenLocation] = useState(false);
-  
+
 
   useEffect(() => {
     setStoryData(props.post);
     setCurUser(props.curUser);
-  }, [props,openLocation]);
+  }, [props, openLocation]);
 
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-  
+
 
 
   const handleClose = (event, reason) => {
@@ -97,16 +97,16 @@ export default function Post(props) {
     setOpenSnackBar(false);
   };
 
-    const handleLike = () => {
-        setOpenSnackBar(true);
-        setLiked(!liked);
-    };
-    const handleOpenLocation = () => {
-      setOpenLocation(true);
+  const handleLike = () => {
+    setOpenSnackBar(true);
+    setLiked(!liked);
+  };
+  const handleOpenLocation = () => {
+    setOpenLocation(true);
   };
   const handleCloseLocation = () => {
     setOpenLocation(false);
-};
+  };
 
 
   const handleComment = () => {
@@ -156,24 +156,24 @@ export default function Post(props) {
 
   return (
     <Card className={classes.root} elevation={1}>
-      <LocationDialog open={openLocation} handleClose={handleCloseLocation}  txt={"locations"} />
-      <CardHeader 
+      <LocationDialog open={openLocation} handleClose={handleCloseLocation} locations={storyData ? storyData.locations : null} />
+      <CardHeader
         avatar={
           <Link
             href={`/`}
           >
             <Grid container alignItems="center" spacing={2}>
-            <Grid item>
-            <Avatar aria-label="recipe" className={classes.avatar}>
-              {storyData
-                ? storyData.owner_username?.substring(0, 2).toUpperCase()
-                : "?"}
-            </Avatar>
-            </Grid>
-            <Grid>
-            <Typography variant="h8" style={{color:"#000000"}} >{storyData
-          ? storyData.owner_username
-          : "?"}</Typography></Grid></Grid>
+              <Grid item>
+                <Avatar aria-label="recipe" className={classes.avatar}>
+                  {storyData
+                    ? storyData.owner_username?.substring(0, 2).toUpperCase()
+                    : "?"}
+                </Avatar>
+              </Grid>
+              <Grid>
+                <Typography variant="h8" style={{ color: "#000000" }} >{storyData
+                  ? storyData.owner_username
+                  : "?"}</Typography></Grid></Grid>
           </Link>
         }
         action={
@@ -183,89 +183,88 @@ export default function Post(props) {
         }
         title={<Typography variant="h5" >{storyData
           ? storyData.title
-          : "?"}</Typography> }
+          : "?"}</Typography>}
 
         subheader={
-          <Grid container columns={2} justifyContent="center" spacing = {3}>
-            <Grid item columns={2}  justifyContent="center" alignItems="center" spacing = {3}>
-            <Button>
-        <DateRange />
-        <Typography variant="h10"> {storyData
-        ? storyData.start.substring(0, 17) +
-          " - " +
-          storyData.end.substring(0, 17)
-        : " "} </Typography></Button></Grid>
-        <Grid item columns={2} alignItems= "center"  alignItems="center" spacing = {3} >
-          <Button onClick={handleOpenLocation} style={{textTransform: 'none'}} >
-          {storyData
-        ?(<><LocationOn/><Typography variant="body2">{storyData.locations[0]}</Typography>
-          { storyData.locations.length > 1 ? 
-          (<><ArrowForward/>
-          { storyData.locations.length > 2 ?
-          (<><Typography variant="body2">{"+"+(storyData.locations.length-2)}</Typography>
-          <ArrowForward/></>) : null}
-          <Typography variant="body2">{storyData.locations[storyData.locations.length-1]}</Typography></>) : null}</>):""}
-          </Button>
-        </Grid>
-        </Grid>
+          <Grid container columns={2} justifyContent="center" spacing={3}>
+            <Grid item columns={2} justifyContent="center" alignItems="center" spacing={3}>
+              <Button>
+                <DateRange />
+                <Typography variant="h10"> {storyData
+                  ? storyData.start.substring(0, 17) +
+                  " - " +
+                  storyData.end.substring(0, 17)
+                  : " "} </Typography></Button></Grid>
+            <Grid item columns={2} alignItems="center" alignItems="center" spacing={3} >
+              <Button onClick={handleOpenLocation} style={{ textTransform: 'none' }} >
+                {storyData
+                  ? (<><LocationOn /><Typography variant="body2">{storyData.locations[0]}</Typography>
+                    {storyData.locations.length > 1 ?
+                      (<><ArrowForward />
+                        {storyData.locations.length > 2 ?
+                          (<><Typography variant="body2">{"+" + (storyData.locations.length - 2)}</Typography>
+                            <ArrowForward /></>) : null}
+                        <Typography variant="body2">{storyData.locations[storyData.locations.length - 1]}</Typography></>) : null}</>) : ""}
+              </Button>
+            </Grid>
+          </Grid>
         }
       >
-        
+
       </CardHeader>
       {expanded ?
-      (<Grid container justifyContent="center" spacing={2}>
-    
-            <Grid item xs={11}>
-              <CardContent>
-                <Typography variant="subtitle1">
-                  {storyData ? storyData.title : ""}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  {storyData ? (expanded ? storyData.story : (storyData.story.substring(0,500)+"...")) : ""}
-                  <div></div>
-                  {storyData
-                    ? storyData.tags.map((item, index) => {
-                        return (
-                          <Chip
-                            key={index}
-                            onClick={() => console.log("we will add go to tag later")}
-                            color="secondary"
-                            size="small"
-                            label={item}
-                          />
-                        );
-                      })
-                    : ""}
-                </Typography>
-              </CardContent>
+        (<Grid container justifyContent="center" spacing={2} columns = {2}>
+
+          <Grid item xs={11} justifyContent="center" alignContent="center">
+            <CardContent>
+              <Typography variant="body2" color="textSecondary" component="p">
+                {storyData ? storyData.story  : ""}
+                <div></div>
+                {storyData
+                  ? storyData.tags.map((item, index) => {
+                    return (
+                      <Chip
+                        key={index}
+                        onClick={() => console.log("we will add go to tag later")}
+                        color="secondary"
+                        size="small"
+                        label={item}
+                      />
+                    );
+                  })
+                  : ""}
+              </Typography>
+            </CardContent>
           </Grid>
-          <Grid item xs={10}>
-              <CardMedia
-                className={classes.media}
-                image={storyData ? storyData.multimedia[0] : ""}
-                title={storyData ? storyData.title : ""}
-              />
-            </Grid>
-      </Grid>) :(<Grid container  justifyContent="center" ><Typography variant="body2" color="textSecondary" component="p" >
-                  {storyData ? (expanded ? storyData.story : (storyData.story.substring(0,500)+"...")) : ""}
-                  <div></div>
-                  {storyData
-                    ? storyData.tags.map((item, index) => {
-                        return (
-                          <Chip
-                            key={index}
-                            onClick={() => console.log("we will add go to tag later")}
-                            color="secondary"
-                            size="small"
-                            label={item}
-                          />
-                        );
-                      })
-                    : ""}
-                </Typography> </Grid>) }
+          {storyData ? storyData.multimedia.map((item) => {
+          return(<Grid item xs={5}>
+            <CardMedia
+              className={classes.media}
+              image={item }
+            />
+          </Grid>);}) :null}
+          
+        </Grid>) : (<Grid container justifyContent="center" ><Grid item xs={11} justifyContent="center" alignContent="center">
+          <Typography variant="body2" color="textSecondary" component="p" >
+            {storyData ? (expanded ? storyData.story : (storyData.story.substring(0, 500) + "...")) : ""}
+            <div></div>
+            {storyData
+              ? storyData.tags.map((item, index) => {
+                return (
+                  <Chip
+                    key={index}
+                    onClick={() => console.log("we will add go to tag later")}
+                    color="secondary"
+                    size="small"
+                    label={item}
+                  />
+                );
+              })
+              : ""}
+          </Typography></Grid> </Grid>)}
 
 
-      
+
       <CardActions disableSpacing>
         <IconButton
           aria-label="add to favorites"
@@ -274,8 +273,8 @@ export default function Post(props) {
         >
           <FavoriteIcon />
         </IconButton>
-       
-        
+
+
         <Snackbar
           anchorOrigin={{
             vertical: "bottom",
@@ -298,11 +297,11 @@ export default function Post(props) {
             </React.Fragment>
           }
         />
-         
+
         <IconButton onClick={(e) => setExpanded(true)}>
           <AddCommentIcon />
         </IconButton>
-        
+
         <IconButton
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
@@ -348,7 +347,7 @@ export default function Post(props) {
         </CardContent>
       </Collapse>
 
-      
+
     </Card>
   );
 }
