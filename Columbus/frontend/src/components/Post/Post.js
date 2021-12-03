@@ -84,6 +84,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Post(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
+  const [expandComment, setExpandComment] = useState(false);
   const [storyData, setStoryData] = useState(null);
   const [curUser, setCurUser] = useState(false);
   const [commentValue, setCommentValue] = useState("");
@@ -102,6 +103,9 @@ export default function Post(props) {
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+  const handleExpandComment = () => {
+    setExpandComment(!expandComment);
   };
 
 
@@ -129,7 +133,7 @@ export default function Post(props) {
   const handleComment = () => {
     let formdata = new FormData();
     formdata.append("text", commentValue);
-    setExpanded(true);
+    setExpandComment(true);
 
     const data = {
       comment: commentValue,
@@ -316,7 +320,7 @@ export default function Post(props) {
           }
         />
 
-        <IconButton onClick={(e) => setExpanded(true)}>
+        <IconButton onClick={(e) => setExpandComment(!expandComment)}>
           <AddCommentIcon />
         </IconButton>
 
@@ -331,7 +335,7 @@ export default function Post(props) {
           <ExpandMoreIcon />
         </IconButton>
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
+      <Collapse in={expandComment} timeout="auto" unmountOnExit>
         <CardContent>
           <div style={{ padding: 14 }} className="App">
             <h1>Comments</h1>
