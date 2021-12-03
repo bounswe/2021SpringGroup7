@@ -29,13 +29,17 @@ import AddCommentIcon from "@material-ui/icons/AddComment";
 import CloseIcon from "@material-ui/icons/Close";
 import ArrowForward from "@material-ui/icons/ArrowForward";
 import Add from "@material-ui/icons/Add";
-import LocationDialog from '../../components/Dialogs/LocationDialog/LocationDialog'
+import LocationDialog from '../Dialogs/PostLocationDialog/PostLocationDialog'
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import api from "../../services/post";
 
 const imgLink =
   "https://images.pexels.com/photos/3747505/pexels-photo-3747505.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
 
+const { palette } = createTheme();
+const { augmentColor } = palette;
+const createColor = (mainColor) => augmentColor({ color: { main: mainColor } });
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,6 +47,15 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 10,
     margin: "5%",
     flexDirection: 'column',
+    palette: {
+      brown: createColor('#a67c52'),
+      green: createColor('#009245'),
+      darkGreen: createColor('#007c3b'),
+      blue: createColor('#0071bc'),
+      darkBlue: createColor('#0060a0'),
+      pink: createColor('#f5e1dc'),
+      grey: createColor('#6c746e'),
+    },
   },
   media: {
     height: 0,
@@ -60,8 +73,12 @@ const useStyles = makeStyles((theme) => ({
     transform: "rotate(180deg)",
   },
   avatar: {
-    backgroundColor: red[500],
+    backgroundColor: "#a67c52",
   },
+  chip : {
+    backgroundColor: "#007c3b",
+    color : "white"
+  }
 }));
 
 export default function Post(props) {
@@ -128,6 +145,7 @@ export default function Post(props) {
 
   const showAddComment = () => {
     return (
+
       <Paper style={{ padding: "40px 20px", marginTop: 30 }}>
         <Grid container wrap="nowrap" spacing={2}>
           <Grid item>
@@ -224,9 +242,9 @@ export default function Post(props) {
                   ? storyData.tags.map((item, index) => {
                     return (
                       <Chip
+                        className={classes.chip}
                         key={index}
                         onClick={() => console.log("we will add go to tag later")}
-                        color="secondary"
                         size="small"
                         label={item}
                       />
@@ -252,9 +270,9 @@ export default function Post(props) {
               ? storyData.tags.map((item, index) => {
                 return (
                   <Chip
+                    className={classes.chip}
                     key={index}
                     onClick={() => console.log("we will add go to tag later")}
-                    color="secondary"
                     size="small"
                     label={item}
                   />
