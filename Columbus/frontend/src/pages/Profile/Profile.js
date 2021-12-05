@@ -136,10 +136,10 @@ function Profile(props) {
 
                 <Grid item container spacing={5}>
 
-                  <Grid item container direction="column" xs={3} spacing={2}>
+                  <Grid item container direction="column" xs={2} spacing={2}>
                     
                     <Grid item xs >
-                      <Button size="large" sx={{ height: '100', width: '100' }}>
+                      <Button sx={{ height: '100', width: '100' }}>
                         <Avatar >S</Avatar>
                       </Button>
                     </Grid>
@@ -164,10 +164,19 @@ function Profile(props) {
                           </Stack>
                     </Grid>
 
+                    <Grid item xs>
+                          <Button 
+                            color="primary" 
+                            variant="contained"
+                            style={{textTransform: 'none'}} 
+                            >
+                              Edit Profile
+                          </Button>
+                    </Grid>
 
                   </Grid>
 
-                  <Grid item xs={7} sm>
+                  <Grid item xs={8} sm>
 
                         <Typography gutterBottom variant="h5" component="div">
                           Salih Yılmaz
@@ -187,7 +196,6 @@ function Profile(props) {
                   </Grid>
 
                   <Grid item xs={2}>
-                    <Box width="100%"/>
                     <Stack>
                       <Button
                         onClick={handleClickOpenDialogFollowing}
@@ -205,11 +213,11 @@ function Profile(props) {
 
               </Grid>
 
-              <Grid container>
+              <Grid item>
 
 
-                <Grid item xs= {4}>
- 
+                <Grid item xs= {12}>
+                    <Box sx={{ width: '100%' }}>
                     <Tabs
                       value={value}
                       onChange={handleChange}
@@ -220,22 +228,8 @@ function Profile(props) {
                       <Tab value="one" label="Shared Stories" />
                       <Tab value="two" label="Liked Stories" />
                     </Tabs>
-
-
+                  </Box>
                 </Grid>
-                <Grid item xs= {6}>
-                     <Box width="100%"/>
-                </Grid>
-                <Grid item xs= {2}>
-                          <Button 
-                            color="primary" 
-                            variant="contained"
-                            style={{textTransform: 'none'}} 
-                            >
-                              Edit Profile
-                          </Button>
-                    </Grid>
-                
 
               </Grid>
               
