@@ -1,12 +1,13 @@
 from django.template.loader import render_to_string
 
 class MockRequest:
-    def __init__(self, method, body):
+    def __init__(self, method, body, uri="ec2-35"):
         self.method = method
-        self.body = body
+        self.data = body
+        self.absolute_uri = uri
 
-    def json(self):
-        return self.json_data
+    def build_absolute_uri(self):
+        return self.absolute_uri
 
 
 def mock_create_user(username, email, password, first_name, last_name):
