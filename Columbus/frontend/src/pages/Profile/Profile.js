@@ -164,15 +164,6 @@ function Profile(props) {
                           </Stack>
                     </Grid>
 
-                    <Grid item xs>
-                          <Button 
-                            color="primary" 
-                            variant="contained"
-                            style={{textTransform: 'none'}} 
-                            >
-                              Edit Profile
-                          </Button>
-                    </Grid>
 
                   </Grid>
 
@@ -213,10 +204,10 @@ function Profile(props) {
 
               </Grid>
 
-              <Grid item>
+              <Grid container>
 
 
-                <Grid item xs= {12}>
+                <Grid item xs= {10}>
                     <Box sx={{ width: '100%' }}>
                     <Tabs
                       value={value}
@@ -229,7 +220,18 @@ function Profile(props) {
                       <Tab value="two" label="Liked Stories" />
                     </Tabs>
                   </Box>
+
                 </Grid>
+                <Grid item xs= {2}>
+                          <Button 
+                            color="primary" 
+                            variant="contained"
+                            style={{textTransform: 'none'}} 
+                            >
+                              Edit Profile
+                          </Button>
+                    </Grid>
+                
 
               </Grid>
               
