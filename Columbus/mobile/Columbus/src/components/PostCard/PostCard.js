@@ -45,7 +45,6 @@ const PostCard = props => {
 
   return (
     <Box
-      
       maxW="80"
       rounded="lg"
       overflow="hidden"
@@ -81,7 +80,6 @@ const PostCard = props => {
         <Tags data={postData.tags} />
 
         <Text
-          
           fontSize="xs"
           _light={{
             color: 'blue.500',
@@ -94,7 +92,6 @@ const PostCard = props => {
           mt="-1">
           See More
         </Text>
-    
 
         <PostingTime data={postData.postingTime} />
       </Stack>

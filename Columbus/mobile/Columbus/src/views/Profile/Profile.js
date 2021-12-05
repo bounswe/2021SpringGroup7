@@ -1,10 +1,12 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 
-const Profile = () => {
+const Profile = ({navigation,route}) => {
   return (
     <View>
-      <Text>Profile Page</Text>
+      <Text>{route?.params?.props?.data?.username}</Text>
+      <Text>{route?.params?.props?.data?.img}</Text>
+      
     </View>
   );
 };

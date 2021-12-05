@@ -1,38 +1,26 @@
-import React, { Component } from 'react'
-import { Text } from 'native-base'
+import React, {Component} from 'react';
+import {Text} from 'native-base';
+import {NavigationContainer} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
-
-export class LocationInfo extends Component {
-	state = {
-    data: [],
-  };
-  constructor (props) {
-    super (props);
-    this.state.data = props.data;
-    console.log(props)
-  }
-
-	render() {
-		return (
-      
-      
-			<Text
-            onPress={}
-            fontSize="xs"
-            _light={{
-              color: "violet.500",
-            }}
-            _dark={{
-              color: "violet.400",
-            }}
-            fontWeight="500"
-            ml="-0.5"
-            mt="-1"
-          >
-            {this.state.data?.name}
-          </Text>
-		)
-	}
+function LocationInfo(props) {
+  const navigation = useNavigation();
+  return (
+    <Text
+      onPress={() => navigation.navigate('Location', {props})}
+      fontSize="xs"
+      _light={{
+        color: 'violet.500',
+      }}
+      _dark={{
+        color: 'violet.400',
+      }}
+      fontWeight="500"
+      ml="-0.5"
+      mt="-1">
+      {props.data?.name}
+    </Text>
+  );
 }
 
-export default LocationInfo
+export default LocationInfo;

@@ -12,6 +12,7 @@ import Home from '../views/Home';
 import CreatePost from '../views/CreatePost';
 import Search from '../views/Search';
 import Profile from '../views/Profile';
+import Location from '../views/Location';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -30,12 +31,23 @@ const screenOptions = ({route}) => ({
   tabBarInactiveTintColor: 'gray',
 });
 
+const HomeStack = () => (
+  <Stack.Navigator
+    screenOptions={{
+      headerShown: false,
+    }}>
+    <Stack.Screen name="HomePage" component={Home} />
+    <Stack.Screen name="Location" component={Location} />
+    <Stack.Screen name="Profile" component={Profile} />
+  </Stack.Navigator>
+);
+
 const BottomTabNavigation = () => (
   <Tab.Navigator
     initialRouteName={'Home'}
     tabBarActiveTintColor="red"
     screenOptions={screenOptions}>
-    <Tab.Screen name="Home" component={Home} />
+    <Tab.Screen name="Home" component={HomeStack} />
     <Tab.Screen name="Search" component={Search} />
     <Tab.Screen name="CreatePost" component={CreatePost} />
     <Tab.Screen name="Profile" component={Profile} />
@@ -49,11 +61,10 @@ const AuthNavigation = () => (
     }}>
     <Stack.Screen name="Login" component={Login} />
     <Stack.Screen name="Register" component={Register} />
-    
   </Stack.Navigator>
 );
 
 export default function Navigation() {
-  const user = true
+  const user = true;
   return user ? <BottomTabNavigation /> : <AuthNavigation />;
 }

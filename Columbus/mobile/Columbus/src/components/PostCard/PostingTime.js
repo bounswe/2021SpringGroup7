@@ -8,7 +8,6 @@ export class PostingTime extends Component {
   constructor (props) {
     super (props);
     this.state.data = props.data;
-    console.log(props)
   }
   render() {
 		return (
