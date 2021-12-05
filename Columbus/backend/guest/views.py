@@ -27,17 +27,17 @@ class Register(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
     def post(self, request, *args, **kwargs):
-        body = self.serializer_class(request.data)
+        body = request.data
         required_areas = {'username', 'email', 'password'}
-        if len(set(body.data.keys()).intersection(required_areas)) != 3:
+        if len(set(body.keys()).intersection(required_areas)) != 3:
             return JsonResponse({'return': 'Cannot be Empty:' + str(required_areas - set(body.data.keys()))},
                                 status=400)
 
-        user_name = body.data.get('username')
-        first_name = body.data.get('first_name', '')
-        last_name = body.data.get('last_name', '')
-        user_email = body.data.get('email')
-        password = body.data.get('password')
+        user_name = body.get('username')
+        first_name = body.get('first_name', '')
+        last_name = body.get('last_name', '')
+        user_email = body.get('email')
+        password = body.get('password')
 
         try:
             user = User.objects.create_user(username=user_name, email=user_email, password=password,
@@ -56,13 +56,13 @@ class Login(generics.CreateAPIView):
     serializer_class = LoginSerializer
     def post(self, request, *args, **kwargs):
 
-        body = self.serializer_class(request.data)
+        body = request.data
         required_areas = {'username', 'password'}
-        if set(body.data.keys()) != required_areas:
+        if set(body.keys()) != required_areas:
             return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
 
-        user_name = body.data.get('username')
-        password = body.data.get('password')
+        user_name = body.get('username')
+        password = body.get('password')
 
         user = authenticate(request, username=user_name, password=password)
 
@@ -81,13 +81,13 @@ class ChangePassword(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = LoginSerializer
     def post(self, request, *args, **kwargs):
-        body = self.serializer_class(request.data)
+        body = request.data
         required_areas = {'username', 'password'}
-        if set(body.data.keys()) != required_areas:
+        if set(body.keys()) != required_areas:
             return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
 
-        user_name = body.data.get('username')
-        password = body.data.get('password')
+        user_name = body.get('username')
+        password = body.get('password')
 
         try:
             user = User.objects.get(username=user_name)
