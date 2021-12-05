@@ -1,13 +1,15 @@
 # build environment
 FROM node:17.0.1-alpine as build
 WORKDIR /app
+ARG ENVIRONMENT=prod
+RUN echo "Environment is ${ENVIRONMENT}"
 ENV PATH /app/node_modules/.bin:$PATH
 RUN npm install react-scripts@4.0.3 -g --silent
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm ci --silent
 COPY . ./
-RUN npm run build
+RUN npm run build:${ENVIRONMENT}
 
 # production environment
 FROM nginx:stable-alpine
