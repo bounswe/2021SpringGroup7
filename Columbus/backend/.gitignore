@@ -3,3 +3,4 @@ script.sh
 /postgres.sh
 /django.sh
 /src/.env
+/static
