@@ -114,12 +114,12 @@ def confirmEmail(request, user):
         'uid': user.id,
         'token': account_activation_token.make_token(user),
     })
-    email = EmailMessage(
-        mail_subject, message, to=[user.email]
-    )
+    email = createEmail(mail_subject=mail_subject, message=message, email=user.email)
     email.send()
     return JsonResponse({'return': 'Please confirm your email address to complete the registration'})
 
+def createEmail(mail_subject, message, email):
+    return EmailMessage(mail_subject, message, to=[email])
 
 def activate(request, uidb64, token):
     try:
