@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from rest_framework import generics, viewsets
+from rest_framework.decorators import api_view
 from rest_framework.schemas.openapi import AutoSchema
 from .tokens import account_activation_token
 from django.core.mail import EmailMessage
@@ -93,9 +94,15 @@ class ChangePassword(generics.CreateAPIView):
 def confirmEmail(request, user):
     mail_subject = 'Activate your blog account.'
     print(user.id)
+    if 'ec2-35' in str(request.build_absolute_uri()):
+        domain = 'ec2-35-158-103-6.eu-central-1.compute.amazonaws.com'
+    elif 'ec2-18' in str(request.build_absolute_uri()):
+        domain = 'ec2-18-197-57-123.eu-central-1.compute.amazonaws.com'
+    else:
+        domain ='localhost'
     message = render_to_string('acc_active_email.html', {
         'user': user,
-        'domain': 'ec2-35-158-103-6.eu-central-1.compute.amazonaws.com',
+        'domain': domain,
         'uid': user.id,
         'token': account_activation_token.make_token(user),
     })
@@ -114,10 +121,19 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        return redirect('http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation')
+        if 'ec2-35' in str(request.build_absolute_uri()):
+            return redirect('http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation')
+        elif 'ec2-18' in str(request.build_absolute_uri()):
+            return redirect('http://ec2-18-197-57-123.eu-central-1.compute.amazonaws.com/email-confirmation')
+        else:
+            return JsonResponse({'return':'user is activated'})
     else:
-        return redirect('http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation?error=true')
-
+        if 'ec2-35' in str(request.build_absolute_uri()):
+            return redirect('http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation?error=true')
+        elif 'ec2-18' in str(request.build_absolute_uri()):
+            return redirect('http://ec2-18-197-57-123.eu-central-1.compute.amazonaws.com/email-confirmation?error=true')
+        else:
+            return JsonResponse({'return':'user is not activated'})
 
 class Test(generics.RetrieveAPIView):
     queryset = User.objects.all()

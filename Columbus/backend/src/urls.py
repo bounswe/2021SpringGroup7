@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
+from . import urls
 from rest_framework.schemas import get_schema_view
 from rest_framework_swagger.views import get_swagger_view
 
@@ -24,6 +24,7 @@ from . import views
 schema_view = get_swagger_view(title='API Documentation')
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.home),
     path('test/',include('test.urls')),
     path('user/',include('user.urls')),
     path('guest/',include('guest.urls')),
