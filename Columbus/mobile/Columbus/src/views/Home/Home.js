@@ -4,7 +4,7 @@ import {Button} from 'native-base';
 
 import {useAuth} from '../../context/AuthContext';
 
-const HomePage = () => {
+const Home = () => {
   const {logout} = useAuth();
 
   const handleLogout = async () => {
@@ -21,4 +21,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Home;
