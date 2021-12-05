@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'user',
     'guest',
     'rest_framework',
-    'rest_framework_swagger'
+    'rest_framework_swagger',
+    'rest_framework.authtoken'
 ]
 SITE_ID = 1
 MIDDLEWARE = [
