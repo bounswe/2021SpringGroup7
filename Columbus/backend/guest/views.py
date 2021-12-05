@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.db import IntegrityError
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, logout, login as auth_login
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -17,6 +17,9 @@ from .tokens import account_activation_token
 from django.core.mail import EmailMessage
 import json
 from .serializers import *
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 class Register(generics.CreateAPIView):
@@ -52,6 +55,7 @@ class Login(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = LoginSerializer
     def post(self, request, *args, **kwargs):
+
         body = self.serializer_class(request.data)
         required_areas = {'username', 'password'}
         if set(body.data.keys()) != required_areas:
@@ -63,8 +67,12 @@ class Login(generics.CreateAPIView):
         user = authenticate(request, username=user_name, password=password)
 
         if user is not None:
+
             auth_login(request, user)
-            return JsonResponse({'return': 'Login is successful'})
+            token, created = Token.objects.get_or_create(user=user)
+            user_info = User.objects.get(username=user_name)
+            result_dict = {"first_name": user_info.first_name, "last_name": user_info.last_name, "user_id": user_info.id,"token": str(token)}
+            return JsonResponse({'return': result_dict})
         else:
             return JsonResponse({'return': 'Login is invalid'}, status=400)
 
@@ -135,7 +143,10 @@ def activate(request, uidb64, token):
         else:
             return JsonResponse({'return':'user is not activated'})
 
+
 class Test(generics.RetrieveAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = TestSerializer
     def get(self, request, *args, **kwargs):
