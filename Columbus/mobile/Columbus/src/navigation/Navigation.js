@@ -15,7 +15,6 @@ import Profile from '../views/Profile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
 const pageSettings = {
   Home: 'home',
   Search: 'search',
@@ -50,10 +49,11 @@ const AuthNavigation = () => (
     }}>
     <Stack.Screen name="Login" component={Login} />
     <Stack.Screen name="Register" component={Register} />
+    
   </Stack.Navigator>
 );
 
 export default function Navigation() {
-  const {user} = useAuth();
-  return user?.isAuthenticated ? <BottomTabNavigation /> : <AuthNavigation />;
+  const user = true
+  return user ? <BottomTabNavigation /> : <AuthNavigation />;
 }
