@@ -1,4 +1,3 @@
-
 from django.shortcuts import render
 from ..serializers import *
 from rest_framework.authtoken.models import Token
@@ -16,12 +15,12 @@ class Logout(generics.CreateAPIView):
     serializer_class = LogoutSerializer
     def post(self, request, *args, **kwargs):
 
-        body = self.serializer_class(request.data)
+        body = request.data
         required_areas = {'username'}
-        if set(body.data.keys()) != required_areas:
+        if set(body.keys()) != required_areas:
             return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
 
-        user_name = body.data.get('username')
+        user_name = body.get('username')
 
         user = User.objects.get(username=user_name)
 
