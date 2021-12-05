@@ -10,19 +10,19 @@ class MockRequest:
         return self.absolute_uri
 
 
-def mock_create_user(username, email, password, first_name, last_name):
-    return MockUserInside(username=username, email=email, password=password, first_name=first_name, last_name=last_name)
+def mock_create_user(username, email, password, first_name, last_name, id):
+    return MockUserInside(username=username, email=email, password=password, first_name=first_name, last_name=last_name, id=id)
 
 
 class MockUserInside:
-    def __init__(self, username, email, password, first_name, last_name):
+    def __init__(self, username, email, password, first_name, last_name, id):
         self.username = username
-        self.firstname = first_name
-        self.lastname = last_name
+        self.first_name = first_name
+        self.last_name = last_name
         self.email = email
         self.password = password
         self.is_active = True
-        self.id = "id"
+        self.id = id
 
     def save(self):
         return True

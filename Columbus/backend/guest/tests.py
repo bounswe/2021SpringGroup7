@@ -12,7 +12,7 @@ class Tests(TestCase):
     @mock.patch("django.contrib.auth.models.User.objects.create_user")
     def test_register(self, create_user, confirmEmail):
         create_user.return_value = mock_create_user(username='unittest', email='user_email',
-                                                    password='unittest', first_name='unit', last_name='test')
+                                                    password='unittest', first_name='unit', last_name='test', id=1)
         confirmEmail.return_value = JsonResponse(
             {'return': 'Please confirm your email address to complete the registration'})
         body = {
@@ -29,11 +29,16 @@ class Tests(TestCase):
         response = ast.literal_eval(response.decode('utf-8'))
         assert response == {'return': 'unittest is succesfully created. Please confirm your e-mail to login'}
 
+    @mock.patch("django.contrib.auth.models.User.objects.get")
+    @mock.patch("guest.views.Token")
     @mock.patch("guest.views.authenticate")
     @mock.patch("guest.views.auth_login")
-    def test_login(self, auth_login, authenticate):
+    def test_login(self, auth_login, authenticate, token, get):
+        token.objects.get_or_create.return_value = ("String", True)
+        get.return_value = mock_create_user(username='giris', email='giris',
+                                                     password='basarili', first_name='basarili', last_name='oldu', id=1)
         authenticate.return_value = mock_create_user(username='giris', email='giris',
-                                                     password='basarili', first_name='basarili', last_name='oldu')
+                                                     password='basarili', first_name='basarili', last_name='oldu', id=1)
         auth_login.return_value = True
         body = {
             'username': 'username',
@@ -43,13 +48,13 @@ class Tests(TestCase):
         login = Login()
         response = login.post(request=request).content
         response = ast.literal_eval(response.decode('utf-8'))
-        assert response == {'return': 'Login is successful'}
+        assert response == {'return': {'first_name': 'basarili', 'last_name': 'oldu', 'user_id': 1, 'token': 'String'}}
 
 
     @mock.patch("django.contrib.auth.models.User.objects.get")
     def test_change_password(self, get):
         get.return_value = mock_create_user(username='giris', email='giris',
-                                                     password='basarili', first_name='basarili', last_name='oldu')
+                                                     password='basarili', first_name='basarili', last_name='oldu', id=1)
         body = {
             'username': 'username',
             'password': 'newpassword',
@@ -63,7 +68,7 @@ class Tests(TestCase):
     @mock.patch("guest.views.createEmail")
     def test_confirm_email(self, createEmail):
         user = mock_create_user(username='mail', email='gönderimi',
-                                password='basarili', first_name='basarili', last_name='oldu')
+                                password='basarili', first_name='basarili', last_name='oldu', id=1)
         createEmail.return_value = mock_create_email(user)
         body = {}
         request = MockRequest(method='POST', body=body)
@@ -77,7 +82,7 @@ class Tests(TestCase):
     def test_activate_production(self, get, account_activation_token, redirect):
         account_activation_token.check_token.result_value = True
         get.return_value = mock_create_user(username='giris', email='giris',
-                                            password='basarili', first_name='basarili', last_name='oldu')
+                                            password='basarili', first_name='basarili', last_name='oldu',id=1)
         redirect.return_value = "production"
         body = {}
         request = MockRequest(method='POST', body=body, uri="ec2-35")
@@ -89,7 +94,7 @@ class Tests(TestCase):
     def test_activate_development(self, get, account_activation_token, redirect):
         account_activation_token.check_token.result_value = True
         get.return_value = mock_create_user(username='giris', email='giris',
-                                            password='basarili', first_name='basarili', last_name='oldu')
+                                            password='basarili', first_name='basarili', last_name='oldu',id=1)
         redirect.return_value = "development"
         body = {}
         request = MockRequest(method='POST', body=body, uri="ec2-18")
