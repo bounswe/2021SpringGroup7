@@ -47,17 +47,13 @@ def login(request):
     if request.method == 'POST':
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-
         required_areas = {'user_name', 'password'}
-        if set(body.keys())!=required_areas:
+        if set(body.keys()) != required_areas:
             return JsonResponse({'return':'Required areas are:'+str(required_areas)}, status=400)
-
         user_name = body.get('user_name')
         password = body.get('password')
 
-
         user = authenticate(request, username=user_name, password=password)
-
         if user is not None:
             auth_login(request, user)
             return JsonResponse({'return': 'Login is successful'})
@@ -96,18 +92,22 @@ def change_password(request):
 
 def confirmEmail(request,user):
     mail_subject = 'Activate your blog account.'
-    print(user.id)
     message = render_to_string('acc_active_email.html', {
         'user': user,
         'domain': 'ec2-35-158-103-6.eu-central-1.compute.amazonaws.com',
         'uid': user.id,
         'token': account_activation_token.make_token(user),
     })
-    email = EmailMessage(
-        mail_subject, message, to=[user.email]
-    )
+    email = createEmail(mail_subject=mail_subject, message=message, email=user.email)
     email.send()
-    return JsonResponse({'return':'Please confirm your email address to complete the registration'})
+    return JsonResponse({'return' : 'Please confirm your email address to complete the registration'})
+
+
+def createEmail(mail_subject, message, email):
+    return EmailMessage(
+        mail_subject, message, to=[email]
+    )
+
 
 def activate(request, uidb64, token):
     try:
