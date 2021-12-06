@@ -10,84 +10,50 @@ import {
   Typography,
   DialogTitle,
   Dialog,
-  makeStyles,
   Button,
   Card,
+  CardHeader,
   CardContent,
-  CardActions,
-  CardMedia,
   Divider
 } from "@material-ui/core";
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import CakeIcon from '@mui/icons-material/Cake';
-import Post from "../../components/Post/Post";
-import api from "../../services/post";
-import CreatePostDialog from "../../components/CreatePost/index";
-import {dummyPosts} from "../Home/Home.constants"
-import { shadows } from '@mui/system';
+
 import Stack from '@mui/material/Stack';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-const useStyles = makeStyles((theme) => ({
-  toolbar: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-  },
-  name: {
-    flex: 4,
-  },
-  toolbarSecondary: {
-    justifyContent: "flex-end",
-    overflowX: "auto",
-  },
-  toolbarLink: {
-    padding: theme.spacing(1),
-    flexShrink: 0,
-  },
-  emptyBody: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: 680,
-    backgroundColor: "white",
-  },
-  emptyPost: {
-    marginTop: 16,
-  },
-}));
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import CakeIcon from '@mui/icons-material/Cake';
+import Post from "../../components/Post/Post";
+import api from "../../services/post";
+import {dummyPosts} from "../Home/Home.constants"
+import {useStyles} from "./Profile.styles"
+
 
 
 function Profile(props) {
   const classes = useStyles();
+  //const { userInfo } = props;
+
   const [loading, setLoading] = useState(false);
-  const [posts, setPosts] = useState([]);
+
   const [name, setName] = useState("Salih Yilmaz");
-  const [nofFollowers, setNofFollowers] = useState(3);
-  const [nofFollowing, setNofFollowing] = useState(3);
-  const [OpenDialogFollowing, setOpenDialogFollowing] = React.useState(false);
-  const [OpenDialogFollower, setOpenDialogFollower] = React.useState(false);
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState("salihyilmaz");
+
   const [following, setFollowing] = useState([]);
   const [follower, setFollower] = useState([]);
-  const [postIds, setPostIds] = useState([]);
+  const [nofFollowers, setNofFollowers] = useState(5);
+  const [nofFollowing, setNofFollowing] = useState(3);
+
+  const [sharedPosts, setSharedPosts] = useState(dummyPosts.slice(0,1));
+  const [likedPosts, setLikedPosts] = useState(dummyPosts.slice(1,4));
   
-  const [value, setValue] = React.useState('one');
-
-
-  const handleClickOpenDialogFollowing = () => {
-    setOpenDialogFollowing(true);
-  };
-  const handleClickOpenDialogFollower = () => {
-    setOpenDialogFollower(true);
+  const [tabValue, setTabValue] = React.useState('shared');
+  
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
   };
 
-  const handleCloseDialogFollowing = (value) => {
-    setOpenDialogFollowing(false);
-  };
-  const handleCloseDialogFollower = (value) => {
-    setOpenDialogFollower(false);
-  };
+
 
   const renderEmptyPost = () => {
     return (
@@ -95,14 +61,6 @@ function Profile(props) {
         <Typography>You do not shared story yet!</Typography>
       </Box>
     );
-  };
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const handleChangeIndex = (index) => {
-    setValue(index);
   };
 
   if (loading) {
@@ -119,18 +77,11 @@ function Profile(props) {
       <Wrapper>
         <Paper
           elevation={1}
-          style={{
-            width: "98%",
-            minHeight: 1090,
-            padding: "4%",
-            margin: "1%",
-            borderRadius: 0,
-          }}
+          className={classes.profilePaper}
         >
-       
 
           <Container fixed>
-            <Box sx={{ height: '50vh', boxShadow: 3  }}>
+            <Box className={classes.profileInfo}>
 
               <Grid xs container direction="column" spacing={6}>
 
@@ -139,7 +90,7 @@ function Profile(props) {
                   <Grid item container direction="column" xs={3} spacing={2}>
                     
                     <Grid item xs >
-                      <Button size="large" sx={{ height: '100', width: '100' }}>
+                      <Button size="large">
                         <Avatar >S</Avatar>
                       </Button>
                     </Grid>
@@ -150,7 +101,7 @@ function Profile(props) {
                             size="medium"
                             variant="text"
                             startIcon={ <LocationOnIcon color="primary"></LocationOnIcon>}
-                            style={{textTransform: 'none'}} 
+                            className={classes.buttonText}
                             >
                               Ankara
                             </Button>
@@ -169,12 +120,13 @@ function Profile(props) {
 
                   <Grid item xs={7} sm>
 
-                        <Typography gutterBottom variant="h5" component="div">
-                          Salih Yılmaz
-                        </Typography>
-                        <Typography variant="h7" gutterBottom>
-                          salihyilmaz
-                        </Typography>
+
+                    <Card  variant="elevation">
+                      <CardHeader 
+                        title={name}
+                        subheader="salihyilmaz"/>
+                    
+                    <CardContent>
                         <Typography variant="h6" color="primary">
                           About Me
                         </Typography>
@@ -183,42 +135,42 @@ function Profile(props) {
                           <br />
                           {'- An Old Story Teller'}
                         </Typography>
-
+                      </CardContent>
+                    </Card>
                   </Grid>
 
                   <Grid item xs={2}>
-                    <Box width="100%"/>
                     <Stack>
-                      <Button
-                        onClick={handleClickOpenDialogFollowing}
+                      <Button 
+                        className={classes.buttonText} 
                       >
                         Following: {nofFollowing}
                       </Button>
                 
                       <Button
-                        onClick={handleClickOpenDialogFollower}
+                        className={classes.buttonText}
                       >
                         Followers: {nofFollowers}
                       </Button>
                     </Stack>
+                   
                   </Grid>
 
               </Grid>
 
               <Grid container>
 
-
                 <Grid item xs= {4}>
  
                     <Tabs
-                      value={value}
-                      onChange={handleChange}
+                      value={tabValue}
+                      onChange={handleTabChange}
                       textColor="primary"
                       indicatorColor="primary"
                       aria-label="secondary tabs example"
                     >
-                      <Tab value="one" label="Shared Stories" />
-                      <Tab value="two" label="Liked Stories" />
+                      <Tab value="shared" label="Shared Stories" />
+                      <Tab value="liked" label="Liked Stories" />
                     </Tabs>
 
 
@@ -230,7 +182,7 @@ function Profile(props) {
                           <Button 
                             color="primary" 
                             variant="contained"
-                            style={{textTransform: 'none'}} 
+                            className={classes.buttonText} 
                             >
                               Edit Profile
                           </Button>
@@ -244,6 +196,28 @@ function Profile(props) {
                 
             </Box>
 
+
+          </Container>
+          
+          <Container>
+            {tabValue === "shared" ? <>
+                                        {sharedPosts.map((item) => {
+                                                        return (
+                                                          <Post post={item} curUser={username}></Post>
+                                                        );
+                                                      })
+                                          }
+                                      </>
+                                   :  <>
+                                        {likedPosts.map((item) => {
+                                                        return (
+                                                          <Post post={item} curUser={username}></Post>
+                                                        );
+                                                      })
+                                          }
+                                      </> }
+            
+            
 
           </Container>
         </Paper>
@@ -327,14 +301,30 @@ export default Profile;
 
 /*
 
-        >
-          <Container fixed>
+      <Grid item xs={7} sm
+                        sx={{
 
-            <Box sx={{ bgcolor: '#cfe8fc', height: '50vh' }} />
+                              display: "flex",
+                              alignItems: "center",
+                               justifyContent: "flex-end"
+                              }}
+                        >
+                        <Typography gutterBottom variant="h5">
+                          Salih Yılmaz
+                        </Typography>
+                        <Typography variant="h7" gutterBottom>
+                          salihyilmaz
+                        </Typography>
+                        <Typography variant="h6" color="primary">
+                          About Me
+                        </Typography>
+                        <Typography variant="body2">
+                          I am a retired railroad officer. It was always a pleasure for me to share my memories with other people. Here, you can find many of them!.
+                          <br />
+                          {'- An Old Story Teller'}
+                        </Typography>
 
-            <Box sx={{ bgcolor: '#cfe8fc', height: '50vh' }} />
-
-          </Container>
+                  </Grid>
 
 
 */
