@@ -28,8 +28,9 @@ import {dummyPosts} from "../Home/Home.constants"
 import {useStyles} from "./Profile.styles"
 
 import FollowerDialog from "../../components/Dialogs/FollowerDialog/FollowerDialog"
+import EditProfileDialog from "../../components/Dialogs/EditProfileDialog/EditProfileDialog"
 
-
+import USER_SERVICE from "../../services/user";
 
 function Profile(props) {
   const classes = useStyles();
@@ -48,11 +49,23 @@ function Profile(props) {
   const [sharedPosts, setSharedPosts] = useState(dummyPosts.slice(0,1));
   const [likedPosts, setLikedPosts] = useState(dummyPosts.slice(1,4));
   
-  const [tabValue, setTabValue] = React.useState('shared');
+  const [tabValue, setTabValue] = useState('shared');
 
-  const [followingsOpen, setFollowingsOpen] = React.useState(false);
-  const [followersOpen, setFollowersOpen] = React.useState(false);
-  
+  const [followingsOpen, setFollowingsOpen] = useState(false);
+  const [followersOpen, setFollowersOpen] = useState(false);
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
+
+  /*
+  useEffect(() => {
+        USER_SERVICE.GET_PROFILE(username)
+    .then((res) => {
+          setOpenRegister(true);
+      })
+      .catch((error) => {
+        setMessage(error.response.data.return);
+      })
+    }, [])*/
+
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -64,12 +77,20 @@ function Profile(props) {
     setFollowersOpen(true);
   };
 
+  const handleEditProfileDialogOpen = () => {
+    setEditProfileOpen(true);
+  };
+
   const handleFollowingsDialogClose = (value) => {
     setFollowingsOpen(false);
   };
 
  const handleFollowersDialogClose = (value) => {
     setFollowersOpen(false);
+  };
+
+  const  handleEditProfileDialogClose = (value) => {
+    setEditProfileOpen(false);
   };
 
   const renderEmptyPost = () => {
@@ -132,6 +153,16 @@ function Profile(props) {
                           </Stack>
                     </Grid>
 
+                    <Grid item xs>
+                          <Button 
+                            color="primary" 
+                            variant="contained"
+                            className={classes.buttonText} 
+                            onClick={handleEditProfileDialogOpen}
+                            >
+                              Edit Profile
+                          </Button>
+                    </Grid>
 
                   </Grid>
 
@@ -183,9 +214,16 @@ function Profile(props) {
 
               <Grid container>
 
-                <Grid item xs= {4}>
+                <Grid item xs= {5}>
  
-                    <Tabs
+                    <Box width="100%"/>
+
+
+                </Grid>
+                <Grid item xs= {7}>
+                     
+
+                     <Tabs
                       value={tabValue}
                       onChange={handleTabChange}
                       textColor="primary"
@@ -195,20 +233,9 @@ function Profile(props) {
                       <Tab value="shared" label="Shared Stories" />
                       <Tab value="liked" label="Liked Stories" />
                     </Tabs>
-
-
-                </Grid>
-                <Grid item xs= {6}>
-                     <Box width="100%"/>
                 </Grid>
                 <Grid item xs= {2}>
-                          <Button 
-                            color="primary" 
-                            variant="contained"
-                            className={classes.buttonText} 
-                            >
-                              Edit Profile
-                          </Button>
+                           <Box width="100%"/>
                     </Grid>
                 
 
@@ -246,6 +273,7 @@ function Profile(props) {
         </Paper>
         <FollowerDialog open={followingsOpen} onClose={handleFollowingsDialogClose} accounts={following} title={'Followings'}/>
         <FollowerDialog open={followersOpen}  onClose={handleFollowersDialogClose}  accounts={follower} title={'Followers'}/>
+        <EditProfileDialog  open={editProfileOpen} onClose={handleEditProfileDialogClose}></EditProfileDialog>
       </Wrapper>
     </div>
   );
