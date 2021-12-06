@@ -8,14 +8,13 @@ import {
   Box,
   CircularProgress,
   Typography,
-  DialogTitle,
-  Dialog,
   Button,
   Card,
   CardHeader,
   CardContent,
   Divider
 } from "@material-ui/core";
+
 
 import Stack from '@mui/material/Stack';
 import Tabs from '@mui/material/Tabs';
@@ -28,6 +27,8 @@ import api from "../../services/post";
 import {dummyPosts} from "../Home/Home.constants"
 import {useStyles} from "./Profile.styles"
 
+import FollowerDialog from "../../components/Dialogs/FollowerDialog/FollowerDialog"
+
 
 
 function Profile(props) {
@@ -39,21 +40,37 @@ function Profile(props) {
   const [name, setName] = useState("Salih Yilmaz");
   const [username, setUsername] = useState("salihyilmaz");
 
-  const [following, setFollowing] = useState([]);
-  const [follower, setFollower] = useState([]);
-  const [nofFollowers, setNofFollowers] = useState(5);
-  const [nofFollowing, setNofFollowing] = useState(3);
+  const [following, setFollowing] = useState(['dogusuyan','tarkankuzu','barinrabia']);
+  const [follower, setFollower] = useState(['dogusuyan','tarkankuzu','barinrabia','haydarpasacat']);
+  const [nofFollowers, setNofFollowers] = useState(follower.length);
+  const [nofFollowing, setNofFollowing] = useState(following.length);
 
   const [sharedPosts, setSharedPosts] = useState(dummyPosts.slice(0,1));
   const [likedPosts, setLikedPosts] = useState(dummyPosts.slice(1,4));
   
   const [tabValue, setTabValue] = React.useState('shared');
+
+  const [followingsOpen, setFollowingsOpen] = React.useState(false);
+  const [followersOpen, setFollowersOpen] = React.useState(false);
   
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
+  const handleFollowingsDialogOpen = () => {
+    setFollowingsOpen(true);
+  };
+  const handleFollowersDialogOpen = () => {
+    setFollowersOpen(true);
+  };
 
+  const handleFollowingsDialogClose = (value) => {
+    setFollowingsOpen(false);
+  };
+
+ const handleFollowersDialogClose = (value) => {
+    setFollowersOpen(false);
+  };
 
   const renderEmptyPost = () => {
     return (
@@ -142,15 +159,21 @@ function Profile(props) {
                   <Grid item xs={2}>
                     <Stack>
                       <Button 
+                        onClick={handleFollowingsDialogOpen}
                         className={classes.buttonText} 
                       >
-                        Following: {nofFollowing}
+                        Following  
+                          <br />
+                          {nofFollowing}
                       </Button>
                 
                       <Button
+                        onClick={handleFollowersDialogOpen}
                         className={classes.buttonText}
                       >
-                        Followers: {nofFollowers}
+                        Followers 
+                        <br />
+                        {nofFollowers}
                       </Button>
                     </Stack>
                    
@@ -221,7 +244,8 @@ function Profile(props) {
 
           </Container>
         </Paper>
-
+        <FollowerDialog open={followingsOpen} onClose={handleFollowingsDialogClose} accounts={following} title={'Followings'}/>
+        <FollowerDialog open={followersOpen}  onClose={handleFollowersDialogClose}  accounts={follower} title={'Followers'}/>
       </Wrapper>
     </div>
   );
