@@ -24,6 +24,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import AddBoxRoundedIcon from '@material-ui/icons/AddBoxRounded';
 import Person from '@material-ui/icons/Person';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
+import CreatePostDialog from "../Dialogs/CreatePostDialog";
 
 
 /*********************************************************** 
@@ -116,6 +117,7 @@ export default function Header(props) {
   //const { sections, title } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const isMenuOpen = Boolean(anchorEl);
 
   const handleProfileMenuOpen = (event) => {
@@ -126,6 +128,10 @@ export default function Header(props) {
     setAnchorEl(null);
     
     //handleMobileMenuClose();
+  };
+
+  const handleShareDialogOpen = () => {
+      setShareDialogOpen(true);
   };
 
   const handleLogOut = () => {
@@ -258,14 +264,16 @@ const renderMenu = (
               className={classes.button}
               variant="contained"
               size="small"
-              aria-label="explore"            
-              href="/"
+              aria-label="explore"
+              color="default"
+              onClick= {handleShareDialogOpen}
               startIcon={<AddBoxRoundedIcon />}
             >
               Share
             </Button>
           </Tooltip>
         
+
           <Button 
             className={classes.button}
             size="small"
@@ -315,6 +323,7 @@ const renderMenu = (
       </AppBar>
       {renderMenu}
       </Box>
+      <CreatePostDialog open={shareDialogOpen} setOpen={setShareDialogOpen}/>
     </React.Fragment>
   );
 }
