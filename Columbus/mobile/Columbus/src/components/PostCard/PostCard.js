@@ -11,16 +11,19 @@ import {
   NativeBaseProvider,
   Avatar,
   Tag,
+  useDisclose
 } from 'native-base';
 import {TouchableOpacity, View} from 'react-native';
-import ImageCarousel from './ImageCarousel';
-import UserInfo from './UserInfo';
-import LocationInfo from './LocationInfo';
-import PostTimeInfo from './PostTimeInfo';
-import Tags from './Tags';
-import PostingTime from './PostingTime';
+import ImageCarousel from './SubComponents/ImageCarousel';
+import UserInfo from './SubComponents/UserInfo';
+import LocationInfo from './SubComponents/LocationInfo';
+import PostTimeInfo from './SubComponents/PostTimeInfo';
+import Tags from './SubComponents/Tags';
+import PostingTime from './SubComponents/PostingTime';
+import LikeAndShare from './SubComponents/LikeAndShare';
 
 const PostCard = props => {
+  const { isOpen, onOpen, onClose } = useDisclose()
   const postData = {
     imgData: [
       'https://cdn.techinasia.com/wp-content/uploads/2013/09/silicon-valley-asia.jpg',
@@ -41,6 +44,8 @@ const PostCard = props => {
       img: 'https://pbs.twimg.com/profile_images/1313221527580676097/LV9VsA2p_400x400.jpg',
     },
     postingTime: '6 min ago',
+    comment: {nofComments: 10},
+
   };
 
   return (
@@ -71,13 +76,21 @@ const PostCard = props => {
           <Heading size="md" ml="-1">
             {postData.title}
           </Heading>
-          <LocationInfo data={postData.location} />
+          <HStack space={40}>
+            <LocationInfo data={postData.location} />
           <PostTimeInfo data={postData.time} />
+          </HStack>
+          
         </Stack>
         <Text fontWeight="400" numberOfLines={3}>
           {postData.content}
         </Text>
         <Tags data={postData.tags} />
+
+        <HStack space={35}>
+          <PostingTime data={postData.postingTime} />
+          <LikeAndShare data={postData.comment} />
+        </HStack>
 
         <Text
           fontSize="xs"
@@ -92,8 +105,7 @@ const PostCard = props => {
           mt="-1">
           See More
         </Text>
-
-        <PostingTime data={postData.postingTime} />
+        
       </Stack>
     </Box>
   );

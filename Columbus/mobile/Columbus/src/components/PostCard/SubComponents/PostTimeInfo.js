@@ -1,17 +1,9 @@
 import React, {Component} from 'react';
 import {Text, View} from 'native-base';
 
-export class PostTimeInfo extends Component {
-  state = {
-    data: [],
-  };
-  constructor(props) {
-    super(props);
-    this.state.data = props.data;
-  }
-  render() {
-    return (
-      <Text
+function PostTimeInfo(props) {
+  return (
+    <Text
         fontSize="xs"
         _light={{
           color: 'green.500',
@@ -22,10 +14,10 @@ export class PostTimeInfo extends Component {
         fontWeight="500"
         ml="-0.5"
         mt="-1">
-        {this.state.data}
+        {props.data}
       </Text>
-    );
-  }
+  );
 }
 
 export default PostTimeInfo;
+
