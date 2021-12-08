@@ -20,12 +20,15 @@ import Stack from '@mui/material/Stack';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CakeIcon from '@mui/icons-material/Cake';
 import Post from "../../components/Post/Post";
 import api from "../../services/post";
 import {dummyPosts} from "../Home/Home.constants"
 import {useStyles} from "./Profile.styles"
+
 
 import FollowerDialog from "../../components/Dialogs/FollowerDialog/FollowerDialog"
 import EditProfileDialog from "../../components/Dialogs/EditProfileDialog/EditProfileDialog"
@@ -38,8 +41,13 @@ function Profile(props) {
 
   const [loading, setLoading] = useState(false);
 
-  const [name, setName] = useState("Salih Yilmaz");
+  const [curUser, setCurUser] = useState("dogusuyan")
+
+  const [firstName, setFirstName] = useState("Salih");
+  const [lastName, setLastName] = useState("Yilmaz");
   const [username, setUsername] = useState("salihyilmaz");
+  const [email, setEmail] = useState("yilmazsalih@gmail.com");
+  const [aboutMe, setAboutMe] = useState("I am a retired railroad officer. It was always a pleasure for me to share my memories with other people. Here, you can find many of them!.\n - An Old Story Teller");
 
   const [following, setFollowing] = useState(['dogusuyan','tarkankuzu','barinrabia']);
   const [follower, setFollower] = useState(['dogusuyan','tarkankuzu','barinrabia','haydarpasacat']);
@@ -54,6 +62,8 @@ function Profile(props) {
   const [followingsOpen, setFollowingsOpen] = useState(false);
   const [followersOpen, setFollowersOpen] = useState(false);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
+
+  const [isCurUserFollowing,setIsCurUserFollowing] = useState(false);
 
   /*
   useEffect(() => {
@@ -91,6 +101,16 @@ function Profile(props) {
 
   const  handleEditProfileDialogClose = (value) => {
     setEditProfileOpen(false);
+  };
+
+
+  const handleFollow = (value) => {
+    setIsCurUserFollowing(true);
+    // call follow API
+  };
+    const handleUnfollow = (value) => {
+    setIsCurUserFollowing(false);
+    // call unfollow API
   };
 
   const renderEmptyPost = () => {
@@ -153,17 +173,20 @@ function Profile(props) {
                           </Stack>
                     </Grid>
 
-                    <Grid item xs>
-                          <Button 
-                            color="primary" 
-                            variant="contained"
-                            className={classes.buttonText} 
-                            onClick={handleEditProfileDialogOpen}
-                            >
-                              Edit Profile
-                          </Button>
-                    </Grid>
-
+                    {curUser === username ? 
+                                            <Grid item xs>
+                                                  <Button 
+                                                    color="primary" 
+                                                    variant="contained"
+                                                    className={classes.buttonText} 
+                                                    onClick={handleEditProfileDialogOpen}
+                                                    >
+                                                      Edit Profile
+                                                  </Button>
+                                            </Grid>
+                                          :
+                                          <></>
+                    }
                   </Grid>
 
                   <Grid item xs={7} sm>
@@ -171,7 +194,7 @@ function Profile(props) {
 
                     <Card  variant="elevation">
                       <CardHeader 
-                        title={name}
+                        title={firstName + " " + lastName}
                         subheader="salihyilmaz"/>
                     
                     <CardContent>
@@ -179,25 +202,16 @@ function Profile(props) {
                           About Me
                         </Typography>
                         <Typography variant="body2">
-                          I am a retired railroad officer. It was always a pleasure for me to share my memories with other people. Here, you can find many of them!.
-                          <br />
-                          {'- An Old Story Teller'}
+                          {aboutMe}
                         </Typography>
                       </CardContent>
                     </Card>
                   </Grid>
 
-                  <Grid item xs={2}>
+                  <Grid item container xs={2}>
+                    <Grid item>
                     <Stack>
-                      <Button 
-                        onClick={handleFollowingsDialogOpen}
-                        className={classes.buttonText} 
-                      >
-                        Following  
-                          <br />
-                          {nofFollowing}
-                      </Button>
-                
+
                       <Button
                         onClick={handleFollowersDialogOpen}
                         className={classes.buttonText}
@@ -206,7 +220,47 @@ function Profile(props) {
                         <br />
                         {nofFollowers}
                       </Button>
+                        <Button 
+                        onClick={handleFollowingsDialogOpen}
+                        className={classes.buttonText} 
+                      >
+                        Following  
+                          <br />
+                          {nofFollowing}
+                      </Button>
+
                     </Stack>
+                    </Grid>
+
+                     <Grid item className={classes.followGrid}>
+                       {curUser != username ? <>
+                                              { isCurUserFollowing ?
+                                                                      <Button 
+                                                                        size="medium"
+                                                                        color="primary" 
+                                                                        variant="outlined"
+                                                                        onClick={handleUnfollow}
+                                                                        className={classes.buttonText} 
+                                                                        startIcon={ <PersonRemoveIcon/>}
+                                                                      >
+                                                                        Unfollow 
+                                                                      </Button>
+                                                                    :
+                                                                      <Button 
+                                                                      size="medium"
+                                                                      color="primary" 
+                                                                      variant="outlined"
+                                                                      onClick={handleFollow}
+                                                                      className={classes.buttonText} 
+                                                                      startIcon={ <PersonAddAlt1Icon/>}
+                                                                  >
+                                                                    Follow 
+                                                                  </Button>
+                                                  } </> 
+                                            :
+                                            <></>
+                        }
+                      </Grid>
                    
                   </Grid>
 
@@ -273,7 +327,7 @@ function Profile(props) {
         </Paper>
         <FollowerDialog open={followingsOpen} onClose={handleFollowingsDialogClose} accounts={following} title={'Followings'}/>
         <FollowerDialog open={followersOpen}  onClose={handleFollowersDialogClose}  accounts={follower} title={'Followers'}/>
-        <EditProfileDialog  open={editProfileOpen} onClose={handleEditProfileDialogClose}></EditProfileDialog>
+        <EditProfileDialog  open={editProfileOpen} onClose={handleEditProfileDialogClose} curProfileInfo={{'username':username,'firstName': firstName,'lastName':lastName,'email':email, 'aboutMe':aboutMe}}></EditProfileDialog>
       </Wrapper>
     </div>
   );
@@ -284,99 +338,15 @@ export default Profile;
 
 
 
-
 /*
+                      <Button 
+                        color="primary" 
+                        variant="outlined"
+                        className={classes.buttonText} 
+                        startIcon={ <PersonRemoveIcon/>}
+                      >
+                        Unfollow 
+                      </Button>
 
 
-          <Container style={{ display: "flex", flexDirection: "column" }}>
-       
-            <Container style={{ display: "flex", flexDirection: "row" }}>
-              
-          <Card sx={{ minWidth: 275,display: 'flex'}} variant="outlined">
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <CardMedia>
-                      <Avatar
-                  alt="Remy Sharp"
-                  elevation={1}
-                >
-                  S
-                </Avatar>
-                  </CardMedia>
-            <CardContent>
-              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-               {name}
-              </Typography>
-              <Typography variant="h5" component="div">
-                About Me
-              </Typography>
-              <Typography variant="body2">
-                I am a retired railroad officer. It was always a pleasure for me to share my memories with other people. Here, you can find many of them!.
-                <br />
-                {'"a benevolent smile"'}
-              </Typography>
-            </CardContent>
-              </Box>
-          </Card>
-
-              </Container>
-              <Container style={{ display: "flex", flexDirection: "row" }}>
-                <Button
-                  onClick={handleClickOpenDialogFollowing}
-                  style={{ margin: 10, fontSize: 15 }}
-                >
-                  Following: {nofFollowing}
-                </Button>
-                
-                <Button
-                  style={{ margin: 10, fontSize: 15 }}
-                  onClick={handleClickOpenDialogFollower}
-                >
-                  Followers: {nofFollowers}
-                </Button>
-
-              </Container>
-          </Container>
-
-          <Button color="primary" variant="contained">Edit Profile</Button>
-          <Divider/>
-          {dummyPosts.length === 0 && renderEmptyPost()}
-          {dummyPosts.length !== 0 &&
-            dummyPosts.map((item) => {
-              return  <Post post={item} curUser={"Salih Yılmaz"}></Post>;
-            })}
-
-
-
-*/
-
-
-
-/*
-
-      <Grid item xs={7} sm
-                        sx={{
-
-                              display: "flex",
-                              alignItems: "center",
-                               justifyContent: "flex-end"
-                              }}
-                        >
-                        <Typography gutterBottom variant="h5">
-                          Salih Yılmaz
-                        </Typography>
-                        <Typography variant="h7" gutterBottom>
-                          salihyilmaz
-                        </Typography>
-                        <Typography variant="h6" color="primary">
-                          About Me
-                        </Typography>
-                        <Typography variant="body2">
-                          I am a retired railroad officer. It was always a pleasure for me to share my memories with other people. Here, you can find many of them!.
-                          <br />
-                          {'- An Old Story Teller'}
-                        </Typography>
-
-                  </Grid>
-
-
-*/
+                      */
