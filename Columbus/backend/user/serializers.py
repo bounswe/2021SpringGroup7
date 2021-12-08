@@ -25,3 +25,13 @@ class GetProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','username', 'first_name', 'last_name','email','birthday','location','followers','followings','biography']
+
+class SetProfileSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+    birthday = serializers.DateTimeField()
+    location = serializers.IntegerField()
+    biography = serializers.CharField()
+
+    class Meta:
+        model = User
+        fields = ['id','username', 'first_name', 'last_name','birthday','location','biography']
