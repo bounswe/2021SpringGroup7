@@ -99,6 +99,14 @@ const useStyles = makeStyles((theme) => ({
   },
   navigationButtons: { 
     border: '1.5px solid' 
+  },
+  button: {
+    //backgroundColor:"#0060a0",
+    //color:"white"
+  },
+  avatar: {
+    backgroundColor:"#0071bc",
+    color:"black"
   }
 }));
 
@@ -159,7 +167,7 @@ const renderMenu = (
               aria-label="account of current user"
               aria-controls={'primary-search-account-menu'}
               aria-haspopup="true"
-              color="default"
+              className={classes.button}
             >
               <AccountCircle />
             </IconButton>
@@ -178,6 +186,7 @@ const renderMenu = (
       </MenuItem>
       <MenuItem onClick={handleLogOut}>
            <Button 
+            className={classes.button}
             variant="contained"
             color="default"
             href="/"
@@ -218,6 +227,7 @@ const renderMenu = (
               <Button
                 variant="contained"
                 disableElevation
+                className={classes.button}
               >
                 <SearchIcon />
               </Button>
@@ -229,10 +239,10 @@ const renderMenu = (
         <Stack direction="row" spacing={1}>
           <Tooltip title="Explore" arrow>
             <Button
+              className={classes.button}
               variant="contained"
               size="small"
               aria-label="explore"
-              color="default"
               href="/"
               startIcon={<ExploreIcon />}>
               Explore
@@ -241,10 +251,10 @@ const renderMenu = (
 
           <Tooltip title="Add Story" arrow>
             <Button
+              className={classes.button}
               variant="contained"
               size="small"
-              aria-label="explore"
-              color="default"
+              aria-label="explore"            
               href="/"
               startIcon={<AddBoxRoundedIcon />}
             >
@@ -253,25 +263,26 @@ const renderMenu = (
           </Tooltip>
         
           <Button 
+            className={classes.button}
             size="small"
             color="default" 
             variant="contained"
             onClick={handleProfileMenuOpen}
-            startIcon={ <Badge badgeContent={0} color="error">
-                              <Avatar sx={{ width: 30, height:30 }}>S</Avatar>
+            startIcon={ <Badge badgeContent={0} >
+                              <Avatar sx={{ width: 30, height:30 }} classname={classes.avatar}>S</Avatar>
                         </Badge>}
              style={{textTransform: 'none'}} 
             >
               
               <Typography>Salih Yılmaz</Typography>
               <IconButton
+              className={classes.button}
               size="small"
               aria-label="account of current user"
               aria-controls={'primary-search-account-menu'}
               aria-haspopup="true"
-              color="default"
             >
-              <KeyboardArrowDownIcon />
+              <KeyboardArrowDownIcon className={classes.button}/>
             </IconButton>  
           </Button>
           </Stack>
