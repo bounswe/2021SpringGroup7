@@ -7,6 +7,7 @@ import Avatar from '@mui/material/Avatar';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
+import Divider from '@mui/material/Divider';
 
 import PersonIcon from '@mui/icons-material/Person';
 
@@ -22,6 +23,7 @@ export default function FollowerDialog(props) {
       <DialogContent dividers>
                     <List sx={{ pt: 0 }}>
                         {accounts.map((account) => (
+                            <>                          
                             <ListItem button component={Link} to="/" key={account}>
                                 <ListItemAvatar>
                                 <Avatar>
@@ -30,6 +32,8 @@ export default function FollowerDialog(props) {
                                 </ListItemAvatar>
                                 <ListItemText primary={account} />
                             </ListItem>
+                             <Divider/>
+                            </>
                             ))
                         }
 
