@@ -15,7 +15,6 @@ import {
 import {useNavigation} from '@react-navigation/native';
 
 function UserInfo(props) {
-  console.log(props);
   const navigation = useNavigation();
   const colors = ['amber.500', 'purple.500', 'red.500', 'blue.500'];
   const rand = Math.floor(Math.random() * colors.length);

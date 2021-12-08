@@ -55,7 +55,7 @@ export default function SignUp() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     
-    AUTHENTICATION_SERVICE.REGISTER(JSON.stringify({'user_name': data.get('userName'),  'first_name':data.get('firstName'), 'last_name':data.get('lastName'), 'user_email':data.get('email'), 'password':data.get('password')}))
+    AUTHENTICATION_SERVICE.REGISTER(JSON.stringify({'username': data.get('userName'),  'first_name':data.get('firstName'), 'last_name':data.get('lastName'), 'email':data.get('email'), 'password':data.get('password')}))
     .then((res) => {
           setMessage("Successfull Register! \n Please confirm your email!");
           setOpenRegister(true);
