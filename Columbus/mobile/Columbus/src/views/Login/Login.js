@@ -14,7 +14,7 @@ import {
 } from 'native-base';
 import {useMutation} from 'react-query';
 
-import AuthLayout from '../../layout/AuthLayout';
+import AuthLayout from '../../layouts/AuthLayout';
 import {SERVICE} from '../../services/services';
 import CustomModal from '../../components/CustomModal';
 import {useAuth} from '../../context/AuthContext';
