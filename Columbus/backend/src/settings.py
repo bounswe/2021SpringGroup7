@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 import environ
+import boto3
 
 # Initialise environment variables
 env = environ.Env()
@@ -29,6 +30,10 @@ SECRET_KEY = 'django-insecure-8ilanq3gx*4+lhgst8iwt^jll@vit^$3#kjs4nc8+f5%=f$a+)
 # SECURITY WARNING: don't run with debug turned on in production!
 
 DEBUG = env.get_value('DEBUG', default=False)
+
+BUCKET_NAME = 'columbus-multimedia-storage'
+S3_CLIENT = boto3.client('s3')
+
 
 ALLOWED_HOSTS = ['*']
 
