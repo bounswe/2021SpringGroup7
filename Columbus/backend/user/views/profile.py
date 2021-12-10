@@ -1,3 +1,6 @@
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
 from ..serializers import *
 from rest_framework import generics
 from django.http import JsonResponse
@@ -7,6 +10,8 @@ from ..models import Following
 
 class GetProfileInfo(generics.ListAPIView):
     serializer_class = GetProfileSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
         user_id = kwargs['user_id']
         try:
@@ -34,6 +39,8 @@ class GetProfileInfo(generics.ListAPIView):
 
 class SetProfileInfo(generics.CreateAPIView):
     serializer_class = SetProfileSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
         body = request.data
         user_id = body['id']

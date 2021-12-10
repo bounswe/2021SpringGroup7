@@ -32,7 +32,9 @@ SECRET_KEY = 'django-insecure-8ilanq3gx*4+lhgst8iwt^jll@vit^$3#kjs4nc8+f5%=f$a+)
 DEBUG = env.get_value('DEBUG', default=False)
 
 BUCKET_NAME = 'columbus-multimedia-storage'
-S3_CLIENT = boto3.client('s3')
+S3_CLIENT = boto3.client('s3',aws_access_key_id=' ',
+                      aws_secret_access_key='',
+                      region_name='eu-west-1')
 
 
 ALLOWED_HOSTS = ['*']
@@ -105,6 +107,15 @@ DATABASES = {
         'PORT': 5432
     }
 }
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -144,7 +155,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATIC_URL = '/static/'
 
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -158,6 +168,7 @@ EMAIL_HOST_USER = 'junkcolumbus@gmail.com'
 EMAIL_HOST_PASSWORD = 'junk_Columbus_451'
 
 REST_FRAMEWORK = {'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
-                  'DEFAULT_AUTHENTICATION_CLASSES': [
+                  'DEFAULT_AUTHENTICATION_CLASSES': (
                       'rest_framework.authentication.TokenAuthentication',
-                  ]}
+                      'rest_framework.authentication.SessionAuthentication')
+                  }
