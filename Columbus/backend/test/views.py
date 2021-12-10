@@ -16,6 +16,7 @@ class Test(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = TestSerializer
     def get(self, request, *args, **kwargs):
+        print('x')
         path_in_local = './deneme.png'
         path_in_s3 = 'deneme/hamza/1/deneme.png'
         #upload_to_s3(path_in_local,path_in_s3)
