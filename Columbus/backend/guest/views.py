@@ -121,7 +121,7 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
 
-        profile = Profile(user=user)
+        profile = Profile(user_id=user)
         profile.save()
         if 'ec2-35' in str(request.build_absolute_uri()):
             return redirect('http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation')
