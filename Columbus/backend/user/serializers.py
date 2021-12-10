@@ -7,7 +7,8 @@ class LogoutSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username']
 
-class ProfilePostSerializer(serializers.ModelSerializer):
+
+class HomePageSerializer(serializers.ModelSerializer):
     page_number = serializers.IntegerField()
     page_size = serializers.IntegerField()
 
