@@ -66,7 +66,6 @@ export default function EditProfileDialog(props) {
                   fullWidth
                   id="firstName"
                   label="First Name"
-                  autoFocus
                   defaultValue={curProfileInfo['firstName']}
                 />
               </Grid>
@@ -123,6 +122,7 @@ export default function EditProfileDialog(props) {
                   rows={4}
                   defaultValue={aboutMe}
                   variant="filled"
+                  autoFocus
                 />
               </Grid>
             </Grid>
