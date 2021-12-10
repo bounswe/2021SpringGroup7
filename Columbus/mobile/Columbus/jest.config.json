@@ -1,0 +1,6 @@
+{
+  "preset": "react-native",
+  "setupFiles": ["./jestSetupFile.js"],
+  "transformIgnorePatterns": ["/node_modules/(?!native-base)/"],
+  "testPathIgnorePatterns": [".git/.*", "node_modules/.*"]
+}

@@ -41,19 +41,23 @@ const Login = ({navigation}) => {
     setModalMessage('');
   };
 
-  const submitLogin = useMutation(params => SERVICE.loginRequest({params}), {
-    onSuccess(response) {
-      login();
-      setIsButtonLoading(false);
-      // navigation.navigate('HomePage');
-    },
-    onError({response}) {
-      console.log('res: ', response);
-      setIsButtonLoading(false);
-      setModalMessage(response.data.return);
-      setShowModal(true);
-    },
-  });
+  // const submitLogin = useMutation(params => SERVICE.loginRequest({params}), {
+  //   onSuccess(response) {
+  //     login();
+  //     setIsButtonLoading(false);
+  //     // navigation.navigate('HomePage');
+  //   },
+  //   onError({response}) {
+  //     console.log('res: ', response);
+  //     setIsButtonLoading(false);
+  //     setModalMessage(response.data.return);
+  //     setShowModal(true);
+  //   },
+  // });
+
+  submitLogin = () => {
+    console.log('obasdject');
+  };
 
   const handleLogin = async () => {
     setIsButtonLoading(true);
@@ -74,6 +78,7 @@ const Login = ({navigation}) => {
 
   return (
     <AuthLayout>
+      {console.log('asdas')}
       <Box safeArea p="2" py="8" h="100%" w="90%" maxW="290">
         <Heading
           size="lg"

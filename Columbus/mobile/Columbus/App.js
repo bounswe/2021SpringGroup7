@@ -1,8 +1,8 @@
 import React from 'react';
 import {NativeBaseProvider} from 'native-base';
+import {NavigationContainer} from '@react-navigation/native';
 
 import Navigation from './src/navigation';
-import {NavigationContainer} from '@react-navigation/native';
 import AppProviders from './src/context/AppProviders';
 
 const App = () => {
