@@ -105,6 +105,15 @@ DATABASES = {
         'PORT': 5432
     }
 }
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -144,7 +153,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATIC_URL = '/static/'
 
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -158,6 +166,7 @@ EMAIL_HOST_USER = 'junkcolumbus@gmail.com'
 EMAIL_HOST_PASSWORD = 'junk_Columbus_451'
 
 REST_FRAMEWORK = {'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
-                  'DEFAULT_AUTHENTICATION_CLASSES': [
+                  'DEFAULT_AUTHENTICATION_CLASSES': (
                       'rest_framework.authentication.TokenAuthentication',
-                  ]}
+                      'rest_framework.authentication.SessionAuthentication')
+                  }
