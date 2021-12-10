@@ -47,7 +47,7 @@ function Profile(props) {
   const [lastName, setLastName] = useState("Yilmaz");
   const [username, setUsername] = useState("salihyilmaz");
   const [email, setEmail] = useState("yilmazsalih@gmail.com");
-  const [aboutMe, setAboutMe] = useState("I am a retired railroad officer. It was always a pleasure for me to share my memories with other people. Here, you can find many of them!.\n - An Old Story Teller");
+  const [aboutMe, setAboutMe] = useState("I am a retired railroad officer. It was always a pleasure for me to share my memories with other people. Here, you can find many of them!.\n - An Old Story Teller"); // 
 
   const [following, setFollowing] = useState(['dogusuyan','tarkankuzu','barinrabia']);
   const [follower, setFollower] = useState(['dogusuyan','tarkankuzu','barinrabia','haydarpasacat']);
@@ -148,9 +148,14 @@ function Profile(props) {
                   <Grid item container direction="column" xs={3} spacing={2}>
                     
                     <Grid item xs >
-                      <Button size="large">
-                        <Avatar >S</Avatar>
-                      </Button>
+                        <Container>
+                         <Box sx={{width:"100%"}}>
+                          <Button disable>
+                              <Avatar style={{height:70,width:70}}>S</Avatar>
+                          </Button>
+                         </Box>
+                       </Container>
+                      
                     </Grid>
 
                     <Grid item xs>
@@ -160,6 +165,7 @@ function Profile(props) {
                             variant="text"
                             startIcon={ <LocationOnIcon color="primary"></LocationOnIcon>}
                             className={classes.buttonText}
+                            disabled
                             >
                               Ankara
                             </Button>
@@ -167,6 +173,7 @@ function Profile(props) {
                             size="medium"
                             variant="text"
                             startIcon={ <CakeIcon color="primary"></CakeIcon>}
+                            disabled
                             >
                               01.01.1960
                             </Button>
@@ -198,35 +205,63 @@ function Profile(props) {
                         subheader="salihyilmaz"/>
                     
                     <CardContent>
-                        <Typography variant="h6" color="primary">
-                          About Me
-                        </Typography>
-                        <Typography variant="body2">
-                          {aboutMe}
-                        </Typography>
+                        {aboutMe.length == 0 ? <>
+                                                { curUser == username ? <>
+                                                                          <Typography variant="h6" color="primary">
+                                                                            About Me
+                                                                          </Typography>
+                                                                          <Button
+                                                                            className={classes.buttonText} 
+                                                                            onClick={handleEditProfileDialogOpen}>
+                                                                            Add biography to introduce yourself to others!
+                                                                          </Button>
+                                                                        </>
+                                                                        :
+                                                                        <></>
+                                                  
+                                                  }
+                                                </>
+                                            : <>
+                                                <Typography variant="h6" color="primary">
+                                                  About Me
+                                                </Typography>
+                                                <Typography variant="body2">
+                                                  {aboutMe}
+                                                </Typography>
+                                              </>
+                                                
+                      
+                      }
+                        
                       </CardContent>
                     </Card>
                   </Grid>
 
                   <Grid item container xs={2}>
+                     <Grid item>
+                       <Container>
+                         <Box sx={{width:"100%"}}></Box>
+                       </Container>
+                       </Grid>
                     <Grid item>
-                    <Stack>
+                    <Stack >
 
                       <Button
                         onClick={handleFollowersDialogOpen}
                         className={classes.buttonText}
                       >
-                        Followers 
-                        <br />
                         {nofFollowers}
+                        <br />
+                        Followers 
+
                       </Button>
                         <Button 
                         onClick={handleFollowingsDialogOpen}
                         className={classes.buttonText} 
                       >
-                        Following  
+                        {nofFollowing}
                           <br />
-                          {nofFollowing}
+                        Followings     
                       </Button>
 
                     </Stack>
@@ -236,23 +271,23 @@ function Profile(props) {
                        {curUser != username ? <>
                                               { isCurUserFollowing ?
                                                                       <Button 
-                                                                        size="medium"
                                                                         color="primary" 
                                                                         variant="outlined"
                                                                         onClick={handleUnfollow}
                                                                         className={classes.buttonText} 
                                                                         startIcon={ <PersonRemoveIcon/>}
+                                                                        style={{width:'92px'}}
                                                                       >
                                                                         Unfollow 
                                                                       </Button>
                                                                     :
                                                                       <Button 
-                                                                      size="medium"
                                                                       color="primary" 
                                                                       variant="outlined"
                                                                       onClick={handleFollow}
                                                                       className={classes.buttonText} 
                                                                       startIcon={ <PersonAddAlt1Icon/>}
+                                                                      style={{width:'92px'}}
                                                                   >
                                                                     Follow 
                                                                   </Button>
@@ -334,19 +369,3 @@ function Profile(props) {
 }
 
 export default Profile;
-
-
-
-
-/*
-                      <Button 
-                        color="primary" 
-                        variant="outlined"
-                        className={classes.buttonText} 
-                        startIcon={ <PersonRemoveIcon/>}
-                      >
-                        Unfollow 
-                      </Button>
-
-
-                      */
