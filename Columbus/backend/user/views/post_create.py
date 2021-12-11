@@ -22,11 +22,9 @@ class PostCreate(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
 
         body = request.data
-        print(body)
-        print("loc:", body["location"][0])
         #print(body.keys())
         required_areas = {'title', 'username', 'time_start'}
-        print(set(body.keys()).intersection(required_areas))
+
         if len(set(body.keys()).intersection(required_areas))!=3:
             return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
 
@@ -38,6 +36,8 @@ class PostCreate(generics.CreateAPIView):
         text = body.get('text', '')
         multimedia = body.get('multimedia', '')
         time_end = body.get('time_end', None)
+
+        tags = body.get('tags', [])
 
         locations = body.get('location', [])
 
@@ -62,6 +62,9 @@ class PostCreate(generics.CreateAPIView):
             for each in locations:
                 location = Location(story_id=story, location=each['location'], latitude=each['latitude'], longitude=each['longitude'], type=each['type'])
                 location.save()
+            for tag_string in tags:
+                post_tag = Tag(story_id=story, tag=tag_string)
+                post_tag.save()
             return JsonResponse({'return': story.id})
         except:
             return JsonResponse({'return': 'error'}, status=400)
