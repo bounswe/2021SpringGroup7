@@ -34,6 +34,7 @@ import FollowerDialog from "../../components/Dialogs/FollowerDialog/FollowerDial
 import EditProfileDialog from "../../components/Dialogs/EditProfileDialog/EditProfileDialog"
 
 import USER_SERVICE from "../../services/user";
+import { set } from "date-fns";
 
 function Profile(props) {
   const classes = useStyles();
@@ -41,18 +42,21 @@ function Profile(props) {
 
   const [loading, setLoading] = useState(false);
 
-  const [curUser, setCurUser] = useState("dogusuyan")
+  const [curUserId, setCurUserId] = useState(25);
+  const [userId, setUserId] = useState(25);
+  const [isCurUserFollowing,setIsCurUserFollowing] = useState(false);
 
-  const [firstName, setFirstName] = useState("Salih");
-  const [lastName, setLastName] = useState("Yilmaz");
-  const [username, setUsername] = useState("salihyilmaz");
-  const [email, setEmail] = useState("yilmazsalih@gmail.com");
-  const [aboutMe, setAboutMe] = useState("I am a retired railroad officer. It was always a pleasure for me to share my memories with other people. Here, you can find many of them!.\n - An Old Story Teller"); // 
-
-  const [following, setFollowing] = useState(['dogusuyan','tarkankuzu','barinrabia']);
-  const [follower, setFollower] = useState(['dogusuyan','tarkankuzu','barinrabia','haydarpasacat']);
-  const [nofFollowers, setNofFollowers] = useState(follower.length);
-  const [nofFollowing, setNofFollowing] = useState(following.length);
+  const [profileInfo, setProfileInfo] = useState({
+                                                  "first_name": "",
+                                                  "last_name": "",
+                                                  "birthday": null,
+                                                  "location": "",
+                                                  "username": "",
+                                                  "email": "",
+                                                  "followers": [],
+                                                  "followings": [],
+                                                  "biography": ""
+                                              });
 
   const [sharedPosts, setSharedPosts] = useState(dummyPosts.slice(0,1));
   const [likedPosts, setLikedPosts] = useState(dummyPosts.slice(1,4));
@@ -63,18 +67,24 @@ function Profile(props) {
   const [followersOpen, setFollowersOpen] = useState(false);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
 
-  const [isCurUserFollowing,setIsCurUserFollowing] = useState(false);
 
-  /*
   useEffect(() => {
-        USER_SERVICE.GET_PROFILE(username)
+
+        USER_SERVICE.GET_PROFILEINFO(userId)
     .then((res) => {
-          setOpenRegister(true);
+      setProfileInfo(res.data.response);
       })
       .catch((error) => {
-        setMessage(error.response.data.return);
-      })
-    }, [])*/
+         console.log(error.response.data.return);
+      });
+      console.log('profile ', profileInfo)
+
+      if(profileInfo['followings'].includes(curUserId)) {
+        setIsCurUserFollowing(true);
+      } else {
+        setIsCurUserFollowing(false);
+      }
+    }, [])
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -137,7 +147,6 @@ function Profile(props) {
           elevation={1}
           className={classes.profilePaper}
         >
-
           <Container fixed>
             <Box className={classes.profileInfo}>
 
@@ -150,8 +159,12 @@ function Profile(props) {
                     <Grid item xs >
                         <Container>
                          <Box sx={{width:"100%"}}>
-                          <Button disable>
-                              <Avatar style={{height:70,width:70}}>S</Avatar>
+                          <Button disabled>
+                              <Avatar style={{height:70,width:70}}>
+                                {profileInfo['first_name'] && profileInfo['last_name'] ? <>{profileInfo['first_name'].slice(0,1) + profileInfo['last_name'].slice(0,1)}
+                                                                                            </>
+                                                                                        : <></>}
+                                </Avatar>
                           </Button>
                          </Box>
                        </Container>
@@ -160,27 +173,22 @@ function Profile(props) {
 
                     <Grid item xs>
                          <Stack>
-                          <Button 
-                            size="medium"
-                            variant="text"
-                            startIcon={ <LocationOnIcon color="primary"></LocationOnIcon>}
-                            className={classes.buttonText}
-                            disabled
-                            >
-                              Ankara
-                            </Button>
-                          <Button 
-                            size="medium"
-                            variant="text"
-                            startIcon={ <CakeIcon color="primary"></CakeIcon>}
-                            disabled
-                            >
-                              01.01.1960
-                            </Button>
+                           {profileInfo['location'] ? <Typography variant="h10">
+                                                        <LocationOnIcon color="primary"></LocationOnIcon>
+                                                          {profileInfo['location']}
+                                                      </Typography>
+                                                      : <></>    
+                              }
+                           {profileInfo['birthday'] ? <Typography variant="h10">
+                                                                <CakeIcon color="primary"></CakeIcon>
+                                                          {profileInfo['birthday']}
+                                                          </Typography> 
+                                                      : <></>    
+                              }
                           </Stack>
                     </Grid>
 
-                    {curUser === username ? 
+                    {curUserId == userId ? 
                                             <Grid item xs>
                                                   <Button 
                                                     color="primary" 
@@ -201,12 +209,12 @@ function Profile(props) {
 
                     <Card  variant="elevation">
                       <CardHeader 
-                        title={firstName + " " + lastName}
-                        subheader="salihyilmaz"/>
+                        title={profileInfo['first_name'] + " " + profileInfo['last_name']}
+                        subheader={profileInfo['username']}/>
                     
                     <CardContent>
-                        {aboutMe.length == 0 ? <>
-                                                { curUser == username ? <>
+                        {profileInfo['biography'].length == 0 ? <>
+                                                { curUserId == userId ? <>
                                                                           <Typography variant="h6" color="primary">
                                                                             About Me
                                                                           </Typography>
@@ -218,7 +226,6 @@ function Profile(props) {
                                                                         </>
                                                                         :
                                                                         <></>
-                                                  
                                                   }
                                                 </>
                                             : <>
@@ -226,11 +233,9 @@ function Profile(props) {
                                                   About Me
                                                 </Typography>
                                                 <Typography variant="body2">
-                                                  {aboutMe}
+                                                  {profileInfo['biography']}
                                                 </Typography>
                                               </>
-                                                
-                      
                       }
                         
                       </CardContent>
@@ -244,13 +249,13 @@ function Profile(props) {
                        </Container>
                        </Grid>
                     <Grid item>
-                    <Stack >
+                    <Stack>
 
                       <Button
                         onClick={handleFollowersDialogOpen}
                         className={classes.buttonText}
                       >
-                        {nofFollowers}
+                        {profileInfo['followers'].length}
                         <br />
                         Followers 
 
@@ -259,7 +264,7 @@ function Profile(props) {
                         onClick={handleFollowingsDialogOpen}
                         className={classes.buttonText} 
                       >
-                        {nofFollowing}
+                        {profileInfo['followings'].length}
                           <br />
                         Followings     
                       </Button>
@@ -268,7 +273,7 @@ function Profile(props) {
                     </Grid>
 
                      <Grid item className={classes.followGrid}>
-                       {curUser != username ? <>
+                       {curUserId != userId ? <>
                                               { isCurUserFollowing ?
                                                                       <Button 
                                                                         color="primary" 
@@ -310,8 +315,6 @@ function Profile(props) {
 
                 </Grid>
                 <Grid item xs= {7}>
-                     
-
                      <Tabs
                       value={tabValue}
                       onChange={handleTabChange}
@@ -326,23 +329,16 @@ function Profile(props) {
                 <Grid item xs= {2}>
                            <Box width="100%"/>
                     </Grid>
-                
-
-              </Grid>
-              
-              </Grid>
-
-                
+              </Grid>  
+              </Grid>  
             </Box>
-
-
           </Container>
           
           <Container>
             {tabValue === "shared" ? <>
                                         {sharedPosts.map((item) => {
                                                         return (
-                                                          <Post post={item} curUser={username}></Post>
+                                                          <Post post={item} curUser={curUserId}></Post>
                                                         );
                                                       })
                                           }
@@ -350,7 +346,7 @@ function Profile(props) {
                                    :  <>
                                         {likedPosts.map((item) => {
                                                         return (
-                                                          <Post post={item} curUser={username}></Post>
+                                                          <Post post={item} curUser={curUserId}></Post>
                                                         );
                                                       })
                                           }
@@ -360,12 +356,37 @@ function Profile(props) {
 
           </Container>
         </Paper>
-        <FollowerDialog open={followingsOpen} onClose={handleFollowingsDialogClose} accounts={following} title={'Followings'}/>
-        <FollowerDialog open={followersOpen}  onClose={handleFollowersDialogClose}  accounts={follower} title={'Followers'}/>
-        <EditProfileDialog  open={editProfileOpen} onClose={handleEditProfileDialogClose} curProfileInfo={{'username':username,'firstName': firstName,'lastName':lastName,'email':email, 'aboutMe':aboutMe}}></EditProfileDialog>
+        <FollowerDialog open={followingsOpen} onClose={handleFollowingsDialogClose} accounts={profileInfo['followings']} title={'Followings'}/>
+        <FollowerDialog open={followersOpen}  onClose={handleFollowersDialogClose}  accounts={profileInfo['followers']} title={'Followers'}/>
+        <EditProfileDialog  open={editProfileOpen} onClose={handleEditProfileDialogClose} curProfileInfo={profileInfo}></EditProfileDialog>
       </Wrapper>
     </div>
   );
 }
 
 export default Profile;
+
+
+
+
+/*
+
+<Button 
+                            size="medium"
+                            variant="text"
+                            startIcon={ <LocationOnIcon color="primary"></LocationOnIcon>}
+                            className={classes.buttonText}
+                            disabled
+                            >
+                              Ankara
+                            </Button>
+                          <Button 
+                            size="medium"
+                            variant="text"
+                            startIcon={ <CakeIcon color="primary"></CakeIcon>}
+                            disabled
+                            >
+                              01.01.1960
+                            </Button>
+
+*/
