@@ -4,51 +4,127 @@ import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 
+import USER_SERVICE from "../../../services/user";
+import MessageDialog from "../MessageDialog/MessageDialog";
+
 export default function EditProfileDialog(props) {
 
  const { open, onClose, curProfileInfo } = props;
 
- const [aboutMe, setAboutMe] = useState([])
+ const [file, setFile] = React.useState(curProfileInfo['profilePic']);
+ const [fileData, setFileData] = React.useState(null);
+ const [openPreviewDialog, setOpenPreviewDialog] = React.useState(false);
 
- const [value, setValue] = React.useState(new Date('1960-01-01'));
+ const [dateValue, setDateValue] = React.useState(new Date('1960-01-01'));
 
-  const handleChange = (newValue) => {
-    setValue(newValue);
+ const [message, setMessage] = React.useState('');
+ const [openMessage, setOpenMessage] = React.useState(false);
+
+  const handlePreview = (event) => {
+      setOpenPreviewDialog(true);
   };
- useEffect(() => {
-        if(curProfileInfo['aboutMe'].length == 0) {
-          setAboutMe("")
-        } else {
-           setAboutMe(curProfileInfo['aboutMe'])
-        }
-    }, [])
 
-   const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log("Successfull Edit!");
+  const handlePreviewClose = (event) => {
+    setOpenPreviewDialog(false);
+};
 
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      setFileData(reader.result);
+    })
+    reader.readAsDataURL(event.target.files[0])
+  };
+
+  const handleDateChange = (newValue) => {
+    setDateValue(newValue);
+  };
+
+  const handleCloseMessage = () => {
+		setOpenMessage(false);
+    onClose();
 	};
 
-  // use Message Dialog
+  const handleEditProfile = (event) => {
+    event.preventDefault();
+    const data = new FormData(document.getElementById("edit-form"));
+
+    var month = dateValue.getUTCMonth() + 1; //months from 1-12
+    var day = dateValue.getUTCDate();
+    var year = dateValue.getUTCFullYear();
+    const birthday = year + "-" + month + "-" + day;
+
+    USER_SERVICE.SET_PROFILEINFO({
+                                    'id'        : curProfileInfo['user_id'],
+                                    'username'  : curProfileInfo['username'],  
+                                    'first_name': data.get('firstName'), 
+                                    'last_name' : data.get('lastName'), 
+                                    'email'     : curProfileInfo['email'], 
+                                    'birthday'  : birthday,
+                                    'location'  : data.get('location'),
+                                    'biography' : data.get('biography')
+                                  })
+    .then((res) => {
+          console.log(res);
+          setMessage("You have successfully edit your profile information!");
+          setOpenMessage(true);
+      })
+      .catch((error) => {
+        setMessage("Edit not successful, try again later!");
+        setOpenMessage(true);
+      })
+  }
+
 
   return (
 
-      <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Edit Profile Information</DialogTitle>
+      <Dialog 
+        open={open} 
+        onClose={onClose}
+      >
+        <DialogTitle>
+          Edit Profile Information
+        </DialogTitle>
         <DialogContent dividers>
-         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+         <Box component="form" onSubmit={handleEditProfile} id="edit-form" sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-			        <Grid item xs={12} >
+             
+               <Grid item xs={6} >
+                 <Typography variant="inherit" noWrap>
+                        {file ? file.name : ""}
+                      </Typography>
+                  <Stack direction="row" spacing={1} gutterBottom>
+              
+                       {file ? <Button variant="outlined" size='small' sx={{fontSize: 10}} onClick={handlePreview}>Preview</Button> : <></>}
+                       
+                      <Dialog open={openPreviewDialog} onClose={handlePreviewClose}>
+                        <img src={fileData}/>
+                      </Dialog>
+                      <Button variant="outlined" component="label" size='small' sx={{fontSize: 10}}>
+                        Upload Profile Picture
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          hidden
+                        />
+                      </Button>
+                    </Stack>
+
+              </Grid>
+			        <Grid item xs={6} >
+                
                 <TextField
                   disabled
                   name="userName"
@@ -66,18 +142,17 @@ export default function EditProfileDialog(props) {
                   fullWidth
                   id="firstName"
                   label="First Name"
-                  defaultValue={curProfileInfo['firstName']}
+                  defaultValue={curProfileInfo['first_name']}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  required
                   fullWidth
                   id="lastName"
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
-                  defaultValue={curProfileInfo['lastName']}
+                  defaultValue={curProfileInfo['last_name']}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -99,28 +174,32 @@ export default function EditProfileDialog(props) {
                   type="location"
                   label="Location"
                   name="location"
-                  defaultValue="Ankara"
+                  defaultValue={curProfileInfo['location']}
                 />
               </Grid>
               <Grid item xs={6} >
                  <LocalizationProvider dateAdapter={AdapterDateFns}>
                    <DesktopDatePicker
+                      mask="____-__-__"
+                      id="birthday"
                       label="Birthday"
-                      inputFormat="MM/dd/yyyy"
-                      value={value}
-                      onChange={handleChange}
+                      inputFormat="yyyy-MM-dd"
+                      maxDate={new Date('2021-12-14')}
+                      value={dateValue}
+                      onChange={handleDateChange}
                       renderInput={(params) => <TextField {...params} />}
-
-                  /></LocalizationProvider>
+                  />
+                  </LocalizationProvider>
               </Grid>
               <Grid item xs={12} >
                 <TextField
                   fullWidth
-                  id="aboutMe"
-                  label="AboutMe"
+                  id="biography"
+                  name="biography"
+                  label="Biography"
                   multiline
                   rows={4}
-                  defaultValue={aboutMe}
+                  defaultValue={curProfileInfo['biography']}
                   variant="filled"
                   autoFocus
                 />
@@ -130,8 +209,11 @@ export default function EditProfileDialog(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button onClick={onClose}>Update</Button>
+          <Button onClick={handleEditProfile}>Update</Button>
         </DialogActions>
+
+        <MessageDialog open={openMessage} handleClose={handleCloseMessage} txt={message} />
       </Dialog>
+      
   );
 }

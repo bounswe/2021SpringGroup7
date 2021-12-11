@@ -84,7 +84,7 @@ function Profile(props) {
       } else {
         setIsCurUserFollowing(false);
       }
-    }, [])
+    }, [editProfileOpen])
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -173,16 +173,26 @@ function Profile(props) {
 
                     <Grid item xs>
                          <Stack>
-                           {profileInfo['location'] ? <Typography variant="h10">
-                                                        <LocationOnIcon color="primary"></LocationOnIcon>
+                           {profileInfo['location'] ? <Button 
+                                                        size="medium"
+                                                        variant="text"
+                                                        startIcon={ <LocationOnIcon color="primary"></LocationOnIcon>}
+                                                        className={classes.buttonText}
+                                                        onClick={handleEditProfileDialogOpen}
+                                                        >
                                                           {profileInfo['location']}
-                                                      </Typography>
+                                                        </Button>
+
                                                       : <></>    
                               }
-                           {profileInfo['birthday'] ? <Typography variant="h10">
-                                                                <CakeIcon color="primary"></CakeIcon>
-                                                          {profileInfo['birthday']}
-                                                          </Typography> 
+                           {profileInfo['birthday'] ? <Button 
+                                                        size="medium"
+                                                        variant="text"
+                                                        startIcon={ <CakeIcon color="primary"></CakeIcon>}
+                                                        onClick={handleEditProfileDialogOpen}
+                                                        >
+                                                        {profileInfo['birthday']}
+                                                      </Button>
                                                       : <></>    
                               }
                           </Stack>
@@ -216,7 +226,7 @@ function Profile(props) {
                         {profileInfo['biography'].length == 0 ? <>
                                                 { curUserId == userId ? <>
                                                                           <Typography variant="h6" color="primary">
-                                                                            About Me
+                                                                            My Biography
                                                                           </Typography>
                                                                           <Button
                                                                             className={classes.buttonText} 
@@ -230,7 +240,7 @@ function Profile(props) {
                                                 </>
                                             : <>
                                                 <Typography variant="h6" color="primary">
-                                                  About Me
+                                                   My Biography
                                                 </Typography>
                                                 <Typography variant="body2">
                                                   {profileInfo['biography']}
@@ -369,24 +379,3 @@ export default Profile;
 
 
 
-/*
-
-<Button 
-                            size="medium"
-                            variant="text"
-                            startIcon={ <LocationOnIcon color="primary"></LocationOnIcon>}
-                            className={classes.buttonText}
-                            disabled
-                            >
-                              Ankara
-                            </Button>
-                          <Button 
-                            size="medium"
-                            variant="text"
-                            startIcon={ <CakeIcon color="primary"></CakeIcon>}
-                            disabled
-                            >
-                              01.01.1960
-                            </Button>
-
-*/
