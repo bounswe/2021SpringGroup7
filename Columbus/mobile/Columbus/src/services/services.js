@@ -4,8 +4,8 @@ export const SERVICE = {
   loginRequest: ({params, config}) => {
     return API_INSTANCE.post(`/guest/login/`, params, config);
   },
-  registerRequest: data => {
-    return API_INSTANCE.post(`/guest/register/`, data);
+  registerRequest: ({params, config}) => {
+    return API_INSTANCE.post(`/guest/register/`, params, config);
   },
   userInfo: data => {
     return API_INSTANCE.post(`/user/`, data);
