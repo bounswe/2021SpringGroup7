@@ -30,20 +30,21 @@ class GetProfileSerializer(serializers.ModelSerializer):
     followers = serializers.ListSerializer(child = serializers.IntegerField(min_value = 0, max_value = 100))
     followings = serializers.ListSerializer(child = serializers.IntegerField(min_value = 0, max_value = 100))
     biography = serializers.CharField()
+    photo_url = serializers.CharField()
 
     class Meta:
         model = User
-        fields = ['id','username', 'first_name', 'last_name','email','birthday','location','followers','followings','biography']
+        fields = ['id','username', 'first_name', 'last_name','photo_url','email','birthday','location','followers','followings','biography']
 
 class SetProfileSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     birthday = serializers.DateTimeField()
     location = serializers.IntegerField()
     biography = serializers.CharField()
-
+    photo_url = serializers.CharField()
     class Meta:
         model = User
-        fields = ['id','username', 'first_name', 'last_name','birthday','location','biography']
+        fields = ['id','username', 'first_name', 'last_name','photo_url','birthday','location','biography']
 
         
 class FollowSerializer(serializers.ModelSerializer):
