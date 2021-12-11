@@ -1,0 +1,65 @@
+from django.shortcuts import render
+from ..serializers import *
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics, viewsets
+from rest_framework.decorators import api_view
+from rest_framework.schemas.openapi import AutoSchema
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from ..models import *
+from django.core import serializers
+import json
+
+
+# Create your views here.
+
+class PostCreate(generics.CreateAPIView):
+    queryset = Story.objects.all()
+    serializer_class = PostCreateSerializer
+    def post(self, request, *args, **kwargs):
+
+        body = request.data
+        print(body)
+        print("loc:", body["location"][0])
+        #print(body.keys())
+        required_areas = {'title', 'username', 'time_start'}
+        print(set(body.keys()).intersection(required_areas))
+        if len(set(body.keys()).intersection(required_areas))!=3:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+
+
+        title = body.get('title')
+        username = body.get('username')
+        time_start = body.get('time_start')
+
+        text = body.get('text', '')
+        multimedia = body.get('multimedia', '')
+        time_end = body.get('time_end', None)
+
+        locations = body.get('location', [])
+
+        if len(locations)==0:
+            return JsonResponse({'return': 'location not found'}, status=400)
+
+        for each in locations:
+            required_areas_location = {'location', 'latitude', 'longitude', 'type'}
+            if set(each.keys()) != required_areas_location:
+                return JsonResponse({'return': 'location not in appropriate format'}, status=400)
+
+
+        try:
+            user_id = User.objects.get(username=username)
+        except:
+            return JsonResponse({'return': 'user not found'}, status=400)
+
+
+        try:
+            story = Story(title=title, text=text, multimedia=multimedia, user_id=user_id, time_start=time_start, time_end=time_end, numberOfLikes=0, numberOfComments=0)
+            story.save()
+            for each in locations:
+                location = Location(story_id=story, location=each['location'], latitude=each['latitude'], longitude=each['longitude'], type=each['type'])
+                location.save()
+            return JsonResponse({'return': story.id})
+        except:
+            return JsonResponse({'return': 'error'}, status=400)
