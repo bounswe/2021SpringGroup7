@@ -48,12 +48,14 @@ class SetProfileInfo(generics.CreateAPIView):
             user_info = User.objects.get(id=user_id)
         except:
             return JsonResponse({'response': 'provide valid user_id or user does not exist'})
+
         profile_info = Profile.objects.get(user_id=user_info)
         user_info.username = body['username']
-        user_info.first_name = body['username']
-        user_info.last_name = body['username']
+        user_info.first_name = body['first_name']
+        user_info.last_name = body['last_name']
         profile_info.biography = body['biography']
         profile_info.location = body['location']
+        profile_info.birthday = body['birthday']
         user_info.save()
         profile_info.save()
         result_dict = {
