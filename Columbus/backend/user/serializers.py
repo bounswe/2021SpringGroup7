@@ -44,3 +44,18 @@ class SetProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','username', 'first_name', 'last_name','birthday','location','biography']
+
+        
+class FollowSerializer(serializers.ModelSerializer):
+    action_follow = serializers.BooleanField()
+    class Meta:
+        model = Following
+        fields = ['user_id','follow','action_follow']
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    action_like = serializers.BooleanField()
+    class Meta:
+        model = Like
+        fields = ['story_id','user_id','action_like']
+
