@@ -14,7 +14,7 @@ import {
 } from 'native-base';
 import {useMutation} from 'react-query';
 
-import AuthLayout from '../../layout/AuthLayout';
+import AuthLayout from '../../layouts/AuthLayout';
 import {SERVICE} from '../../services/services';
 import CustomModal from '../../components/CustomModal';
 import {useAuth} from '../../context/AuthContext';
@@ -59,7 +59,7 @@ const Login = ({navigation}) => {
     setIsButtonLoading(true);
 
     const data = JSON.stringify({
-      user_name: formData.username,
+      username: formData.username,
       password: formData.password,
     });
     try {
@@ -96,8 +96,8 @@ const Login = ({navigation}) => {
         </Heading>
         <Center mt={5}>
           <Image
-            source={require('../../assets/Logo/Columbus.png')}
-            alt="Columbus Registerr"
+            source={require('../../assets/logo/Columbus.png')}
+            alt="Columbus Logo"
           />
         </Center>
         <VStack space={3} mt="5">

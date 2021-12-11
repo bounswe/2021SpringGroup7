@@ -46,6 +46,6 @@ class Following(models.Model):
 
 class Profile(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    biography = models.CharField(max_length=500)
-    birthday = models.DateField()
-    location =models.IntegerField()
+    biography = models.CharField(max_length=500,null=True)
+    birthday = models.DateField(null=True)
+    location =models.IntegerField(null=True)
