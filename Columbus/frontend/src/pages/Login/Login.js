@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core';
 import Logo from '../../components/Logos/LogoWithText'
+import LogoAnimated from '../../components/Logos/LogoAnimated'
 import LoginForm from '../../components/Forms/LoginForm/LoginForm';
 import ModalDialog from '../Register/ModalDialog'
 import Button from "@material-ui/core/Button";
@@ -32,7 +33,6 @@ export default function Login({setAuthenticated}){
     
     const [openRegister, setOpenRegister] = useState(false);
     const [isError, setError] = useState(false);
-    
     const handleOpenRegister = () => {
         setOpenRegister(true)
     };
@@ -42,10 +42,12 @@ export default function Login({setAuthenticated}){
     };
 
     const handleLogin = (username, password) => {
+        setError(false);
         AUTHENTICATION_SERVICE.LOG_IN(username, password)
         .then(response => {
             setAuthenticated(true)
-            localStorage.setItem('jwtToken', 'bearer ' + password);
+            localStorage.setItem('jwtToken',  response.data.return.token);
+            localStorage.setItem('username', username)
         })
         .catch((error) => {
             setError(true);
@@ -57,10 +59,11 @@ export default function Login({setAuthenticated}){
     return (
         <div className={classes.root}>
             <Logo className={classes.Applogo} alt='Logo'/>
-            <LoginForm handleClose={handleLogin} showError={isError} />
+            <LoginForm handleClose={handleLogin} showError={isError}/>
             <Button variant="contained" color="primary" onClick={handleOpenRegister}>
 					        Register
             </Button>
+            {isError ? <div/>:<LogoAnimated/>}
             <ModalDialog open={openRegister} handleClose={handleCloseRegister} />  
         </div>
     )

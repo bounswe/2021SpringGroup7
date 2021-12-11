@@ -22,6 +22,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import SettingsIcon from '@material-ui/icons/Settings';
 import AddBoxRoundedIcon from '@material-ui/icons/AddBoxRounded';
+import Person from '@material-ui/icons/Person';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 
@@ -236,7 +237,8 @@ const renderMenu = (
         
 
         <Box sx={{ flexGrow: 1 }} />
-        <Stack direction="row" spacing={1}>
+        {localStorage.getItem('jwtToken') ?
+        (<Stack direction="row" spacing={1}>
           <Tooltip title="Explore" arrow>
             <Button
               className={classes.button}
@@ -269,12 +271,12 @@ const renderMenu = (
             variant="contained"
             onClick={handleProfileMenuOpen}
             startIcon={ <Badge badgeContent={0} >
-                              <Avatar sx={{ width: 30, height:30 }} classname={classes.avatar}>S</Avatar>
+                              <Avatar sx={{ width: 30, height:30 }} classname={classes.avatar}>{localStorage.getItem('username').substring(0,2)}</Avatar>
                         </Badge>}
              style={{textTransform: 'none'}} 
             >
               
-              <Typography>Salih Yılmaz</Typography>
+              <Typography>{localStorage.getItem('username')}</Typography>
               <IconButton
               className={classes.button}
               size="small"
@@ -284,8 +286,21 @@ const renderMenu = (
             >
               <KeyboardArrowDownIcon className={classes.button}/>
             </IconButton>  
-          </Button>
-          </Stack>
+          </Button> </Stack>) : 
+          
+          <Tooltip title="Register" arrow>
+            <Button
+              className={classes.button}
+              variant="contained"
+              size="small"
+              aria-label="explore"            
+              href="/login"
+              startIcon={<Person/>}
+            >
+              Sign In
+            </Button>
+          </Tooltip>}
+          
         </Toolbar>
 
       
