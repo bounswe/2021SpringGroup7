@@ -26,6 +26,8 @@ class LikePost(generics.CreateAPIView):
             return JsonResponse({'return': 'The user or story does not exist'}, status=400)
 
         if action_like:
+            instance = Like.objects.filter(story_id=story, user_id=user)
+            instance.delete()
             like_relation = Like(story_id=story,user_id=user)
             like_relation.save()
             return JsonResponse({'return': f'The user {user.username} has like {story.title}'})

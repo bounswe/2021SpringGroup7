@@ -26,6 +26,8 @@ class Follow(generics.CreateAPIView):
             return JsonResponse({'return': 'The user does not exist'}, status=400)
 
         if action_follow:
+            instance = Following.objects.filter(user_id=user, follow=follow)
+            instance.delete()
             follow_relation = Following(user_id=user,follow=follow)
             follow_relation.save()
             return JsonResponse({'return': f'The user {user.username} has followed {follow.username}'})
