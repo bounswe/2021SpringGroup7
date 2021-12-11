@@ -3,7 +3,6 @@ from rest_framework.permissions import IsAuthenticated
 from ..serializers import *
 from rest_framework import generics
 from django.http import JsonResponse
-from ..models import *
 from django.contrib.auth.models import User
 from ..models import Following
 
@@ -32,7 +31,6 @@ class Follow(generics.CreateAPIView):
             return JsonResponse({'return': f'The user {user.username} has followed {follow.username}'})
         else:
             try:
-                print(1)
                 instance = Following.objects.filter(user_id=user,follow=follow)
                 instance.delete()
                 return JsonResponse({'return': f'The user {user.username} has unfollowed {follow.username}'})

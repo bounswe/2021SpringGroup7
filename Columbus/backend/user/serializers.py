@@ -51,3 +51,10 @@ class FollowSerializer(serializers.ModelSerializer):
         model = Following
         fields = ['user_id','follow','action_follow']
 
+
+class LikeSerializer(serializers.ModelSerializer):
+    action_like = serializers.BooleanField()
+    class Meta:
+        model = Like
+        fields = ['story_id','user_id','action_like']
+
