@@ -17,6 +17,8 @@ import json
 class PostCreate(generics.CreateAPIView):
     queryset = Story.objects.all()
     serializer_class = PostCreateSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
 
         body = request.data
