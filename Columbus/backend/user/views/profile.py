@@ -27,6 +27,7 @@ class GetProfileInfo(generics.ListAPIView):
             'last_name': user_info.last_name,
             'birthday': profile_info.birthday,
             'location': profile_info.location,
+            'photo_url':profile_info.photo_url,
             'username': user_info.username,
             'email': user_info.email,
             'followers': followers,
@@ -56,6 +57,7 @@ class SetProfileInfo(generics.CreateAPIView):
         profile_info.biography = body['biography']
         profile_info.location = body['location']
         profile_info.birthday = body['birthday']
+        profile_info.photo_url = body['photo_url']
         user_info.save()
         profile_info.save()
         result_dict = {
@@ -63,6 +65,7 @@ class SetProfileInfo(generics.CreateAPIView):
             'last_name': user_info.last_name,
             'birthday': profile_info.birthday,
             'location': profile_info.location,
+            'photo_url': profile_info.photo_url,
             'username': user_info.username,
             'email': user_info.email,
             'biography': profile_info.biography,
