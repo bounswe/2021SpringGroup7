@@ -14,6 +14,7 @@ import {
   useDisclose
 } from 'native-base';
 import {TouchableOpacity, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import ImageCarousel from './SubComponents/ImageCarousel';
 import UserInfo from './SubComponents/UserInfo';
 import LocationInfo from './SubComponents/LocationInfo';
@@ -24,19 +25,29 @@ import LikeAndShare from './SubComponents/LikeAndShare';
 
 const PostCard = props => {
   const { isOpen, onOpen, onClose } = useDisclose()
+  const navigation = useNavigation();
   const postData = {
-    imgData: [
+    multimedia: [
       'https://cdn.techinasia.com/wp-content/uploads/2013/09/silicon-valley-asia.jpg',
       'https://lampalampa.net/wp-content/uploads/2018/03/WHY-THE-APPEARANCE-OF-EUROPEAN-SILICON-VALLEY-IS-IMPOSSIBLE.jpg',
     ],
     title: 'The Garden City',
-    location: {
+    location: [{
       name: 'The Silicon Valley',
-      longitude: 1234,
-      latitude: 1234,
+      latitude: 37.78825,
+      longitude: -122.4324,
+    },{
+      name: 'Loc 2',
+      latitude: 38.78825,
+      longitude: -122.4324,
     },
+    {
+      name: 'Loc 3',
+      latitude: 39.78825,
+      longitude: -122.4324,
+    }],
     time: "80's",
-    content:
+    text:
       "Silicon Valley is a region in Northern California that serves as a global center for high technology and innovation. Located in the southern part of the San Francisco Bay Area, it corresponds roughly to the geographical Santa Clara Valley.[1][2][3] San Jose is Silicon Valley's largest city, the third-largest in California, and the tenth-largest in the United States; other major Silicon Valley cities include Sunnyvale, Santa Clara, Redwood City, Mountain View, Palo Alto, Menlo Park, and Cupertino. The San Jose Metropolitan Area has the third-highest GDP per capita in the world (after Zurich, Switzerland and Oslo, Norway), according to the Brookings Institution,[4] and, as of June 2021, has the highest percentage in the country of homes valued at $1 million or more.[5]",
     tags: ['Sen de yargilacaksin', 'Bill Gates', 'Apple', 'Microsoft'],
     owner: {
@@ -83,7 +94,7 @@ const PostCard = props => {
           
         </Stack>
         <Text fontWeight="400" numberOfLines={3}>
-          {postData.content}
+          {postData.text}
         </Text>
         <Tags data={postData.tags} />
 
@@ -93,6 +104,7 @@ const PostCard = props => {
         </HStack>
 
         <Text
+          onPress={() => navigation.navigate('DetailedPost', {postData})}
           fontSize="xs"
           _light={{
             color: 'blue.500',

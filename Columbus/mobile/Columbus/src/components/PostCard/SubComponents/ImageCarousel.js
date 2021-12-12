@@ -5,7 +5,6 @@ import {AspectRatio, Image} from 'native-base';
 import Carousel from 'react-native-snap-carousel'; // Version can be specified in package.json
 
 const SLIDER_WIDTH = Dimensions.get('window').width;
-const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
 
 function ImageCarousel(props) {
   const [index, setIndex] = useState(0)

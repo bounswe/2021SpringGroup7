@@ -13,6 +13,7 @@ import CreatePost from '../views/CreatePost';
 import Search from '../views/Search';
 import Profile from '../views/Profile';
 import Location from '../views/Location';
+import DetailedPost  from '../views/DetailedPost'
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -39,6 +40,7 @@ const HomeStack = () => (
     <Stack.Screen name="HomePage" component={Home} />
     <Stack.Screen name="Location" component={Location} />
     <Stack.Screen name="Profile" component={Profile} />
+    <Stack.Screen name="DetailedPost" component={DetailedPost} />
   </Stack.Navigator>
 );
 
@@ -66,5 +68,5 @@ const AuthNavigation = () => (
 
 export default function Navigation() {
   const {user} = useAuth();
-  return user?.isAuthenticated ? <BottomTabNavigation /> : <AuthNavigation />;
+  return true ? <BottomTabNavigation /> : <AuthNavigation />;
 }
