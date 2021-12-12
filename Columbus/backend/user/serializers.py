@@ -55,10 +55,9 @@ class FollowSerializer(serializers.ModelSerializer):
 
 
 class LikeSerializer(serializers.ModelSerializer):
-    action_like = serializers.BooleanField()
     class Meta:
         model = Like
-        fields = ['story_id','user_id','action_like']
+        fields = ['story_id','user_id']
 
 class HomePageSerializer(serializers.ModelSerializer):
     page_number = serializers.IntegerField()
