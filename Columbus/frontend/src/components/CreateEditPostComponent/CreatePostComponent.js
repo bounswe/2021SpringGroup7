@@ -15,6 +15,9 @@ import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import { useNavigate  } from "react-router-dom";
+import {UploadImage} from '../../config/s3Api';
+
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   MuiPickersUtilsProvider,
@@ -22,7 +25,7 @@ import {
 } from "@material-ui/pickers";
 import api from "../../services/post";
 import { Select } from "@material-ui/core";
-import { CircularProgressWithValue } from "../Progress";
+import { LinearProgressWithValue } from "../Progress";
 import { Stack } from "@mui/material";
 import { RealLocationField, VirtualLocationField } from "../LocationFields";
 import ImagePreviewBox from "../Preview/ImagePreview/ImagePreviewBox";
@@ -41,11 +44,10 @@ export default function CreatePostDialog({
   setSnackBarMessage,
   setOpenSnackBar,
 }) {
+  const guid = uuidv4();
   const navigate = useNavigate();
   const [imgUrl, setImgUrl] = React.useState(imgUrlInit);
   const [file, setFile] = React.useState(null);
-  const [fileData, setFileData] = React.useState(null);
-  const [openPreviewDialog, setOpenPreviewDialog] = React.useState(false);
   const [fileUploadProgress, setFileUploadProgress] = React.useState(0);
   const [locationType, setLocationType] = React.useState(locationTypeInit);
   const [locations, setLocations] = React.useState(locationInit);
@@ -70,14 +72,6 @@ export default function CreatePostDialog({
 
   const handleDeleteTag = (tag) => () => {
     setTags(tags.filter((t) => t.title !== tag.title));
-  };
-
-  const handlePreview = (event) => {
-    setOpenPreviewDialog(true);
-  };
-
-  const handlePreviewClose = (event) => {
-    setOpenPreviewDialog(false);
   };
 
   const handleLocationTypeChange = (event) => {
@@ -115,14 +109,10 @@ export default function CreatePostDialog({
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
     if(event.target.files[0]){
-    const reader = new FileReader();
-    reader.addEventListener("load", () => {
-      setFileData(reader.result);
-    });
-
-    reader.readAsDataURL(event.target.files[0]);
+      console.log(event.target.files[0])
+        UploadImage(guid, event.target.files[0], setImgUrl, setFileUploadProgress)
     }else {
-      setFileData(null);
+      setFile(null);
     }
   };
 
@@ -166,7 +156,7 @@ export default function CreatePostDialog({
     <form onSubmit={handlePost}>
       <Stack direction="column" spacing={2} padding={10} paddingTop={2}>
       <Box paddingBottom={2}><Typography variant="h4">Create New Story</Typography></Box>
-      <ImagePreviewBox imageData={fileData}/>
+      <ImagePreviewBox imageData={imgUrl}/>
         <Stack
           direction="row"
           spacing={1}
@@ -177,22 +167,12 @@ export default function CreatePostDialog({
             fontSize: 18,
           }}
         >
-          
-          <Typography variant="inherit" noWrap>
-            {file ? file.name : "Input File"}
-          </Typography>
-          {file ? (
+        
+          {file ?
             fileUploadProgress !== 100 ? (
-              <CircularProgressWithValue progress={fileUploadProgress} />
-            ) : (
-              <Button variant="text" onClick={handlePreview}>
-                Preview
-              </Button>
-            )
-          ) : null}
-          <Dialog open={openPreviewDialog} onClose={handlePreviewClose}>
-            <img src={fileData} />
-          </Dialog>
+              <LinearProgressWithValue progress={fileUploadProgress} />
+            ) : null
+           : null}
           <Button variant="contained" component="label" size="small">
             Upload File
             <input
