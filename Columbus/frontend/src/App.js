@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import Login from "./pages/Login";
 import EmailConfirmation from "./pages/EmailConfirmationPage";
 import Home from "./pages/Home";
+import CreatePostPage from "./pages/CreatePostPage";
 
 function App() {
   const [Authenticated, setAuthenticated] = useState(false)
@@ -36,6 +37,10 @@ function App() {
           <Route
             path="/email-confirmation"
             element={<EmailConfirmation />}
+          />
+          <Route
+            path="/Home/Story/Create"
+            element={<CreatePostPage />}
           />
         </Routes>
       </Router>
