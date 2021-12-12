@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-
+import { useNavigate } from "react-router-dom";
 import columbusLogo from '../../assets/Columbus.svg';
 
 import { makeStyles, styled } from "@material-ui/core/styles";
@@ -24,7 +24,6 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import AddBoxRoundedIcon from '@material-ui/icons/AddBoxRounded';
 import Person from '@material-ui/icons/Person';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
-import CreatePostDialog from "../Dialogs/CreatePostDialog";
 
 
 /*********************************************************** 
@@ -114,10 +113,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header(props) {
   const classes = useStyles();
+  const navigate = useNavigate();
   //const { sections, title } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const isMenuOpen = Boolean(anchorEl);
 
   const handleProfileMenuOpen = (event) => {
@@ -129,11 +128,6 @@ export default function Header(props) {
     
     //handleMobileMenuClose();
   };
-
-  const handleShareDialogOpen = () => {
-      setShareDialogOpen(true);
-  };
-
   const handleLogOut = () => {
     setAnchorEl(null);
     localStorage.removeItem("jwtToken");
@@ -266,7 +260,7 @@ const renderMenu = (
               size="small"
               aria-label="explore"
               color="default"
-              onClick= {handleShareDialogOpen}
+              onClick={() => navigate("/Home/Story/Create")}
               startIcon={<AddBoxRoundedIcon />}
             >
               Share
@@ -323,7 +317,6 @@ const renderMenu = (
       </AppBar>
       {renderMenu}
       </Box>
-      <CreatePostDialog open={shareDialogOpen} setOpen={setShareDialogOpen}/>
     </React.Fragment>
   );
 }
