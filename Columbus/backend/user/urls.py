@@ -9,5 +9,6 @@ path('get_profile/<str:user_id>/', views.profile.GetProfileInfo.as_view()),
 path('set_profile/', views.profile.SetProfileInfo.as_view()),
 path('follow/', views.follow.Follow.as_view()),
 path('like/', views.like.LikePost.as_view()),
+path('home_page/', views.home_page.HomePage.as_view()),
 
 ]
