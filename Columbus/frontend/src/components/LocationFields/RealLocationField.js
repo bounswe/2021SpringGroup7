@@ -8,12 +8,13 @@ import EditLocationIcon from "@material-ui/icons/EditLocation";
 import { Box } from "@mui/system";
 
 
-export default function RealLocationField({location, onChangeName, onChangeData, removeLocation, showDelete}) {
+export default function RealLocationField({location, onChangeName, onChangeData, removeLocation, showDelete, isError, setIsError}) {
     const [mapOpen, setMapOpen] = React.useState(false);
     
 
     const handleMapDialogOpen = () => {
         location.geolocation = {"latitude": 10, "longitude": 10}
+        setIsError(null);
         setMapOpen(!mapOpen);
     }
 
@@ -29,7 +30,7 @@ export default function RealLocationField({location, onChangeName, onChangeData,
       fullWidth
       required
     />
-    <Button variant="contained" size='large' color="inherit" style={{'minWidth': 250}} endIcon={location.geolocation ? <EditLocationIcon /> : <AddLocationIcon />} onClick={handleMapDialogOpen}>
+    <Button variant="contained" size='large' color={isError ? "secondary" :"inherit"} style={{'minWidth': 250}} endIcon={location.geolocation ? <EditLocationIcon /> : <AddLocationIcon />} onClick={handleMapDialogOpen}>
             {location.geolocation ? "Edit from map" : "Select From map"}
     </Button>
     {showDelete ? <Box><IconButton
