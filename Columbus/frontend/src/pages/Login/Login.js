@@ -46,8 +46,9 @@ export default function Login({setAuthenticated}){
         AUTHENTICATION_SERVICE.LOG_IN(username, password)
         .then(response => {
             setAuthenticated(true)
-            localStorage.setItem('jwtToken',  response.data.return.token);
-            localStorage.setItem('username', username)
+            localStorage.setItem('jwtToken', 'TOKEN ' + response.data.return.token);
+            localStorage.setItem('username', username);
+            localStorage.setItem('userid',response.data.return.user_id);
         })
         .catch((error) => {
             setError(true);

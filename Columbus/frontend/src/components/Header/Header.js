@@ -131,6 +131,8 @@ export default function Header(props) {
   const handleLogOut = () => {
     setAnchorEl(null);
     localStorage.removeItem("jwtToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("userid");
   };
 const menuId = 'primary-search-account-menu';
 
