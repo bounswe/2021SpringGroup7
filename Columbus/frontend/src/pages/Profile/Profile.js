@@ -72,9 +72,8 @@ function Profile(props) {
 
      USER_SERVICE.GET_PROFILEINFO(userId)
       .then((res) => {
-        console.log('data ', res.data)
-              setProfileInfo(res.data.response);                      // profile info will be updated in the end of the render
-              if(res.data.response['followers'].includes(curUserId)) 
+              setProfileInfo(res.data.response);   // profile info will be updated in the end of the render
+              if(res.data.response['followers'].some(follower => follower['user_id'] === curUserId)) 
               {
                 console.log('following')
                 setIsCurUserFollowing(true);
@@ -314,7 +313,12 @@ function Profile(props) {
           
           <Container>
             {tabValue === "shared" ? <>
-                                        <PostScroll username={profileInfo['username']}></PostScroll>
+                                        {sharedPosts.map((item) => {
+                                                        return (
+                                                          <Post post={item} curUser={curUserId}></Post>
+                                                        );
+                                                      })
+                                          }
                                       </>
                                    :  <>
                                         {likedPosts.map((item) => {

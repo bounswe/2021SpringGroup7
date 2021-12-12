@@ -23,12 +23,6 @@ export default function FollowerDialog(props) {
 
     const { open, onClose, accounts, title } = props;
 
-    const [isLoading, setIsLoading] = useState([]);
-
-
-    if(isLoading){
-        return <CircularProgress color="success" />
-    }
 
     return (
     <Dialog onClose={onClose} open={open}  scroll='paper'>
