@@ -1,25 +1,16 @@
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.db import IntegrityError
-from django.contrib.auth import authenticate, logout, login as auth_login
-from django.contrib.auth.hashers import make_password
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
-from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth import authenticate, login as auth_login
 from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_text
-from rest_framework import generics, viewsets
-from rest_framework.decorators import api_view
-from rest_framework.schemas.openapi import AutoSchema
+from rest_framework import generics
 from .tokens import account_activation_token
 from django.core.mail import EmailMessage
-import json
-from .serializers import *
+from .serializers import LoginSerializer,RegisterSerializer
 from rest_framework.authtoken.models import Token
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from user.models import Profile
+
 
 
 class Register(generics.CreateAPIView):
@@ -129,6 +120,9 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
+
+        profile = Profile.objects.create(user_id=user)
+        profile.save()
         if 'ec2-35' in str(request.build_absolute_uri()):
             return redirect('http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation')
         elif 'ec2-18' in str(request.build_absolute_uri()):
@@ -142,14 +136,3 @@ def activate(request, uidb64, token):
             return redirect('http://ec2-18-197-57-123.eu-central-1.compute.amazonaws.com/email-confirmation?error=true')
         else:
             return JsonResponse({'return':'user is not activated'})
-
-
-class Test(generics.RetrieveAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    queryset = User.objects.all()
-    serializer_class = TestSerializer
-    def get(self, request, *args, **kwargs):
-        user_name = kwargs['username']
-        user = User.objects.get(username=user_name)
-        return JsonResponse({'return': f'{user.id}'})

@@ -4,3 +4,5 @@ script.sh
 /django.sh
 /src/.env
 /static
+
+*.png

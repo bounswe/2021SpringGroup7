@@ -9,13 +9,12 @@ import {
   HStack,
   Text,
   Link,
-  Modal,
 } from 'native-base';
-import axios from 'axios';
 
-import AuthLayout from '../../layout/AuthLayout';
+import AuthLayout from '../../layouts/AuthLayout';
 import CustomModal from '../../components/CustomModal';
 import {SERVICE} from '../../services/services';
+import {useMutation} from 'react-query';
 
 const Register = ({navigation}) => {
   const [username, setUsername] = useState('');
@@ -44,32 +43,43 @@ const Register = ({navigation}) => {
     setErrors('');
   };
 
+  const submitRegister = useMutation(
+    params => SERVICE.registerRequest({params}),
+    {
+      onSuccess(response) {
+        console.log('response: ', response.data);
+        setModalMessage(response.data.return);
+        handleResetAllState();
+        setIsButtonLoading(false);
+        setShowModal(true);
+        // navigation.navigate('Login');
+      },
+      onError({response}) {
+        console.log('res error: ', response.data.return);
+        setIsButtonLoading(false);
+        setModalMessage(response.data.return);
+        setShowModal(true);
+      },
+    },
+  );
+
   const sendRequest = async () => {
-    const params = JSON.stringify({
-      user_name: username,
-      user_email: email,
-      second_name: '',
+    const data = JSON.stringify({
+      username: username,
+      email: email,
       password: password,
       first_name: '',
       last_name: '',
     });
 
-    await SERVICE.registerRequest(params)
-      .then(response => {
-        setIsButtonLoading(false);
-        if (response.status === 200) {
-          setModalMessage(response.return);
-          handleResetAllState();
-        } else {
-          setModalMessage(response.return);
-        }
-        setShowModal(true);
-      })
-      .catch(() => {
-        setModalMessage('Beklenmedik bir hata oluştu!');
-        setShowModal(true);
-        setIsButtonLoading(false);
-      });
+    try {
+      await submitRegister.mutateAsync(data);
+    } catch (e) {
+      console.log('e: ', e);
+      setIsButtonLoading(false);
+      setModalMessage('Beklenmedik bir hata oluştu!');
+      setShowModal(true);
+    }
   };
 
   const validate = () => {
@@ -117,9 +127,8 @@ const Register = ({navigation}) => {
       <Box safeArea p="2" py="8" h="100%" w="90%" maxW="290">
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Image
-            source={require('../../assets/Logo/Columbus.png')}
-            style={{maxHeight: 200}}
-            alt="Columbus Registerr"
+            source={require('../../assets/logo/Columbus.png')}
+            alt="Columbus Logo"
           />
         </View>
         <FormControl isRequired isInvalid={getErrors().username}>
