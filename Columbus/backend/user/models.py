@@ -39,7 +39,6 @@ class Following(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_id')
     follow = models.ForeignKey(User, on_delete=models.CASCADE,related_name='follow')
 
-
 class Profile(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     biography = models.CharField(max_length=500)
