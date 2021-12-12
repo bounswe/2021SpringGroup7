@@ -5,24 +5,13 @@ import MessageDialog from '../../components/Dialogs/MessageDialog/MessageDialog'
 
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 
-const MapComponent = withScriptjs(withGoogleMap((props) =>{
+const MapComponent = withScriptjs(withGoogleMap(({setLatitude, setLongitude, ...props}) =>{
     const [marker, setMarker] = React.useState({});
-    const [latitude,setLatitude] = React.useState('');
-    const [longitude,setLongitude] = React.useState('');
-    const [message,setMessage] = React.useState('');
-
-    const [ openRegister, setOpenRegister] = React.useState(false);
-    const handleCloseRegister = () => {
-		  setOpenRegister(false);
-		};
 
     const handleClick = (e) =>{
         setMarker( {lat: e.latLng.lat(), lng : e.latLng.lng()});
         setLatitude(e.latLng.lat());
         setLongitude(e.latLng.lng());
-        setMessage("latitude: "+latitude+" longitude: "+longitude);
-        setOpenRegister(true);
-        
         
     }
 return(<div>
@@ -32,7 +21,6 @@ return(<div>
         defaultCenter={{ lat: 41, lng: 28 }}
    onClick = {handleClick} >
         <Marker options={{icon:`https://mt.google.com/vt/icon/psize=16&font=fonts/arialuni_t.ttf&color=ff330000&name=icons/spotlight/spotlight-waypoint-b.png&ax=44&ay=48&scale=1`}} position = {marker} />
-        <MessageDialog open={openRegister} handleClose={handleCloseRegister} txt={message} />
     </GoogleMap>
     </div>);
   }
@@ -41,9 +29,10 @@ return(<div>
 
 
 class LocationChooser extends React.Component{
-    constructor(props){
+    constructor({setLatitude, setLongitude, ...props}){
         super(props);
-
+        this.setLatitude=setLatitude;
+        this.setLongitude=setLongitude;
         this.parentHandler = props.parentHandler;
         this.sendParent = this.sendParent.bind(this);
 
@@ -79,6 +68,8 @@ class LocationChooser extends React.Component{
         return(
           <div style={{ height: '500px', width: '100%' }}>
             <MapComponent 
+                setLatitude= {this.setLatitude}
+                setLongitude= {this.setLongitude}
                 setParentLocation = {this.setLocations}
                 isMarkerShown
                 googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"

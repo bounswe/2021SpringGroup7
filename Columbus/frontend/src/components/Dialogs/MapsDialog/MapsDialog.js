@@ -5,7 +5,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import GoogleMaps from "../../GoogleMaps/GoogleMaps.js"
-const MapsDialog = ({ open, handleClose, txt }) => {
+const MapsDialog = ({setLatitude, setLongitude, open, handleClose, txt }) => {
   return (
     <Dialog
       open={open}
@@ -16,7 +16,7 @@ const MapsDialog = ({ open, handleClose, txt }) => {
       maxWidth="sm"
     >
       <DialogContent>
-        <GoogleMaps label="map"/>
+        <GoogleMaps setLatitude={setLatitude} setLongitude = {setLongitude} label="map"/>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} variant="contained" color="primary">
