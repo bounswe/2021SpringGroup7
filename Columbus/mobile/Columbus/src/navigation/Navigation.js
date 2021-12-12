@@ -12,11 +12,11 @@ import Home from '../views/Home';
 import CreatePost from '../views/CreatePost';
 import Search from '../views/Search';
 import Profile from '../views/Profile';
+import Location from '../views/Location';
 import EditProfile from '../views/Profile/views/EditProfile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
 const pageSettings = {
   Home: 'home',
   Search: 'search',
@@ -48,6 +48,8 @@ const BottomTabNavigation = () => (
 const HomeNavigation = () => (
   <Stack.Navigator>
     <Stack.Screen options={{title: 'Home'}} name="HomePage" component={Home} />
+    <Stack.Screen  options={{title: 'Location'}} name="Location" component={Location} />
+    <Stack.Screen  options={{title: 'Profile'}} name="Profile" component={Profile} />
   </Stack.Navigator>
 );
 
