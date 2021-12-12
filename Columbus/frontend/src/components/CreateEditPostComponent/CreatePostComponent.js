@@ -46,6 +46,7 @@ export default function CreatePostDialog({
   const [fileUploadProgress, setFileUploadProgress] = React.useState(0);
   const [locationType, setLocationType] = React.useState(locationTypeInit);
   const [locations, setLocations] = React.useState(locationInit);
+  const [errorIndex, setErrorIndex] = React.useState(null);
   const [topic, setTopic] = React.useState(topicInit);
   const [story, setStory] = React.useState(storyInit);
   const [tags, setTags] = React.useState(tagsInit);
@@ -134,7 +135,12 @@ export default function CreatePostDialog({
 
   const handlePost = e => {
     e.preventDefault();
-    console.log(startDate)
+
+    if(locationType === "Real"){
+      if(!locations.every((location, index) => location.geolocation ? true : setErrorIndex(index))){
+        return;
+      }
+    }
     const storyData = {
       text: story,
       title: topic,
@@ -311,6 +317,8 @@ export default function CreatePostDialog({
                     onChangeData={handleLocationCoordinatesChange(index)}
                     removeLocation={handleLocationDelete(index)}
                     showDelete={locations.length !== 1}
+                    isError={index === errorIndex}
+                    setIsError={setErrorIndex}
                   />
 
                   {index === 2 ? null : index === locations.length - 1 ? (
@@ -348,6 +356,7 @@ export default function CreatePostDialog({
             KeyboardButtonProps={{
               "aria-label": "change date",
             }}
+            required
           />
           </Box>
           <Box>
@@ -363,12 +372,14 @@ export default function CreatePostDialog({
               KeyboardButtonProps={{
                 "aria-label": "change date",
               }}
+              required
             />
           </Box>
          </Stack>
         </MuiPickersUtilsProvider>
-        
+        {errorIndex ? <Typography>Please select a location on map for location {errorIndex+1}</Typography> : null}
         <Box>
+          
         <Button type='submit' size='large' color="primary"  variant="contained">
           POST
         </Button>
