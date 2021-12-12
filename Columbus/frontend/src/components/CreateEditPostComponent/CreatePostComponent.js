@@ -140,11 +140,11 @@ export default function CreatePostDialog({
     const storyData = {
       text: story,
       title: topic,
-      tags: tags,
+      tags: tags.map((tag) => tag.title),
       multimedia: imgUrl,
       time_start: startDate.toISOString().substring(0, 10),
       time_end: endDate.toISOString().substring(0, 10),
-      location: locationType==="Virtual" ? locations.map((location) => ({"location": location.locationName, "latitude": null, "longitude": null, "type": locationType})) : locations.map((location) => ({"location": location.locationName, "latitude": location.geolocation.latitude, "longitude": location.geolocation.longitude, "type": locationType})),
+      location: locationType==="Virtual" ? locations.map((location) => ({"location": location.locationName, "latitude": 0, "longitude": 0, "type": locationType})) : locations.map((location) => ({"location": location.locationName, "latitude": location.geolocation.latitude, "longitude": location.geolocation.longitude, "type": locationType})),
     };
 
     api
