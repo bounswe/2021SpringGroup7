@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-
+import { useNavigate } from "react-router-dom";
 import columbusLogo from '../../assets/Columbus.svg';
 
 import { makeStyles, styled } from "@material-ui/core/styles";
@@ -113,6 +113,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header(props) {
   const classes = useStyles();
+  const navigate = useNavigate();
   //const { sections, title } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -127,7 +128,6 @@ export default function Header(props) {
     
     //handleMobileMenuClose();
   };
-
   const handleLogOut = () => {
     setAnchorEl(null);
     localStorage.removeItem("jwtToken");
@@ -258,14 +258,16 @@ const renderMenu = (
               className={classes.button}
               variant="contained"
               size="small"
-              aria-label="explore"            
-              href="/"
+              aria-label="explore"
+              color="default"
+              onClick={() => navigate("/Home/Story/Create")}
               startIcon={<AddBoxRoundedIcon />}
             >
               Share
             </Button>
           </Tooltip>
         
+
           <Button 
             className={classes.button}
             size="small"
