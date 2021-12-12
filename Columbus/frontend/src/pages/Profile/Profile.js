@@ -11,30 +11,28 @@ import {
   Button,
   Card,
   CardHeader,
-  CardContent,
-  Divider
+  CardContent
 } from "@material-ui/core";
-
 
 import Stack from '@mui/material/Stack';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CakeIcon from '@mui/icons-material/Cake';
 import Post from "../../components/Post/Post";
-import api from "../../services/post";
+
 import {dummyPosts} from "../Home/Home.constants"
 import {useStyles} from "./Profile.styles"
 
-
 import FollowerDialog from "../../components/Dialogs/FollowerDialog/FollowerDialog"
 import EditProfileDialog from "../../components/Dialogs/EditProfileDialog/EditProfileDialog"
+import FollowUnfollow from "./Profile.follow"
 
 import USER_SERVICE from "../../services/user";
-import { set } from "date-fns";
+
+
 
 function Profile(props) {
   const classes = useStyles();
@@ -42,9 +40,10 @@ function Profile(props) {
 
   const [loading, setLoading] = useState(false);
 
-  const [curUserId, setCurUserId] = useState(25);
-  const [userId, setUserId] = useState(25);
-  const [isCurUserFollowing,setIsCurUserFollowing] = useState(false);
+  const [curUserId, setCurUserId] = useState(6);                  // user in current session
+  const [userId, setUserId] = useState(4);                        // viewing this user's profile
+  const [isCurUserFollowing,setIsCurUserFollowing] = useState([]);
+  const [isFollowClicked,setIsFollowClicked] = useState([]);
 
   const [profileInfo, setProfileInfo] = useState({
                                                   "first_name": "",
@@ -70,21 +69,23 @@ function Profile(props) {
 
   useEffect(() => {
 
-        USER_SERVICE.GET_PROFILEINFO(userId)
-    .then((res) => {
-      setProfileInfo(res.data.response);
-      })
-      .catch((error) => {
-         console.log(error.response.data.return);
-      });
-      console.log('profile ', profileInfo)
+     USER_SERVICE.GET_PROFILEINFO(userId)
+      .then((res) => {
+        console.log('data ', res.data)
+              setProfileInfo(res.data.response);                      // profile info will be updated in the end of the render
+              if(res.data.response['followers'].includes(curUserId)) 
+              {
+                console.log('following')
+                setIsCurUserFollowing(true);
+              } else {
+                setIsCurUserFollowing(false);
+              }
+        })
+        .catch((error) => {
+          console.log('err ', error);
+        });
+    }, [editProfileOpen, userId, isFollowClicked]);
 
-      if(profileInfo['followings'].includes(curUserId)) {
-        setIsCurUserFollowing(true);
-      } else {
-        setIsCurUserFollowing(false);
-      }
-    }, [editProfileOpen])
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -113,23 +114,6 @@ function Profile(props) {
     setEditProfileOpen(false);
   };
 
-
-  const handleFollow = (value) => {
-    setIsCurUserFollowing(true);
-    // call follow API
-  };
-    const handleUnfollow = (value) => {
-    setIsCurUserFollowing(false);
-    // call unfollow API
-  };
-
-  const renderEmptyPost = () => {
-    return (
-      <Box className={classes.emptyPost}>
-        <Typography>You do not shared story yet!</Typography>
-      </Box>
-    );
-  };
 
   if (loading) {
     return (
@@ -198,7 +182,7 @@ function Profile(props) {
                           </Stack>
                     </Grid>
 
-                    {curUserId == userId ? 
+                    {curUserId === userId ? 
                                             <Grid item xs>
                                                   <Button 
                                                     color="primary" 
@@ -223,8 +207,8 @@ function Profile(props) {
                         subheader={profileInfo['username']}/>
                     
                     <CardContent>
-                        {profileInfo['biography'].length == 0 ? <>
-                                                { curUserId == userId ? <>
+                        {!profileInfo['biography'] ? <>
+                                                { curUserId === userId ? <>
                                                                           <Typography variant="h6" color="primary">
                                                                             My Biography
                                                                           </Typography>
@@ -282,31 +266,14 @@ function Profile(props) {
                     </Stack>
                     </Grid>
 
-                     <Grid item className={classes.followGrid}>
-                       {curUserId != userId ? <>
-                                              { isCurUserFollowing ?
-                                                                      <Button 
-                                                                        color="primary" 
-                                                                        variant="outlined"
-                                                                        onClick={handleUnfollow}
-                                                                        className={classes.buttonText} 
-                                                                        startIcon={ <PersonRemoveIcon/>}
-                                                                        style={{width:'92px'}}
-                                                                      >
-                                                                        Unfollow 
-                                                                      </Button>
-                                                                    :
-                                                                      <Button 
-                                                                      color="primary" 
-                                                                      variant="outlined"
-                                                                      onClick={handleFollow}
-                                                                      className={classes.buttonText} 
-                                                                      startIcon={ <PersonAddAlt1Icon/>}
-                                                                      style={{width:'92px'}}
-                                                                  >
-                                                                    Follow 
-                                                                  </Button>
-                                                  } </> 
+                     <Grid item>
+                       {curUserId !== userId ? <FollowUnfollow 
+                                                  isCurUserFollowing={isCurUserFollowing} 
+                                                  curUser={curUserId} 
+                                                  followUser={userId}
+                                                  setIsCurUserFollowing={setIsCurUserFollowing}
+                                                  setIsFollowClicked={setIsFollowClicked}>
+                                                  </FollowUnfollow>
                                             :
                                             <></>
                         }

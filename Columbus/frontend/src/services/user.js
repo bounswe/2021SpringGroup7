@@ -7,6 +7,16 @@ const USER_SERVICE = {
   GET_POSTS: (username) => API_INSTANCE.get(`/users/${username}/posts/`),
   GET_PROFILEINFO: (userId) => API_INSTANCE.get(`/user/get_profile/${userId}/`),
   SET_PROFILEINFO: (profileInfo) => API_INSTANCE.post(`/user/set_profile/`, profileInfo),
+  FOLLOW_USER: (userId, followId) => API_INSTANCE.post(`/user/follow/`, {
+                                                                                "user_id": userId,
+                                                                                "follow": followId,
+                                                                                "action_follow": true
+                                                                              }),
+  UNFOLLOW_USER: (userId, unfollowId) => API_INSTANCE.post(`/user/follow/`,{
+                                                                                "user_id": userId,
+                                                                                "follow": unfollowId,
+                                                                                "action_follow": false
+                                                                              }),
 };
 
 export default USER_SERVICE;
