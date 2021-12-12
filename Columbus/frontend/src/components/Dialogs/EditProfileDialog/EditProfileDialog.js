@@ -25,10 +25,12 @@ export default function EditProfileDialog(props) {
  const [fileData, setFileData] = React.useState(null);
  const [openPreviewDialog, setOpenPreviewDialog] = React.useState(false);
 
- const [dateValue, setDateValue] = React.useState(new Date('1960-01-01'));
+ const [dateValue, setDateValue] = React.useState(new Date(curProfileInfo['birthday']));
 
  const [message, setMessage] = React.useState('');
  const [openMessage, setOpenMessage] = React.useState(false);
+
+
 
   const handlePreview = (event) => {
       setOpenPreviewDialog(true);
@@ -70,13 +72,13 @@ export default function EditProfileDialog(props) {
                                     'username'  : curProfileInfo['username'],  
                                     'first_name': data.get('firstName'), 
                                     'last_name' : data.get('lastName'), 
+                                    'photo_url' : "",
                                     'email'     : curProfileInfo['email'], 
                                     'birthday'  : birthday,
                                     'location'  : data.get('location'),
                                     'biography' : data.get('biography')
                                   })
     .then((res) => {
-          console.log(res);
           setMessage("You have successfully edit your profile information!");
           setOpenMessage(true);
       })
