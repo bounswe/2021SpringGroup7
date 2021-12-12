@@ -29,6 +29,7 @@ import {useStyles} from "./Profile.styles"
 import FollowerDialog from "../../components/Dialogs/FollowerDialog/FollowerDialog"
 import EditProfileDialog from "../../components/Dialogs/EditProfileDialog/EditProfileDialog"
 import FollowUnfollow from "./Profile.follow"
+import PostScroll from "../../components/PostScroll/PostScroll"
 
 import USER_SERVICE from "../../services/user";
 
@@ -313,12 +314,7 @@ function Profile(props) {
           
           <Container>
             {tabValue === "shared" ? <>
-                                        {sharedPosts.map((item) => {
-                                                        return (
-                                                          <Post post={item} curUser={curUserId}></Post>
-                                                        );
-                                                      })
-                                          }
+                                        <PostScroll username={profileInfo['username']}></PostScroll>
                                       </>
                                    :  <>
                                         {likedPosts.map((item) => {
