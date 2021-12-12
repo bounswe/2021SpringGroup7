@@ -35,3 +35,25 @@ export function UploadImage(guid, file, setImageUrl, setProgress) {
             setImageUrl("https://columbus-test.s3.eu-central-1.amazonaws.com/" + url)
         })   
 }
+
+export function UploadProfileImage(userId, file, setImageUrl, setProgress) {
+    const re = /(?:\.([^.]+))?$/;
+    const ext = re.exec(file.name)
+    console.log(ext);
+    const url = `users/${userId}/profile${ext[0]}`
+
+    const params = {
+        Body: file,
+        Bucket: S3_BUCKET,
+        Key: url
+    };
+
+    myBucket.putObject(params)
+        .on('httpUploadProgress', (evt) => {
+            setProgress(Math.round((evt.loaded / evt.total) * 100))
+        })
+        .send((err) => {
+            if (err) console.log(err)
+            setImageUrl("https://columbus-test.s3.eu-central-1.amazonaws.com/" + url)
+        })   
+}
