@@ -27,7 +27,7 @@ LinearProgressWithLabel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-export default function LinearProgressWithValue({progress = 10, setProgress}) {
+export default function LinearProgressWithValue({progress}) {
   return (
     <Box sx={{ width: '100%' }}>
       <LinearProgressWithLabel value={progress} />
