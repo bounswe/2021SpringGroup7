@@ -55,7 +55,6 @@ export default function CreatePostDialog({
   const [snackBarMessage, setSnackBarMessage] = React.useState("");
   const [startDate, setStartDate] = React.useState(startDateInit);
   const [endDate, setEndDate] = React.useState(endDateInit);
-
   const { ref } = usePlacesWidget({
     apiKey: "AIzaSyBMNVI-Aep02o6TwwTechsvSzpRVlA13qo",
     onPlaceSelected: (place) => console.log(place),
@@ -69,8 +68,6 @@ export default function CreatePostDialog({
   };
 
   const handleDeleteTag = (tag) => () => {
-    console.log("Tags: ");
-    console.log(tags);
     setTags(tags.filter((t) => t.title !== tag.title));
   };
 
@@ -119,7 +116,6 @@ export default function CreatePostDialog({
     if(event.target.files[0]){
     const reader = new FileReader();
     reader.addEventListener("load", () => {
-      console.log(reader.result)
       setFileData(reader.result);
     });
 
@@ -146,8 +142,8 @@ export default function CreatePostDialog({
       title: topic,
       tags: tags,
       multimedia: imgUrl,
-      time_start: startDate,
-      time_end: endDate,
+      time_start: startDate.toISOString().substring(0, 10),
+      time_end: endDate.toISOString().substring(0, 10),
       location: locationType==="Virtual" ? locations.map((location) => ({"location": location.locationName, "latitude": null, "longitude": null, "type": locationType})) : locations.map((location) => ({"location": location.locationName, "latitude": location.geolocation.latitude, "longitude": location.geolocation.longitude, "type": locationType})),
     };
 
@@ -344,12 +340,13 @@ export default function CreatePostDialog({
         <Stack spacing={2} direction='row' justifyContent='space-around'>
           <Box>
           <KeyboardDatePicker
-            disableToolbar
+            views={["year", "month", "date"]}
             variant="inline"
-            format="yyyy-mm-dd"
-            placeholder="YYYY-mm-dd"
+            format="yyyy-MM-dd"
+            placeholder="Year-Month-Day"
+            openTo="year"
             margin="normal"
-            id="date-picker-inline"
+            id="start-date-picker-inline"
             label="Start Date"
             value={startDate}
             onChange={handleDateChange1}
@@ -357,15 +354,19 @@ export default function CreatePostDialog({
               "aria-label": "change date",
             }}
             required
+            maxDate={endDate ? endDate : Date.now()}
+            minDateMessage="Start date can't be after than end date"
           />
           </Box>
           <Box>
             <KeyboardDatePicker
-              disableToolbar
               variant="inline"
-              format="yyyy-mm-dd"
+              format="yyyy-MM-dd"
+              openTo="year"
+              views={["year", "month", "date"]}
               margin="normal"
-              id="date-picker-inline"
+              placeholder="Year-Month-Day"
+              id="end-date-picker-inline"
               label="End Date"
               value={endDate}
               onChange={handleDateChange2}
@@ -373,13 +374,15 @@ export default function CreatePostDialog({
                 "aria-label": "change date",
               }}
               required
+              minDate={startDate ? startDate : new Date("1900-01-01")}
+              maxDate={Date.now()}
+              minDateMessage="End date can't be before than start date"
             />
           </Box>
          </Stack>
         </MuiPickersUtilsProvider>
-        {errorIndex ? <Typography>Please select a location on map for location {errorIndex+1}</Typography> : null}
+        {errorIndex !==null ? <Typography>Please select a location on map for location {errorIndex+1}</Typography> : null}
         <Box>
-          
         <Button type='submit' size='large' color="primary"  variant="contained">
           POST
         </Button>
