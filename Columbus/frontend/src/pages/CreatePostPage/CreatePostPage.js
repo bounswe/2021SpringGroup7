@@ -18,12 +18,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function CreatePostPage() {
+export default function CreatePostPage({ setSnackBarMessage, setOpenSnackBar}) {
   return (
     <Wrapper>
       <Paper className={useStyles.root} elevation={4} square>
         <Container maxWidth='md'>
-         <CreateEditPostComponent />
+         <CreateEditPostComponent setSnackBarMessage={setSnackBarMessage} setOpenSnackBar={setOpenSnackBar} />
         </Container>
       </Paper>
     </Wrapper>

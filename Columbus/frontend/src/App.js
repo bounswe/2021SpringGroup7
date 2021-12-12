@@ -5,9 +5,14 @@ import Login from "./pages/Login";
 import EmailConfirmation from "./pages/EmailConfirmationPage";
 import Home from "./pages/Home";
 import CreatePostPage from "./pages/CreatePostPage";
+import {Snackbar, IconButton } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 
 function App() {
   const [Authenticated, setAuthenticated] = useState(false)
+  const [openSnackBar, setOpenSnackBar] = React.useState(false);
+  const [snackBarMessage, setSnackBarMessage] = React.useState("");
+
   console.log(!!localStorage.getItem("jwtToken"))
 
   useEffect(() => {
@@ -15,7 +20,11 @@ function App() {
     document.title="Columbus"
   }, [])
 
-  
+  const handleCloseSnackBar = () => {
+    setSnackBarMessage("");
+    setOpenSnackBar(false);
+  };
+
   return (
     <div className="App">
       <Router>
@@ -40,10 +49,32 @@ function App() {
           />
           <Route
             path="/Home/Story/Create"
-            element={<CreatePostPage />}
+            element={<CreatePostPage setSnackBarMessage={setSnackBarMessage} setOpenSnackBar={setOpenSnackBar}/>}
           />
         </Routes>
       </Router>
+      <Snackbar
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "left",
+    }}
+    open={openSnackBar}
+    autoHideDuration={6000}
+    onClose={handleCloseSnackBar}
+    message={snackBarMessage}
+    action={
+      <React.Fragment>
+        <IconButton
+          size="small"
+          aria-label="close"
+          color="inherit"
+          onClick={handleCloseSnackBar}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </React.Fragment>
+    }
+  />
     </div>
   );
 }

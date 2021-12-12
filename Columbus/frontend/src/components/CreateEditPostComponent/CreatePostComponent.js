@@ -2,7 +2,6 @@ import React from "react";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
 import AddIcon from "@material-ui/icons/Add";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
@@ -15,13 +14,14 @@ import FormControl from "@material-ui/core/FormControl";
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import { useNavigate  } from "react-router-dom";
 
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import api from "../../services/post";
-import { Select, Snackbar } from "@material-ui/core";
+import { Select } from "@material-ui/core";
 import { CircularProgressWithValue } from "../Progress";
 import { Stack } from "@mui/material";
 import { RealLocationField, VirtualLocationField } from "../LocationFields";
@@ -38,7 +38,10 @@ export default function CreatePostDialog({
   tagsInit = [],
   startDateInit = null,
   endDateInit = null,
+  setSnackBarMessage,
+  setOpenSnackBar,
 }) {
+  const navigate = useNavigate();
   const [imgUrl, setImgUrl] = React.useState(imgUrlInit);
   const [file, setFile] = React.useState(null);
   const [fileData, setFileData] = React.useState(null);
@@ -51,8 +54,6 @@ export default function CreatePostDialog({
   const [story, setStory] = React.useState(storyInit);
   const [tags, setTags] = React.useState(tagsInit);
   const [allTags, setAllTags] = React.useState([{ title: "Hello" }]);
-  const [openSnackBar, setOpenSnackBar] = React.useState(false);
-  const [snackBarMessage, setSnackBarMessage] = React.useState("");
   const [startDate, setStartDate] = React.useState(startDateInit);
   const [endDate, setEndDate] = React.useState(endDateInit);
   const { ref } = usePlacesWidget({
@@ -141,6 +142,7 @@ export default function CreatePostDialog({
       text: story,
       title: topic,
       tags: tags.map((tag) => tag.title),
+      username: localStorage.getItem("username"),
       multimedia: imgUrl,
       time_start: startDate.toISOString().substring(0, 10),
       time_end: endDate.toISOString().substring(0, 10),
@@ -152,16 +154,12 @@ export default function CreatePostDialog({
       .then((resp) => {
         setSnackBarMessage("Post successfully created!");
         setOpenSnackBar(true);
+        navigate("/Home")
       })
       .catch((error) => {
         setSnackBarMessage("Error! Post is not created!");
         setOpenSnackBar(true);
       });
-  };
-
-  const handleCloseSnackBar = () => {
-    setSnackBarMessage("");
-    setOpenSnackBar(false);
   };
 
   return (
@@ -388,28 +386,6 @@ export default function CreatePostDialog({
         </Button>
         </Box>
       </Stack>
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        open={openSnackBar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackBar}
-        message={snackBarMessage}
-        action={
-          <React.Fragment>
-            <IconButton
-              size="small"
-              aria-label="close"
-              color="inherit"
-              onClick={handleCloseSnackBar}
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </React.Fragment>
-        }
-      />
     </form>
   );
 }
