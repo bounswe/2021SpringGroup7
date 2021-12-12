@@ -17,6 +17,8 @@ import json
 class ProfilePost(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = ProfilePostSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
 
         body = request.data

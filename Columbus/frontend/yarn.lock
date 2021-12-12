@@ -1802,10 +1802,11 @@
     "react-is" "^17.0.2"
     "react-transition-group" "^4.4.2"
 
-"@mui/private-theming@^5.1.1", "@mui/private-theming@^5.2.3":
-  "integrity" "sha512-Lc1Cmu8lSsYZiXADi9PBb17Ho82ZbseHQujUFAcp6bCJ5x/d+87JYCIpCBMagPu/isRlFCwbziuXPmz7WOzJPQ=="
-  "resolved" "https://registry.npmjs.org/@mui/private-theming/-/private-theming-5.2.3.tgz"
-  "version" "5.2.3"
+
+"@mui/private-theming@^5.1.0", "@mui/private-theming@^5.1.1":
+  "integrity" "sha512-h+MGzBVSH7GgXou4aIraJhakygTYIWvvxvTm81Y6RmwRcrzv8szDQeRDiM7iOVjqsS33dXfMkTi7csRCgeErsg=="
+  "resolved" "https://registry.npmjs.org/@mui/private-theming/-/private-theming-5.1.1.tgz"
+  "version" "5.1.1"
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@mui/utils" "^5.2.3"
@@ -1861,6 +1862,7 @@
   "integrity" "sha512-Hh7ALdq/GjfIwLvqH3XftuY3bcKhupktTm+S6qRIDGOtPtRuq2L21VWzOK4p7kblirK0XgGVH5BLwa6u8z/6QQ=="
   "resolved" "https://registry.npmjs.org/@mui/types/-/types-7.1.0.tgz"
   "version" "7.1.0"
+
 
 "@mui/utils@^5.1.0", "@mui/utils@^5.1.1", "@mui/utils@^5.2.3":
   "integrity" "sha512-sQujlajIS0zQKcGIS6tZR0L1R+ib26B6UtuEn+cZqwKHsPo3feuS+SkdscYBdcCdMbrZs4gj8WIJHl2z6tbSzQ=="
