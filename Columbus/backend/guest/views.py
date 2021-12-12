@@ -118,11 +118,11 @@ def activate(request, uidb64, token):
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
-        user.save()
-
-        profile = Profile.objects.create(user_id=user)
-        profile.save()
+        if user.is_active == False:
+            user.is_active = True
+            user.save()
+            profile = Profile.objects.create(user_id=user)
+            profile.save()
         if 'ec2-35' in str(request.build_absolute_uri()):
             return redirect('http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com/email-confirmation')
         elif 'ec2-18' in str(request.build_absolute_uri()):
