@@ -5,7 +5,7 @@ class Story(models.Model):
     title = models.CharField(max_length=100)
     text = models.CharField(max_length=3000)
     multimedia = models.CharField(max_length=100)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
     time = models.DateField()
     createDateTime = models.DateTimeField(auto_now_add=True)
     lastUpdate = models.DateTimeField(auto_now=True)
