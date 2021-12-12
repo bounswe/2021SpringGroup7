@@ -54,7 +54,7 @@ export default function EmailConfirmation(){
         <div className={classes.root}>
             <Logo className={classes.Applogo} alt='Logo'/>
             {isError ? <div> <img src={Error} className={classes.confirmationImage} alt='Error' /> <p>Error while confirming email</p></div> : <div> <img src={Success} className={classes.confirmationImage} alt='Success' /> <p>Succesfully confirmed email</p></div>} 
-            <Button variant="contained" color="primary" onClick={() => navigate('/')}>
+            <Button variant="contained" color="primary" onClick={() => navigate('/login')}>
 					        Go to login page
             </Button> 
             

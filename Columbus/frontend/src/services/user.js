@@ -17,6 +17,12 @@ const USER_SERVICE = {
                                                                                 "follow": unfollowId,
                                                                                 "action_follow": false
                                                                               }),
+  GET_PROFILEPOSTS: (username,pageNumber,pageSize) => API_INSTANCE.post(`/user/profile_post/`,{
+                                                                                          "username": username,
+                                                                                          "page_number": pageNumber,
+                                                                                          "page_size": pageSize
+                                                                                        })
+
 };
 
 export default USER_SERVICE;

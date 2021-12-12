@@ -1,6 +1,7 @@
 import * as React from 'react';
 import columbusLogo from '../../assets/logo.svg';
 import Avatar from '@mui/material/Avatar';
+import LogoAnimated from '../../components/Logos/LogoAnimated'
 import Button from '@mui/material/Button';
 import MessageDialog from '../../components/Dialogs/MessageDialog/MessageDialog'
 import CssBaseline from '@mui/material/CssBaseline';
@@ -48,19 +49,23 @@ const theme = createTheme({
 export default function SignUp() {
   const [ message, setMessage] = React.useState('');
   const [ openRegister, setOpenRegister] = React.useState(false);
+  const [ isLoading, setLoading] = React.useState(false);
   const handleCloseRegister = () => {
 		setOpenRegister(false);
 		};
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    
+    setLoading(true);
     AUTHENTICATION_SERVICE.REGISTER(JSON.stringify({'username': data.get('userName'),  'first_name':data.get('firstName'), 'last_name':data.get('lastName'), 'email':data.get('email'), 'password':data.get('password')}))
+    
     .then((res) => {
           setMessage("Successfull Register! \n Please confirm your email!");
           setOpenRegister(true);
+          setLoading(false);
       })
       .catch((error) => {
+        setLoading(false);
         setMessage(error.response.data.return);
         setOpenRegister(true);
       })
@@ -68,7 +73,9 @@ export default function SignUp() {
 
   return (
     <ThemeProvider theme={theme}>
+      
       <Container component="main" maxWidth="xs">
+      
         <CssBaseline />
         <Box
           sx={{
@@ -77,7 +84,7 @@ export default function SignUp() {
             alignItems: 'center',
           }}
         >
-        <img src={columbusLogo}  alt="logo" height = "100" />
+        {isLoading ? <LogoAnimated/>:<img src={columbusLogo}  alt="logo" height = "100" />}
           
           <Typography component="h1" variant="h5" style={{color:"#a67c52"}}>
             Sign up
@@ -146,6 +153,7 @@ export default function SignUp() {
                 />
               </Grid>
             </Grid>
+            {isLoading ? <></>:
             <Button
               color="blue"
               type="submit"
@@ -154,7 +162,7 @@ export default function SignUp() {
               sx={{ mt: 3, mb: 2 }}
             >
               Sign Up
-            </Button>
+            </Button>}
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="" variant="body2">

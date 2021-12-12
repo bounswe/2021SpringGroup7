@@ -20,13 +20,18 @@ function App() {
       <Router>
         <Routes>
         <Route
-            path="/"
-            element={Authenticated ? <Navigate replace to="/Home" /> : <Login setAuthenticated={setAuthenticated} />}
+            path="/login"
+            element={Authenticated ? <Navigate replace to = "/Home" /> : <Login setAuthenticated={setAuthenticated} />}
           />
           <Route
             exact
-            path="/Home"
-            element={Authenticated ?  <Home /> : <Navigate replace to="/" />}
+            path="/"
+            element={<Navigate replace to="/Home" />}
+          />
+           <Route
+            exact
+            path="/home"
+            element={<Home/>}
           />
           <Route
             path="/email-confirmation"
