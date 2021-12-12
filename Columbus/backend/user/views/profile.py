@@ -19,7 +19,11 @@ class GetProfileInfo(generics.ListAPIView):
         except:
             return JsonResponse({'response': 'provide valid user_id or user does not exist'})
 
-        profile_info = Profile.objects.get(user_id=user_info)
+        try:
+            profile_info = Profile.objects.get(user_id=user_info)
+        except:
+            profile_info = Profile.objects.create(user_id=user_info)
+
         followings = list(Following.objects.filter(user_id=user_info).values_list('follow',flat=True))
         followers = list(Following.objects.filter(follow=user_info).values_list('user_id',flat=True))
         result_dict = {
@@ -50,7 +54,11 @@ class SetProfileInfo(generics.CreateAPIView):
         except:
             return JsonResponse({'response': 'provide valid user_id or user does not exist'})
 
-        profile_info = Profile.objects.get(user_id=user_info)
+
+        try:
+            profile_info = Profile.objects.get(user_id=user_info)
+        except:
+            profile_info = Profile.objects.create(user_id=user_info)
         user_info.username = body['username']
         user_info.first_name = body['first_name']
         user_info.last_name = body['last_name']
