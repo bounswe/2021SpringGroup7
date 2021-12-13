@@ -45,10 +45,10 @@ export default function Login({setAuthenticated}){
         setError(false);
         AUTHENTICATION_SERVICE.LOG_IN(username, password)
         .then(response => {
-            setAuthenticated(true)
             localStorage.setItem('jwtToken', 'TOKEN ' + response.data.return.token);
             localStorage.setItem('username', username);
             localStorage.setItem('userid',response.data.return.user_id);
+            setAuthenticated(true)
         })
         .catch((error) => {
             setError(true);
