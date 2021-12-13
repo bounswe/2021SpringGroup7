@@ -11,5 +11,5 @@ path('follow/', views.follow.Follow.as_view()),
 path('like/', views.like.LikePost.as_view()),
 path('home_page/', views.home_page.HomePage.as_view()),
 path('get_likes/<str:story_id>/', views.like.GetPostLikes.as_view()),
-
+path('comment_create/', views.comment.CommentCreate.as_view()),
 ]
