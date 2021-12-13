@@ -16,37 +16,31 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 
 import USER_SERVICE from "../../../services/user";
 import MessageDialog from "../MessageDialog/MessageDialog";
+import ImagePreviewBox from "../../Preview/ImagePreview/ImagePreviewBox";
+import { UploadProfileImage } from "../../../config/s3Api";
+import { LinearProgressWithValue } from "../../Progress";
 
 export default function EditProfileDialog(props) {
 
  const { open, onClose, curProfileInfo } = props;
 
- const [file, setFile] = React.useState(curProfileInfo['profilePic']);
- const [fileData, setFileData] = React.useState(null);
- const [openPreviewDialog, setOpenPreviewDialog] = React.useState(false);
+ const [imgUrl, setImgUrl] = useState(curProfileInfo['photo_url']);
+ const [fileUploadProgress, setFileUploadProgress] = useState(0);
+ const [file, setFile] = useState(curProfileInfo['profilePic']);
 
- const [dateValue, setDateValue] = React.useState(new Date(curProfileInfo['birthday']));
+ const [dateValue, setDateValue] = useState(new Date(curProfileInfo['birthday']));
 
- const [message, setMessage] = React.useState('');
- const [openMessage, setOpenMessage] = React.useState(false);
-
-
-
-  const handlePreview = (event) => {
-      setOpenPreviewDialog(true);
-  };
-
-  const handlePreviewClose = (event) => {
-    setOpenPreviewDialog(false);
-};
+ const [message, setMessage] = useState('');
+ const [openMessage, setOpenMessage] = useState(false);
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
-    const reader = new FileReader();
-    reader.addEventListener("load", () => {
-      setFileData(reader.result);
-    })
-    reader.readAsDataURL(event.target.files[0])
+    if(event.target.files[0]){
+      console.log(event.target.files[0])
+        UploadProfileImage(localStorage.getItem('userid'), event.target.files[0], setImgUrl, setFileUploadProgress)
+    }else {
+      setFile(null);
+    }
   };
 
   const handleDateChange = (newValue) => {
@@ -72,7 +66,7 @@ export default function EditProfileDialog(props) {
                                     'username'  : curProfileInfo['username'],  
                                     'first_name': data.get('firstName'), 
                                     'last_name' : data.get('lastName'), 
-                                    'photo_url' : "",
+                                    'photo_url' : imgUrl,
                                     'email'     : curProfileInfo['email'], 
                                     'birthday'  : birthday,
                                     'location'  : {"location": data.get('location'), "latitude": 1, "longitude": 1, "type": "Real"},
@@ -106,23 +100,35 @@ export default function EditProfileDialog(props) {
                  <Typography variant="inherit" noWrap>
                         {file ? file.name : ""}
                       </Typography>
-                  <Stack direction="row" spacing={1} gutterBottom>
-              
-                       {file ? <Button variant="outlined" size='small' sx={{fontSize: 10}} onClick={handlePreview}>Preview</Button> : <></>}
-                       
-                      <Dialog open={openPreviewDialog} onClose={handlePreviewClose}>
-                        <img src={fileData}/>
-                      </Dialog>
-                      <Button variant="outlined" component="label" size='small' sx={{fontSize: 10}}>
-                        Upload Profile Picture
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileChange}
-                          hidden
-                        />
-                      </Button>
-                    </Stack>
+
+                      <ImagePreviewBox imageData={imgUrl}/>
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{
+                          color: "text.primary",
+                          mfontWeight: "medium",
+                          alignItems: "center",
+                          fontSize: 18,
+                        }}
+                      >
+                      
+                        {file ?
+                          fileUploadProgress !== 100 ? (
+                            <LinearProgressWithValue progress={fileUploadProgress} />
+                          ) : null
+                        : null}
+                        <Button variant="contained" component="label" size="small">
+                          Upload File
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            hidden
+                          />
+                        </Button>
+                      </Stack>
+                  
 
               </Grid>
 			        <Grid item xs={6} >
@@ -186,7 +192,7 @@ export default function EditProfileDialog(props) {
                       id="birthday"
                       label="Birthday"
                       inputFormat="yyyy-MM-dd"
-                      maxDate={new Date('2021-12-14')}
+                      maxDate={Date.now()}
                       value={dateValue}
                       onChange={handleDateChange}
                       renderInput={(params) => <TextField {...params} />}

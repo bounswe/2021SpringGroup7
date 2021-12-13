@@ -53,6 +53,7 @@ function Profile({viewedUserId, ...props}) {
                                                   "birthday": null,
                                                   "location": "",
                                                   "username": "",
+                                                  "photo_url": "",
                                                   "email": "",
                                                   "followers": [],
                                                   "followings": [],
@@ -74,10 +75,12 @@ function Profile({viewedUserId, ...props}) {
      USER_SERVICE.GET_PROFILEINFO(userId)
       .then((res) => {
         const proInfo = res.data.response;
+        console.log('profile info ', proInfo)
               setProfileInfo({
                                 "first_name": proInfo['first_name'],
                                 "last_name" : proInfo['last_name'],
                                 "birthday"  : proInfo['birthday'],
+                                "photo_url" : proInfo['photo_url'],
                                 "location"  : proInfo['location']['location'],
                                 "username"  : proInfo['username'],
                                 "email"     : proInfo['email'],
@@ -157,7 +160,9 @@ function Profile({viewedUserId, ...props}) {
                         <Container>
                          <Box sx={{width:"100%"}}>
                           <Button disabled>
-                              <Avatar style={{height:70,width:70}}>
+                              <Avatar 
+                                src={profileInfo['photo_url']}
+                                style={{height:80,width:80}}>
                                 {profileInfo['first_name'] && profileInfo['last_name'] ? <>{profileInfo['first_name'].slice(0,1) + profileInfo['last_name'].slice(0,1)}
                                                                                             </>
                                                                                         : <></>}
