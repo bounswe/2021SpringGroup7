@@ -17,6 +17,8 @@ import json
 class ProfilePost(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = ProfilePostSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
 
         body = request.data
@@ -40,7 +42,35 @@ class ProfilePost(generics.CreateAPIView):
             serialized_obj = serializers.serialize('json', stories)
             serialized_obj = json.loads(str(serialized_obj))
 
+
             result = [each["fields"] for each in serialized_obj]
+            for i, each in enumerate(result):
+                each["owner_username"] = username
+                each["is_liked"] = len(Like.objects.filter(story_id=stories[i], user_id__username=username))>0
+                each["story_id"] = stories[i].id
+
+                locations = Location.objects.filter(story_id=stories[i])
+                serialized_obj = serializers.serialize('json', locations)
+                serialized_obj = json.loads(str(serialized_obj))
+                serialized_obj = [each["fields"] for each in serialized_obj]
+                [each.pop('story_id', None) for each in serialized_obj]
+                each["locations"] = serialized_obj
+
+                tags = Tag.objects.filter(story_id=stories[i])
+                serialized_obj = serializers.serialize('json', tags)
+                serialized_obj = json.loads(str(serialized_obj))
+                serialized_obj = [each["fields"]["tag"] for each in serialized_obj]
+                each["tags"] = serialized_obj
+
+
+                profiles = Profile.objects.filter(user_id__username=username)
+                serialized_obj = serializers.serialize('json', profiles)
+                serialized_obj = json.loads(str(serialized_obj))
+                serialized_obj = [each["fields"]["photo_url"] for each in serialized_obj][0]
+                each["photo_url"] = serialized_obj
+
+
+
         else:
             result = []
 

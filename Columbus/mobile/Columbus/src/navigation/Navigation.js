@@ -14,6 +14,7 @@ import Search from '../views/Search';
 import Profile from '../views/Profile';
 import Location from '../views/Location';
 import DetailedPost  from '../views/DetailedPost'
+import EditProfile from '../views/Profile/views/EditProfile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -28,7 +29,8 @@ const screenOptions = ({route}) => ({
   tabBarIcon: ({color, size}) => {
     return <Icon name={pageSettings[route.name]} size={size} color={color} />;
   },
-  tabBarActiveTintColor: 'tomato',
+  headerShown: false,
+  tabBarActiveTintColor: '#0077e6',
   tabBarInactiveTintColor: 'gray',
 });
 
@@ -50,10 +52,53 @@ const BottomTabNavigation = () => (
     tabBarActiveTintColor="red"
     screenOptions={screenOptions}>
     <Tab.Screen name="Home" component={HomeStack} />
-    <Tab.Screen name="Search" component={Search} />
-    <Tab.Screen name="CreatePost" component={CreatePost} />
-    <Tab.Screen name="Profile" component={Profile} />
+    <Tab.Screen name="Search" component={SearchNavigation} />
+    <Tab.Screen name="CreatePost" component={CreatePostNavigation} />
+    <Tab.Screen name="Profile" component={ProfileNavigation} />
   </Tab.Navigator>
+);
+
+const HomeNavigation = () => (
+  <Stack.Navigator>
+    <Stack.Screen options={{title: 'Home'}} name="HomePage" component={Home} />
+    <Stack.Screen  options={{title: 'Location'}} name="Location" component={Location} />
+    <Stack.Screen  options={{title: 'Profile'}} name="Profile" component={Profile} />
+  </Stack.Navigator>
+);
+
+const SearchNavigation = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      options={{title: 'Search'}}
+      name="SearchPage"
+      component={Search}
+    />
+  </Stack.Navigator>
+);
+
+const CreatePostNavigation = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      options={{title: 'Create Story'}}
+      name="CreatePostPage"
+      component={CreatePost}
+    />
+  </Stack.Navigator>
+);
+
+const ProfileNavigation = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      options={{title: 'Profile'}}
+      name="ProfilePage"
+      component={Profile}
+    />
+    <Stack.Screen
+      options={{title: 'Edit Profile'}}
+      name="EditProfile"
+      component={EditProfile}
+    />
+  </Stack.Navigator>
 );
 
 const AuthNavigation = () => (
@@ -61,6 +106,7 @@ const AuthNavigation = () => (
     screenOptions={{
       headerShown: false,
     }}>
+
     <Stack.Screen name="Login" component={Login} />
     <Stack.Screen name="Register" component={Register} />
   </Stack.Navigator>

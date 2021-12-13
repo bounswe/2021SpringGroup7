@@ -4,9 +4,16 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import Login from "./pages/Login";
 import EmailConfirmation from "./pages/EmailConfirmationPage";
 import Home from "./pages/Home";
+import CreatePostPage from "./pages/CreatePostPage";
+import {Snackbar, IconButton } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
+import Profile from "./pages/Profile"
 
 function App() {
   const [Authenticated, setAuthenticated] = useState(false)
+  const [openSnackBar, setOpenSnackBar] = React.useState(false);
+  const [snackBarMessage, setSnackBarMessage] = React.useState("");
+
   console.log(!!localStorage.getItem("jwtToken"))
 
   useEffect(() => {
@@ -14,26 +21,65 @@ function App() {
     document.title="Columbus"
   }, [])
 
-  
+  const handleCloseSnackBar = () => {
+    setSnackBarMessage("");
+    setOpenSnackBar(false);
+  };
+
   return (
     <div className="App">
       <Router>
         <Routes>
         <Route
-            path="/"
-            element={Authenticated ? <Navigate replace to="/Home" /> : <Login setAuthenticated={setAuthenticated} />}
+            path="/login"
+            element={Authenticated ? <Navigate replace to = "/Home" /> : <Login setAuthenticated={setAuthenticated} />}
           />
           <Route
             exact
-            path="/Home"
-            element={Authenticated ?  <Home /> : <Navigate replace to="/" />}
+            path="/"
+            element={<Navigate replace to="/Home" />}
+          />
+           <Route
+            exact
+            path="/home"
+            element={<Home/>}
           />
           <Route
             path="/email-confirmation"
             element={<EmailConfirmation />}
           />
+           <Route
+            path="/Profile"
+            element={<Profile/>}
+          />
+          <Route
+            path="/Home/Story/Create"
+            element={<CreatePostPage setSnackBarMessage={setSnackBarMessage} setOpenSnackBar={setOpenSnackBar}/>}
+          />
         </Routes>
       </Router>
+      <Snackbar
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "left",
+    }}
+    open={openSnackBar}
+    autoHideDuration={6000}
+    onClose={handleCloseSnackBar}
+    message={snackBarMessage}
+    action={
+      <React.Fragment>
+        <IconButton
+          size="small"
+          aria-label="close"
+          color="inherit"
+          onClick={handleCloseSnackBar}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </React.Fragment>
+    }
+  />
     </div>
   );
 }
