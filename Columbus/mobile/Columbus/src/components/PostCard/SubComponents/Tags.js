@@ -15,12 +15,14 @@ import {
 
 function Tags(props) {
   const colors= ['green', 'purple', 'red', 'blue', 'amber', 'grey', 'indigo']
+  
   return (
     <HStack space={1} ml={-1}>
+        
         {props.data?.map(item => {
           const rand = Math.floor(Math.random() * colors.length);
           return (
-            <Tag size="sm" colorScheme={colors[rand]}>
+            <Tag size="sm" colorScheme={colors[rand]} key={item}>
               {item}
             </Tag>
           );

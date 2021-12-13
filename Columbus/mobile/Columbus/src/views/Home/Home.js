@@ -1,15 +1,23 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text} from 'react-native';
-import {Button, Spinner} from 'native-base';
+import {
+  Button,
+  Spinner,
+  NativeBaseProvider,
+  ScrollView,
+  VStack,
+} from 'native-base';
 
 import {useAuth} from '../../context/AuthContext';
 import {SERVICE} from '../../services/services';
 import {useMutation} from 'react-query';
 import PageSpinner from '../../components/PageSpinner';
+import PostCard from '../../components/PostCard'
 
 const Home = () => {
   const {logout, user} = useAuth();
   const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
 
   let token = '';
 
@@ -25,8 +33,7 @@ const Home = () => {
     params => SERVICE.fetchPost({params, token}),
     {
       onSuccess(response) {
-        console.log('rwesponse: ', response.data.return);
-        // navigation.navigate('HomePage');
+        setPosts(response.data.return);
       },
       onError({response}) {
         console.log('res error: ', response);
@@ -37,7 +44,6 @@ const Home = () => {
   const storiesRequest = async () => {
     const userInfo = JSON.parse(user?.userInfo);
     token = userInfo.token;
-
     const data = JSON.stringify({
       username: 'mervebrn',
       page_number: 1,
@@ -53,18 +59,24 @@ const Home = () => {
   const handleLogout = async () => {
     logout();
   };
+  
 
-  if (loading) {
-    <PageSpinner />;
+  
+ 
+  if (loading==true) {
+        <PageSpinner />;
   }
 
   return (
-    <View style={{display: 'flex', justifyContent: 'center', marginTop: 50}}>
-      <Text style={{textAlign: 'center'}}>Welcome to Home Page</Text>
-      <Button mt="2" onPress={handleLogout}>
-        Logout
-      </Button>
-    </View>
+    <NativeBaseProvider>
+      <ScrollView>
+        <VStack flex={1} px="3" space={10} alignItems="center" mt={10}>
+          {posts.map(item => {
+            return (<PostCard data={item} key={item.story_id}/>);
+          })}
+        </VStack>
+      </ScrollView>
+    </NativeBaseProvider>
   );
 };
 

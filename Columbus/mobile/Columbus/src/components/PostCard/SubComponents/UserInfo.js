@@ -27,9 +27,9 @@ function UserInfo(props) {
         mt={-2}
         elevation={5}
         source={{
-          uri: 'https://pbs.twimg.com/profile_images/1352844693151731713/HKO7cnlW_400x400.jpg',
+          uri: props.data?.photo_url,
         }}>
-        {props.data?.username?.substr(0, 2).toUpperCase()}
+        {props.data?.owner_username?.substr(0, 2).toUpperCase()}
       </Avatar>
       <Text
         textAlign="center"
@@ -38,7 +38,7 @@ function UserInfo(props) {
         bold
         onPress={() => navigation.navigate('Profile', {props})}>
         {' '}
-        {props.data?.username}{' '}
+        {props.data?.owner_username}{' '}
       </Text>
     </HStack>
   );
