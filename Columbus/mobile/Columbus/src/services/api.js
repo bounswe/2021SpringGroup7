@@ -17,6 +17,7 @@ export const API_INSTANCE = axios.create({
     'Content-Type': 'application/json',
     Accept: 'application/json',
     'x-applicationid': '1',
+    Authorization: '',
   },
 });
 

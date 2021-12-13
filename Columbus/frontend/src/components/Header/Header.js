@@ -27,6 +27,7 @@ import Person from '@material-ui/icons/Person';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 import {useStyles, Search, SearchIconWrapper, StyledInputBase} from "./Header.styles"
+import {API_INSTANCE} from '../../config/api';
 
 export default function Header(props) {
   const classes = useStyles();
@@ -47,6 +48,7 @@ export default function Header(props) {
     localStorage.removeItem("jwtToken");
     localStorage.removeItem("username");
     localStorage.removeItem("userid");
+    API_INSTANCE.defaults.headers.common['Authorization'] = null;
   };
 const menuId = 'primary-search-account-menu';
 

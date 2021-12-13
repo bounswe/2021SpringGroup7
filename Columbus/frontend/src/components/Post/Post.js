@@ -99,6 +99,16 @@ export default function Post(props) {
     setStoryData(props.post);
     setCurUser(props.curUser);
     setLiked(props.post.is_liked)
+    var postdata = {'story_id':props.post.story_id}
+    POST_SERVICE.GET_COMMENTS(postdata)
+    .then(resp => {
+      setComments(
+        resp.data.return
+      );
+    })
+    .catch((error) => { 
+      setSnackBarMessage(error.response.data.return);
+  });
   }, [props, openLocation]);
 
 
@@ -147,15 +157,21 @@ export default function Post(props) {
 
 
   const handleComment = () => {
-    let formdata = new FormData();
-    formdata.append("text", commentValue);
     setExpandComment(true);
 
     const data = {
-      comment: commentValue,
+      text: commentValue,
       username: localStorage.getItem('username'),
       date: "10 seconds ago",
     };
+    POST_SERVICE.POST_COMMENT({text:commentValue,username: localStorage.getItem('username'),story_id:storyData.story_id})
+    .then((response) => {
+        setSnackBarMessage("Your comment is added!");
+      setOpenSnackBar(true);
+    }).catch((error) => {
+      setSnackBarMessage("Comment can not added!");
+      setOpenSnackBar(true);
+    });
 
     const temp = comments;
     temp.push(data);
@@ -274,7 +290,7 @@ export default function Post(props) {
               </Typography>
             </CardContent>
           </Grid>
-          {storyData ? storyData.multimedia.map((item) => {
+          {storyData ? [storyData.multimedia].map((item) => {
           return(<Grid item xs={5}>
             <CardMedia
               className={classes.media}
@@ -337,7 +353,7 @@ export default function Post(props) {
           }
         />
 
-        <IconButton onClick={(e) => setExpandComment(!expandComment)}>
+        <IconButton onClick={handleExpandComment}>
           <AddCommentIcon />
         </IconButton></div>:<div/>}
 
@@ -372,7 +388,7 @@ export default function Post(props) {
                         <h4 style={{ margin: 0, textAlign: "left" }}>
                           {item.username}
                         </h4>
-                        <p style={{ textAlign: "left" }}>{item.comment}</p>
+                        <p style={{ textAlign: "left" }}>{item.text}</p>
                         <p style={{ textAlign: "left", color: "gray" }}>
                           {item.date}
                         </p>

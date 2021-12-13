@@ -37,6 +37,7 @@ class Like(models.Model):
 class Comment(models.Model):
     story_id = models.ForeignKey(Story,on_delete=models.CASCADE)
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
     text = models.CharField(max_length=500)
 
 

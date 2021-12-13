@@ -6,6 +6,7 @@ import LoginForm from '../../components/Forms/LoginForm/LoginForm';
 import ModalDialog from '../Register/ModalDialog'
 import Button from "@material-ui/core/Button";
 import AUTHENTICATION_SERVICE from '../../services/authentication';
+import {API_INSTANCE} from '../../config/api';
 
 const useStyles = makeStyles(theme => ({
     Applogo: {
@@ -45,6 +46,7 @@ export default function Login({setAuthenticated}){
         setError(false);
         AUTHENTICATION_SERVICE.LOG_IN(username, password)
         .then(response => {
+            API_INSTANCE.defaults.headers.common['Authorization'] = 'TOKEN ' + response.data.return.token;
             localStorage.setItem('jwtToken', 'TOKEN ' + response.data.return.token);
             localStorage.setItem('username', username);
             localStorage.setItem('userid',response.data.return.user_id);

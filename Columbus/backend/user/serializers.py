@@ -43,7 +43,7 @@ class SetProfileSerializer(serializers.ModelSerializer):
     photo_url = serializers.CharField()
     class Meta:
         model = User
-        fields = ['id','username', 'first_name', 'last_name','photo_url','birthday','location','biography']
+        fields = ['id','first_name', 'last_name','photo_url','birthday','location','biography']
 
 
 class FollowSerializer(serializers.ModelSerializer):

@@ -43,12 +43,11 @@ const Login = ({navigation}) => {
 
   const submitLogin = useMutation(params => SERVICE.loginRequest({params}), {
     onSuccess(response) {
-      login();
+      login(response.data.return);
       setIsButtonLoading(false);
       // navigation.navigate('HomePage');
     },
     onError({response}) {
-      console.log('res: ', response);
       setIsButtonLoading(false);
       setModalMessage(response.data.return);
       setShowModal(true);
