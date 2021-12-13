@@ -5,6 +5,7 @@ import {Button, Spinner} from 'native-base';
 import {useAuth} from '../../context/AuthContext';
 import {SERVICE} from '../../services/services';
 import {useMutation} from 'react-query';
+import PageSpinner from '../../components/PageSpinner';
 
 const Home = () => {
   const {logout, user} = useAuth();
@@ -54,15 +55,7 @@ const Home = () => {
   };
 
   if (loading) {
-    <View
-      style={{
-        display: 'flex',
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <Spinner />;
-    </View>;
+    <PageSpinner />;
   }
 
   return (

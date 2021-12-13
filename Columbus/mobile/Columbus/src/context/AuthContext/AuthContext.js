@@ -13,7 +13,7 @@ import queryClient from '../../configs/reactQuery';
 import {AUTH_KEY} from '../../constants/storageKeys';
 
 const AuthContext = createContext({
-  user: {userInfo: {}, isAuthenticated: false},
+  user: {isAuthenticated: false},
   login: data => data,
   logout: () => undefined,
 });
@@ -45,7 +45,7 @@ function AuthProvider({children}) {
     if (userInformations) {
       await AsyncStorage.setItem(AUTH_KEY, JSON.stringify(userInformations));
       setUser({
-        ...userInformations,
+        userInfo: {...userInformations},
         isAuthenticated: true,
       });
     }
