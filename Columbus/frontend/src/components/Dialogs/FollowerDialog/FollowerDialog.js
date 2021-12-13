@@ -15,14 +15,14 @@ import CircularProgress from '@mui/material/CircularProgress';
 import PersonIcon from '@mui/icons-material/Person';
 
 import { Link } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
 import USER_SERVICE from "../../../services/user"
 
 
 export default function FollowerDialog(props) {
+    const navigate = useNavigate();
 
     const { open, onClose, accounts, title } = props;
-
 
     return (
     <Dialog onClose={onClose} open={open}  scroll='paper'>
@@ -31,7 +31,7 @@ export default function FollowerDialog(props) {
                     <List sx={{ pt: 0 }}>
                         {accounts.map((account) => (
                             <>                     
-                            <ListItem button component={Link} to="/Profile" key={account}>
+                            <ListItem button component={Link} onClick={() => navigate('/Profile/' + account['user_id'] || account['follow'])} key={account}>
                                 <ListItemAvatar>
                                 <Avatar>
                                     <PersonIcon />

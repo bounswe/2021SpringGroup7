@@ -11,19 +11,17 @@ import Profile from "./pages/Profile"
 import {API_INSTANCE} from './config/api';
 
 function App() {
-  const [Authenticated, setAuthenticated] = useState(false)
+  const [Authenticated, setAuthenticated] = useState(!!localStorage.getItem("jwtToken"))
   const [openSnackBar, setOpenSnackBar] = React.useState(false);
   const [snackBarMessage, setSnackBarMessage] = React.useState("");
 
   console.log(!!localStorage.getItem("jwtToken"))
 
-  useEffect(() => {
-    setAuthenticated(!!localStorage.getItem("jwtToken"));
-    if(!!localStorage.getItem("jwtToken")){
+  if(!!localStorage.getItem("jwtToken")){
       API_INSTANCE.defaults.headers.common['Authorization'] = localStorage.getItem("jwtToken");
     }
-    document.title="Columbus"
-  }, [])
+  document.title="Columbus"
+
 
   const handleCloseSnackBar = () => {
     setSnackBarMessage("");
@@ -46,7 +44,7 @@ function App() {
            <Route
             exact
             path="/home"
-            element={<Home/>}
+            element={<Home isAuthenticatedx={Authenticated}/>}
           />
           <Route
             path="/email-confirmation"
@@ -54,7 +52,11 @@ function App() {
           />
            <Route
             path="/Profile"
-            element={<Profile viewedUserId={localStorage.getItem('userid')}/>}
+            element={<Profile/>}
+          />
+           <Route
+            path="/Profile/:userId"
+            element={<Profile/>}
           />
           <Route
             path="/Home/Story/Create"
