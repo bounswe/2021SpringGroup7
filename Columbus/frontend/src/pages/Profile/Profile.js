@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate, useParams  } from "react-router-dom";
 import Wrapper from "../../components/Wrapper";
 import {
   Paper,
@@ -35,11 +35,17 @@ import LikedPostScroll from "../../components/PostScroll/LikedPostScroll"
 
 import USER_SERVICE from "../../services/user";
 
-function Profile({viewedUserId, ...props}) {
+function Profile({...props}) {
   const navigate = useNavigate();
+  let { userId } = useParams();                     // viewing this user's profile
+  console.log('userıd ', !userId);
+  if(!userId) {
+
+    userId = localStorage.getItem('userid');
+  }
   const classes = useStyles();
   const curUserId = localStorage.getItem('userid');    // user in current session
-  const userId  = viewedUserId;                        // viewing this user's profile
+  //const userId  = viewedUserId;                        
 
   const [loading, setLoading] = useState(false);
 

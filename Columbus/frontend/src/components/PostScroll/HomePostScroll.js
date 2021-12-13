@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function HomePostScroll({ isAuthenticated, curUser, ...props }) {
+function HomePostScroll({ isAuthenticatedX, curUser, ...props }) {
 
   const classes = useStyles();
   
@@ -41,13 +41,13 @@ function HomePostScroll({ isAuthenticated, curUser, ...props }) {
   //const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    if(isAuthenticated) {
+    if(isAuthenticatedX) {
      USER_SERVICE.GET_HOMEPOSTS(curUser,pageNumber,20)
                                             .then((res) => {
-                                              setCurrentPosts(res.data.return.slice(0,5))
+                                              setCurrentPosts(res.data.return)
                                               setIsLoading(false);
-                                              console.log('isauth from home scroll ', isAuthenticated)
-                                              console.log('user home posts ', res.data.return)
+                                              //console.log('isauth from home scroll ', isAuthenticatedX)
+                                              //console.log('user home posts ', res.data.return)
                                             })
                                             .catch((error) => {
                                                 console.log(error)
@@ -57,9 +57,9 @@ function HomePostScroll({ isAuthenticated, curUser, ...props }) {
     GUEST_SERVICE.GET_HOMEPOSTS(pageNumber,20)
                                             .then((res) => {
                                               
-                                              setCurrentPosts(res.data.return.slice(0,3))
-                                              console.log('isauth from home scroll ', isAuthenticated)
-                                              console.log(' gusest home posts ', res.data.return)
+                                              setCurrentPosts(res.data.return)
+                                              //console.log('isauth from home scroll ', isAuthenticatedX)
+                                              //console.log(' gusest home posts ', res.data.return)
                                               setIsLoading(false);
                                             })
                                             .catch((error) => {
