@@ -79,7 +79,7 @@ const PostCard = props => {
 
         <HStack style={{justifyContent: 'space-between', width: '100%'}}>
           <PostingTime data={postData.createDateTime} />
-          <LikeAndShare data={postData.comment} />
+          <LikeAndShare data={{is_liked:postData.is_liked,story_id:postData.story_id}} />
         </HStack>
 
         <Text

@@ -21,7 +21,7 @@ function LikeAndShare(props) {
       justifyContent="flex-end"
       space={3}
       width={'65%'}>
-      <CommentSheet data={props.data} />
+      <CommentSheet data={props.data?.story_id} />
       {liked?  <Icon name={'heart'} onPress={like} size={20}/>: <Icon name={'heart'} onPress={like} color="red" solid  size={20}/>}
       <Icon name={'share'} size={20} />
     </HStack>

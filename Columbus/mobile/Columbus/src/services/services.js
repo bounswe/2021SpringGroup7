@@ -15,4 +15,14 @@ export const SERVICE = {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
+  fetchComments: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/get_comments/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  commentOnPost: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/get_comments/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
 };
