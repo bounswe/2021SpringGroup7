@@ -69,7 +69,6 @@ class SetProfileInfo(generics.CreateAPIView):
         if set(body['location'].keys()) != required_areas_location:
             return JsonResponse({'return': 'location not in appropriate format'}, status=400)
 
-        user_info.username = body['username']
         user_info.first_name = body['first_name']
         user_info.last_name = body['last_name']
         profile_info.biography = body['biography']
