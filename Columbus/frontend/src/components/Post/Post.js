@@ -286,7 +286,7 @@ export default function Post(props) {
           </Typography></Grid> </Grid>)}
 
 
-
+      {localStorage.getItem('jwtToken') ? 
       <CardActions disableSpacing>
         <IconButton
           aria-label="add to favorites"
@@ -334,7 +334,7 @@ export default function Post(props) {
         >
           <ExpandMoreIcon />
         </IconButton>
-      </CardActions>
+      </CardActions>:<div/>}
       <Collapse in={expandComment} timeout="auto" unmountOnExit>
         <CardContent>
           <div style={{ padding: 14 }} className="App">
