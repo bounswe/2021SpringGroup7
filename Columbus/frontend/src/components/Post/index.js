@@ -69,7 +69,7 @@ export default function PostCard(props) {
 
   useEffect(() => {
     api
-      .GET_POST(props.props.id)
+      .GET_POST(props.post.id)
       .then((resp) => {
         setStoryData(resp);
       })
@@ -78,15 +78,7 @@ export default function PostCard(props) {
       .GET_COMMENTS(props.props.id)
       .then((resp) => {
         setComments([
-          resp[0],
-          resp[1],
-          resp[2],
-          resp[3],
-          resp[4],
-          resp[5],
-          resp[6],
-          resp[7],
-          resp[8],
+          resp.return
         ]);
       })
       .catch((error) => alert(error));

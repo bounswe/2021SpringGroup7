@@ -9,6 +9,7 @@ from rest_framework.schemas.openapi import AutoSchema
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from ..models import *
 from django.core import serializers
+from django.utils import timezone
 import json
 
 
@@ -74,6 +75,7 @@ class CommentUpdate(generics.CreateAPIView):
 
         try:
             comment.text = text
+            comment.date = timezone.now()
             comment.save()
             return JsonResponse({'return': comment.id})
         except:
