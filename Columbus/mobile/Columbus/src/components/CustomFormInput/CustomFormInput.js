@@ -4,8 +4,10 @@ import {Input, FormControl, WarningOutlineIcon} from 'native-base';
 const CustomFormInput = props => {
   return (
     <>
-      <FormControl.Label>{props.label}</FormControl.Label>
+      {props.label && <FormControl.Label>{props.label}</FormControl.Label>}
       <Input
+        variant={props.variant && props.variant}
+        mt={props.mt && props.mt}
         borderColor="#4aa9ff"
         placeholder={props.placeholder}
         defaultValue={props.value}

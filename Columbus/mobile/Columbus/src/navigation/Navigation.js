@@ -9,7 +9,7 @@ import Login from '../views/Login';
 import Register from '../views/Register';
 
 import Home from '../views/Home';
-import CreatePost from '../views/CreatePost';
+import CreateStory from '../views/CreateStory';
 import Search from '../views/Search';
 import Profile from '../views/Profile';
 import EditProfile from '../views/Profile/views/EditProfile';
@@ -20,7 +20,7 @@ const Stack = createStackNavigator();
 const pageSettings = {
   Home: 'home',
   Search: 'search',
-  CreatePost: 'plus',
+  CreateStory: 'plus',
   Profile: 'user',
 };
 
@@ -40,7 +40,7 @@ const BottomTabNavigation = () => (
     screenOptions={screenOptions}>
     <Tab.Screen name="Home" component={HomeNavigation} />
     <Tab.Screen name="Search" component={SearchNavigation} />
-    <Tab.Screen name="CreatePost" component={CreatePostNavigation} />
+    <Tab.Screen name="CreateStory" component={CreateStoryNavigation} />
     <Tab.Screen name="Profile" component={ProfileNavigation} />
   </Tab.Navigator>
 );
@@ -61,12 +61,12 @@ const SearchNavigation = () => (
   </Stack.Navigator>
 );
 
-const CreatePostNavigation = () => (
+const CreateStoryNavigation = () => (
   <Stack.Navigator>
     <Stack.Screen
       options={{title: 'Create Story'}}
-      name="CreatePostPage"
-      component={CreatePost}
+      name="CreateStoryPage"
+      component={CreateStory}
     />
   </Stack.Navigator>
 );

@@ -11,15 +11,30 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 8,
+  },
+  image: {
+    borderRadius: 8,
   },
   imageButtonText: {
     fontWeight: '500',
   },
-  biographyArea: {
+  storyArea: {
     marginTop: 8,
   },
-  saveButtonText: {
-    fontWeight: '500',
+  tagContainer: {
+    paddingHorizontal: 0,
+  },
+  tagInput: {
+    borderColor: '#4aa9ff',
+    borderWidth: 1,
+    borderRadius: 3,
+    marginLeft: 0,
+    marginRight: 0,
+  },
+  tag: {
+    borderColor: '#4aa9ff',
+    backgroundColor: '#dbf4ff',
     color: 'white',
   },
 });

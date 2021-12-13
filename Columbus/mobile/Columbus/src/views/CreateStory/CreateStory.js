@@ -1,0 +1,158 @@
+import React, {useState} from 'react';
+import {View, ScrollView, Text} from 'react-native';
+import {
+  Button,
+  FormControl,
+  Spinner,
+  Image,
+  TextArea,
+  Select,
+} from 'native-base';
+import * as ImagePicker from 'react-native-image-picker';
+import TagInput from 'react-native-tags-input';
+
+import {styles} from './CreateStory.style';
+import CustomFormInput from '../../components/CustomFormInput';
+import DateFormModal from '../../components/DateFormModal/DateFormModal';
+
+const CreateStory = () => {
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+  const [topic, setTopic] = useState('');
+  const [story, setStory] = useState('');
+  const [tags, setTags] = useState({
+    tag: '',
+    tagsArray: [],
+  });
+  const [locationType, setLocationType] = useState('');
+  const [locationName, setLocationName] = useState('');
+  const [showDateModal, setShowDateModal] = useState(false);
+
+  const handleChangeProfileImage = async () => {
+    await ImagePicker.launchImageLibrary(
+      {
+        mediaType: 'photo',
+        includeBase64: false,
+        maxHeight: 200,
+        maxWidth: 200,
+      },
+      response => {
+        setLoading(true);
+        if (response.assets) {
+          setImageUrl(response.assets[0].uri);
+        } else {
+          console.log('cancelled');
+        }
+      },
+    );
+    setLoading(false);
+  };
+
+  if (loading) {
+    return <Spinner />;
+  }
+
+  return (
+    <ScrollView>
+      <View style={styles.pageContainer}>
+        <FormControl>
+          <View style={styles.imageContainer}>
+            <Button variant="outline" onPress={handleChangeProfileImage}>
+              <Text style={styles.imageButtonText}>Upload File</Text>
+            </Button>
+            <Image
+              size="xl"
+              alt="storyImage"
+              style={styles.image}
+              source={{
+                uri: `${imageUrl}`,
+              }}
+              fallbackSource={{
+                uri: 'https://www.w3schools.com/css/img_lights.jpg',
+              }}
+            />
+          </View>
+          <CustomFormInput
+            label="*Topic"
+            placeholder="Enter topic"
+            value={topic}
+            warningMessage="Topic is not valid"
+            onChange={value => setTopic(value)}
+          />
+          <Text style={{marginTop: 4}}>*Story</Text>
+
+          <TextArea
+            style={styles.storyArea}
+            aria-label="t1"
+            numberOfLines={4}
+            value={story}
+            onChangeText={value => setStory(value)}
+            placeholder="Enter story"
+            mb="5"
+            borderColor="#4aa9ff"
+          />
+          <Text>Tags</Text>
+          <TagInput
+            placeholder="Tags"
+            containerStyle={styles.tagContainer}
+            labelStyle={{color: 'red'}}
+            inputStyle={styles.tagInput}
+            tagStyle={styles.tag}
+            tagTextStyle={styles.tagText}
+            updateState={state => setTags(state)}
+            tags={tags}
+          />
+          <Text>*Location</Text>
+          <Select
+            selectedValue={locationType}
+            placeholder="Choose a location type"
+            borderColor="#4aa9ff"
+            onValueChange={itemValue => setLocationType(itemValue)}>
+            <Select.Item label="Virtual" value="virtual" />
+            <Select.Item label="Real" value="real" />
+          </Select>
+          {locationType && locationType === 'virtual' && (
+            <CustomFormInput
+              label="*Location Name"
+              placeholder="Enter location name"
+              value={locationName}
+              warningMessage="Location name is not valid"
+              onChange={value => setLocationName(value)}
+            />
+          )}
+          {locationType && locationType === 'real' && (
+            <>
+              <CustomFormInput
+                label="*Location Name"
+                placeholder="Enter location name"
+                value={locationName}
+                warningMessage="Location name is not valid"
+                onChange={value => setLocationName(value)}
+              />
+              <Text>*Geolocation</Text>
+              <Button mt={2} variant="outline">
+                <Text>Choose geolocation</Text>
+              </Button>
+            </>
+          )}
+          <Text>*Date</Text>
+          <Button
+            mt={2}
+            variant="outline"
+            onPress={() => setShowDateModal(true)}>
+            <Text>Choose Date Information</Text>
+          </Button>
+          <DateFormModal
+            showModal={showDateModal}
+            onClose={() => setShowDateModal(false)}
+          />
+          <Button mt={4} variant="solid">
+            <Text>Create Story</Text>
+          </Button>
+        </FormControl>
+      </View>
+    </ScrollView>
+  );
+};
+
+export default CreateStory;
