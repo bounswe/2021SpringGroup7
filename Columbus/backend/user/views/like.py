@@ -12,39 +12,39 @@ class LikePost(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
         body = request.data
-        required_areas = {'story_id','user_id', 'action_like'}
+        required_areas = {'story_id','user_id'}
         if set(body.keys()) != required_areas:
             return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
 
         user_id = body.get('user_id')
         story_id= body.get('story_id')
-        action_like = body.get('action_like')
         try:
             user = User.objects.get(id=user_id)
             story = Story.objects.get(id=story_id)
         except:
             return JsonResponse({'return': 'The user or story does not exist'}, status=400)
 
-        if action_like:
-            instance = Like.objects.filter(story_id=story, user_id=user)
-            instance.delete()
+        result_dict = {
+            'user_id' : user_id,
+            'story_id' : story_id
+        }
+
+        like_relation = Like.objects.filter(story_id=story, user_id=user)
+        if bool(like_relation):
+            story.numberOfLikes = story.numberOfLikes - 1
+            story.save()
+            like_relation.delete()
+            result_dict['isLiked'] = False
+
+        else:
             like_relation = Like(story_id=story,user_id=user)
             like_relation.save()
             story.numberOfLikes = story.numberOfLikes + 1
-            print(story.numberOfLikes)
             story.save()
-            return JsonResponse({'return': f'The user {user.username} has like {story.title}'})
-        else:
-            try:
-                instance = Like.objects.filter(story_id=story,user_id=user)
-                if bool(instance):
-                    story.numberOfLikes = story.numberOfLikes -1
-                    story.save()
-                instance.delete()
-                print(story.numberOfLikes)
-                return JsonResponse({'return': f'The user {user.username} has unliked {story.title}'})
-            except:
-                return JsonResponse({'return': f'The user {user.username} liking {story.title} relation does not exist'})
+            result_dict['isLiked'] = True
+
+        return JsonResponse({'response': result_dict})
+
 
 class GetPostLikes(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
