@@ -46,7 +46,7 @@ function App() {
            <Route
             exact
             path="/home"
-            element={<Home isAuthenticated={Authenticated}/>}
+            element={<Home/>}
           />
           <Route
             path="/email-confirmation"

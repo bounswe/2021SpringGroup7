@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function HomePostScroll({ isAuthenticated, curUser }) {
+function HomePostScroll({ isAuthenticated, curUser, ...props }) {
 
   const classes = useStyles();
   
@@ -41,14 +41,12 @@ function HomePostScroll({ isAuthenticated, curUser }) {
   //const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-
-    console.log('isauth ', isAuthenticated)
-
     if(isAuthenticated) {
      USER_SERVICE.GET_HOMEPOSTS(curUser,pageNumber,20)
                                             .then((res) => {
                                               setCurrentPosts(res.data.return.slice(0,5))
                                               setIsLoading(false);
+                                              console.log('isauth ', isAuthenticated)
                                               console.log('user home posts ', res.data.return)
                                             })
                                             .catch((error) => {
