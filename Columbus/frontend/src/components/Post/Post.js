@@ -98,6 +98,7 @@ export default function Post(props) {
   useEffect(() => {
     setStoryData(props.post);
     setCurUser(props.curUser);
+    setLiked(storyData.is_liked)
   }, [props, openLocation]);
 
 
