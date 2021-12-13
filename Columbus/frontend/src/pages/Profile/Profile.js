@@ -331,12 +331,10 @@ function Profile({viewedUserId, ...props}) {
           
           <Container>
             {tabValue === "shared" ? <>
-                                        {sharedPosts.map((item) => {
-                                                        return (
-                                                          <Post post={item} curUser={curUserId}></Post>
-                                                        );
-                                                      })
-                                          }
+                                        <PostScroll 
+                                          userToBeViewed={profileInfo['username']} 
+                                          userThatViews={localStorage.getItem('username')}>
+                                        </PostScroll>
                                       </>
                                    :  <>
                                         {likedPosts.map((item) => {
@@ -364,3 +362,11 @@ export default Profile;
 
 
 
+/*
+                                    {sharedPosts.map((item) => {
+                                                        return (
+                                                          <Post post={item} curUser={curUserId}></Post>
+                                                        );
+                                                      })
+                                          }
+*/
