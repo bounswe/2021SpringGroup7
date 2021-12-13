@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function PostScroll({username,...props}) {
+function PostScroll({userThatViews, userToBeViewed, ...props}) {
 
   const classes = useStyles();
   
@@ -41,23 +41,25 @@ function PostScroll({username,...props}) {
   const [hasMore, setHasMore] = useState(true);
 
 
- /*
   useEffect(() => {
-
-     USER_SERVICE.GET_PROFILEPOSTS(username,pageNumber,5)
+    console.log('hereee ')
+     USER_SERVICE.GET_PROFILEPOSTS(userToBeViewed,pageNumber,5)
                                             .then((res) => {
-                                                setCurrentPosts(curPosts.concat(res.data['return']))
+                                              console.log('resutlll ', res.data)
+                                                //setCurrentPosts(curPosts.concat(res['data']['return']))
                                                 setIsLoading(false);
                                                 console.log('return ', res.data['return'])
+                                                setCurrentPosts(res['data']['return'])
                                             })
                                             .catch((error) => {
                                                 console.log(error)
                  });
-    }, []);*/
-  
-  var fetchData = () => {
+    }, []);
 
-    USER_SERVICE.GET_PROFILEPOSTS(username,pageNumber,5)
+    var fetchData = () => {
+
+    console.log('hereee ')
+    USER_SERVICE.GET_PROFILEPOSTS(userToBeViewed,pageNumber,5)
                                             .then((res) => {
                                                 if (res.data['return'].length === 0) {
                                                       setHasMore(false);
@@ -78,11 +80,16 @@ function PostScroll({username,...props}) {
     <CircularProgress color="success" />
   }
   return (<>
-  <InfiniteScroll
-                              dataLength={curPosts.length} // ? 20
+  {
+      curPosts.length === 0 ? <Box className={classes.emptyBody}>
+                                <Typography>You do not have any stories to view.</Typography>
+                              <NavLink to="/Home">Explore Stories</NavLink> 
+                          </Box>
+                        : <InfiniteScroll
+                              dataLength={20} // ? 20
                               next={fetchData}
-                              hasMore={true}
-                              loader={<CircularProgress color="success" />}
+                              hasMore={hasMore}
+                              loader={<h4>Loading...</h4>}
                               endMessage={
                                           <p style={{ textAlign: 'center' }}>
                                             <b>You have seen all of your stories!</b>
@@ -91,11 +98,12 @@ function PostScroll({username,...props}) {
                               >
                               {curPosts.map((item) => {
                                                       return (
-                                                        <Post post={item} curUser={username}></Post>
+                                                        <Post post={item} curUser={userThatViews}></Post>
                                                       );
                                                     })
                                 }
                             </InfiniteScroll>
+      }
       
 </>
 );
@@ -125,7 +133,7 @@ export default PostScroll;
                               >
                               {curPosts.map((item) => {
                                                       return (
-                                                        <Post post={item} curUser={username}></Post>
+                                                        <Post post={item} curUser={userThatViews}></Post>
                                                       );
                                                     })
                                 }
@@ -134,3 +142,24 @@ export default PostScroll;
 
 
 */
+
+    /*
+  var fetchData = () => {
+
+    console.log('hereee ')
+    USER_SERVICE.GET_PROFILEPOSTS(userToBeViewed,pageNumber,5)
+                                            .then((res) => {
+                                                if (res.data['return'].length === 0) {
+                                                      setHasMore(false);
+                                                      return;
+                                                  }
+                                                setCurrentPosts(curPosts.concat(res.data['return']))
+                                                setIsLoading(false);
+                                                console.log('return ', res.data['return'])
+                                            })
+                                            .catch((error) => {
+                                                console.log(error)
+                 });
+                      
+    setPageNumber(pageNumber+1);
+  };*/
