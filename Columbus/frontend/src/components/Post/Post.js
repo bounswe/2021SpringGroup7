@@ -122,12 +122,14 @@ export default function Post(props) {
     var dat={
       "story_id": storyData.story_id,
       "user_id": storyData.user_id,
-      "action_like": true
     };
     POST_SERVICE.LIKE_POST(dat)
     .then(response => {
-      setSnackBarMessage(response.data.return);
-      setLiked(true);
+      if(response.data.response.isLiked==true){
+        setSnackBarMessage('You liked this story!');}
+      else{
+        setSnackBarMessage('You unliked this story!');}
+      setLiked(response.data.response.isLiked);
     })
     .catch((error) => {
       
