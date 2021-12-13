@@ -114,5 +114,5 @@ const AuthNavigation = () => (
 
 export default function Navigation() {
   const {user} = useAuth();
-  return true ? <BottomTabNavigation /> : <AuthNavigation />;
+  return user?.isAuthenticated ? <BottomTabNavigation /> : <AuthNavigation />;
 }

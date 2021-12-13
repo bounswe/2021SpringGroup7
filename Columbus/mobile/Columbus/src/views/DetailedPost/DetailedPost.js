@@ -22,9 +22,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const DetailedPost = props => {
   const post = props.route?.params?.postData;
-  const [index, setIndex] = useState(0)
-
-  
+  const [index, setIndex] = useState(0);
 
   return (
     <ScrollView w="100%">
@@ -34,6 +32,7 @@ const DetailedPost = props => {
         borderColor="coolGray.200"
         elevation={10}
         borderWidth="0"
+        w='100%'
         _dark={{
           borderColor: 'coolGray.600',
           backgroundColor: 'gray.700',
@@ -47,57 +46,86 @@ const DetailedPost = props => {
         }}>
         <Stack p="4" space={3}>
           <Stack space={2}>
-            <UserInfo data={post.owner} />
+            <UserInfo
+              data={{
+                owner_username: post.owner_username,
+                photo_url: post.photo_url,
+              }}
+            />
             <Heading size="md" ml="-1">
               {post.title}
             </Heading>
-            <HStack space={40}>
+            <HStack style={{justifyContent: 'space-between', width: '100%'}}>
               <LocationInfo data={post.locations} />
-              <PostTimeInfo data={post.time} />
+              <PostTimeInfo data={post.time_start} />
             </HStack>
           </Stack>
           <Text fontWeight="400">{post.text}</Text>
           <Tags data={post.tags} />
-          <Box alignItems="center" h="300px">
-            <ImageCarousel data={post.imgData} />
-          </Box>
-          <Box
-            style={{
-              width: '100%',
-              height: 300,
-              padding: 20,
-              backgroundColor: '#ffffff',
-              elevation: 10,
-            }}>
-            <Heading textAlign="center" m={2} space={10}>
-              <Icon name={'angle-left'} size={30} style={{margin:25}} onPress={()=>setIndex(index-1<0?(post.locations.length -1):0)}/>
-              <Text>
-              {post.locations[index].location}
-
-              </Text>
-              <Icon name={'angle-right'} size={30} style={{margin:25}} onPress={()=>setIndex(((index+1)%(post.locations.length)))}/>
-            </Heading>
-
-            <MapView
-            style={{width:'100%',
-              height:200}}
-              region={{latitude: post.locations[index].latitude,
-                longitude: post.locations[index].longitude,
-                latitudeDelta: 0.3,
-                longitudeDelta: 0.3,}}
-             >
-              {post.locations.map((loc)=>{
-                return <Marker
-                coordinate={{ latitude : loc.latitude , longitude : loc.longitude }}
-                title={loc.location}
-              />
-
-              })}
+          {post?.multimedia?.length > 0 ? (
+            <Box alignItems="center" h="150px">
+              <ImageCarousel data={[postData.multimedia]} />
+            </Box>
+          ) : (
+            <></>
+          )}
+          {post.locations[0].type != 'Virtual' ? (
+            <Box
+              style={{
+                width: '100%',
+                padding: 20,
+                backgroundColor: '#ffffff',
+                elevation: 10,
+              }}>
               
-            </MapView>
-          </Box>
+                <HStack
+                  style={{justifyContent: 'space-between', width: '100%'}}>
+                  <Icon
+                    name={'angle-left'}
+                    size={30}
+                    onPress={() =>
+                      setIndex(index - 1 < 0 ? post.locations.length - 1 : 0)
+                    }
+                  />
+                  <Heading textAlign="center" m={2} >
+                  <Text>{post.locations[index].location}</Text>
+                   </Heading>
+                  <Icon
+                    name={'angle-right'}
+                    size={30}
+                    onPress={() =>
+                      setIndex((index + 1) % post.locations.length)
+                    }
+                  />
+                </HStack>
+             
 
-          <HStack space={50}>
+              <MapView
+                style={{width: '100%', height: 200}}
+                region={{
+                  latitude: post.locations[index].latitude,
+                  longitude: post.locations[index].longitude,
+                  latitudeDelta: 0.3,
+                  longitudeDelta: 0.3,
+                }}>
+                {post.locations.map(loc => {
+                  return (
+                    <Marker
+                      coordinate={{
+                        latitude: loc.latitude,
+                        longitude: loc.longitude,
+                      }}
+                      title={loc.location}
+                    />
+                  );
+                })}
+              </MapView>
+            </Box>
+          ) : (
+            <></>
+          )}
+
+          <HStack style={{justifyContent: 'space-between', width: '100%'}}>
             <PostingTime data={post.createDateTime} />
             <LikeAndShare data={post.comment} />
           </HStack>

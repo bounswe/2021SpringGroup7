@@ -12,7 +12,7 @@ import {
   Avatar,
   Tag,
   useDisclose,
-  VStack
+  VStack,
 } from 'native-base';
 import {TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
@@ -25,48 +25,13 @@ import PostingTime from './SubComponents/PostingTime';
 import LikeAndShare from './SubComponents/LikeAndShare';
 
 const PostCard = props => {
-  const { isOpen, onOpen, onClose } = useDisclose()
+  const {isOpen, onOpen, onClose} = useDisclose();
   const navigation = useNavigation();
-  const postData = {
-    
-      "title": "Test",
-      "text": "test",
-      "multimedia": "https://iheartcraftythings.com/wp-content/uploads/2021/05/How-to-draw-bird-FEAT-image.jpg",
-      "user_id": 4,
-      "time_start": "2021-01-10",
-      "time_end": "2021-01-10",
-      "createDateTime": "2021-12-12T16:33:41.496Z",
-      "lastUpdate": "2021-12-12T16:33:41.497Z",
-      "numberOfLikes": 0,
-      "numberOfComments": 0,
-      "owner_username": "Kadir",
-      "is_liked": false,
-      "story_id": 3,
-      "locations": [
-        {
-          "location": "Hello",
-          "latitude": 20,
-          "longitude": 2,
-          "type": "Virtual"
-        },
-        {
-          "location": "Hello1",
-          "latitude": 20,
-          "longitude": 2,
-          "type": "Virtual"
-        }
-      ],
-      "tags": [
-        "string"
-      ],
-      "photo_url": "https://iheartcraftythings.com/wp-content/uploads/2021/05/How-to-draw-bird-FEAT-image.jpg"
-    }
-
-  
+  const postData = props.data;
 
   return (
     <Box
-      maxW="80"
+      w="100%"
       rounded="lg"
       overflow="hidden"
       borderColor="coolGray.200"
@@ -83,31 +48,38 @@ const PostCard = props => {
       _light={{
         backgroundColor: 'gray.50',
       }}>
-      <Box alignItems="center" h="150px">
-        <ImageCarousel data={[postData.multimedia]} />
-      </Box>
+      {postData?.multimedia?.length > 0 ? (
+        <Box alignItems="center" h="150px">
+          <ImageCarousel data={[postData.multimedia]} />
+        </Box>
+      ) : (
+        <></>
+      )}
+
       <Stack p="4" space={3}>
         <Stack space={2}>
-          <UserInfo data={{'owner_username':postData.owner_username,'photo_url':postData.photo_url} }/>
+          <UserInfo
+            data={{
+              owner_username: postData.owner_username,
+              photo_url: postData.photo_url,
+            }}
+          />
           <Heading size="md" ml="-1">
             {postData.title}
           </Heading>
-          <HStack space={40}>
+          <HStack style={{justifyContent: 'space-between', width: '100%'}}>
             <LocationInfo data={postData.locations} />
-          <PostTimeInfo data={postData.time} />
+            <PostTimeInfo data={postData.time_start} />
           </HStack>
-          
         </Stack>
         <Text fontWeight="400" numberOfLines={3}>
           {postData.text}
         </Text>
         <Tags data={postData.tags} />
 
-        <HStack >
+        <HStack style={{justifyContent: 'space-between', width: '100%'}}>
           <PostingTime data={postData.createDateTime} />
-          <LikeAndShare data={postData.comment } />
-
-          
+          <LikeAndShare data={postData.comment} />
         </HStack>
 
         <Text
@@ -124,7 +96,6 @@ const PostCard = props => {
           mt="-1">
           See More
         </Text>
-        
       </Stack>
     </Box>
   );

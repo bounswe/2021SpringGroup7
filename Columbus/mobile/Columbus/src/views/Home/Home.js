@@ -11,6 +11,7 @@ import {
 import {useAuth} from '../../context/AuthContext';
 import {SERVICE} from '../../services/services';
 import {useMutation} from 'react-query';
+import PostCard from '../../components/PostCard'
 
 const Home = () => {
   const {logout, user} = useAuth();
@@ -31,8 +32,6 @@ const Home = () => {
     params => SERVICE.fetchPost({params, token}),
     {
       onSuccess(response) {
-        console.log('response: ', response.data.return);
-        res=JSON.parse(response.data.return)
         setPosts(response.data.return);
       },
       onError({response}) {
@@ -44,14 +43,13 @@ const Home = () => {
   const storiesRequest = async () => {
     const userInfo = JSON.parse(user?.userInfo);
     token = userInfo.token;
-
     const data = JSON.stringify({
       username: 'mervebrn',
       page_number: 1,
       page_size: 5,
     });
     try {
-      await fetchStories.mutateAsync(data, 'TOKEN 90bff3a5f1a6a9f9ab2d961186674e1f10d2fb84');
+      await fetchStories.mutateAsync(data, token);
     } catch (e) {
       console.log('e: ', e);
     }
@@ -66,7 +64,7 @@ const Home = () => {
   
 
   if (loading==true) {
-    return <View
+     <View
         style={{
           display: 'flex',
           flex: 1,
@@ -82,7 +80,7 @@ const Home = () => {
       <ScrollView>
         <VStack flex={1} px="3" space={10} alignItems="center" mt={10}>
           {posts.map(item => {
-            return (<PostCard />);
+            return (<PostCard data={item} key={item.story_id}/>);
           })}
         </VStack>
       </ScrollView>

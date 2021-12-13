@@ -18,7 +18,7 @@ function LocationInfo(props) {
       fontWeight="500"
       ml="-0.5"
       mt="-1">
-      {props.data[0]?.location} + {props.data?.length}
+      {props.data[0]?.location}  {props.data?.length>1 ? + props.data?.length : ''}
     </Text>
   );
 }
