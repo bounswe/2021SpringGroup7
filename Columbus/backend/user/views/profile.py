@@ -27,7 +27,10 @@ class GetProfileInfo(generics.ListAPIView):
 
         followings = list(Following.objects.filter(user_id=user_info).values('follow','follow__username'))
         followers = list(Following.objects.filter(follow=user_info).values('user_id','user_id__username'))
-        location = ast.literal_eval(profile_info.location)
+        try:
+            location = ast.literal_eval(profile_info.location)
+        except:
+            location = None
 
         result_dict = {
             'first_name':user_info.first_name,
