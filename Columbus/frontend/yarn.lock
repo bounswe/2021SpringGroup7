@@ -1653,9 +1653,9 @@
     "chalk" "^4.0.0"
 
 "@jest/types@^27.2.5":
-  "integrity" "sha512-nmuM4VuDtCZcY+eTpw+0nvstwReMsjPoj7ZR80/BbixulhLaiX+fbv8oeLW8WZlJMcsGQsTmMKT/iTZu1Uy/lQ=="
-  "resolved" "https://registry.npmjs.org/@jest/types/-/types-27.2.5.tgz"
-  "version" "27.2.5"
+  "integrity" "sha512-j35yw0PMTPpZsUoOBiuHzr1zTYoad1cVIE0ajEjcrJONxxrko/IRGKkXx3os0Nsi4Hu3+5VmDbVfq5WhG/pWAg=="
+  "resolved" "https://registry.npmjs.org/@jest/types/-/types-27.4.2.tgz"
+  "version" "27.4.2"
   dependencies:
     "@types/istanbul-lib-coverage" "^2.0.0"
     "@types/istanbul-reports" "^3.0.0"
@@ -7015,9 +7015,9 @@
     "source-map" "^0.6.1"
 
 "istanbul-reports@^3.0.2":
-  "integrity" "sha512-5+19PlhnGabNWB7kOFnuxT8H3T/iIyQzIbQMxXsURmmvKg86P2sbkrGOT77VnHw0Qr0gc2XzRaRfMZYYbSQCJQ=="
-  "resolved" "https://registry.npmjs.org/istanbul-reports/-/istanbul-reports-3.0.5.tgz"
-  "version" "3.0.5"
+  "integrity" "sha512-q1kvhAXWSsXfMjCdNHNPKZZv94OlspKnoGv+R9RGbnqOOQ0VbNfLFgQDVgi7hHenKsndGq3/o0OBdzDXthWcNw=="
+  "resolved" "https://registry.npmjs.org/istanbul-reports/-/istanbul-reports-3.1.1.tgz"
+  "version" "3.1.1"
   dependencies:
     "html-escaper" "^2.0.0"
     "istanbul-lib-report" "^3.0.0"
@@ -7473,15 +7473,15 @@
     "supports-color" "^7.0.0"
 
 "jest-worker@^27.3.1":
-  "integrity" "sha512-ks3WCzsiZaOPJl/oMsDjaf0TRiSv7ctNgs0FqRr2nARsovz6AWWy4oLElwcquGSz692DzgZQrCLScPNs5YlC4g=="
-  "resolved" "https://registry.npmjs.org/jest-worker/-/jest-worker-27.3.1.tgz"
-  "version" "27.3.1"
+  "integrity" "sha512-jfwxYJvfua1b1XkyuyPh01ATmgg4e5fPM/muLmhy9Qc6dmiwacQB0MLHaU6IjEsv/+nAixHGxTn8WllA27Pn0w=="
+  "resolved" "https://registry.npmjs.org/jest-worker/-/jest-worker-27.4.4.tgz"
+  "version" "27.4.4"
   dependencies:
     "@types/node" "*"
     "merge-stream" "^2.0.0"
     "supports-color" "^8.0.0"
 
-"jest@^26.0.0", "jest@26.6.0":
+"jest@^26.0.0", "jest@^26.6.0", "jest@26.6.0":
   "integrity" "sha512-jxTmrvuecVISvKFFhOkjsWRZV7sFqdSUAd1ajOKY+/QE/aLBVstsJ/dX8GczLzwiT6ZEwwmZqtCUHLHHQVzcfA=="
   "resolved" "https://registry.npmjs.org/jest/-/jest-26.6.0.tgz"
   "version" "26.6.0"
