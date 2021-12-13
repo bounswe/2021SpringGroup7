@@ -14,4 +14,5 @@ path('get_likes/<str:story_id>/', views.like.GetPostLikes.as_view()),
 path('comment_create/', views.comment.CommentCreate.as_view()),
 path('comment_update/', views.comment.CommentUpdate.as_view()),
 path('get_comments/', views.comment.GetComment.as_view()),
+path('get_user_likes/', views.like.GetUserLikes.as_view()),
 ]
