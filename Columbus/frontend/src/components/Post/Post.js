@@ -214,7 +214,7 @@ export default function Post(props) {
       <CardHeader
         avatar={
           <Link
-            href={`/`}
+            href={storyData ? `/Profile/${storyData.user_id}` : `/Profile`}
           >
             <Grid container alignItems="center" spacing={2}>
               <Grid item>
@@ -393,7 +393,7 @@ export default function Post(props) {
                         </h4>
                         <p style={{ textAlign: "left" }}>{item.text}</p>
                         <p style={{ textAlign: "left", color: "gray" }}>
-                          {item.date}
+                          {new Date(item.date).toLocaleString('tr-TR')}
                         </p>
                       </Grid>
                     </Grid>
