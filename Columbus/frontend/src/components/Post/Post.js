@@ -251,8 +251,11 @@ export default function Post(props) {
                   : " "} </Typography></Button></Grid>
             <Grid item columns={2} alignItems="center" alignItems="center" spacing={3} >
               <Button onClick={handleOpenLocation} style={{ textTransform: 'none' }} >
-                {storyData
-                  ? (<><LocationOn /><Typography variant="body2">{storyData.locations[0].location.length>14 ? storyData.locations[0].location.substring(0,10)+'...':storyData.locations[0].location}</Typography>
+                {(storyData && storyData.locations && storyData.locations.length > 0)
+                  ? (<><LocationOn /><Typography variant="body2">{storyData.locations[0].location.length>14 ? 
+                                                                                                          storyData.locations[0].location.substring(0,10)+'...'
+                                                                                                          :storyData.locations[0].location}
+                                                                                                          </Typography>
                     {storyData.locations.length > 1 ?
                       (<><ArrowForward />
                         {storyData.locations.length > 2 ?
