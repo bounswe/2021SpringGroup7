@@ -8,6 +8,7 @@ import CreatePostPage from "./pages/CreatePostPage";
 import {Snackbar, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import Profile from "./pages/Profile"
+import {API_INSTANCE} from './config/api';
 
 function App() {
   const [Authenticated, setAuthenticated] = useState(false)
@@ -18,6 +19,9 @@ function App() {
 
   useEffect(() => {
     setAuthenticated(!!localStorage.getItem("jwtToken"));
+    if(!!localStorage.getItem("jwtToken")){
+      API_INSTANCE.defaults.headers.common['Authorization'] = localStorage.getItem("jwtToken");
+    }
     document.title="Columbus"
   }, [])
 
