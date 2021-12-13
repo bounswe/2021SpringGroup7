@@ -78,3 +78,31 @@ class CommentUpdate(generics.CreateAPIView):
             return JsonResponse({'return': comment.id})
         except:
             return JsonResponse({'return': 'error'}, status=400)
+
+
+class GetComment(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = GetCommentSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        body = request.data
+        required_areas = {'story_id'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+
+
+        story_id = body.get('story_id')
+
+        comments = Comment.objects.filter(story_id__id=story_id)
+        serialized_obj = serializers.serialize('json', comments)
+        serialized_obj = json.loads(str(serialized_obj))
+        serialized_obj = [each["fields"] for each in serialized_obj]
+        for each in serialized_obj:
+            each["username"] = User.objects.get(id=each["user_id"]).username
+
+        try:
+            return JsonResponse({'return': serialized_obj})
+        except:
+            return JsonResponse({'return': 'error'}, status=400)
