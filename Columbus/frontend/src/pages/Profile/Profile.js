@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate  } from "react-router-dom";
 import Wrapper from "../../components/Wrapper";
 import {
   Paper,
@@ -33,14 +34,16 @@ import PostScroll from "../../components/PostScroll/PostScroll"
 
 import USER_SERVICE from "../../services/user";
 
-function Profile(props) {
+function Profile({viewedUserId, ...props}) {
   const navigate = useNavigate();
   const classes = useStyles();
+  const curUserId = localStorage.getItem('userid');
+  const userId  = viewedUserId;
 
   const [loading, setLoading] = useState(false);
 
-  const [curUserId, setCurUserId] = useState(6);                  // user in current session
-  const [userId, setUserId] = useState(4);                        // viewing this user's profile
+  //const [curUserId, setCurUserId] = useState(6);                 // user in current session
+  //const [userId, setUserId] = useState(4);                        // viewing this user's profile
   const [isCurUserFollowing,setIsCurUserFollowing] = useState([]);
   const [isFollowClicked,setIsFollowClicked] = useState([]);
 
