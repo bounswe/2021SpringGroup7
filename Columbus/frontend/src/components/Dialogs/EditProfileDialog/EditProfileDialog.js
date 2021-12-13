@@ -68,14 +68,14 @@ export default function EditProfileDialog(props) {
     const birthday = year + "-" + month + "-" + day;
 
     USER_SERVICE.SET_PROFILEINFO({
-                                    'id'        : curProfileInfo['user_id'],
+                                    'id'        : localStorage.getItem('userid'),
                                     'username'  : curProfileInfo['username'],  
                                     'first_name': data.get('firstName'), 
                                     'last_name' : data.get('lastName'), 
                                     'photo_url' : "",
                                     'email'     : curProfileInfo['email'], 
                                     'birthday'  : birthday,
-                                    'location'  : data.get('location'),
+                                    'location'  : {"location": data.get('location'), "latitude": 1, "longitude": 1, "type": "Real"},
                                     'biography' : data.get('biography')
                                   })
     .then((res) => {

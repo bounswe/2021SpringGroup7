@@ -73,7 +73,19 @@ function Profile({viewedUserId, ...props}) {
 
      USER_SERVICE.GET_PROFILEINFO(userId)
       .then((res) => {
-              setProfileInfo(res.data.response);   // profile info will be updated in the end of the render
+        const proInfo = res.data.response;
+              setProfileInfo({
+                                "first_name": proInfo['first_name'],
+                                "last_name" : proInfo['last_name'],
+                                "birthday"  : proInfo['birthday'],
+                                "location"  : proInfo['location']['location'],
+                                "username"  : proInfo['username'],
+                                "email"     : proInfo['email'],
+                                "followers" : proInfo['followers'],
+                                "followings": proInfo['followings'],
+                                "biography" : proInfo['biography']
+                                              }
+              );   // profile info will be updated in the end of the render
               if(res.data.response['followers'].some(follower => follower['user_id'] === curUserId)) 
               {
                 console.log('following')
