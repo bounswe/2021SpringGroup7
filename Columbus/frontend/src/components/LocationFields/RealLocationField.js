@@ -6,16 +6,22 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import AddLocationIcon from "@material-ui/icons/AddLocation";
 import EditLocationIcon from "@material-ui/icons/EditLocation";
 import { Box } from "@mui/system";
+import MapsDialog from "../Dialogs/MapsDialog/MapsDialog";
 
 
 export default function RealLocationField({location, onChangeName, onChangeData, removeLocation, showDelete, isError, setIsError}) {
     const [mapOpen, setMapOpen] = React.useState(false);
-    
+    const [latitude, setLatitude] = React.useState(null)
+    const [longitude, setLongitude] = React.useState(null)
+
+    const handleMapDialogClose = () => {
+        location.geolocation = {"latitude": latitude, "longitude": longitude}
+        setIsError(null);
+        setMapOpen(false);
+    }
 
     const handleMapDialogOpen = () => {
-        location.geolocation = {"latitude": 10, "longitude": 10}
-        setIsError(null);
-        setMapOpen(!mapOpen);
+        setMapOpen(true);
     }
 
     return (
@@ -44,6 +50,6 @@ export default function RealLocationField({location, onChangeName, onChangeData,
                 <DeleteIcon fontSize="medium" />
       </IconButton></Box>: null  }
    
-    {/*<GoogleMap></GoogleMap>*/}
+    <MapsDialog setLatitude={setLatitude} setLongitude={setLongitude} open={mapOpen} handleClose={handleMapDialogClose}/>
   </Stack>);
 }
