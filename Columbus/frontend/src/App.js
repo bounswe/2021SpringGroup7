@@ -50,7 +50,7 @@ function App() {
           />
            <Route
             path="/Profile"
-            element={<Profile/>}
+            element={<Profile viewedUserId={localStorage.getItem('userid')}/>}
           />
           <Route
             path="/Home/Story/Create"

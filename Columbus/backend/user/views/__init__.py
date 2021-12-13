@@ -5,3 +5,4 @@ from .profile import *
 from .follow import *
 from .like import *
 from .home_page import *
+from .comment import *

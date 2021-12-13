@@ -45,7 +45,7 @@ class SetProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id','username', 'first_name', 'last_name','photo_url','birthday','location','biography']
 
-        
+
 class FollowSerializer(serializers.ModelSerializer):
     action_follow = serializers.BooleanField()
     class Meta:
@@ -65,3 +65,26 @@ class HomePageSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'page_number', 'page_size']
+
+class CommentCreateSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=100)
+
+    class Meta:
+        model = Comment
+        fields = ['username', 'story_id', 'text']
+
+
+class CommentUpdateSerializer(serializers.ModelSerializer):
+    comment_id = serializers.IntegerField()
+
+    class Meta:
+        model = Comment
+        fields = ['comment_id', 'text']
+
+
+class GetCommentSerializer(serializers.ModelSerializer):
+    story_id = serializers.IntegerField()
+
+    class Meta:
+        model = Comment
+        fields = ['story_id']

@@ -31,7 +31,7 @@ import ArrowForward from "@material-ui/icons/ArrowForward";
 import Add from "@material-ui/icons/Add";
 import LocationDialog from '../Dialogs/PostLocationDialog/PostLocationDialog'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import POST_SERVICE from '../../services/post';
 import api from "../../services/post";
 
 const imgLink =
@@ -98,6 +98,7 @@ export default function Post(props) {
   useEffect(() => {
     setStoryData(props.post);
     setCurUser(props.curUser);
+    setLiked(props.post.is_liked)
   }, [props, openLocation]);
 
 
@@ -114,13 +115,28 @@ export default function Post(props) {
     if (reason === "clickaway") {
       return;
     }
-    setSnackBarMessage("");
+    setSnackBarMessage('');
     setOpenSnackBar(false);
   };
 
   const handleLike = () => {
+    var dat={
+      "story_id": storyData.story_id,
+      "user_id": localStorage.getItem('userid'),
+    };
+    POST_SERVICE.LIKE_POST(dat)
+    .then(response => {
+      if(response.data.response.isLiked==true){
+        setSnackBarMessage('You liked this story!');}
+      else{
+        setSnackBarMessage('You unliked this story!');}
+      setLiked(response.data.response.isLiked);
+    })
+    .catch((error) => {
+      
+      setSnackBarMessage(error.response.data.return);
+  });
     setOpenSnackBar(true);
-    setLiked(!liked);
   };
   const handleOpenLocation = () => {
     setOpenLocation(true);
@@ -137,7 +153,7 @@ export default function Post(props) {
 
     const data = {
       comment: commentValue,
-      username: curUser,
+      username: localStorage.getItem('username'),
       date: "10 seconds ago",
     };
 
@@ -158,7 +174,7 @@ export default function Post(props) {
             </Link>
           </Grid>
           <Grid justifyContent="left" item xs zeroMinWidth>
-            <h4 style={{ margin: 0, textAlign: "left" }}>{"Salih Yılmaz"}</h4>
+            <h4 style={{ margin: 0, textAlign: "left" }}>{localStorage.getItem('username')}</h4>
             <p style={{ textAlign: "left" }}>
               <TextField
                 style={{ width: "90%" }}
@@ -213,20 +229,20 @@ export default function Post(props) {
               <Button>
                 <DateRange />
                 <Typography variant="h10"> {storyData
-                  ? storyData.start.substring(0, 17) +
-                  " - " +
-                  storyData.end.substring(0, 17)
+                  ? storyData.time_start.substring(0, 14) +
+                  " / " +
+                  storyData.time_end.substring(0, 14)
                   : " "} </Typography></Button></Grid>
             <Grid item columns={2} alignItems="center" alignItems="center" spacing={3} >
               <Button onClick={handleOpenLocation} style={{ textTransform: 'none' }} >
                 {storyData
-                  ? (<><LocationOn /><Typography variant="body2">{storyData.locations[0]}</Typography>
+                  ? (<><LocationOn /><Typography variant="body2">{storyData.locations[0].location.length>14 ? storyData.locations[0].location.substring(0,10)+'...':storyData.locations[0].location}</Typography>
                     {storyData.locations.length > 1 ?
                       (<><ArrowForward />
                         {storyData.locations.length > 2 ?
                           (<><Typography variant="body2">{"+" + (storyData.locations.length - 2)}</Typography>
                             <ArrowForward /></>) : null}
-                        <Typography variant="body2">{storyData.locations[storyData.locations.length - 1]}</Typography></>) : null}</>) : ""}
+                        <Typography variant="body2">{storyData.locations[storyData.locations.length - 1].location.length>14 ?  storyData.locations[storyData.locations.length - 1].location.substring(0,10)+'...':storyData.locations[storyData.locations.length - 1].location}</Typography></>) : null}</>) : ""}
               </Button>
             </Grid>
           </Grid>
@@ -240,7 +256,7 @@ export default function Post(props) {
           <Grid item xs={11} justifyContent="center" alignContent="center">
             <CardContent>
               <Typography variant="body2" color="textSecondary" component="p">
-                {storyData ? storyData.story  : ""}
+                {storyData ? storyData.text  : ""}
                 <div></div>
                 {storyData
                   ? storyData.tags.map((item, index) => {
@@ -268,7 +284,7 @@ export default function Post(props) {
           
         </Grid>) : (<Grid container justifyContent="center" ><Grid item xs={11} justifyContent="center" alignContent="center">
           <Typography variant="body2" color="textSecondary" component="p" >
-            {storyData ? (expanded ? storyData.story : (storyData.story.substring(0, 500) + "...")) : ""}
+            {storyData ? (expanded ? storyData.text : (storyData.text.substring(0, 500) + "...")) : ""}
             <div></div>
             {storyData
               ? storyData.tags.map((item, index) => {
@@ -286,9 +302,10 @@ export default function Post(props) {
           </Typography></Grid> </Grid>)}
 
 
-
+      
       <CardActions disableSpacing>
-        <IconButton
+      {localStorage.getItem('jwtToken') ? 
+        <div><IconButton
           aria-label="add to favorites"
           color={liked ? "secondary" : ""}
           onClick={handleLike}
@@ -322,7 +339,7 @@ export default function Post(props) {
 
         <IconButton onClick={(e) => setExpandComment(!expandComment)}>
           <AddCommentIcon />
-        </IconButton>
+        </IconButton></div>:<div/>}
 
         <IconButton
           className={clsx(classes.expand, {

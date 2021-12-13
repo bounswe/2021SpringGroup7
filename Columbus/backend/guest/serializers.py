@@ -11,3 +11,11 @@ class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username','password']
+
+class GuestPageSerializer(serializers.ModelSerializer):
+    page_number = serializers.IntegerField()
+    page_size = serializers.IntegerField()
+
+    class Meta:
+        model = User
+        fields = ['page_number', 'page_size']
