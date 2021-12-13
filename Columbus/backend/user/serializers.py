@@ -72,3 +72,11 @@ class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['username', 'story_id', 'text']
+
+
+class CommentUpdateSerializer(serializers.ModelSerializer):
+    comment_id = serializers.IntegerField()
+
+    class Meta:
+        model = Comment
+        fields = ['comment_id', 'text']
