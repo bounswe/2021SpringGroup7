@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function ProfilePostScroll({ userToBeViewed, userThatViews, ...props}) {
+function ProfilePostScroll({ userToBeViewed, userThatViews,...props}) {
 
   const classes = useStyles();
   
@@ -40,6 +40,7 @@ function ProfilePostScroll({ userToBeViewed, userThatViews, ...props}) {
   //const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
+   
      USER_SERVICE.GET_PROFILEPOSTS(userToBeViewed,pageNumber,20)
                                             .then((res) => {
                                               setCurrentPosts(res.data.return)
@@ -48,6 +49,7 @@ function ProfilePostScroll({ userToBeViewed, userThatViews, ...props}) {
                                             .catch((error) => {
                                                 console.log(error)
                  });
+
     }, []);
 
    

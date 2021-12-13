@@ -30,7 +30,8 @@ import {useStyles} from "./Profile.styles"
 import FollowerDialog from "../../components/Dialogs/FollowerDialog/FollowerDialog"
 import EditProfileDialog from "../../components/Dialogs/EditProfileDialog/EditProfileDialog"
 import FollowUnfollow from "./Profile.follow"
-import PostScroll from "../../components/PostScroll/ProfilePostScroll"
+import ProfilePostScroll from "../../components/PostScroll/ProfilePostScroll"
+import LikedPostScroll from "../../components/PostScroll/LikedPostScroll"
 
 import USER_SERVICE from "../../services/user";
 
@@ -335,18 +336,18 @@ function Profile({viewedUserId, ...props}) {
           <Container>
             {infoLoading ? <CircularProgress></CircularProgress>
                         :  <>{tabValue === "shared" ? <>
-                                        <PostScroll 
+                                        <ProfilePostScroll 
                                           userToBeViewed={profileInfo['username']} 
-                                          userThatViews={localStorage.getItem('username')}>
-                                        </PostScroll>
+                                          userThatViews={localStorage.getItem('username')}
+                                        >
+                                        </ProfilePostScroll>
                                       </>
                                    :  <>
-                                        {likedPosts.map((item) => {
-                                                        return (
-                                                          <Post post={item} curUser={curUserId}></Post>
-                                                        );
-                                                      })
-                                          }
+                                        <LikedPostScroll 
+                                          userToBeViewed={profileInfo['username']} 
+                                          userThatViews={localStorage.getItem('username')}
+                                         >
+                                        </LikedPostScroll>
                                       </> }
                               </>}
           </Container>

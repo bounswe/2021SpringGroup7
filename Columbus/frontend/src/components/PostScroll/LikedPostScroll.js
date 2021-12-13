@@ -7,7 +7,6 @@ import { NavLink } from 'react-router-dom'
 
 import Post from '../Post/Post'
 import USER_SERVICE from "../../services/user";
-import GUEST_SERVICE from "../../services/guest";
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -30,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function HomePostScroll({ isAuthenticated, curUser, ...props }) {
+function LikedPostScroll({ userToBeViewed, userThatViews, ...props}) {
 
   const classes = useStyles();
   
@@ -41,31 +40,16 @@ function HomePostScroll({ isAuthenticated, curUser, ...props }) {
   //const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    if(isAuthenticated) {
-     USER_SERVICE.GET_HOMEPOSTS(curUser,pageNumber,20)
+
+      USER_SERVICE.GET_LIKEDPOSTS(userToBeViewed,pageNumber,20)
                                             .then((res) => {
-                                              setCurrentPosts(res.data.return.slice(0,5))
+                                              setCurrentPosts(res.data.return)
                                               setIsLoading(false);
-                                              console.log('isauth from home scroll ', isAuthenticated)
-                                              console.log('user home posts ', res.data.return)
                                             })
                                             .catch((error) => {
                                                 console.log(error)
                  });
 
-    } else {
-    GUEST_SERVICE.GET_HOMEPOSTS(pageNumber,20)
-                                            .then((res) => {
-                                              
-                                              setCurrentPosts(res.data.return.slice(0,3))
-                                              console.log('isauth from home scroll ', isAuthenticated)
-                                              console.log(' gusest home posts ', res.data.return)
-                                              setIsLoading(false);
-                                            })
-                                            .catch((error) => {
-                                                console.log(error)
-                 });
-    }
     }, []);
 
    
@@ -75,13 +59,13 @@ function HomePostScroll({ isAuthenticated, curUser, ...props }) {
   return (<>
   {
       curPosts.length === 0 ? <Box className={classes.emptyBody}>
-                                <Typography>You do not have any stories to view.</Typography>
+                                <Typography>You have not liked any stories yet.</Typography>
                               <NavLink to="/Home">Explore Stories</NavLink> 
                           </Box>
                         : <>
                               {curPosts.map((item) => {
                                                       return (
-                                                        <Post  key={item['story_id']} post={item} curUser={curUser}></Post>
+                                                        <Post key={item['story_id']} post={item} curUser={userThatViews}></Post>
                                                       );
                                                     })
                                 }
@@ -93,4 +77,6 @@ function HomePostScroll({ isAuthenticated, curUser, ...props }) {
 }
 
 
-export default HomePostScroll;
+export default LikedPostScroll;
+
+
