@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-
+import { useNavigate } from "react-router-dom";
 import columbusLogo from '../../assets/Columbus.svg';
 
 import { makeStyles, styled } from "@material-ui/core/styles";
@@ -13,6 +13,7 @@ import Menu from '@mui/material/Menu';
 import Tooltip from '@mui/material/Tooltip';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
+import Divider from '@mui/material/Divider';
 
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -25,95 +26,11 @@ import AddBoxRoundedIcon from '@material-ui/icons/AddBoxRounded';
 import Person from '@material-ui/icons/Person';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
-
-/*********************************************************** 
-  Reference : https://mui.com/components/app-bar/
-************************************************************/
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor:"#e6e5dc",
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(5),
-    width: 'auto',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 1.5),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'default',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 5),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(5)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '30ch',
-    },
-    fontSize: 15,
-  },
-}));
-
-/************************************************************/
-
-const useStyles = makeStyles((theme) => ({
-  appbar: {
-    position:'static',
-    backgroundColor: 'white'
-  },
-  toolbar: {
-    borderBottom: `2px solid ${theme.palette.divider}`,
-  },
-  toolbarTitle: {
-    flex: 1,
-    color: 'black',
-  },
-  toolbarSecondary: {
-    overflowX: "auto",
-  },
-  toolbarLink: {
-    padding: theme.spacing(1),
-    flexShrink: 0,
-  },
-  logo: {
-    padding: 10,
-    height: 90,
-    width: 130,
-  },
-  profilePic: {
-    borderRadius: 50,
-    width: 30, 
-    height: 30,
-  },
-  navigationButtons: { 
-    border: '1.5px solid' 
-  },
-  button: {
-    //backgroundColor:"#0060a0",
-    //color:"white"
-  },
-  avatar: {
-    backgroundColor:"#0071bc",
-    color:"black"
-  }
-}));
+import {useStyles, Search, SearchIconWrapper, StyledInputBase} from "./Header.styles"
 
 export default function Header(props) {
   const classes = useStyles();
-  //const { sections, title } = props;
+  const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
@@ -124,10 +41,7 @@ export default function Header(props) {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    
-    //handleMobileMenuClose();
   };
-
   const handleLogOut = () => {
     setAnchorEl(null);
     localStorage.removeItem("jwtToken");
@@ -153,40 +67,20 @@ const renderMenu = (
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>
-         <IconButton
-              size="small"
-              aria-label="show 1 new notifications"
-              color="default"  
-            >
-              <Badge badgeContent={0} color="error">
-                <NotificationsIcon />
-              </Badge>
-          </IconButton>
-          Notifications
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
-           <IconButton
+           <Button
               size="small"
               aria-label="account of current user"
               aria-controls={'primary-search-account-menu'}
               aria-haspopup="true"
               className={classes.button}
+              onClick={() => navigate("/Profile")}
+              startIcon={<AccountCircle />}
             >
-              <AccountCircle />
-            </IconButton>
-          Profile
+              Profile
+            </Button>
+          
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
-           <IconButton
-              size="small"
-              aria-label="account settings"
-              aria-haspopup="true"
-              color="default"
-            >
-              <SettingsIcon />
-            </IconButton>
-          Settings
-      </MenuItem>
+      <Divider></Divider>
       <MenuItem onClick={handleLogOut}>
            <Button 
             className={classes.button}
@@ -258,14 +152,16 @@ const renderMenu = (
               className={classes.button}
               variant="contained"
               size="small"
-              aria-label="explore"            
-              href="/"
+              aria-label="explore"
+              color="default"
+              onClick={() => navigate("/Home/Story/Create")}
               startIcon={<AddBoxRoundedIcon />}
             >
               Share
             </Button>
           </Tooltip>
         
+
           <Button 
             className={classes.button}
             size="small"

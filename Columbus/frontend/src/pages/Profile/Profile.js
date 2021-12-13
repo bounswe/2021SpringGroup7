@@ -33,11 +33,9 @@ import PostScroll from "../../components/PostScroll/PostScroll"
 
 import USER_SERVICE from "../../services/user";
 
-
-
 function Profile(props) {
+  const navigate = useNavigate();
   const classes = useStyles();
-  //const { userInfo } = props;
 
   const [loading, setLoading] = useState(false);
 

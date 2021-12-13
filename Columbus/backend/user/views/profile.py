@@ -6,10 +6,11 @@ from rest_framework import generics
 from django.http import JsonResponse
 from ..models import *
 from django.contrib.auth.models import User
-from ..models import Following
+from ..models import Following,Location
+import json
+import ast
 
 class GetProfileInfo(generics.ListAPIView):
-    serializer_class = GetProfileSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
@@ -24,13 +25,15 @@ class GetProfileInfo(generics.ListAPIView):
         except:
             profile_info = Profile.objects.create(user_id=user_info)
 
-        followings = list(Following.objects.filter(user_id=user_info).values_list('follow',flat=True))
-        followers = list(Following.objects.filter(follow=user_info).values_list('user_id',flat=True))
+        followings = list(Following.objects.filter(user_id=user_info).values('follow','follow__username'))
+        followers = list(Following.objects.filter(follow=user_info).values('user_id','user_id__username'))
+        location = ast.literal_eval(profile_info.location)
+
         result_dict = {
             'first_name':user_info.first_name,
             'last_name': user_info.last_name,
             'birthday': profile_info.birthday,
-            'location': profile_info.location,
+            'location': location,
             'photo_url':profile_info.photo_url,
             'username': user_info.username,
             'email': user_info.email,
@@ -39,7 +42,6 @@ class GetProfileInfo(generics.ListAPIView):
             'biography': profile_info.biography,
             'user_id':user_info.id
         }
-        print(list(followers))
         return JsonResponse({'response':result_dict})
 
 class SetProfileInfo(generics.CreateAPIView):
@@ -59,6 +61,11 @@ class SetProfileInfo(generics.CreateAPIView):
             profile_info = Profile.objects.get(user_id=user_info)
         except:
             profile_info = Profile.objects.create(user_id=user_info)
+
+        required_areas_location = {'location', 'latitude', 'longitude', 'type'}
+        if set(body['location'].keys()) != required_areas_location:
+            return JsonResponse({'return': 'location not in appropriate format'}, status=400)
+
         user_info.username = body['username']
         user_info.first_name = body['first_name']
         user_info.last_name = body['last_name']

@@ -24,22 +24,21 @@ class PostCreateSerializer(serializers.ModelSerializer):
         model = Story
         fields = ['title', 'text', 'multimedia', 'username', 'time_start', 'time_end', 'location', 'tags']
 
-class GetProfileSerializer(serializers.ModelSerializer):
-    birthday = serializers.DateTimeField()
-    location = serializers.IntegerField()
-    followers = serializers.ListSerializer(child = serializers.IntegerField(min_value = 0, max_value = 100))
-    followings = serializers.ListSerializer(child = serializers.IntegerField(min_value = 0, max_value = 100))
-    biography = serializers.CharField()
-    photo_url = serializers.CharField()
 
+class LocationSerializer(serializers.ModelSerializer):
+    location = serializers.CharField()
+    latitude = serializers.CharField()
+    longitude = serializers.CharField()
+    type = serializers.CharField()
     class Meta:
-        model = User
-        fields = ['id','username', 'first_name', 'last_name','photo_url','email','birthday','location','followers','followings','biography']
+        model = Location
+        fields = ['location','latitude', 'longitude', 'type']
+
 
 class SetProfileSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     birthday = serializers.DateTimeField()
-    location = serializers.IntegerField()
+    location = LocationSerializer(many=False)
     biography = serializers.CharField()
     photo_url = serializers.CharField()
     class Meta:
@@ -55,10 +54,9 @@ class FollowSerializer(serializers.ModelSerializer):
 
 
 class LikeSerializer(serializers.ModelSerializer):
-    action_like = serializers.BooleanField()
     class Meta:
         model = Like
-        fields = ['story_id','user_id','action_like']
+        fields = ['story_id','user_id']
 
 class HomePageSerializer(serializers.ModelSerializer):
     page_number = serializers.IntegerField()
