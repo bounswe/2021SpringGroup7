@@ -10,7 +10,7 @@ import CustomAvatar from './components/CustomAvatar';
 
 import {styles} from './Profile.style';
 
-const Profile = ({navigation}) => {
+const Profile = ({navigation, route}) => {
   return (
     <View style={styles.pageContainer}>
       <View style={styles.headerContainer}>
