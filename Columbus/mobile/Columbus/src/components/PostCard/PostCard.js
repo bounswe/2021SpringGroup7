@@ -11,7 +11,8 @@ import {
   NativeBaseProvider,
   Avatar,
   Tag,
-  useDisclose
+  useDisclose,
+  VStack
 } from 'native-base';
 import {TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
@@ -27,37 +28,41 @@ const PostCard = props => {
   const { isOpen, onOpen, onClose } = useDisclose()
   const navigation = useNavigation();
   const postData = {
-    multimedia: [
-      'https://cdn.techinasia.com/wp-content/uploads/2013/09/silicon-valley-asia.jpg',
-      'https://lampalampa.net/wp-content/uploads/2018/03/WHY-THE-APPEARANCE-OF-EUROPEAN-SILICON-VALLEY-IS-IMPOSSIBLE.jpg',
-    ],
-    title: 'The Garden City',
-    location: [{
-      name: 'The Silicon Valley',
-      latitude: 37.78825,
-      longitude: -122.4324,
-    },{
-      name: 'Loc 2',
-      latitude: 38.78825,
-      longitude: -122.4324,
-    },
-    {
-      name: 'Loc 3',
-      latitude: 39.78825,
-      longitude: -122.4324,
-    }],
-    time: "80's",
-    text:
-      "Silicon Valley is a region in Northern California that serves as a global center for high technology and innovation. Located in the southern part of the San Francisco Bay Area, it corresponds roughly to the geographical Santa Clara Valley.[1][2][3] San Jose is Silicon Valley's largest city, the third-largest in California, and the tenth-largest in the United States; other major Silicon Valley cities include Sunnyvale, Santa Clara, Redwood City, Mountain View, Palo Alto, Menlo Park, and Cupertino. The San Jose Metropolitan Area has the third-highest GDP per capita in the world (after Zurich, Switzerland and Oslo, Norway), according to the Brookings Institution,[4] and, as of June 2021, has the highest percentage in the country of homes valued at $1 million or more.[5]",
-    tags: ['Sen de yargilacaksin', 'Bill Gates', 'Apple', 'Microsoft'],
-    owner: {
-      username: 'Homebird63',
-      img: 'https://pbs.twimg.com/profile_images/1313221527580676097/LV9VsA2p_400x400.jpg',
-    },
-    postingTime: '6 min ago',
-    comment: {nofComments: 10},
+    
+      "title": "Test",
+      "text": "test",
+      "multimedia": "https://iheartcraftythings.com/wp-content/uploads/2021/05/How-to-draw-bird-FEAT-image.jpg",
+      "user_id": 4,
+      "time_start": "2021-01-10",
+      "time_end": "2021-01-10",
+      "createDateTime": "2021-12-12T16:33:41.496Z",
+      "lastUpdate": "2021-12-12T16:33:41.497Z",
+      "numberOfLikes": 0,
+      "numberOfComments": 0,
+      "owner_username": "Kadir",
+      "is_liked": false,
+      "story_id": 3,
+      "locations": [
+        {
+          "location": "Hello",
+          "latitude": 20,
+          "longitude": 2,
+          "type": "Virtual"
+        },
+        {
+          "location": "Hello1",
+          "latitude": 20,
+          "longitude": 2,
+          "type": "Virtual"
+        }
+      ],
+      "tags": [
+        "string"
+      ],
+      "photo_url": "https://iheartcraftythings.com/wp-content/uploads/2021/05/How-to-draw-bird-FEAT-image.jpg"
+    }
 
-  };
+  
 
   return (
     <Box
@@ -79,16 +84,16 @@ const PostCard = props => {
         backgroundColor: 'gray.50',
       }}>
       <Box alignItems="center" h="150px">
-        <ImageCarousel data={postData.imgData} />
+        <ImageCarousel data={[postData.multimedia]} />
       </Box>
       <Stack p="4" space={3}>
         <Stack space={2}>
-          <UserInfo data={postData.owner} />
+          <UserInfo data={{'owner_username':postData.owner_username,'photo_url':postData.photo_url} }/>
           <Heading size="md" ml="-1">
             {postData.title}
           </Heading>
           <HStack space={40}>
-            <LocationInfo data={postData.location} />
+            <LocationInfo data={postData.locations} />
           <PostTimeInfo data={postData.time} />
           </HStack>
           
@@ -98,9 +103,11 @@ const PostCard = props => {
         </Text>
         <Tags data={postData.tags} />
 
-        <HStack space={35}>
-          <PostingTime data={postData.postingTime} />
-          <LikeAndShare data={postData.comment} />
+        <HStack >
+          <PostingTime data={postData.createDateTime} />
+          <LikeAndShare data={postData.comment } />
+
+          
         </HStack>
 
         <Text

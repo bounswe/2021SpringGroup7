@@ -52,7 +52,7 @@ const DetailedPost = props => {
               {post.title}
             </Heading>
             <HStack space={40}>
-              <LocationInfo data={post.location} />
+              <LocationInfo data={post.locations} />
               <PostTimeInfo data={post.time} />
             </HStack>
           </Stack>
@@ -70,26 +70,26 @@ const DetailedPost = props => {
               elevation: 10,
             }}>
             <Heading textAlign="center" m={2} space={10}>
-              <Icon name={'angle-left'} size={30} style={{margin:25}} onPress={()=>setIndex(index-1<0?(post.location.length -1):0)}/>
+              <Icon name={'angle-left'} size={30} style={{margin:25}} onPress={()=>setIndex(index-1<0?(post.locations.length -1):0)}/>
               <Text>
-              {post.location[index].name}
+              {post.locations[index].location}
 
               </Text>
-              <Icon name={'angle-right'} size={30} style={{margin:25}} onPress={()=>setIndex(((index+1)%(post.location.length)))}/>
+              <Icon name={'angle-right'} size={30} style={{margin:25}} onPress={()=>setIndex(((index+1)%(post.locations.length)))}/>
             </Heading>
 
             <MapView
             style={{width:'100%',
               height:200}}
-              region={{latitude: post.location[index].latitude,
-                longitude: post.location[index].longitude,
+              region={{latitude: post.locations[index].latitude,
+                longitude: post.locations[index].longitude,
                 latitudeDelta: 0.3,
                 longitudeDelta: 0.3,}}
              >
-              {post.location.map((loc)=>{
+              {post.locations.map((loc)=>{
                 return <Marker
                 coordinate={{ latitude : loc.latitude , longitude : loc.longitude }}
-                title={loc.name}
+                title={loc.location}
               />
 
               })}
@@ -97,8 +97,8 @@ const DetailedPost = props => {
             </MapView>
           </Box>
 
-          <HStack space={65}>
-            <PostingTime data={post.postingTime} />
+          <HStack space={50}>
+            <PostingTime data={post.createDateTime} />
             <LikeAndShare data={post.comment} />
           </HStack>
         </Stack>
