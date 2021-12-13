@@ -75,7 +75,7 @@ const renderMenu = (
               aria-controls={'primary-search-account-menu'}
               aria-haspopup="true"
               className={classes.button}
-              onClick={() => navigate("/Profile")}
+              href="/Profile"
               startIcon={<AccountCircle />}
             >
               Profile
