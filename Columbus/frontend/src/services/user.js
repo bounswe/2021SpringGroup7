@@ -21,7 +21,12 @@ const USER_SERVICE = {
                                                                                           "username": username,
                                                                                           "page_number": pageNumber,
                                                                                           "page_size": pageSize
-                                                                                        })
+                                                                                        }),
+  GET_HOMEPOSTS: (username,pageNumber,pageSize) => API_INSTANCE.post(`/user/home_page/`,{
+                                                                                          "username": username,
+                                                                                          "page_number": pageNumber,
+                                                                                          "page_size": pageSize
+                                                                                        })                                                                                      
 
 };
 
