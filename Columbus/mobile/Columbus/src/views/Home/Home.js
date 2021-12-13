@@ -11,6 +11,7 @@ import {
 import {useAuth} from '../../context/AuthContext';
 import {SERVICE} from '../../services/services';
 import {useMutation} from 'react-query';
+import PageSpinner from '../../components/PageSpinner';
 import PostCard from '../../components/PostCard'
 
 const Home = () => {
@@ -61,18 +62,9 @@ const Home = () => {
   
 
   
-  
-
+ 
   if (loading==true) {
-     <View
-        style={{
-          display: 'flex',
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Spinner />
-      </View>
+        <PageSpinner />;
   }
 
   return (
