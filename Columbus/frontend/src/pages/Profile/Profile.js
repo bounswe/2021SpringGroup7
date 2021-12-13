@@ -38,7 +38,6 @@ import USER_SERVICE from "../../services/user";
 function Profile({...props}) {
   const navigate = useNavigate();
   let { userId } = useParams();                     // viewing this user's profile
-  console.log('userıd ', !userId);
   if(!userId) {
 
     userId = localStorage.getItem('userid');

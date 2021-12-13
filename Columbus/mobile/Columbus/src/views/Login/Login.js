@@ -43,7 +43,11 @@ const Login = ({navigation}) => {
 
   const submitLogin = useMutation(params => SERVICE.loginRequest({params}), {
     onSuccess(response) {
-      login(response.data.return);
+      const data = {
+        username: formData.username,
+        ...response.data.return,
+      };
+      login(data);
       setIsButtonLoading(false);
       // navigation.navigate('HomePage');
     },

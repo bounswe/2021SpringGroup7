@@ -1,22 +1,43 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text} from 'react-native';
-import {Avatar, Button} from 'native-base';
+import {Button} from 'native-base';
 
 import InfoBox from './components/InfoBox';
-import getInitials from '../../utils/getInitial';
-import userInfo from './Profile.constant';
 import InfoWithIcon from './components/InfoWithIcon';
 import CustomAvatar from './components/CustomAvatar';
+
+import PageSpinner from '../../components/PageSpinner/PageSpinner';
+import getInitials from '../../utils/getInitial';
+import {useAuth} from '../../context/AuthContext';
 
 import {styles} from './Profile.style';
 
 const Profile = ({navigation, route}) => {
+  const {user} = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    if (user && user?.userInfo && !userInfo) {
+      const data = user?.userInfo;
+      setUserInfo(data);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+  }, [user, userInfo, loading]);
+
+  if (!userInfo && loading) {
+    return <PageSpinner></PageSpinner>;
+  }
+
   return (
     <View style={styles.pageContainer}>
+      {console.log('444')}
       <View style={styles.headerContainer}>
         <View style={styles.avatarContainer}>
           <CustomAvatar
-            imageUrl={userInfo.imageUrl}
+            imageUrl={userInfo?.imageUrl}
             initials={`${getInitials(userInfo.username)}`}
           />
 

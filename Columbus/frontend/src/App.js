@@ -54,7 +54,7 @@ function App() {
             path="/Profile"
             element={<Profile/>}
           />
-           <Route
+          <Route
             path="/Profile/:userId"
             element={<Profile/>}
           />
