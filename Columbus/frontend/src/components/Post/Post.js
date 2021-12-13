@@ -98,7 +98,7 @@ export default function Post(props) {
   useEffect(() => {
     setStoryData(props.post);
     setCurUser(props.curUser);
-    setLiked(storyData.is_liked)
+    setLiked(props.post.is_liked)
   }, [props, openLocation]);
 
 
@@ -122,7 +122,7 @@ export default function Post(props) {
   const handleLike = () => {
     var dat={
       "story_id": storyData.story_id,
-      "user_id": storyData.user_id,
+      "user_id": localStorage.getItem('userid'),
     };
     POST_SERVICE.LIKE_POST(dat)
     .then(response => {
