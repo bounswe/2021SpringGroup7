@@ -30,20 +30,20 @@ import {useStyles} from "./Profile.styles"
 import FollowerDialog from "../../components/Dialogs/FollowerDialog/FollowerDialog"
 import EditProfileDialog from "../../components/Dialogs/EditProfileDialog/EditProfileDialog"
 import FollowUnfollow from "./Profile.follow"
-import PostScroll from "../../components/PostScroll/PostScroll"
+import PostScroll from "../../components/PostScroll/ProfilePostScroll"
 
 import USER_SERVICE from "../../services/user";
 
 function Profile({viewedUserId, ...props}) {
   const navigate = useNavigate();
   const classes = useStyles();
-  const curUserId = localStorage.getItem('userid');
-  const userId  = viewedUserId;
+  const curUserId = localStorage.getItem('userid');    // user in current session
+  const userId  = viewedUserId;                        // viewing this user's profile
 
   const [loading, setLoading] = useState(false);
 
-  //const [curUserId, setCurUserId] = useState(6);                 // user in current session
-  //const [userId, setUserId] = useState(4);                        // viewing this user's profile
+  //const [curUserId, setCurUserId] = useState(6);                
+  //const [userId, setUserId] = useState(4);                        
   const [isCurUserFollowing,setIsCurUserFollowing] = useState([]);
   const [isFollowClicked,setIsFollowClicked] = useState([]);
 
@@ -60,10 +60,11 @@ function Profile({viewedUserId, ...props}) {
                                                   "biography": ""
                                               });
 
-  const [sharedPosts, setSharedPosts] = useState(dummyPosts.slice(0,1));
+  //const [sharedPosts, setSharedPosts] = useState(dummyPosts.slice(0,1));
   const [likedPosts, setLikedPosts] = useState(dummyPosts.slice(1,4));
   
   const [tabValue, setTabValue] = useState('shared');
+  const [infoLoading, setInfoLoading] = useState(true);
 
   const [followingsOpen, setFollowingsOpen] = useState(false);
   const [followersOpen, setFollowersOpen] = useState(false);
@@ -75,7 +76,7 @@ function Profile({viewedUserId, ...props}) {
      USER_SERVICE.GET_PROFILEINFO(userId)
       .then((res) => {
         const proInfo = res.data.response;
-        console.log('profile info ', proInfo)
+        console.log('profile info ',  res.data.response['username'])
               setProfileInfo({
                                 "first_name": proInfo['first_name'],
                                 "last_name" : proInfo['last_name'],
@@ -91,15 +92,17 @@ function Profile({viewedUserId, ...props}) {
               );   // profile info will be updated in the end of the render
               if(res.data.response['followers'].some(follower => follower['user_id'] === curUserId)) 
               {
-                console.log('following')
+                //console.log('following')
                 setIsCurUserFollowing(true);
               } else {
                 setIsCurUserFollowing(false);
               }
+              setInfoLoading(false);
         })
         .catch((error) => {
           console.log('err ', error);
         });
+
     }, [editProfileOpen, userId, isFollowClicked]);
 
 
@@ -330,7 +333,8 @@ function Profile({viewedUserId, ...props}) {
           </Container>
           
           <Container>
-            {tabValue === "shared" ? <>
+            {infoLoading ? <CircularProgress></CircularProgress>
+                        :  <>{tabValue === "shared" ? <>
                                         <PostScroll 
                                           userToBeViewed={profileInfo['username']} 
                                           userThatViews={localStorage.getItem('username')}>
@@ -344,9 +348,7 @@ function Profile({viewedUserId, ...props}) {
                                                       })
                                           }
                                       </> }
-            
-            
-
+                              </>}
           </Container>
         </Paper>
         <FollowerDialog open={followingsOpen} onClose={handleFollowingsDialogClose} accounts={profileInfo['followings']} title={'Followings'}/>
