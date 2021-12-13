@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import CreatePostPage from "./pages/CreatePostPage";
 import {Snackbar, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import Profile from "./pages/Profile"
 
 function App() {
   const [Authenticated, setAuthenticated] = useState(false)
@@ -46,6 +47,10 @@ function App() {
           <Route
             path="/email-confirmation"
             element={<EmailConfirmation />}
+          />
+           <Route
+            path="/Profile"
+            element={<Profile/>}
           />
           <Route
             path="/Home/Story/Create"
