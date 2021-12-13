@@ -30,7 +30,7 @@ const LocationDialog = ({ open, handleClose,  locations }) => {
               <ListItemIcon>
                 <LocationOn />
               </ListItemIcon>
-              <ListItemText primary={item} />
+              <ListItemText primary={item.location} />
             </ListItemButton>
           </ListItem>);}):null }
         </List>
