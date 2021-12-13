@@ -52,11 +52,10 @@ class ProfilePost(generics.CreateAPIView):
                 serialized_obj = serializers.serialize('json', locations)
                 serialized_obj = json.loads(str(serialized_obj))
                 serialized_obj = [each["fields"] for each in serialized_obj]
+                each["story_id"] = stories[i].id
+                [each.pop('story_id', None) for each in serialized_obj]
                 each["locations"] = serialized_obj
-                #print("story likes:", Like.objects.filter(story_id=stories[i], user_id__username=username))
-                #print("story likes len:", len(Like.objects.filter(story_id=stories[i], user_id__username=username)))
-                #print("temp_each", temp_each)
-                #print("stories", stories[i])
+
 
         else:
             result = []
