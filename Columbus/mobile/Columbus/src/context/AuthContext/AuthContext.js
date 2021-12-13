@@ -8,20 +8,19 @@ import {
   useEffect,
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useQuery} from 'react-query';
 
-import {SERVICE} from '../../services/services';
 import queryClient from '../../configs/reactQuery';
 import {AUTH_KEY} from '../../constants/storageKeys';
 
 const AuthContext = createContext({
-  user: {isAuthenticated: false},
-  login: () => undefined,
+  user: {userInfo: {}, isAuthenticated: false},
+  login: data => data,
   logout: () => undefined,
 });
 
 function AuthProvider({children}) {
   const [user, setUser] = useState({
+    userInfo: {},
     isAuthenticated: false,
   });
 
@@ -32,7 +31,7 @@ function AuthProvider({children}) {
       if (asycnStorage) {
         const loginValues = await AsyncStorage.getItem(AUTH_KEY);
         setUser({
-          ...loginValues,
+          userInfo: loginValues,
           isAuthenticated: true,
         });
       }
@@ -40,37 +39,8 @@ function AuthProvider({children}) {
     fetchAsyncStorage();
   }, [setUser]);
 
-  // const {refetch} = useQuery(
-  //   'getUserInfo',
-  //   () =>
-  //     SERVICE.userInfo(
-  //       JSON.stringify({
-  //         userId: 'me',
-  //       }),
-  //     ),
-  //   {
-  //     enabled: false,
-  //     onSuccess({data}) {
-  //       const userInformations = data?.user;
-  //       if (userInformations) {
-  //         AsyncStorage.setItem(AUTH_KEY, JSON.stringify(userInformations));
-  //         setUser({
-  //           ...userInformations,
-  //           isAuthenticated: true,
-  //         });
-  //       }
-  //     },
-  //   },
-  // );
-
-  const refetch = async () => {
-    console.log('refetch');
-    userInformations = {
-      id: 1234,
-      name: 'onur',
-      surname: 'avci',
-      email: 'onurcannavci@gmail.com',
-    };
+  const login = async data => {
+    userInformations = data;
     //TODO: Fix write data to AsyncStorage
     if (userInformations) {
       await AsyncStorage.setItem(AUTH_KEY, JSON.stringify(userInformations));
@@ -80,10 +50,6 @@ function AuthProvider({children}) {
       });
     }
   };
-
-  const login = useCallback(() => {
-    refetch();
-  }, [refetch]);
 
   const logout = useCallback(async () => {
     await AsyncStorage.removeItem(AUTH_KEY);

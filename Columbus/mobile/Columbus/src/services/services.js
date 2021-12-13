@@ -10,4 +10,9 @@ export const SERVICE = {
   userInfo: data => {
     return API_INSTANCE.post(`/user/`, data);
   },
+  fetchPost: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/home_page/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
 };
