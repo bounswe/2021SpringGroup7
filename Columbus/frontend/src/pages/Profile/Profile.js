@@ -96,7 +96,7 @@ function Profile({...props}) {
                                 "biography" : proInfo['biography']
                                               }
               );   // profile info will be updated in the end of the render
-              if(res.data.response['followers'].some(follower => follower['user_id'] === curUserId)) 
+              if(res.data.response['followers'].some(follower => follower['user_id'].toString() === curUserId)) 
               {
                 setIsCurUserFollowing(true);
               } else {
