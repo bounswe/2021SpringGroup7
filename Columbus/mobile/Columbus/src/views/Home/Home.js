@@ -47,9 +47,9 @@ const Home = () => {
     const userInfo = JSON.parse(user?.userInfo);
     token = userInfo.token;
     const data = JSON.stringify({
-      username: 'Kadir',
+      username: userInfo.username,
       page_number: 1,
-      page_size: 5,
+      page_size: 10,
     });
     try {
       await fetchStories.mutateAsync(data, token);
@@ -72,7 +72,7 @@ const Home = () => {
   return (
     <NativeBaseProvider>
       <ScrollView>
-        <VStack flex={1} px="3" space={10} alignItems="center" mt={10}>
+        <VStack flex={1} px="3" space={10} alignItems="center" pb={10} mt={5}>
           {posts.map(item => {
             return (<PostCard data={item} key={item.story_id}/>);
           })}

@@ -13,13 +13,13 @@ import {
   HStack,
   VStack,
 } from 'native-base';
-import  PostingTime   from "../PostCard/SubComponents/PostingTime";
+import PostingTime from '../PostCard/SubComponents/PostingTime';
 
 const Comment = props => {
   const colors = ['amber.500', 'purple.500', 'red.500', 'blue.500'];
   const rand = Math.floor(Math.random() * colors.length);
   return (
-    <Box ml={4} >
+    <Box ml={4}>
       <HStack space={3}>
         <Avatar
           size="sm"
@@ -29,7 +29,9 @@ const Comment = props => {
           elevation={5}
           source={{
             uri: props.data?.username,
-          }}></Avatar>
+          }}>
+          {props.data?.username.substring(0, 2).toUpperCase()}
+        </Avatar>
         <Box
           w="80%"
           rounded="lg"
@@ -54,11 +56,9 @@ const Comment = props => {
             <Text bold>{props.data?.username}</Text>
             <Text>{props.data?.text}</Text>
             <HStack direction="row-reverse">
-            <PostingTime  data={props.data?.date}  fontSize={12}/>
-
+              <PostingTime data={props.data?.date} fontSize={12} />
             </HStack>
             {/* <Text textAlign="right"  fontSize={12}>{props.data?.date}</Text> */}
-            
           </VStack>
         </Box>
       </HStack>
