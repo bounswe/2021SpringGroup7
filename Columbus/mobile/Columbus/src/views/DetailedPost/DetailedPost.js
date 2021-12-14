@@ -127,7 +127,7 @@ const DetailedPost = props => {
 
           <HStack style={{justifyContent: 'space-between', width: '100%'}}>
             <PostingTime data={post.createDateTime} />
-            <LikeAndShare data={post.comment} />
+            <LikeAndShare data={{is_liked:post.is_liked,story_id:post.story_id}} />
           </HStack>
         </Stack>
       </Box>

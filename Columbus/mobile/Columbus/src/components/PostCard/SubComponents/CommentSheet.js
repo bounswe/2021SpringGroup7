@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Comment from '../../Comment';
 import {useAuth} from '../../../context/AuthContext';
 import {SERVICE} from '../../../services/services';
+import moment from "moment";
 
 import {useMutation} from 'react-query';
 
@@ -71,7 +72,7 @@ function CommentSheet(props) {
     {
       onSuccess(response) {
         const {username} = JSON.parse(user?.userInfo);
-        updated_comments=[comments,{date:new Date(),text:commentToPost,username:username}]
+        updated_comments=[...comments,{date:(moment().format(`YYYY-MM-DDTHH:mm:ss.sssZ`)).toString(),text:commentToPost,username:username}]
         setComments(updated_comments)
         setCommentToPost('')
 
