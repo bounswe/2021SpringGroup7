@@ -38,8 +38,7 @@ function CommentSheet(props) {
     } else {
       setLoading(true);
     }
-    console.log(commentToPost)
-  }, [user,commentToPost]);
+  }, [user]);
 
   const fetchComments = useMutation(
     params => SERVICE.fetchComments({params, token}),
@@ -71,7 +70,11 @@ function CommentSheet(props) {
     params => SERVICE.commentOnPost({params, token}),
     {
       onSuccess(response) {
-        console.log('success comment: ' ,response);
+        const {username} = JSON.parse(user?.userInfo);
+        updated_comments=[comments,{date:new Date(),text:commentToPost,username:username}]
+        setComments(updated_comments)
+        setCommentToPost('')
+
       },
       onError({response}) {
         console.log('res error: ', response);
@@ -87,7 +90,7 @@ function CommentSheet(props) {
     console.log(user)
     token = userInfo.token;
     const data = JSON.stringify({
-      username:user.userInfo.username,
+      username:userInfo.username,
       story_id: props.data,
       text: commentToPost
     });

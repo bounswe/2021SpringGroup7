@@ -21,7 +21,7 @@ export const SERVICE = {
     });
   },
   commentOnPost: async ({params, token}) => {
-    return await API_INSTANCE.post(`/user/get_comments/`, params, {
+    return await API_INSTANCE.post(`/user/comment_create/`, params, {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
