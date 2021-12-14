@@ -141,7 +141,7 @@ const EditProfile = ({route, navigation}) => {
     <ScrollView>
       <View style={styles.pageContainer}>
         <FormControl>
-          <View style={styles.formContainer}>
+          <View style={styles.imageContainer}>
             <Button variant="outline" onPress={handleChangeProfileImage}>
               <Text style={styles.imageButtonText}>Change Profile Picture</Text>
             </Button>
