@@ -135,7 +135,7 @@ function CommentSheet(props) {
             <ScrollView width="100%">
               <VStack space={3} mt={5} mb={5}>
                 {comments.map(item => {
-                  return <Comment data={item} />;
+                  return <Comment data={item} key={item.text} />;
                 })}
               </VStack>
             </ScrollView>
