@@ -12,7 +12,7 @@ function PostingTime(props) {
 
   const getTimeDiff = () => {
     var now = moment(new Date());
-    var then = moment(props.data, 'YYYY-MM-DDTHH:mm:ssZ');
+    var then = moment(props.data, 'YYYY-MM-DDTHH:mm:ss.sssZ');
 
     if (0 < now.diff(then, 'seconds') && now.diff(then, 'seconds') < 60) {
       setTimeDiff(now.diff(then, 'seconds') + ' seconds ago');
@@ -23,7 +23,7 @@ function PostingTime(props) {
     else if (0 < now.diff(then, 'days') && now.diff(then, 'days') < 30) {
       setTimeDiff(now.diff(then, 'days') + ' days ago');
     }else{
-      setTimeDiff('posted on '+ props.data.substring(0, 9));
+      setTimeDiff('posted on '+ props.data?.substring(0, 9));
     }
 
   };

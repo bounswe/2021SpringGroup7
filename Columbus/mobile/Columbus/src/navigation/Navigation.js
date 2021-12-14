@@ -36,9 +36,7 @@ const screenOptions = ({route}) => ({
 
 const HomeStack = () => (
   <Stack.Navigator
-    screenOptions={{
-      headerShown: false,
-    }}>
+    >
     <Stack.Screen name="HomePage" component={Home} />
     <Stack.Screen name="Location" component={Location} />
     <Stack.Screen name="Profile" component={Profile} />
