@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core';
 import Logo from '../../components/Logos/LogoWithText'
+import LogoAnimated from '../../components/Logos/LogoAnimated'
 import LoginForm from '../../components/Forms/LoginForm/LoginForm';
 import ModalDialog from '../Register/ModalDialog'
 import Button from "@material-ui/core/Button";
+import AUTHENTICATION_SERVICE from '../../services/authentication';
+import {API_INSTANCE} from '../../config/api';
 
 const useStyles = makeStyles(theme => ({
     Applogo: {
@@ -26,18 +29,11 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-var API_BASE = "http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000";
-
-if (process.env.NODE_ENV === "development") {
-  API_BASE = "http://localhost:8000";
-}
-
 export default function Login({setAuthenticated}){
     const classes= useStyles();
     
     const [openRegister, setOpenRegister] = useState(false);
     const [isError, setError] = useState(false);
-    
     const handleOpenRegister = () => {
         setOpenRegister(true)
     };
@@ -47,37 +43,30 @@ export default function Login({setAuthenticated}){
     };
 
     const handleLogin = (username, password) => {
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({'user_name': username,  password})
-        };
-        fetch(API_BASE + '/guest/login/', requestOptions)
+        setError(false);
+        AUTHENTICATION_SERVICE.LOG_IN(username, password)
         .then(response => {
-            if(response.ok){
-                return response.json()
-            }
-            throw new Error(response.json()['return'])
-        })
-        .then(data => {
+            API_INSTANCE.defaults.headers.common['Authorization'] = 'TOKEN ' + response.data.return.token;
+            localStorage.setItem('jwtToken', 'TOKEN ' + response.data.return.token);
+            localStorage.setItem('username', username);
+            localStorage.setItem('userid',response.data.return.user_id);
             setAuthenticated(true)
-            localStorage.setItem('jwtToken', 'bearer ' + password);
         })
-        .catch((reason) => {
+        .catch((error) => {
             setError(true);
-            console.error(reason);
+            console.error(error.response.data.return);
         });
     
     };
-    
 
     return (
         <div className={classes.root}>
             <Logo className={classes.Applogo} alt='Logo'/>
-            <LoginForm handleClose={handleLogin} showError={isError} />
+            <LoginForm handleClose={handleLogin} showError={isError}/>
             <Button variant="contained" color="primary" onClick={handleOpenRegister}>
 					        Register
             </Button>
+            {isError ? <div/>:<LogoAnimated/>}
             <ModalDialog open={openRegister} handleClose={handleCloseRegister} />  
         </div>
     )
