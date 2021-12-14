@@ -12,7 +12,7 @@ const stageUrl =
 export const API_INSTANCE = axios.create({
   baseURL: stageUrl,
   withCredentials: true,
-  timeout: 1000 * 2,
+  timeout: 3000 * 2,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',

@@ -25,4 +25,9 @@ export const SERVICE = {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
+   like: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/like/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
 };

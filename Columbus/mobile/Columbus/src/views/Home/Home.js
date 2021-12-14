@@ -34,6 +34,8 @@ const Home = () => {
     {
       onSuccess(response) {
         setPosts(response.data.return);
+        console.log(response.data.return)
+        setLoading(false)
       },
       onError({response}) {
         console.log('res error: ', response);
@@ -45,7 +47,7 @@ const Home = () => {
     const userInfo = JSON.parse(user?.userInfo);
     token = userInfo.token;
     const data = JSON.stringify({
-      username: 'mervebrn',
+      username: 'Kadir',
       page_number: 1,
       page_size: 5,
     });
@@ -64,7 +66,7 @@ const Home = () => {
   
  
   if (loading==true) {
-        <PageSpinner />;
+       return <PageSpinner />;
   }
 
   return (
