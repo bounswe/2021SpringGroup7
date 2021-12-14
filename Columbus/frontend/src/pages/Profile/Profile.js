@@ -98,7 +98,6 @@ function Profile({...props}) {
               );   // profile info will be updated in the end of the render
               if(res.data.response['followers'].some(follower => follower['user_id'] === curUserId)) 
               {
-                //console.log('following')
                 setIsCurUserFollowing(true);
               } else {
                 setIsCurUserFollowing(false);
@@ -183,8 +182,8 @@ function Profile({...props}) {
                     </Grid>
 
                     <Grid item xs>
-                         <Stack>
-                           {profileInfo['location'] ? <Button 
+                         <Stack spacing={1}>
+                           {profileInfo['location'] && curUserId === userId ? <Button 
                                                         size="medium"
                                                         variant="text"
                                                         startIcon={ <LocationOnIcon color="primary"></LocationOnIcon>}
@@ -194,9 +193,9 @@ function Profile({...props}) {
                                                           {profileInfo['location']}
                                                         </Button>
 
-                                                      : <></>    
+                                                      : <Stack direction='row' justifyContent='center'><LocationOnIcon color="primary"></LocationOnIcon><Typography> {profileInfo['location']}</Typography></Stack>    
                               }
-                           {profileInfo['birthday'] ? <Button 
+                           {profileInfo['birthday'] && curUserId === userId ? <Button 
                                                         size="medium"
                                                         variant="text"
                                                         startIcon={ <CakeIcon color="primary"></CakeIcon>}
@@ -204,7 +203,7 @@ function Profile({...props}) {
                                                         >
                                                         {profileInfo['birthday']}
                                                       </Button>
-                                                      : <></>    
+                                                      : <Stack direction='row' justifyContent='center'><CakeIcon color="primary"></CakeIcon><Typography> {profileInfo['birthday']}</Typography></Stack>
                               }
                           </Stack>
                     </Grid>
