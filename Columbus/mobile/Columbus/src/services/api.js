@@ -4,9 +4,9 @@ import axios from 'axios';
 import STATUS_CODES from '../constants/statusCodes';
 import {AUTH_KEY, TEMP_MESSAGE_KEY} from '../constants/storageKeys';
 
-const productionUrl =
+export const productionUrl =
   'http://ec2-35-158-103-6.eu-central-1.compute.amazonaws.com:8000';
-const stageUrl =
+export const stageUrl =
   'http://ec2-18-197-57-123.eu-central-1.compute.amazonaws.com:8000';
 
 export const API_INSTANCE = axios.create({

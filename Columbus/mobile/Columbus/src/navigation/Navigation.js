@@ -13,7 +13,7 @@ import CreatePost from '../views/CreatePost';
 import Search from '../views/Search';
 import Profile from '../views/Profile';
 import Location from '../views/Location';
-import DetailedPost  from '../views/DetailedPost'
+import DetailedPost from '../views/DetailedPost';
 import EditProfile from '../views/Profile/views/EditProfile';
 
 const Tab = createBottomTabNavigator();
@@ -35,13 +35,18 @@ const screenOptions = ({route}) => ({
 });
 
 const HomeStack = () => (
-  <Stack.Navigator
-    screenOptions={{
-      headerShown: false,
-    }}>
-    <Stack.Screen name="HomePage" component={Home} />
-    <Stack.Screen name="Location" component={Location} />
-    <Stack.Screen name="Profile" component={Profile} />
+  <Stack.Navigator>
+    <Stack.Screen options={{title: 'Home'}} name="HomePage" component={Home} />
+    <Stack.Screen
+      options={{title: 'Location'}}
+      name="Location"
+      component={Location}
+    />
+    <Stack.Screen
+      options={{title: 'Profile'}}
+      name="Profile"
+      component={Profile}
+    />
     <Stack.Screen name="DetailedPost" component={DetailedPost} />
   </Stack.Navigator>
 );
@@ -56,14 +61,6 @@ const BottomTabNavigation = () => (
     <Tab.Screen name="CreatePost" component={CreatePostNavigation} />
     <Tab.Screen name="Profile" component={ProfileNavigation} />
   </Tab.Navigator>
-);
-
-const HomeNavigation = () => (
-  <Stack.Navigator>
-    <Stack.Screen options={{title: 'Home'}} name="HomePage" component={Home} />
-    <Stack.Screen  options={{title: 'Location'}} name="Location" component={Location} />
-    <Stack.Screen  options={{title: 'Profile'}} name="Profile" component={Profile} />
-  </Stack.Navigator>
 );
 
 const SearchNavigation = () => (
@@ -88,11 +85,7 @@ const CreatePostNavigation = () => (
 
 const ProfileNavigation = () => (
   <Stack.Navigator>
-    <Stack.Screen
-      options={{title: 'Profile'}}
-      name="ProfilePage"
-      component={Profile}
-    />
+    <Stack.Screen name="Profile Page" component={Profile} />
     <Stack.Screen
       options={{title: 'Edit Profile'}}
       name="EditProfile"
@@ -106,7 +99,6 @@ const AuthNavigation = () => (
     screenOptions={{
       headerShown: false,
     }}>
-
     <Stack.Screen name="Login" component={Login} />
     <Stack.Screen name="Register" component={Register} />
   </Stack.Navigator>

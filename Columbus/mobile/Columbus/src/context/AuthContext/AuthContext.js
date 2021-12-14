@@ -15,6 +15,7 @@ import {AUTH_KEY} from '../../constants/storageKeys';
 const AuthContext = createContext({
   user: {isAuthenticated: false},
   login: data => data,
+  updateUserInfo: data => data,
   logout: () => undefined,
 });
 
@@ -29,7 +30,8 @@ function AuthProvider({children}) {
     async function fetchAsyncStorage() {
       const asycnStorage = await AsyncStorage.getItem(AUTH_KEY);
       if (asycnStorage) {
-        const loginValues = await AsyncStorage.getItem(AUTH_KEY);
+        const tempData = await AsyncStorage.getItem(AUTH_KEY);
+        loginValues = JSON.parse(tempData);
         setUser({
           userInfo: loginValues,
           isAuthenticated: true,
@@ -39,9 +41,15 @@ function AuthProvider({children}) {
     fetchAsyncStorage();
   }, [setUser]);
 
+  const updateUserInfo = async data => {
+    setUser({
+      userInfo: {...data},
+      isAuthenticated: true,
+    });
+  };
+
   const login = async data => {
     userInformations = data;
-    //TODO: Fix write data to AsyncStorage
     if (userInformations) {
       await AsyncStorage.setItem(AUTH_KEY, JSON.stringify(userInformations));
       setUser({
@@ -57,7 +65,10 @@ function AuthProvider({children}) {
     setUser({isAuthenticated: false});
   }, [setUser]);
 
-  const value = useMemo(() => ({user, login, logout}), [user, login, logout]);
+  const value = useMemo(
+    () => ({user, login, logout, updateUserInfo}),
+    [user, login, logout, updateUserInfo],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

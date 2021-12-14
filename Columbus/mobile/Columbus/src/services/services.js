@@ -15,4 +15,14 @@ export const SERVICE = {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
+  fetchUserInfo: (params, token) => {
+    return API_INSTANCE.get(`/user/get_profile/${params}/`, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  postUserInfo: async (params, token) => {
+    return await API_INSTANCE.post(`/user/set_profile/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
 };

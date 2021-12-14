@@ -12,7 +12,7 @@ import {useAuth} from '../../context/AuthContext';
 import {SERVICE} from '../../services/services';
 import {useMutation} from 'react-query';
 import PageSpinner from '../../components/PageSpinner';
-import PostCard from '../../components/PostCard'
+import PostCard from '../../components/PostCard';
 
 const Home = () => {
   const {logout, user} = useAuth();
@@ -50,21 +50,14 @@ const Home = () => {
       page_size: 5,
     });
     try {
-      await fetchStories.mutateAsync(data, token);
+      await fetchStories.mutateAsync(data);
     } catch (e) {
       console.log('e: ', e);
     }
   };
 
-  const handleLogout = async () => {
-    logout();
-  };
-  
-
-  
- 
-  if (loading==true) {
-        <PageSpinner />;
+  if (loading == true) {
+    <PageSpinner />;
   }
 
   return (
@@ -72,7 +65,7 @@ const Home = () => {
       <ScrollView>
         <VStack flex={1} px="3" space={10} alignItems="center" mt={10}>
           {posts.map(item => {
-            return (<PostCard data={item} key={item.story_id}/>);
+            return <PostCard data={item} key={item.story_id} />;
           })}
         </VStack>
       </ScrollView>
