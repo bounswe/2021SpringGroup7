@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, ScrollView, Text} from 'react-native';
 import {
   Button,
@@ -7,6 +7,7 @@ import {
   Image,
   TextArea,
   Select,
+  Input,
 } from 'native-base';
 import * as ImagePicker from 'react-native-image-picker';
 import TagInput from 'react-native-tags-input';
@@ -14,8 +15,12 @@ import TagInput from 'react-native-tags-input';
 import {styles} from './CreateStory.style';
 import CustomFormInput from '../../components/CustomFormInput';
 import DateFormModal from '../../components/DateFormModal/DateFormModal';
+import {useAuth} from '../../context/AuthContext';
 
 const CreateStory = () => {
+  let token = '';
+  const {user} = useAuth();
+
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const [topic, setTopic] = useState('');
@@ -27,6 +32,8 @@ const CreateStory = () => {
   const [locationType, setLocationType] = useState('');
   const [locationName, setLocationName] = useState('');
   const [showDateModal, setShowDateModal] = useState(false);
+  const [timeStart, setTimeStart] = useState('');
+  const [timeEnd, setTimeEnd] = useState('');
 
   const handleChangeProfileImage = async () => {
     await ImagePicker.launchImageLibrary(
@@ -48,6 +55,26 @@ const CreateStory = () => {
     setLoading(false);
   };
 
+  const handleSendStory = async () => {
+    const userInfo = JSON.parse(user?.userInfo);
+    token = userInfo.token;
+    const data = JSON.stringify({
+      title: topic,
+      text: story,
+      multimedia: '',
+      username: userInfo.username,
+      time_start: timeStart,
+      time_end: timeEnd,
+      location: [string],
+      tags: tags.tagsArray,
+    });
+    try {
+      // await fetchStories.mutateAsync(data, token);
+    } catch (e) {
+      console.log('e: ', e);
+    }
+  };
+
   if (loading) {
     return <Spinner />;
   }
@@ -57,20 +84,22 @@ const CreateStory = () => {
       <View style={styles.pageContainer}>
         <FormControl>
           <View style={styles.imageContainer}>
-            <Button variant="outline" onPress={handleChangeProfileImage}>
+            {/* <Button variant="outline" onPress={handleChangeProfileImage}>
               <Text style={styles.imageButtonText}>Upload File</Text>
             </Button>
-            <Image
-              size="xl"
-              alt="storyImage"
-              style={styles.image}
-              source={{
-                uri: `${imageUrl}`,
-              }}
-              fallbackSource={{
-                uri: 'https://www.w3schools.com/css/img_lights.jpg',
-              }}
-            />
+            {imageUrl && (
+              <Image
+                size="xl"
+                alt="storyImage"
+                style={styles.image}
+                source={{
+                  uri: `${imageUrl}`,
+                }}
+                fallbackSource={{
+                  uri: 'https://www.w3schools.com/css/img_lights.jpg',
+                }}
+              />
+            )} */}
           </View>
           <CustomFormInput
             label="*Topic"
@@ -142,11 +171,41 @@ const CreateStory = () => {
             onPress={() => setShowDateModal(true)}>
             <Text>Choose Date Information</Text>
           </Button>
+          {/* <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            {timeStart && (
+              <Input
+                width="45%"
+                mt={2}
+                isDisabled
+                borderColor="#4aa9ff"
+                defaultValue={timeStart}
+              />
+            )}
+            {timeEnd && (
+              <Input
+                width="45%"
+                mt={2}
+                isDisabled
+                borderColor="#4aa9ff"
+                defaultValue={timeEnd}
+              />
+            )}
+          </View> */}
           <DateFormModal
             showModal={showDateModal}
             onClose={() => setShowDateModal(false)}
+            handleSaveDate={(firstTime, secondTime) => {
+              setTimeStart(firstTime);
+              setTimeEnd(secondTime);
+              setShowDateModal(false);
+            }}
           />
-          <Button mt={4} variant="solid">
+          <Button mt={4} variant="solid" onPress={handleSendStory}>
             <Text>Create Story</Text>
           </Button>
         </FormControl>
