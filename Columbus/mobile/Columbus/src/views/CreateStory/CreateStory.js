@@ -21,6 +21,7 @@ import {useAuth} from '../../context/AuthContext';
 import {UploadImage} from '../../configs/s3Api';
 import {useMutation} from 'react-query';
 import {SERVICE} from '../../services/services';
+import CustomModal from '../../components/CustomModal';
 
 const CreateStory = () => {
   let token = '';
@@ -43,6 +44,10 @@ const CreateStory = () => {
 
   const [fileUploadProgress, setFileUploadProgress] = useState(0);
   const [file, setFile] = useState(null);
+
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   const handleChangeProfileImage = async () => {
     await ImagePicker.launchImageLibrary(
@@ -73,14 +78,21 @@ const CreateStory = () => {
 
   const postStory = useMutation(params => SERVICE.postStory(params, token), {
     onSuccess(response) {
-      console.log('create story response: ', response.data.return);
+      setIsButtonLoading(false);
+      setModalMessage(response.data.return);
+      setShowModal(true);
     },
     onError({response}) {
-      console.log('res create error error: ', response);
+      console.log('resopnse: ', response);
+      setIsButtonLoading(false);
+      setModalMessage(response.data.return);
+      setShowModal(true);
     },
   });
 
   const handleSendStory = async () => {
+    setIsButtonLoading(true);
+
     const userInfo = user?.userInfo;
     token = userInfo.token;
     const data = JSON.stringify({
@@ -91,19 +103,28 @@ const CreateStory = () => {
       username: userInfo.username,
       time_start: timeStart,
       time_end: timeEnd,
-      location: {
-        name: locationName,
-        latitude: 0,
-        longitude: 0,
-        type: 'Vritual',
-      },
+      location: [
+        {
+          location: locationName,
+          latitude: 0,
+          longitude: 0,
+          type: locationType,
+        },
+      ],
       tags: tags.tagsArray,
     });
     try {
       await postStory.mutateAsync(data, token);
     } catch (e) {
-      console.log('e: ', e);
+      setIsButtonLoading(false);
+      setModalMessage('Beklenmedik bir hata oluştu!');
+      setShowModal(true);
     }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setModalMessage('');
   };
 
   if (loading) {
@@ -113,6 +134,11 @@ const CreateStory = () => {
   return (
     <ScrollView>
       <View style={styles.pageContainer}>
+        <CustomModal
+          showModal={showModal}
+          closeModal={closeModal}
+          message={modalMessage}
+        />
         <FormControl>
           <View style={styles.imageContainer}>
             <Button variant="outline" onPress={handleChangeProfileImage}>

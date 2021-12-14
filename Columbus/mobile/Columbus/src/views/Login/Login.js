@@ -52,7 +52,7 @@ const Login = ({navigation}) => {
     },
     onError({response}) {
       setIsButtonLoading(false);
-      setModalMessage(response.data.return);
+      setModalMessage(response.return);
       setShowModal(true);
     },
   });
