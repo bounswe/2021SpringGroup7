@@ -1,6 +1,12 @@
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
+  headerExitIconContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignContent: 'center',
+    marginRight: 16,
+  },
   pageContainer: {
     display: 'flex',
     flexDirection: 'column',

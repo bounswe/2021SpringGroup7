@@ -7,14 +7,16 @@ import CustomFormInput from '../../../../components/CustomFormInput';
 import CustomAvatar from '../../components/CustomAvatar';
 import getInitials from '../../../../utils/getInitial';
 import {styles} from './EditProfile.style';
+import {SERVICE} from '../../../../services/services';
+import {useMutation} from 'react-query';
+import {useAuth} from '../../../../context/AuthContext';
 
 const EditProfile = ({route, navigation}) => {
   const [loading, setLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
 
-  const [username, setUsername] = useState(
-    route.params?.userInfo?.username ? route.params.userInfo.username : '',
-  );
+  const {updateUserInfo} = useAuth();
+
   const [firstName, setFirstName] = useState(
     route.params?.userInfo?.first_name ? route.params.userInfo.first_name : '',
   );
@@ -25,30 +27,29 @@ const EditProfile = ({route, navigation}) => {
     route.params?.userInfo?.birthday ? route.params.userInfo.birthday : '',
   );
   const [location, setLocation] = useState(
-    route.params?.userInfo?.location ? route.params.userInfo.location : '',
+    route.params?.userInfo?.location
+      ? route.params.userInfo.location.location
+      : '',
   );
   const [biography, setBiography] = useState(
     route.params?.userInfo?.biography ? route.params.userInfo.biography : '',
   );
   const [imageUrl, setImageUrl] = useState(
-    route.params?.userInfo?.imageUrl ? route.params.userInfo.imageUrl : '',
+    route.params?.userInfo?.photo_url ? route.params.userInfo.photo_url : '',
   );
 
   useEffect(() => {
-    (username === route.params.userInfo.username &&
-      firstName === route.params.userInfo.first_name &&
+    (firstName === route.params.userInfo.first_name &&
       lastName === route.params.userInfo.last_name &&
       birthday === route.params.userInfo.birthday &&
-      location === route.params.userInfo.location &&
+      location === route.params.userInfo.location.location &&
       biography === route.params.userInfo.biography) ||
-    username.length < 3 ||
     firstName.length < 3 ||
     lastName.length < 3 ||
     location.length < 3
       ? setIsDisabled(true)
       : setIsDisabled(false);
   }, [
-    username,
     firstName,
     lastName,
     birthday,
@@ -56,10 +57,6 @@ const EditProfile = ({route, navigation}) => {
     biography,
     route.params.userInfo,
   ]);
-
-  const handleChangeUsername = value => {
-    setUsername(value);
-  };
 
   const handleChangeFirstName = value => {
     setFirstName(value);
@@ -101,6 +98,41 @@ const EditProfile = ({route, navigation}) => {
     setLoading(false);
   };
 
+  const handleSaveProfile = async () => {
+    const data = JSON.stringify({
+      id: route.params.userInfo.user_id,
+      first_name: firstName,
+      last_name: lastName,
+      photo_url: route.params.userInfo.photo_url,
+      birthday: birthday,
+      location: route.params.userInfo.location,
+      biography: biography,
+    });
+
+    try {
+      await postUserInfo.mutateAsync(data);
+    } catch (e) {
+      console.log('e edit: ', e);
+    }
+  };
+
+  const postUserInfo = useMutation(
+    params => SERVICE.postUserInfo(params, route.params.token),
+    {
+      onSuccess(response) {
+        console.log('cevap: ', response);
+        if (response.data.response) {
+          // Add a modal to show correctly saved
+          updateUserInfo(response.data.response);
+          navigation.goBack();
+        }
+      },
+      onError({response}) {
+        console.log('res edit error: ', response);
+      },
+    },
+  );
+
   if (loading) {
     return <Spinner />;
   }
@@ -119,13 +151,6 @@ const EditProfile = ({route, navigation}) => {
               initials={`${getInitials(firstName)}${getInitials(lastName)}`}
             />
           </View>
-          <CustomFormInput
-            label="Username"
-            placeholder="Enter username"
-            value={username}
-            warningMessage="Username is not valid"
-            onChange={handleChangeUsername}
-          />
           <CustomFormInput
             label="First Name"
             placeholder="Enter first name"
@@ -167,7 +192,7 @@ const EditProfile = ({route, navigation}) => {
             mb="5"
           />
         </FormControl>
-        <Button isDisabled={isDisabled}>
+        <Button isDisabled={isDisabled} onPress={handleSaveProfile}>
           <Text style={styles.saveButtonText}>Save</Text>
         </Button>
       </View>
