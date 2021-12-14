@@ -8,20 +8,20 @@ import {
   useEffect,
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useQuery} from 'react-query';
 
-import {SERVICE} from '../../services/services';
 import queryClient from '../../configs/reactQuery';
 import {AUTH_KEY} from '../../constants/storageKeys';
 
 const AuthContext = createContext({
   user: {isAuthenticated: false},
-  login: () => undefined,
+  login: data => data,
+  updateUserInfo: data => data,
   logout: () => undefined,
 });
 
 function AuthProvider({children}) {
   const [user, setUser] = useState({
+    userInfo: {},
     isAuthenticated: false,
   });
 
@@ -30,9 +30,10 @@ function AuthProvider({children}) {
     async function fetchAsyncStorage() {
       const asycnStorage = await AsyncStorage.getItem(AUTH_KEY);
       if (asycnStorage) {
-        const loginValues = await AsyncStorage.getItem(AUTH_KEY);
+        const tempData = await AsyncStorage.getItem(AUTH_KEY);
+        loginValues = JSON.parse(tempData);
         setUser({
-          ...loginValues,
+          userInfo: loginValues,
           isAuthenticated: true,
         });
       }
@@ -40,50 +41,23 @@ function AuthProvider({children}) {
     fetchAsyncStorage();
   }, [setUser]);
 
-  // const {refetch} = useQuery(
-  //   'getUserInfo',
-  //   () =>
-  //     SERVICE.userInfo(
-  //       JSON.stringify({
-  //         userId: 'me',
-  //       }),
-  //     ),
-  //   {
-  //     enabled: false,
-  //     onSuccess({data}) {
-  //       const userInformations = data?.user;
-  //       if (userInformations) {
-  //         AsyncStorage.setItem(AUTH_KEY, JSON.stringify(userInformations));
-  //         setUser({
-  //           ...userInformations,
-  //           isAuthenticated: true,
-  //         });
-  //       }
-  //     },
-  //   },
-  // );
+  const updateUserInfo = async data => {
+    setUser({
+      userInfo: {...data},
+      isAuthenticated: true,
+    });
+  };
 
-  const refetch = async () => {
-    console.log('refetch');
-    userInformations = {
-      id: 1234,
-      name: 'onur',
-      surname: 'avci',
-      email: 'onurcannavci@gmail.com',
-    };
-    //TODO: Fix write data to AsyncStorage
+  const login = async data => {
+    userInformations = data;
     if (userInformations) {
       await AsyncStorage.setItem(AUTH_KEY, JSON.stringify(userInformations));
       setUser({
-        ...userInformations,
+        userInfo: {...userInformations},
         isAuthenticated: true,
       });
     }
   };
-
-  const login = useCallback(() => {
-    refetch();
-  }, [refetch]);
 
   const logout = useCallback(async () => {
     await AsyncStorage.removeItem(AUTH_KEY);
@@ -91,7 +65,10 @@ function AuthProvider({children}) {
     setUser({isAuthenticated: false});
   }, [setUser]);
 
-  const value = useMemo(() => ({user, login, logout}), [user, login, logout]);
+  const value = useMemo(
+    () => ({user, login, logout, updateUserInfo}),
+    [user, login, logout, updateUserInfo],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -43,17 +43,23 @@ const Login = ({navigation}) => {
 
   const submitLogin = useMutation(params => SERVICE.loginRequest({params}), {
     onSuccess(response) {
-      login();
+      const data = {
+        username: formData.username,
+        ...response.data.return,
+      };
+      setLoginContext(data);
       setIsButtonLoading(false);
-      // navigation.navigate('HomePage');
     },
     onError({response}) {
-      console.log('res: ', response);
       setIsButtonLoading(false);
       setModalMessage(response.data.return);
       setShowModal(true);
     },
   });
+
+  const setLoginContext = async data => {
+    await login(data);
+  };
 
   const handleLogin = async () => {
     setIsButtonLoading(true);

@@ -3,14 +3,15 @@ from django.db import models
 
 class Story(models.Model):
     title = models.CharField(max_length=100)
-    text = models.CharField(max_length=3000)
-    multimedia = models.CharField(max_length=100)
+    text = models.CharField(max_length=3000, default="")
+    multimedia = models.CharField(max_length=100, default="")
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
-    time = models.DateField()
+    time_start = models.DateField()
+    time_end = models.DateField(blank=True, null=True)
     createDateTime = models.DateTimeField(auto_now_add=True)
     lastUpdate = models.DateTimeField(auto_now=True)
-    numberOfLikes = models.IntegerField()
-    numberOfComments = models.IntegerField()
+    numberOfLikes = models.IntegerField(default=0)
+    numberOfComments = models.IntegerField(default=0)
 
 class Tag(models.Model):
     story_id = models.ForeignKey(Story,on_delete=models.CASCADE)
@@ -19,6 +20,10 @@ class Tag(models.Model):
 class Location(models.Model):
     story_id = models.ForeignKey(Story,on_delete=models.CASCADE)
     location = models.CharField(max_length=100)
+    latitude = models.FloatField(default=0)
+    longitude = models.FloatField(default=0)
+    type = models.CharField(max_length=100, default="")
+
 
 class Report(models.Model):
     story_id = models.ForeignKey(Story,on_delete=models.CASCADE)
@@ -32,6 +37,7 @@ class Like(models.Model):
 class Comment(models.Model):
     story_id = models.ForeignKey(Story,on_delete=models.CASCADE)
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
     text = models.CharField(max_length=500)
 
 
@@ -41,6 +47,7 @@ class Following(models.Model):
 
 class Profile(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    photo_url = models.CharField(max_length=500,null=True)
     biography = models.CharField(max_length=500,null=True)
     birthday = models.DateField(null=True)
-    location =models.IntegerField(null=True)
+    location = models.CharField(null=True,max_length=500)

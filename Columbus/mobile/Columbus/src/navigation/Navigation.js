@@ -12,11 +12,12 @@ import Home from '../views/Home';
 import CreateStory from '../views/CreateStory';
 import Search from '../views/Search';
 import Profile from '../views/Profile';
+import Location from '../views/Location';
+import DetailedPost from '../views/DetailedPost';
 import EditProfile from '../views/Profile/views/EditProfile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
 const pageSettings = {
   Home: 'home',
   Search: 'search',
@@ -33,22 +34,34 @@ const screenOptions = ({route}) => ({
   tabBarInactiveTintColor: 'gray',
 });
 
+const HomeStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen options={{title: 'Home'}} name="HomePage" component={Home} />
+    <Stack.Screen
+      options={{title: 'Location'}}
+      name="Location"
+      component={Location}
+    />
+    <Stack.Screen
+      options={{title: 'Profile'}}
+      name="Profile"
+      component={Profile}
+    />
+
+    <Stack.Screen name="DetailedPost" component={DetailedPost} />
+  </Stack.Navigator>
+);
+
 const BottomTabNavigation = () => (
   <Tab.Navigator
     initialRouteName={'Home'}
     tabBarActiveTintColor="red"
     screenOptions={screenOptions}>
-    <Tab.Screen name="Home" component={HomeNavigation} />
+    <Tab.Screen name="Home" component={HomeStack} />
     <Tab.Screen name="Search" component={SearchNavigation} />
     <Tab.Screen name="CreateStory" component={CreateStoryNavigation} />
     <Tab.Screen name="Profile" component={ProfileNavigation} />
   </Tab.Navigator>
-);
-
-const HomeNavigation = () => (
-  <Stack.Navigator>
-    <Stack.Screen options={{title: 'Home'}} name="HomePage" component={Home} />
-  </Stack.Navigator>
 );
 
 const SearchNavigation = () => (
@@ -73,11 +86,7 @@ const CreateStoryNavigation = () => (
 
 const ProfileNavigation = () => (
   <Stack.Navigator>
-    <Stack.Screen
-      options={{title: 'Profile'}}
-      name="ProfilePage"
-      component={Profile}
-    />
+    <Stack.Screen name="Profile Page" component={Profile} />
     <Stack.Screen
       options={{title: 'Edit Profile'}}
       name="EditProfile"
