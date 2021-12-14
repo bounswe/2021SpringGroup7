@@ -269,7 +269,7 @@ function Profile({...props}) {
                        </Container>
                        </Grid>
                     <Grid item>
-                    <Stack>
+                    <Stack spacing={1}>
 
                       <Button
                         onClick={handleFollowersDialogOpen}
@@ -288,11 +288,6 @@ function Profile({...props}) {
                           <br />
                         Followings     
                       </Button>
-
-                    </Stack>
-                    </Grid>
-
-                     <Grid item>
                        {curUserId !== userId ? <FollowUnfollow 
                                                   isCurUserFollowing={isCurUserFollowing} 
                                                   curUser={curUserId} 
@@ -303,8 +298,12 @@ function Profile({...props}) {
                                             :
                                             <></>
                         }
-                      </Grid>
+                      
                    
+                    </Stack>
+                    </Grid>
+
+                     
                   </Grid>
 
               </Grid>
