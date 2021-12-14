@@ -96,9 +96,8 @@ function Profile({...props}) {
                                 "biography" : proInfo['biography']
                                               }
               );   // profile info will be updated in the end of the render
-              if(res.data.response['followers'].some(follower => follower['user_id'] === curUserId)) 
+              if(res.data.response['followers'].some(follower => follower['user_id'].toString() === curUserId)) 
               {
-                //console.log('following')
                 setIsCurUserFollowing(true);
               } else {
                 setIsCurUserFollowing(false);
@@ -183,8 +182,8 @@ function Profile({...props}) {
                     </Grid>
 
                     <Grid item xs>
-                         <Stack>
-                           {profileInfo['location'] ? <Button 
+                         <Stack spacing={1}>
+                           {profileInfo['location'] && curUserId === userId ? <Button 
                                                         size="medium"
                                                         variant="text"
                                                         startIcon={ <LocationOnIcon color="primary"></LocationOnIcon>}
@@ -194,9 +193,9 @@ function Profile({...props}) {
                                                           {profileInfo['location']}
                                                         </Button>
 
-                                                      : <></>    
+                                                      : <Stack direction='row' justifyContent='center'><LocationOnIcon color="primary"></LocationOnIcon><Typography> {profileInfo['location']}</Typography></Stack>    
                               }
-                           {profileInfo['birthday'] ? <Button 
+                           {profileInfo['birthday'] && curUserId === userId ? <Button 
                                                         size="medium"
                                                         variant="text"
                                                         startIcon={ <CakeIcon color="primary"></CakeIcon>}
@@ -204,7 +203,7 @@ function Profile({...props}) {
                                                         >
                                                         {profileInfo['birthday']}
                                                       </Button>
-                                                      : <></>    
+                                                      : <Stack direction='row' justifyContent='center'><CakeIcon color="primary"></CakeIcon><Typography> {profileInfo['birthday']}</Typography></Stack>
                               }
                           </Stack>
                     </Grid>
@@ -270,7 +269,7 @@ function Profile({...props}) {
                        </Container>
                        </Grid>
                     <Grid item>
-                    <Stack>
+                    <Stack spacing={1}>
 
                       <Button
                         onClick={handleFollowersDialogOpen}
@@ -289,11 +288,6 @@ function Profile({...props}) {
                           <br />
                         Followings     
                       </Button>
-
-                    </Stack>
-                    </Grid>
-
-                     <Grid item>
                        {curUserId !== userId ? <FollowUnfollow 
                                                   isCurUserFollowing={isCurUserFollowing} 
                                                   curUser={curUserId} 
@@ -304,8 +298,12 @@ function Profile({...props}) {
                                             :
                                             <></>
                         }
-                      </Grid>
+                      
                    
+                    </Stack>
+                    </Grid>
+
+                     
                   </Grid>
 
               </Grid>

@@ -32,7 +32,7 @@ const DetailedPost = props => {
         borderColor="coolGray.200"
         elevation={10}
         borderWidth="0"
-        w='100%'
+        w="100%"
         _dark={{
           borderColor: 'coolGray.600',
           backgroundColor: 'gray.700',
@@ -63,8 +63,8 @@ const DetailedPost = props => {
           <Text fontWeight="400">{post.text}</Text>
           <Tags data={post.tags} />
           {post?.multimedia?.length > 0 ? (
-            <Box alignItems="center" h="150px">
-              <ImageCarousel data={[postData.multimedia]} />
+            <Box alignItems="center" h="300">
+              <ImageCarousel data={[post.multimedia]} />
             </Box>
           ) : (
             <></>
@@ -77,28 +77,23 @@ const DetailedPost = props => {
                 backgroundColor: '#ffffff',
                 elevation: 10,
               }}>
-              
-                <HStack
-                  style={{justifyContent: 'space-between', width: '100%'}}>
-                  <Icon
-                    name={'angle-left'}
-                    size={30}
-                    onPress={() =>
-                      setIndex(index - 1 < 0 ? post.locations.length - 1 : 0)
-                    }
-                  />
-                  <Heading textAlign="center" m={2} >
+              <HStack style={{justifyContent: 'space-between', width: '100%'}}>
+                <Icon
+                  name={'angle-left'}
+                  size={30}
+                  onPress={() =>
+                    setIndex(index - 1 < 0 ? post.locations.length - 1 : 0)
+                  }
+                />
+                <Heading textAlign="center" m={2}>
                   <Text>{post.locations[index].location}</Text>
-                   </Heading>
-                  <Icon
-                    name={'angle-right'}
-                    size={30}
-                    onPress={() =>
-                      setIndex((index + 1) % post.locations.length)
-                    }
-                  />
-                </HStack>
-             
+                </Heading>
+                <Icon
+                  name={'angle-right'}
+                  size={30}
+                  onPress={() => setIndex((index + 1) % post.locations.length)}
+                />
+              </HStack>
 
               <MapView
                 style={{width: '100%', height: 200}}
@@ -127,7 +122,9 @@ const DetailedPost = props => {
 
           <HStack style={{justifyContent: 'space-between', width: '100%'}}>
             <PostingTime data={post.createDateTime} />
-            <LikeAndShare data={post.comment} />
+            <LikeAndShare
+              data={{is_liked: post.is_liked, story_id: post.story_id}}
+            />
           </HStack>
         </Stack>
       </Box>

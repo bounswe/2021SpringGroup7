@@ -15,6 +15,7 @@ export const SERVICE = {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
+
   fetchUserInfo: (params, token) => {
     return API_INSTANCE.get(`/user/get_profile/${params}/`, {
       headers: {Authorization: `TOKEN ${token}`},
@@ -22,6 +23,20 @@ export const SERVICE = {
   },
   postUserInfo: async (params, token) => {
     return await API_INSTANCE.post(`/user/set_profile/`, params, {
+
+  fetchComments: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/get_comments/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  commentOnPost: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/comment_create/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+   like: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/like/`, params, {
+
       headers: {Authorization: `TOKEN ${token}`},
     });
   },

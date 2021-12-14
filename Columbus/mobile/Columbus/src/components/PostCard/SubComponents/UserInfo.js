@@ -29,7 +29,7 @@ function UserInfo(props) {
         source={{
           uri: props.data?.photo_url,
         }}>
-        {props.data?.owner_username?.substr(0, 2).toUpperCase()}
+        {props.data?.owner_username.substr(0, 2).toUpperCase()}
       </Avatar>
       <Text
         textAlign="center"

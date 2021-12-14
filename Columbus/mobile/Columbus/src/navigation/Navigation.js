@@ -47,6 +47,7 @@ const HomeStack = () => (
       name="Profile"
       component={Profile}
     />
+
     <Stack.Screen name="DetailedPost" component={DetailedPost} />
   </Stack.Navigator>
 );
