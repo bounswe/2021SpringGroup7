@@ -43,11 +43,14 @@ class CommentCreate(generics.CreateAPIView):
 
 
         try:
-            comment = Comment(story_id=story, text=text, user_id=user_id)
+            comment = self.create_comment(story_id=story, text=text, user_id=user_id)
             comment.save()
             return JsonResponse({'return': comment.id})
         except:
             return JsonResponse({'return': 'error'}, status=400)
+
+    def create_comment(self, story, text, user_id):
+        return Comment(story_id=story, text=text, user_id=user_id)
 
 class CommentUpdate(generics.CreateAPIView):
     queryset = User.objects.all()
