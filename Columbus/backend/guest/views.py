@@ -96,7 +96,6 @@ class ChangePassword(generics.CreateAPIView):
 
 def confirmEmail(request, user):
     mail_subject = 'Activate your blog account.'
-    print(user.id)
     if 'ec2-35' in str(request.build_absolute_uri()):
         domain = 'ec2-35-158-103-6.eu-central-1.compute.amazonaws.com'
     elif 'ec2-18' in str(request.build_absolute_uri()):
