@@ -32,7 +32,7 @@ class MockUserInside:
     def set_password(self, password):
         return password
 
-class Story:
+class MockStory:
     def __init__(self, title, text, multimedia, user_id, time_start, time_end, createDateTime, lastUpdate,
                  numberOfLikes, numberOfComments):
         self.title = title
@@ -45,6 +45,10 @@ class Story:
         self.lastUpdate = lastUpdate
         self.numberOfLikes = numberOfLikes
         self.numberOfComments = numberOfComments
+        self.id = "story1"
+
+    def save(self):
+        return True
 
 class MockComment(models.Model):
 
@@ -81,6 +85,42 @@ class MockFollow:
 
     def delete(self):
         return True
+
+    def save(self):
+        return True
+
+class MockLike:
+
+    def __init__(self, user_id, story_id):
+        self.user_id = user_id
+        self.story_id = story_id
+
+    def delete(self):
+        return True
+
+    def save(self):
+        return True
+
+    def values(self,user_id, user_id__username):
+        return ["user1","user2"]
+
+class MockLocation:
+
+    def __init__(self, story_id, location, latitude, longitude, type):
+        self.story_id = story_id
+        self.location = location
+        self.latitude = latitude
+        self.longitude = longitude
+        self.type = type
+
+    def save(self):
+        return True
+
+class MockTag:
+
+    def __init__(self, story_id, tag):
+        self.story_id = story_id
+        self.tag = tag
 
     def save(self):
         return True

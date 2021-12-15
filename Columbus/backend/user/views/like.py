@@ -128,7 +128,6 @@ class GetUserLikes(generics.CreateAPIView):
                     serialized_obj = json.loads(str(serialized_obj))
                     serialized_obj = [each["fields"]["photo_url"] for each in serialized_obj][0]
                     each["photo_url"] = serialized_obj
-                    print('asdasd')
                 except:
                     each["photo_url"] = None
         else:
