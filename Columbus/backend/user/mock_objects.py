@@ -73,4 +73,15 @@ class MockCommentSerializer(serializers.ModelSerializer):
         model = MockComment
         fields = ['story_id']
 
+class MockFollow:
+
+    def __init__(self, user_id, follow):
+        self.user_id = user_id
+        self.follow = follow
+
+    def delete(self):
+        return True
+
+    def save(self):
+        return True
 

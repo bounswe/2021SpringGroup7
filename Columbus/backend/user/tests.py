@@ -1,6 +1,7 @@
 import ast
 from unittest import TestCase, mock
 from .views.comment import *
+from .views.follow import Follow
 from .mock_objects import *
 from django.core import serializers
 
@@ -69,4 +70,24 @@ class Tests(TestCase):
         response = ast.literal_eval(response.decode('utf-8'))
 
         assert response == {'return': [{'story_id': 'comment1', 'user_id': 'comment1', 'text': 'created1', 'username': 'yorumcu'}, {'story_id': 'comment2', 'user_id': 'comment2', 'text': 'created2', 'username': 'yorumcu'}]}
+
+    @mock.patch("user.views.follow.Follow.get_following")
+    @mock.patch("user.models.Following.objects.filter")
+    @mock.patch("django.contrib.auth.models.User.objects.get")
+    def test_follow(self, get_user, following, get_follow):
+        get_follow.return_value = MockFollow(user_id='user1', follow='user2')
+        get_user.return_value = mock_create_user(username='username', email='email',
+                                            password='password', first_name='user', last_name='name',id=1)
+        following.return_value = MockFollow(user_id='user1', follow='user2')
+        body = {
+            'user_id': 'user1',
+            'follow': 'user2',
+            'action_follow': True
+        }
+        # body = bytes(json.dumps(body), 'utf-8')
+        request = MockRequest(method='POST', body=body)
+        follow = Follow()
+        response = follow.post(request=request).content
+        response = ast.literal_eval(response.decode('utf-8'))
+        assert response == {'return': 'The user username has followed username'}
 
