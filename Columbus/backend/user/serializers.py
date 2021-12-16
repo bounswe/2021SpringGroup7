@@ -24,6 +24,14 @@ class PostCreateSerializer(serializers.ModelSerializer):
         model = Story
         fields = ['title', 'text', 'multimedia', 'username', 'time_start', 'time_end', 'location', 'tags']
 
+class PostEditSerializer(serializers.ModelSerializer):
+    location = serializers.ListField(child=serializers.DictField(child=serializers.CharField()))
+    tags = serializers.ListField(child=serializers.CharField())
+    story_id = serializers.IntegerField()
+    class Meta:
+        model = Story
+        fields = ['story_id', 'title', 'text', 'multimedia', 'time_start', 'time_end', 'location', 'tags']
+
 
 class LocationSerializer(serializers.ModelSerializer):
     location = serializers.CharField()
