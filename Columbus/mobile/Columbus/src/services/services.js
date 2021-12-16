@@ -22,9 +22,9 @@ export const SERVICE = {
     });
   },
 
-  fetchUserInfo: (params, token) => {
-    return API_INSTANCE.get(`/user/get_profile/${params}/`, {
-      headers: {Authorization: `TOKEN ${token}`},
+  fetchUserInfo: params => {
+    return API_INSTANCE.get(`/user/get_profile/${params.params.userId}/`, {
+      headers: {Authorization: `TOKEN ${params.params.token}`},
     });
   },
   postUserInfo: async (params, token) => {

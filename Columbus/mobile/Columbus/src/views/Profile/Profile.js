@@ -35,34 +35,15 @@ const Profile = ({navigation, route}) => {
   }, [navigation]);
 
   useEffect(() => {
+    setLoading(true);
     if (user) {
-      userInfoRequest(user.userInfo.user_id);
-      // setLoading(false);
-    } else {
-      setLoading(true);
+      handleSetUserInfo(user.userInfo);
     }
   }, [user]);
 
-  const fetchUserInfo = useMutation(
-    params => SERVICE.fetchUserInfo(params, user.userInfo.token),
-    {
-      onSuccess(response) {
-        console.log('object');
-        setUserInfo(response.data.response);
-        setLoading(false);
-      },
-      onError({response}) {
-        console.log('res error: ', response);
-      },
-    },
-  );
-
-  const userInfoRequest = async user_id => {
-    try {
-      await fetchUserInfo.mutateAsync(user_id);
-    } catch (e) {
-      console.log('e: ', e);
-    }
+  const handleSetUserInfo = async userData => {
+    await setUserInfo(userData);
+    setLoading(false);
   };
 
   const handleLogout = () => {
