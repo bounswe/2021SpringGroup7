@@ -32,6 +32,12 @@ class PostEditSerializer(serializers.ModelSerializer):
         model = Story
         fields = ['story_id', 'title', 'text', 'multimedia', 'time_start', 'time_end', 'location', 'tags']
 
+class PostDeleteSerializer(serializers.ModelSerializer):
+    story_id = serializers.IntegerField()
+    class Meta:
+        model = Story
+        fields = ['story_id']
+
 
 class LocationSerializer(serializers.ModelSerializer):
     location = serializers.CharField()
