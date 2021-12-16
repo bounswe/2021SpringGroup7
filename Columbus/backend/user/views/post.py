@@ -165,3 +165,29 @@ class PostEdit(generics.CreateAPIView):
 
 
         return JsonResponse({'return': story.id})
+
+
+class PostDelete(generics.CreateAPIView):
+    queryset = Story.objects.all()
+    serializer_class = PostDeleteSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+
+        body = request.data
+        #print(body.keys())
+        required_areas = {'story_id'}
+
+        if len(set(body.keys()).intersection(required_areas))!=1:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+
+
+        story_id = body.get('story_id')
+
+        try:
+            story = Story.objects.get(id=story_id)
+            story.delete()
+        except:
+            return JsonResponse({'return': 'story not found'}, status=400)
+
+        return JsonResponse({'return': 'successful'})
