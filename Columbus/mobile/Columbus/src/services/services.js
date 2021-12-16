@@ -16,6 +16,12 @@ export const SERVICE = {
     });
   },
 
+  fetchUserPosts: async (params, token) => {
+    return await API_INSTANCE.post(`/user/profile_post/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
   postStory: async (params, token) => {
     return await API_INSTANCE.post(`/user/create_post/`, params, {
       headers: {Authorization: `TOKEN ${token}`},
