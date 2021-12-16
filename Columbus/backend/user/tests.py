@@ -3,7 +3,7 @@ from unittest import TestCase, mock
 from .views.comment import *
 from .views.follow import Follow
 from .views.like import LikePost, GetPostLikes
-from .views.post_create import PostCreate
+from .views.post import PostCreate
 from .views.home_page import HomePage
 from .mock_objects import *
 from django.core import serializers
@@ -135,9 +135,9 @@ class Tests(TestCase):
         response = ast.literal_eval(response.decode('utf-8'))
         assert response == {'return': {'like': ['user1', 'user2'], 'number_of_likes': 2}}
 
-    @mock.patch("user.views.post_create.PostCreate.get_tag")
-    @mock.patch("user.views.post_create.PostCreate.get_location")
-    @mock.patch("user.views.post_create.PostCreate.create_story")
+    @mock.patch("user.views.post.PostCreate.get_tag")
+    @mock.patch("user.views.post.PostCreate.get_location")
+    @mock.patch("user.views.post.PostCreate.create_story")
     @mock.patch("django.contrib.auth.models.User.objects.get")
     def test_post_create(self, get_user, create_story, get_location, get_tag):
         story1 = MockStory(title="story", text="story", multimedia="story", user_id="user2",
@@ -194,4 +194,3 @@ class Tests(TestCase):
     #     response = ast.literal_eval(response.decode('utf-8'))
     #     print(response)
     #     assert response == {'return': 'The user username has followed username'}
-
