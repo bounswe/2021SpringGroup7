@@ -123,7 +123,7 @@ const EditProfile = ({route, navigation}) => {
         console.log('cevap: ', response);
         if (response.data.response) {
           // Add a modal to show correctly saved
-          updateUserInfo(response.data.response);
+          updateUserInformations(response.data.response);
           navigation.goBack();
         }
       },
@@ -132,6 +132,10 @@ const EditProfile = ({route, navigation}) => {
       },
     },
   );
+
+  const updateUserInformations = async data => {
+    await updateUserInfo(data);
+  };
 
   if (loading) {
     return <Spinner />;

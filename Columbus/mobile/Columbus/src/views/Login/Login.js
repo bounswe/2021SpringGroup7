@@ -58,6 +58,7 @@ const Login = ({navigation}) => {
   });
 
   const setLoginContext = async data => {
+    console.log('context set func');
     await login(data);
   };
 
