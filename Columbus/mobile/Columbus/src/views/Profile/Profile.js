@@ -1,6 +1,6 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
-import {Button} from 'native-base';
+import {Button, ScrollView, Spinner, VStack} from 'native-base';
 
 import InfoBox from './components/InfoBox';
 import InfoWithIcon from './components/InfoWithIcon';
@@ -15,11 +15,15 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import {useMutation} from 'react-query';
 import {SERVICE} from '../../services/services';
+import PostCard from '../../components/PostCard';
 
 const Profile = ({navigation, route}) => {
   const {user, logout} = useAuth();
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
+  const [storyLoading, setStoryLoading] = useState(true);
+  const [userStories, setUserStories] = useState([]);
+  let token = '';
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -38,8 +42,36 @@ const Profile = ({navigation, route}) => {
     setLoading(true);
     if (user) {
       handleSetUserInfo(user.userInfo);
+      token = user.userInfo.token;
+      userStoriesRequest(user.userInfo.username);
     }
   }, [user]);
+
+  const fetchUserStories = useMutation(
+    params => SERVICE.fetchUserPosts(params, token),
+    {
+      onSuccess(response) {
+        setUserStories(response.data.return);
+        setStoryLoading(false);
+      },
+      onError({response}) {
+        console.log('res error res: ', response);
+      },
+    },
+  );
+
+  const userStoriesRequest = async username => {
+    const data = JSON.stringify({
+      username,
+      page_number: 1,
+      page_size: 10,
+    });
+    try {
+      await fetchUserStories.mutateAsync(data);
+    } catch (e) {
+      console.log('e: ', e);
+    }
+  };
 
   const handleSetUserInfo = async userData => {
     await setUserInfo(userData);
@@ -120,10 +152,23 @@ const Profile = ({navigation, route}) => {
         </Button>
       </View>
       <View style={styles.contentContainer}>
-        {userInfo.stories && userInfo.stories.length !== 0 ? (
-          //TODO: Add story component
-          <></>
-        ) : (
+        {storyLoading && <Spinner></Spinner>}
+        {!storyLoading && userStories.length !== 0 && (
+          <ScrollView>
+            <VStack
+              flex={1}
+              px="3"
+              space={10}
+              alignItems="center"
+              pb={10}
+              mt={5}>
+              {userStories.map(item => {
+                return <PostCard data={item} key={item.story_id} />;
+              })}
+            </VStack>
+          </ScrollView>
+        )}
+        {!storyLoading && userStories.length === 0 && (
           <Text style={{textAlign: 'center'}}>You do not share any story!</Text>
         )}
       </View>
