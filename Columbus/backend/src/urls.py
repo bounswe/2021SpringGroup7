@@ -28,6 +28,7 @@ urlpatterns = [
     path('test/',include('test.urls')),
     path('user/',include('user.urls')),
     path('guest/',include('guest.urls')),
+    path('search/',include('search.urls')),
     path('docs/', schema_view),
     path('openapi/', get_schema_view(
         title="Your Project",
