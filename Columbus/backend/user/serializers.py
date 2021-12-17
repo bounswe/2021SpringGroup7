@@ -102,3 +102,10 @@ class GetCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['story_id']
+
+class CommentDeleteSerializer(serializers.ModelSerializer):
+    comment_id = serializers.IntegerField()
+
+    class Meta:
+        model = Comment
+        fields = ['comment_id']
