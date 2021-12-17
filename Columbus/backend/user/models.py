@@ -51,3 +51,11 @@ class Profile(models.Model):
     biography = models.CharField(max_length=500,null=True)
     birthday = models.DateField(null=True)
     location = models.CharField(null=True,max_length=500)
+
+class ActivityStream(models.Model):
+
+    type = models.CharField(max_length=30)
+    actor = models.ForeignKey(User, related_name='actor', on_delete=models.CASCADE)
+    object = models.ForeignKey(User, related_name='object', null=True, on_delete=models.CASCADE)
+    target = models.ForeignKey(Story, null=True, on_delete=models.CASCADE)
+    date = models.DateTimeField()
