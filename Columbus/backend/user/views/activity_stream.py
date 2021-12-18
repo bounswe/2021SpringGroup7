@@ -8,19 +8,16 @@ from ..models import *
 from ..models import ActivityStream
 
 
-class ActivityStream(generics.CreateAPIView):
+class ActivityStreamAPI(generics.CreateAPIView):
     queryset = User.objects.all()
-    serializer_class = CommentCreateSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    serializer_class = ActivityStreamSerializer
 
     def post(self, request, *args, **kwargs):
         body = request.data
-        required_areas = {'username', 'limit'}
+        required_areas = {'limit', 'offset'}
         if set(body.keys()) != required_areas:
             return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
 
-        username = body.get('username')
         limit = int(body.get('limit'))
         offset = int(body.get('offset'))
 
@@ -35,7 +32,7 @@ class ActivityStream(generics.CreateAPIView):
 def _comment_create(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": f"{activity.actor.username} added comment to story : {activity.story.story_id} ",
+            "summary": f"{activity.actor.username} added comment to story : {activity.story.id} ",
             "id": activity.id,
             "type": "CommentCreate",
             "actor": {
@@ -44,14 +41,14 @@ def _comment_create(activity):
             },
             "object": {
                 "type": "https://schema.org/ShortStory",
-                "@id": activity.story.story_id
+                "@id": activity.story.id
             },
     }
 
 def _comment_update(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": f"{activity.actor.username} updated comment : {activity.comment.comment_id}  ",
+            "summary": f"{activity.actor.username} updated comment : {activity.comment.id}  ",
             "id": activity.id,
             "type": "CommentUpdate",
             "actor": {
@@ -60,14 +57,14 @@ def _comment_update(activity):
             },
             "object": {
                 "type": "https://schema.org/Comment",
-                "@id": activity.comment.comment_id
+                "@id": activity.comment.id
             },
     }
 
 def _comment_delete(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": f"{activity.actor.username} deleted comment : {activity.comment.comment_id}  ",
+            "summary": f"{activity.actor.username} deleted comment : {activity.comment.id}  ",
             "id": activity.id,
             "type": "CommentDelete",
             "actor": {
@@ -76,7 +73,7 @@ def _comment_delete(activity):
             },
             "object": {
                 "type": "https://schema.org/Comment",
-                "@id": activity.comment.comment_id
+                "@id": activity.comment.id
             },
     }
 
@@ -115,7 +112,7 @@ def _unfollow(activity):
 def _like(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": f"{activity.actor.username} liked {activity.story.story_id} ",
+            "summary": f"{activity.actor.username} liked {activity.story.id} ",
             "id": activity.id,
             "type": "Like",
             "actor": {
@@ -124,14 +121,14 @@ def _like(activity):
             },
             "object": {
                 "type": "https://schema.org/ShortStory",
-                "@id": activity.story.story_id
+                "@id": activity.story.id
             }
     }
 
 def _unlike(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": f"{activity.actor.username} uliked {activity.story.story_id} ",
+            "summary": f"{activity.actor.username} uliked {activity.story.id} ",
             "id": activity.id,
             "type": "Unlike",
             "actor": {
@@ -140,7 +137,7 @@ def _unlike(activity):
             },
             "object": {
                 "type": "https://schema.org/ShortStory",
-                "@id": activity.story.story_id
+                "@id": activity.story.id
             }
     }
 
@@ -168,14 +165,14 @@ def _createpost(activity):
             },
             "object": {
                 "type": "https://schema.org/ShortStory",
-                "@id": activity.story.story_id
+                "@id": activity.story.id
             },
     }
 
 def _updatepost(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": f"{activity.actor.username} updated {activity.story.story_id} ",
+            "summary": f"{activity.actor.username} updated {activity.story.id} ",
             "id": activity.id,
             "type": "UpdatePost",
             "actor": {
@@ -184,14 +181,14 @@ def _updatepost(activity):
             },
             "object": {
                 "type": "https://schema.org/ShortStory",
-                "@id": activity.story.story_id
+                "@id": activity.story.id
             },
     }
 
 def _deletepost(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": f"{activity.actor.username} deleted {activity.story.story_id} ",
+            "summary": f"{activity.actor.username} deleted {activity.story.id} ",
             "id": activity.id,
             "type": "DeletePost",
             "actor": {
@@ -200,7 +197,7 @@ def _deletepost(activity):
             },
             "object": {
                 "type": "https://schema.org/ShortStory",
-                "@id": activity.story.story_id
+                "@id": activity.story.id
             },
     }
 

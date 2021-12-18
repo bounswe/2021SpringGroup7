@@ -46,9 +46,9 @@ class CommentCreate(generics.CreateAPIView):
 
         try:
             comment = self.create_comment(story_id=story, text=text, user_id=user_id)
+            comment.save()
             dt = datetime.now(timezone.utc).astimezone()
             ActivityStream.objects.create(type='CommentCreate', actor=user_id, story=story, date=dt)
-            comment.save()
             return JsonResponse({'return': comment.id})
         except:
             return JsonResponse({'return': 'error'}, status=400)
@@ -82,9 +82,9 @@ class CommentUpdate(generics.CreateAPIView):
         try:
             comment.text = text
             comment.date = timezone.now()
+            comment.save()
             dt = datetime.now(timezone.utc).astimezone()
             ActivityStream.objects.create(type='CommentUpdate', actor=comment.user_id, comment=comment, date=dt)
-            comment.save()
             return JsonResponse({'return': comment.id})
         except:
             return JsonResponse({'return': 'error'}, status=400)
