@@ -112,3 +112,15 @@ class HomePageTestCase(TestCase):
         home_page_api = home_page.HomePage()
         response = home_page_api.post(request=request).content
         self.assertEqual(len(json.loads(response.decode('utf-8'))["return"]), 1)
+
+
+class LogoutTestCase(TestCase):
+    def setUp(self):
+        user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user.save()
+
+    def test_logout(self):
+        request = MockRequest(method='POST', body={"username": "user_name"})
+        home_page_api = logout.Logout()
+        response = home_page_api.post(request=request).content
+        self.assertEqual(len(json.loads(response.decode('utf-8'))["return"]["token"])>0, True)
