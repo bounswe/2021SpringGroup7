@@ -50,33 +50,6 @@ class MockStory:
     def save(self):
         return True
 
-class MockComment(models.Model):
-
-    def __init__(self, story_id, username, text):
-        self.story_id = story_id
-        self.username = username
-        self.text = text
-        self.id = "test"
-
-    def save(self):
-        return True
-
-class MockSerializedComment(models.Model):
-    def __init__(self, fields):
-        self.fields = fields
-
-
-    def save(self):
-        return True
-
-
-class MockCommentSerializer(serializers.ModelSerializer):
-    story_id = serializers.IntegerField()
-
-    class Meta:
-        model = MockComment
-        fields = ['story_id']
-
 class MockFollow:
 
     def __init__(self, user_id, follow):
@@ -124,4 +97,3 @@ class MockTag:
 
     def save(self):
         return True
-
