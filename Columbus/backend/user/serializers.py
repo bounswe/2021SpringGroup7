@@ -109,3 +109,11 @@ class CommentDeleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['comment_id']
+
+class ActivityStreamSerializer(serializers.ModelSerializer):
+    limit = serializers.IntegerField()
+    offset = serializers.IntegerField()
+
+    class Meta:
+        model = Comment
+        fields = ['limit', 'offset']

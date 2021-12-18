@@ -37,9 +37,9 @@ class Follow(generics.CreateAPIView):
         else:
             try:
                 instance = Following.objects.filter(user_id=user,follow=follow)
+                instance.delete()
                 dt = datetime.now(timezone.utc).astimezone()
                 ActivityStream.objects.create(type='Unfollow', actor=user, target=follow, date=dt)
-                instance.delete()
                 return JsonResponse({'return': f'The user {user.username} has unfollowed {follow.username}'})
             except:
                 return JsonResponse({'return': f'The user {user.username} following {follow.username} relation does not exist'})
