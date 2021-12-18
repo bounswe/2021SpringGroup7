@@ -174,4 +174,22 @@ class ProfileInformationTestCase(TestCase):
         
         self.assertEqual(response,expected_response)
 
+    def test_get_liked_posts(self):
+        request = MockRequest(method='POST', body={'user_id': self.user.id, 'story_id': self.story_temp.id})
+        like_post_api = like.LikePost()
+        response = like_post_api.post(request=request).content
+        expected_response = {'response': {'user_id': self.user.id, 'story_id': self.story_temp.id, 'isLiked': True}}
+        self.assertEqual(json.loads(response.decode('utf-8')), expected_response)
+
+        request = MockRequest(method='POST', body={'username':self.user.username,'page_number':1, 'page_size':1})
+        get_liked_posts_api = like.GetUserLikes()
+        response = get_liked_posts_api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))['return'][0]
+        response.pop('createDateTime')
+        response.pop('lastUpdate')
+        response = {'return':[response]}
+        expected_response = {'return': [{'title': 'title', 'text': '', 'multimedia': '', 'user_id': self.user_temp.id, 'time_start': '2020-01-01', 'time_end': '2021-01-01', 'numberOfLikes': 1, 'numberOfComments': 0, 'owner_username': 'temp_name', 'is_liked': True, 'story_id': self.story_temp.id, 'locations': [], 'tags': [], 'photo_url': None}]}
+
+        self.assertEqual(response,expected_response)
+
 
