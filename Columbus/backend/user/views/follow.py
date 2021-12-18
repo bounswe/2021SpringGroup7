@@ -28,7 +28,7 @@ class Follow(generics.CreateAPIView):
         if action_follow:
             instance = Following.objects.filter(user_id=user, follow=follow)
             instance.delete()
-            follow_relation = Following(user_id=user,follow=follow)
+            follow_relation = self.get_following(user_id=user, follow=follow)
             follow_relation.save()
             return JsonResponse({'return': f'The user {user.username} has followed {follow.username}'})
         else:
@@ -38,3 +38,6 @@ class Follow(generics.CreateAPIView):
                 return JsonResponse({'return': f'The user {user.username} has unfollowed {follow.username}'})
             except:
                 return JsonResponse({'return': f'The user {user.username} following {follow.username} relation does not exist'})
+
+    def get_following(self, user, follow):
+        return Following(user_id=user, follow=follow)

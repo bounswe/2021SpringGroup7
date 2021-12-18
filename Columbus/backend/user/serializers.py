@@ -24,6 +24,20 @@ class PostCreateSerializer(serializers.ModelSerializer):
         model = Story
         fields = ['title', 'text', 'multimedia', 'username', 'time_start', 'time_end', 'location', 'tags']
 
+class PostEditSerializer(serializers.ModelSerializer):
+    location = serializers.ListField(child=serializers.DictField(child=serializers.CharField()))
+    tags = serializers.ListField(child=serializers.CharField())
+    story_id = serializers.IntegerField()
+    class Meta:
+        model = Story
+        fields = ['story_id', 'title', 'text', 'multimedia', 'time_start', 'time_end', 'location', 'tags']
+
+class PostDeleteSerializer(serializers.ModelSerializer):
+    story_id = serializers.IntegerField()
+    class Meta:
+        model = Story
+        fields = ['story_id']
+
 
 class LocationSerializer(serializers.ModelSerializer):
     location = serializers.CharField()
@@ -88,3 +102,10 @@ class GetCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['story_id']
+
+class CommentDeleteSerializer(serializers.ModelSerializer):
+    comment_id = serializers.IntegerField()
+
+    class Meta:
+        model = Comment
+        fields = ['comment_id']

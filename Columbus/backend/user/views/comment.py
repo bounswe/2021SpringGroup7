@@ -44,11 +44,14 @@ class CommentCreate(generics.CreateAPIView):
 
 
         try:
-            comment = Comment(story_id=story, text=text, user_id=user_id)
+            comment = self.create_comment(story_id=story, text=text, user_id=user_id)
             comment.save()
             return JsonResponse({'return': comment.id})
         except:
             return JsonResponse({'return': 'error'}, status=400)
+
+    def create_comment(self, story_id, text, user_id):
+        return Comment(story_id=story_id, text=text, user_id=user_id)
 
 class CommentUpdate(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -108,3 +111,28 @@ class GetComment(generics.CreateAPIView):
             return JsonResponse({'return': serialized_obj})
         except:
             return JsonResponse({'return': 'error'}, status=400)
+
+
+
+class CommentDelete(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = CommentDeleteSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        body = request.data
+        required_areas = {'comment_id'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+
+
+        comment_id = body.get('comment_id')
+
+        try:
+            comment = Comment.objects.get(id=comment_id)
+            comment.delete()
+        except:
+            return JsonResponse({'return': 'comment not found'}, status=400)
+
+        return JsonResponse({'return': 'successful'})

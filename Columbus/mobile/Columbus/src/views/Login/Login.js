@@ -47,9 +47,8 @@ const Login = ({navigation}) => {
         username: formData.username,
         ...response.data.return,
       };
-      login(data);
+      setLoginContext(data);
       setIsButtonLoading(false);
-      // navigation.navigate('HomePage');
     },
     onError({response}) {
       setIsButtonLoading(false);
@@ -57,6 +56,10 @@ const Login = ({navigation}) => {
       setShowModal(true);
     },
   });
+
+  const setLoginContext = async data => {
+    await login(data);
+  };
 
   const handleLogin = async () => {
     setIsButtonLoading(true);

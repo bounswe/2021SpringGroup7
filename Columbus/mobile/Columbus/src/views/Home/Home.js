@@ -34,6 +34,8 @@ const Home = () => {
     {
       onSuccess(response) {
         setPosts(response.data.return);
+        console.log(response.data.return)
+        setLoading(false)
       },
       onError({response}) {
         console.log('res error: ', response);
@@ -45,9 +47,9 @@ const Home = () => {
     const userInfo = JSON.parse(user?.userInfo);
     token = userInfo.token;
     const data = JSON.stringify({
-      username: 'mervebrn',
+      username: userInfo.username,
       page_number: 1,
-      page_size: 5,
+      page_size: 10,
     });
     try {
       await fetchStories.mutateAsync(data, token);
@@ -64,13 +66,13 @@ const Home = () => {
   
  
   if (loading==true) {
-        <PageSpinner />;
+       return <PageSpinner />;
   }
 
   return (
     <NativeBaseProvider>
       <ScrollView>
-        <VStack flex={1} px="3" space={10} alignItems="center" mt={10}>
+        <VStack flex={1} px="3" space={10} alignItems="center" pb={10} mt={5}>
           {posts.map(item => {
             return (<PostCard data={item} key={item.story_id}/>);
           })}
