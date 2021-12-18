@@ -2,6 +2,7 @@ from django.test import TestCase
 from .models import *
 from django.contrib.auth.models import User
 import ast
+from .views import *
 
 class MockRequest:
     def __init__(self, method, body, uri="ec2-35"):
@@ -12,7 +13,7 @@ class MockRequest:
     def build_absolute_uri(self):
         return self.absolute_uri
 
-class UserTestCase(TestCase):
+class ModelTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
@@ -90,3 +91,24 @@ class UserTestCase(TestCase):
         self.assertEqual(profile.biography, None)
         self.assertEqual(profile.birthday, None)
         self.assertEqual(profile.location, None)
+
+
+class HomePageTestCase(TestCase):
+    def setUp(self):
+        user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user.save()
+        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story.save()
+        user2 = User.objects.create(username="user_name2", email="user_email2@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user2.save()
+        story2 = Story.objects.create(title="title2", text="", multimedia="", user_id=user2, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story2.save()
+        following = Following(user_id=user, follow=user2)
+        following.save()
+
+
+    def test_home_page(self):
+        request = MockRequest(method='POST', body={"username": "user_name","page_number": 1,"page_size": 1})
+        home_page_api = home_page.HomePage()
+        response = home_page_api.post(request=request).content
+        self.assertEqual(len(json.loads(response.decode('utf-8'))["return"]), 1)
