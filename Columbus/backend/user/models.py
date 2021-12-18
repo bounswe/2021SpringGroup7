@@ -53,9 +53,11 @@ class Profile(models.Model):
     location = models.CharField(null=True,max_length=500)
 
 class ActivityStream(models.Model):
-
+    class Meta:
+        db_table = 'activity_stream'
     type = models.CharField(max_length=30)
-    actor = models.ForeignKey(User, related_name='actor', on_delete=models.CASCADE)
-    object = models.ForeignKey(User, related_name='object', null=True, on_delete=models.CASCADE)
-    target = models.ForeignKey(Story, null=True, on_delete=models.CASCADE)
+    actor = models.ForeignKey(User, on_delete=models.CASCADE)
+    target = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, null=True, on_delete=models.CASCADE)
+    story = models.ForeignKey(Story, null=True, on_delete=models.CASCADE)
     date = models.DateTimeField()

@@ -24,11 +24,6 @@ class ActivityStream(generics.CreateAPIView):
         limit = int(body.get('limit'))
         offset = int(body.get('offset'))
 
-        try:
-            user_id = User.objects.get(username=username)
-        except:
-            return JsonResponse({'return': 'user not found'}, status=400)
-
         if offset == 0:
             activities = ActivityStream.objects.order_by('-date')[:limit]
         else:
@@ -40,55 +35,87 @@ class ActivityStream(generics.CreateAPIView):
 def _comment_create(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": f"{activity.actor.username} added comment to {activity.target.story_id} ",
+            "summary": f"{activity.actor.username} added comment to story : {activity.story.story_id} ",
             "id": activity.id,
-            "type": "CreateComment",
+            "type": "CommentCreate",
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
             },
             "object": {
                 "type": "https://schema.org/ShortStory",
-                "@id": activity.target.story_id
+                "@id": activity.story.story_id
             },
     }
 
 def _comment_update(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": f"{activity.actor.username} updated comment to {activity.target.story_id} ",
+            "summary": f"{activity.actor.username} updated comment : {activity.comment.comment_id}  ",
             "id": activity.id,
-            "type": "UpdateComment",
+            "type": "CommentUpdate",
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
             },
             "object": {
-                "type": "https://schema.org/ShortStory",
-                "@id": activity.target.story_id
+                "type": "https://schema.org/Comment",
+                "@id": activity.comment.comment_id
+            },
+    }
+
+def _comment_delete(activity):
+    return {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "summary": f"{activity.actor.username} deleted comment : {activity.comment.comment_id}  ",
+            "id": activity.id,
+            "type": "CommentDelete",
+            "actor": {
+                "type": "https://schema.org/Person",
+                "@id": activity.actor.username,
+            },
+            "object": {
+                "type": "https://schema.org/Comment",
+                "@id": activity.comment.comment_id
             },
     }
 
 def _follow(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": f"{activity.actor.username} followed {activity.object.username}",
+            "summary": f"{activity.actor.username} followed {activity.target.username}",
             "id": activity.id,
             "type": "Follow",
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
             },
-            "object": {
+            "target": {
                 "type": "https://schema.org/Person",
-                "@id": activity.object.username,
+                "@id": activity.target.username,
+            }
+    }
+
+def _unfollow(activity):
+    return {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "summary": f"{activity.actor.username} unfollowed {activity.target.username}",
+            "id": activity.id,
+            "type": "Unfollow",
+            "actor": {
+                "type": "https://schema.org/Person",
+                "@id": activity.actor.username,
+            },
+            "target": {
+                "type": "https://schema.org/Person",
+                "@id": activity.target.username,
             }
     }
 
 def _like(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": f"{activity.actor.username} liked {activity.target.story_id} ",
+            "summary": f"{activity.actor.username} liked {activity.story.story_id} ",
             "id": activity.id,
             "type": "Like",
             "actor": {
@@ -97,7 +124,23 @@ def _like(activity):
             },
             "object": {
                 "type": "https://schema.org/ShortStory",
-                "@id": activity.target.story_id
+                "@id": activity.story.story_id
+            }
+    }
+
+def _unlike(activity):
+    return {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "summary": f"{activity.actor.username} uliked {activity.story.story_id} ",
+            "id": activity.id,
+            "type": "Unlike",
+            "actor": {
+                "type": "https://schema.org/Person",
+                "@id": activity.actor.username,
+            },
+            "object": {
+                "type": "https://schema.org/ShortStory",
+                "@id": activity.story.story_id
             }
     }
 
@@ -122,13 +165,17 @@ def _createpost(activity):
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
-            }
+            },
+            "object": {
+                "type": "https://schema.org/ShortStory",
+                "@id": activity.story.story_id
+            },
     }
 
 def _updatepost(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": f"{activity.actor.username} updated {activity.target.story_id} ",
+            "summary": f"{activity.actor.username} updated {activity.story.story_id} ",
             "id": activity.id,
             "type": "UpdatePost",
             "actor": {
@@ -137,14 +184,14 @@ def _updatepost(activity):
             },
             "object": {
                 "type": "https://schema.org/ShortStory",
-                "@id": activity.target.story_id
+                "@id": activity.story.story_id
             },
     }
 
 def _deletepost(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": f"{activity.actor.username} deleted {activity.target.story_id} ",
+            "summary": f"{activity.actor.username} deleted {activity.story.story_id} ",
             "id": activity.id,
             "type": "DeletePost",
             "actor": {
@@ -153,7 +200,7 @@ def _deletepost(activity):
             },
             "object": {
                 "type": "https://schema.org/ShortStory",
-                "@id": activity.target.story_id
+                "@id": activity.story.story_id
             },
     }
 
@@ -170,9 +217,9 @@ def _setprofile(activity):
     }
 
 def create_activity_response(activities):
-    functions = {'SetProfile': _setprofile, 'Follow': _follow, 'UpdatePost': _updatepost,
-                'DeletePost': _deletepost, "CreatePost": _createpost, 'Logout': _logout, 'Like': _like
-                 , 'CommentUpdate': _comment_update, 'CommentCreate': _comment_create}
+    functions = {'SetProfile': _setprofile, 'Follow': _follow,'Unfollow':_unfollow, 'UpdatePost': _updatepost,
+                 'DeletePost': _deletepost, "CreatePost": _createpost, 'Logout': _logout, 'Like': _like, 'Unlike': _unlike
+                 , 'CommentUpdate': _comment_update, 'CommentCreate': _comment_create, 'CommentDelete':  _comment_delete}
     response = {"@context": "https://www.w3.org/ns/activitystreams",
                 "summary": "Activity stream",
                 "type": "OrderedCollection",
