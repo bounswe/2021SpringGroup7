@@ -168,3 +168,18 @@ class PostDeleteTestCase(TestCase):
         post_delete_api = post.PostDelete()
         response = post_delete_api.post(request=request).content
         self.assertEqual(json.loads(response.decode('utf-8'))["return"], 'story not found')
+
+class ProfileInformationTestCase(TestCase):
+    user_id=0
+    def setUp(self):
+        user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="hamza", last_name="hamza")
+        self.user_id=user.id
+        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05',location={"location": "asd", "latitude": 1901, "longitude": 120, "type": "Real"})
+        user.save()
+        profile.save()
+    def test_get_profile_information(self):
+        request = MockRequest(method='GET',body={})
+        get_profile_info_api = profile.GetProfileInfo()
+        response = get_profile_info_api.get(request=request,user_id=self.user_id).content
+        expected_response = {'response': {'first_name': 'hamza', 'last_name': 'hamza', 'birthday': '2021-05-05', 'location':{"location": "asd", "latitude": 1901, "longitude": 120, "type": "Real"}, 'photo_url': 'temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'followers': [], 'followings': [], 'biography': 'temp likes being cool', 'user_id': 16}}
+        self.assertEqual(json.loads(response.decode('utf-8')),expected_response)
