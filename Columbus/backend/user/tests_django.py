@@ -234,3 +234,23 @@ class ProfileInformationTestCase(TestCase):
         self.assertEqual(response,expected_response)
 
 
+class CommentCreateTestCase(TestCase):
+    def setUp(self):
+        user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user.save()
+        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story.save()
+        story.id = 1
+        story.save()
+
+    def test_create_comment(self):
+        request = MockRequest(method='POST', body={"username": "user_name", "story_id":1 , "text" : "new text"})
+        comment_create_api = comment.CommentCreate()
+        response = comment_create_api.post(request=request).content
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"], 1)
+
+    def test_not_found_story_for_comment(self):
+        request = MockRequest(method='POST', body={"username": "user_name", "story_id": 10, "text": "new text"})
+        comment_create_api = comment.CommentCreate()
+        response = comment_create_api.post(request=request).content
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"], 'story not found')
