@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from ..models import *
 from django.core import serializers
 import json
-
+from datetime import datetime, timezone
 
 # Create your views here.
 
@@ -59,6 +59,8 @@ class PostCreate(generics.CreateAPIView):
         try:
             story = self.create_story(title, text, multimedia, user_id, time_start, time_end)
             story.save()
+            dt = datetime.now(timezone.utc).astimezone()
+            ActivityStream.objects.create(type='CreatePost', actor=user_id, story=story, date=dt)
             for each in locations:
                 location = self.get_location(story_id=story, location=each['location'], latitude=each['latitude'], longitude=each['longitude'], type=each['type'])
                 location.save()
@@ -163,7 +165,8 @@ class PostEdit(generics.CreateAPIView):
                 location = Location(story_id=story, location=each['location'], latitude=each['latitude'], longitude=each['longitude'], type=each['type'])
                 location.save()
 
-
+        dt = datetime.now(timezone.utc).astimezone()
+        ActivityStream.objects.create(type='UpdatePost', actor=story.user_id, story=story, date=dt)
         return JsonResponse({'return': story.id})
 
 
@@ -186,6 +189,8 @@ class PostDelete(generics.CreateAPIView):
 
         try:
             story = Story.objects.get(id=story_id)
+            dt = datetime.now(timezone.utc).astimezone()
+            ActivityStream.objects.create(type='DeletePost', actor=story.user_id, story=story, date=dt)
             story.delete()
         except:
             return JsonResponse({'return': 'story not found'}, status=400)

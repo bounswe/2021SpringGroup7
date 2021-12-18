@@ -5,6 +5,7 @@ from rest_framework import generics
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from ..models import Following
+from datetime import datetime, timezone
 
 class Follow(generics.CreateAPIView):
     serializer_class = FollowSerializer
@@ -30,11 +31,15 @@ class Follow(generics.CreateAPIView):
             instance.delete()
             follow_relation = self.get_following(user_id=user, follow=follow)
             follow_relation.save()
+            dt = datetime.now(timezone.utc).astimezone()
+            ActivityStream.objects.create(type='Follow', actor=user, target=follow, date=dt)
             return JsonResponse({'return': f'The user {user.username} has followed {follow.username}'})
         else:
             try:
                 instance = Following.objects.filter(user_id=user,follow=follow)
                 instance.delete()
+                dt = datetime.now(timezone.utc).astimezone()
+                ActivityStream.objects.create(type='Unfollow', actor=user, target=follow, date=dt)
                 return JsonResponse({'return': f'The user {user.username} has unfollowed {follow.username}'})
             except:
                 return JsonResponse({'return': f'The user {user.username} following {follow.username} relation does not exist'})

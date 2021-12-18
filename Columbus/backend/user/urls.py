@@ -18,4 +18,5 @@ path('comment_update/', views.comment.CommentUpdate.as_view()),
 path('comment_delete/', views.comment.CommentDelete.as_view()),
 path('get_comments/', views.comment.GetComment.as_view()),
 path('get_user_likes/', views.like.GetUserLikes.as_view()),
+path('activity_stream/', views.activity_stream.ActivityStreamAPI.as_view()),
 ]
