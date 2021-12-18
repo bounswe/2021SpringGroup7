@@ -44,5 +44,5 @@ class Follow(generics.CreateAPIView):
             except:
                 return JsonResponse({'return': f'The user {user.username} following {follow.username} relation does not exist'})
 
-    def get_following(self, user, follow):
-        return Following(user_id=user, follow=follow)
+    def get_following(self, user_id, follow):
+        return Following(user_id=user_id, follow=follow)
