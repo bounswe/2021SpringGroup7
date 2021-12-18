@@ -146,3 +146,25 @@ class PostEditTestCase(TestCase):
         response = post_edit_api.post(request=request).content
         new_story = Story.objects.get(id = 1)
         self.assertEqual(new_story.title, "new title")
+
+
+class PostDeleteTestCase(TestCase):
+    def setUp(self):
+        user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user.save()
+        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story.save()
+        story.id = 1
+        story.save()
+
+    def test_post_delete_success(self):
+        request = MockRequest(method='POST', body={"story_id": 1})
+        post_delete_api = post.PostDelete()
+        response = post_delete_api.post(request=request).content
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"], 'successful')
+
+    def test_post_delete_fail(self):
+        request = MockRequest(method='POST', body={"story_id": 2})
+        post_delete_api = post.PostDelete()
+        response = post_delete_api.post(request=request).content
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"], 'story not found')
