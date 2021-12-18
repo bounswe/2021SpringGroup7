@@ -213,3 +213,27 @@ class CommentUpdateTestCase(TestCase):
         comment_update_api = comment.CommentUpdate()
         response = comment_update_api.post(request=request).content
         self.assertEqual(json.loads(response.decode('utf-8'))["return"], 'comment not found')
+
+class CommentDeleteTestCase(TestCase):
+    def setUp(self):
+        user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user.save()
+        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story.save()
+        story.id = 1
+        story.save()
+        comment = Comment(story_id=story, text="new text", user_id=user)
+        comment.id = 1
+        comment.save()
+
+    def test_delete_comment(self):
+        request = MockRequest(method='POST', body={"comment_id": 1})
+        comment_delete_api = comment.CommentDelete()
+        response = comment_delete_api.post(request=request).content
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"], "successful")
+
+    def test_not_found_comment_for_comment(self):
+        request = MockRequest(method='POST', body={"comment_id": 10})
+        comment_delete_api = comment.CommentDelete()
+        response = comment_delete_api.post(request=request).content
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"], 'comment not found')
