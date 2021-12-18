@@ -102,7 +102,6 @@ class Tests(TestCase):
         post_create = PostCreate()
         response = post_create.post(request=request).content
         response = ast.literal_eval(response.decode('utf-8'))
-        print(response)
         assert response == {'return': 'story1'}
 
     # @mock.patch("user.views.follow.Follow.get_following")

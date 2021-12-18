@@ -13,18 +13,6 @@ class MockRequest:
     def build_absolute_uri(self):
         return self.absolute_uri
 
-class UserTestCase(TestCase):
-    def setUp(self):
-        user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
-        Tag.objects.create(story_id=story, tag="travel")
-
-    def test_animals_can_speak(self):
-
-        tag = Tag.objects.get(id=1)
-        self.assertEqual(tag.tag, 'travel')
-
-
 
 class RegisterTestCase(TestCase):
     def test_register(self):
