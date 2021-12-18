@@ -7,6 +7,7 @@ from ..models import Like,Story
 from django.contrib.auth.models import User
 from django.core import serializers
 import json
+from datetime import datetime, timezone
 
 class LikePost(generics.CreateAPIView):
     serializer_class = LikeSerializer
@@ -35,6 +36,8 @@ class LikePost(generics.CreateAPIView):
         if bool(like_relation):
             story.numberOfLikes = story.numberOfLikes - 1
             story.save()
+            dt = datetime.now(timezone.utc).astimezone()
+            ActivityStream.objects.create(type='Unlike', actor=user, story=story, date=dt)
             like_relation.delete()
             result_dict['isLiked'] = False
 
@@ -42,6 +45,8 @@ class LikePost(generics.CreateAPIView):
             like_relation = Like(story_id=story,user_id=user)
             like_relation.save()
             story.numberOfLikes = story.numberOfLikes + 1
+            dt = datetime.now(timezone.utc).astimezone()
+            ActivityStream.objects.create(type='Like', actor=user, story=story, date=dt)
             story.save()
             result_dict['isLiked'] = True
 

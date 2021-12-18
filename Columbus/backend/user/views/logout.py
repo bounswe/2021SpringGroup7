@@ -7,6 +7,7 @@ from rest_framework import generics, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.schemas.openapi import AutoSchema
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from datetime import datetime, timezone
 
 # Create your views here.
 
@@ -28,6 +29,8 @@ class Logout(generics.CreateAPIView):
 
             token, created = Token.objects.get_or_create(user=user)
             user_info = User.objects.get(username=user_name)
+            dt = datetime.now(timezone.utc).astimezone()
+            ActivityStream.objects.create(type='Logout', actor=user_info, date=dt)
             result_dict = {"first_name": user_info.first_name, "last_name": user_info.last_name, "user_id": user_info.id,"token": str(token)}
             token.delete()
             return JsonResponse({'return': result_dict})

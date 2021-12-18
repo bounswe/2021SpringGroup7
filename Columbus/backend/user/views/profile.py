@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from ..models import Following,Location
 import json
 import ast
+from datetime import datetime, timezone
 
 class GetProfileInfo(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
@@ -69,6 +70,8 @@ class SetProfileInfo(generics.CreateAPIView):
         if set(body['location'].keys()) != required_areas_location:
             return JsonResponse({'return': 'location not in appropriate format'}, status=400)
 
+        dt = datetime.now(timezone.utc).astimezone()
+        ActivityStream.objects.create(type='SetProfile', actor=user_info, date=dt)
         user_info.first_name = body['first_name']
         user_info.last_name = body['last_name']
         profile_info.biography = body['biography']

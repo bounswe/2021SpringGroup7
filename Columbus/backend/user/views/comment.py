@@ -6,6 +6,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework.schemas.openapi import AutoSchema
+from datetime import datetime, timezone
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from ..models import *
 from django.core import serializers
@@ -45,6 +46,8 @@ class CommentCreate(generics.CreateAPIView):
 
         try:
             comment = self.create_comment(story_id=story, text=text, user_id=user_id)
+            dt = datetime.now(timezone.utc).astimezone()
+            ActivityStream.objects.create(type='CommentCreate', actor=user_id, story=story, date=dt)
             comment.save()
             return JsonResponse({'return': comment.id})
         except:
@@ -79,6 +82,8 @@ class CommentUpdate(generics.CreateAPIView):
         try:
             comment.text = text
             comment.date = timezone.now()
+            dt = datetime.now(timezone.utc).astimezone()
+            ActivityStream.objects.create(type='CommentUpdate', actor=comment.user_id, comment=comment, date=dt)
             comment.save()
             return JsonResponse({'return': comment.id})
         except:
@@ -131,6 +136,8 @@ class CommentDelete(generics.CreateAPIView):
 
         try:
             comment = Comment.objects.get(id=comment_id)
+            dt = datetime.now(timezone.utc).astimezone()
+            ActivityStream.objects.create(type='CommentDelete', actor=comment.user_id, comment=comment, date=dt)
             comment.delete()
         except:
             return JsonResponse({'return': 'comment not found'}, status=400)
