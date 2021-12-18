@@ -170,8 +170,6 @@ class ProfileInformationTestCase(TestCase):
         response.pop('lastUpdate')
         response = {'return':[response]}
         expected_response = {'return': [{'title': 'title', 'text': '', 'multimedia': '', 'user_id': self.user_id, 'time_start': '2020-01-01', 'time_end': '2021-01-01', 'numberOfLikes': 0, 'numberOfComments': 0, 'owner_username': self.user.username, 'is_liked': False, 'story_id': self.story_user.id, 'locations': [], 'tags': [], 'photo_url': 'temp.png'}]}
-
-        
         self.assertEqual(response,expected_response)
 
     def test_get_liked_posts(self):
