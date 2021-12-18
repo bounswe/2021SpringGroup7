@@ -35,3 +35,11 @@ class GeographicalSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Story
         fields = ['query_latitude', 'query_longitude', 'page_number', 'page_size']
+
+class DateSearchSerializer(serializers.ModelSerializer):
+    search_date = serializers.DateField()
+    page_number = serializers.IntegerField()
+    page_size = serializers.IntegerField()
+    class Meta:
+        model = Story
+        fields = ['search_date', 'page_number', 'page_size']
