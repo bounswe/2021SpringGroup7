@@ -183,3 +183,10 @@ class ProfileInformationTestCase(TestCase):
         response = get_profile_info_api.get(request=request,user_id=self.user_id).content
         expected_response = {'response': {'first_name': 'hamza', 'last_name': 'hamza', 'birthday': '2021-05-05', 'location':{"location": "asd", "latitude": 1901, "longitude": 120, "type": "Real"}, 'photo_url': 'temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'followers': [], 'followings': [], 'biography': 'temp likes being cool', 'user_id': 16}}
         self.assertEqual(json.loads(response.decode('utf-8')),expected_response)
+
+    def test_set_profile_information(self):
+        request = MockRequest(method='POST', body={'id':self.user_id,'first_name': 'changed_hamza', 'last_name': 'changed_hamza','location':{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}, 'birthday': '2021-06-06','photo_url': 'changed_temp.png','biography': 'changed temp likes being cool'})
+        set_profile_info_api = profile.SetProfileInfo()
+        response = set_profile_info_api.post(request=request).content
+        expected_response = {'response': {'first_name': 'changed_hamza', 'last_name': 'changed_hamza', 'birthday': '2021-06-06', 'location': {'location': 'changed_asd', 'latitude': 1901, 'longitude': 120, 'type': 'Real'}, 'photo_url': 'changed_temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'biography': 'changed temp likes being cool', 'user_id': 17}}
+        self.assertEqual(json.loads(response.decode('utf-8')), expected_response)
