@@ -303,3 +303,84 @@ class CommentDeleteTestCase(TestCase):
         comment_delete_api = comment.CommentDelete()
         response = comment_delete_api.post(request=request).content
         self.assertEqual(json.loads(response.decode('utf-8'))["return"], 'comment not found')
+
+
+class GetCommentTestCase(TestCase):
+    def setUp(self):
+        user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user.save()
+        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story.save()
+        story.id = 1
+        story.save()
+        comment = Comment(story_id=story, text="new text", user_id=user)
+        comment.id = 1
+        comment.save()
+
+    def test_get_comment(self):
+        request = MockRequest(method='POST', body={"story_id": 1})
+        get_comment_api = comment.GetComment()
+        response = get_comment_api.post(request=request).content
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"][0]['story_id'],1)
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"][0]['text'], "new text")
+
+class PostCreateTestCase(TestCase):
+    def setUp(self):
+        user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user.save()
+
+    def test_post_create(self):
+        request = MockRequest(method='POST', body={"title":"title", "text":"", "multimedia":"", "username":"user_name", "time_start":"2020-01-01",
+                                                   "time_end":"2021-01-01", "numberOfLikes":0, "numberOfComments":0,
+                                                   "location": [{'location':"bogazici", 'latitude':10, 'longitude':11, 'type':"school"}] })
+        post_create_api = post.PostCreate()
+        response = post_create_api.post(request=request).content
+        story = Story.objects.get(time_start="2020-01-01")
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"], story.id)
+
+    def test_post_create_check(self):
+        request = MockRequest(method='POST',
+                              body={"title": "title", "text": "", "multimedia": "", "username": "user_name",
+                                    "time_start": "2020-01-01",
+                                    "time_end": "2021-01-01", "numberOfLikes": 0, "numberOfComments": 0,
+                                    "location": [
+                                        {'location': "bogazici",'longitude': 11, 'type': "school"}]})
+        post_create_api = post.PostCreate()
+        response = post_create_api.post(request=request).content
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"], 'location not in appropriate format')
+
+class LikePostTestCase(TestCase):
+    def setUp(self):
+        user = User.objects.create(username="user_name1", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user.save()
+        self.user_id=user.id
+        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story.save()
+        story.id = 1
+        story.save()
+
+    def test_like_post(self):
+        request = MockRequest(method='POST', body={"user_id": self.user_id, "story_id":1})
+        like_post_api = like.LikePost()
+        response = like_post_api.post(request=request).content
+        self.assertEqual(json.loads(response.decode('utf-8'))["response"], {"user_id": self.user_id, "story_id": 1, "isLiked": True})
+
+
+class FollowTestCase(TestCase):
+    def setUp(self):
+        user1 = User.objects.create(username="user_name1", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user1.save()
+        self.user_id1 = user1.id
+        self.username1 = user1.username
+        user2 = User.objects.create(username="user_name2", email="user_email2@gmail.com", password="123456",
+                                    first_name="umut", last_name="umut")
+        user2.save()
+        self.user_id2 = user2.id
+        self.username2 = user2.username
+
+    def test_follow(self):
+        request = MockRequest(method='POST', body={"user_id": self.user_id1, "follow":self.user_id2, "action_follow":True})
+        follow_api = follow.Follow()
+        response = follow_api.post(request=request).content
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"], f'The user {self.username1} has followed {self.username2}')
+
