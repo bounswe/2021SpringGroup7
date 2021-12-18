@@ -12,7 +12,7 @@ import {useAuth} from '../../context/AuthContext';
 import {SERVICE} from '../../services/services';
 import {useMutation} from 'react-query';
 import PageSpinner from '../../components/PageSpinner';
-import PostCard from '../../components/PostCard'
+import PostCard from '../../components/PostCard';
 
 const Home = () => {
   const {logout, user} = useAuth();
@@ -23,50 +23,39 @@ const Home = () => {
 
   useEffect(() => {
     if (user) {
-      storiesRequest();
+      token = user.userInfo.token;
+      storiesRequest(user.userInfo.username);
     } else {
       setLoading(true);
     }
   }, [user]);
 
-  const fetchStories = useMutation(
-    params => SERVICE.fetchPost({params, token}),
-    {
-      onSuccess(response) {
-        setPosts(response.data.return);
-        console.log(response.data.return)
-        setLoading(false)
-      },
-      onError({response}) {
-        console.log('res error: ', response);
-      },
+  const fetchStories = useMutation(params => SERVICE.fetchPost(params, token), {
+    onSuccess(response) {
+      setPosts(response.data.return);
+      console.log(response.data.return);
+      setLoading(false);
     },
-  );
+    onError({response}) {
+      console.log('res error: ', response);
+    },
+  });
 
-  const storiesRequest = async () => {
-    const userInfo = JSON.parse(user?.userInfo);
-    token = userInfo.token;
+  const storiesRequest = async username => {
     const data = JSON.stringify({
-      username: userInfo.username,
+      username,
       page_number: 1,
       page_size: 10,
     });
     try {
-      await fetchStories.mutateAsync(data, token);
+      await fetchStories.mutateAsync(data);
     } catch (e) {
       console.log('e: ', e);
     }
   };
 
-  const handleLogout = async () => {
-    logout();
-  };
-  
-
-  
- 
-  if (loading==true) {
-       return <PageSpinner />;
+  if (loading == true) {
+    return <PageSpinner />;
   }
 
   return (
@@ -74,7 +63,7 @@ const Home = () => {
       <ScrollView>
         <VStack flex={1} px="3" space={10} alignItems="center" pb={10} mt={5}>
           {posts.map(item => {
-            return (<PostCard data={item} key={item.story_id}/>);
+            return <PostCard data={item} key={item.story_id} />;
           })}
         </VStack>
       </ScrollView>

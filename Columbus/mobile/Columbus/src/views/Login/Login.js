@@ -52,12 +52,13 @@ const Login = ({navigation}) => {
     },
     onError({response}) {
       setIsButtonLoading(false);
-      setModalMessage(response.data.return);
+      setModalMessage(response.return);
       setShowModal(true);
     },
   });
 
   const setLoginContext = async data => {
+    console.log('context set func');
     await login(data);
   };
 
