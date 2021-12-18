@@ -104,7 +104,6 @@ class GetUserLikes(generics.CreateAPIView):
             serialized_obj = serializers.serialize('json', stories)
             serialized_obj = json.loads(str(serialized_obj))
             result = [each["fields"] for each in serialized_obj]
-            print(result)
             for i, each in enumerate(result):
                 each["owner_username"] = stories[i].user_id.username
                 each["is_liked"] = len(Like.objects.filter(story_id=stories[i], user_id__username=username))>0

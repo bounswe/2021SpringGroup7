@@ -125,6 +125,70 @@ class LogoutTestCase(TestCase):
         response = logout_api.post(request=request).content
         self.assertEqual(len(json.loads(response.decode('utf-8'))["return"]["token"])>0, True)
 
+class ProfileInformationTestCase(TestCase):
+    user_id=0
+    user=None
+    user_temp=None
+    story_user=None
+    story_temp=None
+    def setUp(self):
+        user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="hamza", last_name="hamza")
+        temp_user = User.objects.create(username="temp_name", email="temp_email@gmail.com", password="123456", first_name="temp", last_name="temp")
+
+        self.user_id=user.id
+        self.user=user
+        self.user_temp = temp_user
+        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05',location={"location": "asd", "latitude": 1901, "longitude": 120, "type": "Real"})
+        story_user = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story_temp = Story.objects.create(title="title", text="", multimedia="", user_id=temp_user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        self.story_temp=story_temp
+        self.story_user=story_user
+        user.save()
+        profile.save()
+    def test_get_profile_information(self):
+        request = MockRequest(method='GET',body={})
+        get_profile_info_api = profile.GetProfileInfo()
+        response = get_profile_info_api.get(request=request,user_id=self.user_id).content
+        expected_response = {'response': {'first_name': 'hamza', 'last_name': 'hamza', 'birthday': '2021-05-05', 'location':{"location": "asd", "latitude": 1901, "longitude": 120, "type": "Real"}, 'photo_url': 'temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'followers': [], 'followings': [], 'biography': 'temp likes being cool','user_id':self.user_id}}
+        self.assertEqual(json.loads(response.decode('utf-8')),expected_response)
+
+    def test_set_profile_information(self):
+        request = MockRequest(method='POST', body={'id':self.user_id,'first_name': 'changed_hamza', 'last_name': 'changed_hamza','location':{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}, 'birthday': '2021-06-06','photo_url': 'changed_temp.png','biography': 'changed temp likes being cool'})
+        set_profile_info_api = profile.SetProfileInfo()
+        response = set_profile_info_api.post(request=request).content
+        expected_response = {'response': {'first_name': 'changed_hamza', 'last_name': 'changed_hamza', 'birthday': '2021-06-06', 'location': {'location': 'changed_asd', 'latitude': 1901, 'longitude': 120, 'type': 'Real'}, 'photo_url': 'changed_temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'biography': 'changed temp likes being cool','user_id':self.user_id}}
+
+        self.assertEqual(json.loads(response.decode('utf-8')), expected_response)
+
+    def test_get_shared_posts(self):
+        request = MockRequest(method='POST', body={'username':self.user.username,'page_number':1, 'page_size':1})
+        get_shared_posts_api = profile_post.ProfilePost()
+        response = get_shared_posts_api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))['return'][0]
+        response.pop('createDateTime')
+        response.pop('lastUpdate')
+        response = {'return':[response]}
+        expected_response = {'return': [{'title': 'title', 'text': '', 'multimedia': '', 'user_id': self.user_id, 'time_start': '2020-01-01', 'time_end': '2021-01-01', 'numberOfLikes': 0, 'numberOfComments': 0, 'owner_username': self.user.username, 'is_liked': False, 'story_id': self.story_user.id, 'locations': [], 'tags': [], 'photo_url': 'temp.png'}]}
+        self.assertEqual(response,expected_response)
+
+    def test_get_liked_posts(self):
+        request = MockRequest(method='POST', body={'user_id': self.user.id, 'story_id': self.story_temp.id})
+        like_post_api = like.LikePost()
+        response = like_post_api.post(request=request).content
+        expected_response = {'response': {'user_id': self.user.id, 'story_id': self.story_temp.id, 'isLiked': True}}
+        self.assertEqual(json.loads(response.decode('utf-8')), expected_response)
+
+        request = MockRequest(method='POST', body={'username':self.user.username,'page_number':1, 'page_size':1})
+        get_liked_posts_api = like.GetUserLikes()
+        response = get_liked_posts_api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))['return'][0]
+        response.pop('createDateTime')
+        response.pop('lastUpdate')
+        response = {'return':[response]}
+        expected_response = {'return': [{'title': 'title', 'text': '', 'multimedia': '', 'user_id': self.user_temp.id, 'time_start': '2020-01-01', 'time_end': '2021-01-01', 'numberOfLikes': 1, 'numberOfComments': 0, 'owner_username': 'temp_name', 'is_liked': True, 'story_id': self.story_temp.id, 'locations': [], 'tags': [], 'photo_url': None}]}
+
+        self.assertEqual(response,expected_response)
+
 class PostEditTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
