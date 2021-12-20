@@ -43,3 +43,11 @@ class DateSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Story
         fields = ['search_date', 'page_number', 'page_size']
+
+class LocationSearchSerializer(serializers.ModelSerializer):
+    search_text = serializers.CharField()
+    page_number = serializers.IntegerField()
+    page_size = serializers.IntegerField()
+    class Meta:
+        model = Story
+        fields = ['search_text', 'page_number', 'page_size']
