@@ -465,3 +465,62 @@ class LocationSearch(generics.CreateAPIView):
 
 
         return JsonResponse({'return': result}, status=200)
+
+
+class UserSearch(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSearchSerializer
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+
+        body = request.data
+        required_areas = {'search_text', 'page_number', 'page_size'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+
+
+        search_text = body.get('search_text')
+        page_number = body.get('page_number')
+        page_size = body.get('page_size')
+
+        if page_number<1:
+            result = []
+            return JsonResponse({'return': result}, status=200)
+
+        users_all = User.objects.filter()
+        users = []
+
+        for each in users_all:
+
+            if each.username.lower().startswith(search_text.lower()):
+                users.append((-1*len(each.username), each))
+
+
+        users = sorted(users, key=lambda x: x[0], reverse=True)
+        users = [each[1] for each in users]
+        users = users[(page_number-1)*page_size: page_number*page_size]
+        if len(users)!=0:
+            serialized_obj = serializers.serialize('json', users)
+            serialized_obj = json.loads(str(serialized_obj))
+
+
+            result = [each["fields"] for each in serialized_obj]
+            result_new = []
+            for each in result:
+                result_temp = {}
+                result_temp["username"] = each["username"]
+                result_temp["first_name"] = each["first_name"]
+                result_temp["last_name"] = each["last_name"]
+                result_temp["email"] = each["email"]
+                temp_user = User.objects.get(username = result_temp["username"])
+                result_temp["user_id"] = temp_user.id
+                result_new.append(result_temp)
+            result = result_new
+
+
+        else:
+            result = []
+
+
+        return JsonResponse({'return': result}, status=200)
