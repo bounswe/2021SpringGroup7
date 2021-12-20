@@ -54,6 +54,8 @@ class ReportStory(generics.CreateAPIView):
             return JsonResponse({'return': 'error'}, status=400)
 
 
+
+
 class CommentUpdate(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = CommentUpdateSerializer
