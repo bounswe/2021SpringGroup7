@@ -134,3 +134,10 @@ class ReportStorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['username', 'story_id', 'text']
+
+class ReportUserSerializer(serializers.ModelSerializer):
+    reported_username = serializers.CharField(max_length=100)
+    reporter_username = serializers.CharField(max_length=100)
+    class Meta:
+        model = ReportUser
+        fields = ['reported_username', 'reporter_username', 'report']

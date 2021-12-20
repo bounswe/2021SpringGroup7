@@ -293,11 +293,28 @@ def _reportstorycreate(activity):
             },
     }
 
+def _reportusercreate(activity):
+    return {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "summary": f"{activity.actor.username} reported {activity.target.username} ",
+            "id": activity.id,
+            "type": "ReportUserCreate",
+            "actor": {
+                "type": "https://schema.org/Person",
+                "@id": activity.actor.username,
+            },
+            "object": {
+                "type": "https://schema.org/ShortStory",
+                "@id": activity.target.username
+            },
+    }
+
 def create_activity_response(activities):
     functions = {'SetProfile': _setprofile, 'Follow': _follow,'Unfollow':_unfollow, 'UpdatePost': _updatepost,
                  'DeletePost': _deletepost, "CreatePost": _createpost, 'Logout': _logout, 'Like': _like, 'Unlike': _unlike
                  , 'CommentUpdate': _comment_update, 'CommentCreate': _comment_create, 'CommentDelete':  _comment_delete,
-                 'Block': _block,'Unblock':_unblock, 'Pin': _pin,'Unpin':_unpin, 'ReportStoryCreate':_reportstorycreate}
+                 'Block': _block,'Unblock':_unblock, 'Pin': _pin,'Unpin':_unpin, 'ReportStoryCreate':_reportstorycreate,
+                  'ReportUserCreate':_reportusercreate}
     response = {"@context": "https://www.w3.org/ns/activitystreams",
                 "summary": "Activity stream",
                 "type": "OrderedCollection",
