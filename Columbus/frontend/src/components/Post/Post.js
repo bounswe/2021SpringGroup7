@@ -92,6 +92,8 @@ export default function Post(props) {
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [commentCount, setCommentCount] = useState(0);
   const [openLocation, setOpenLocation] = useState(false);
 
 
@@ -99,6 +101,8 @@ export default function Post(props) {
     setStoryData(props.post);
     setCurUser(props.curUser);
     setLiked(props.post.is_liked)
+    setLikeCount(props.post.numberOfLikes)
+    setCommentCount(props.post.numberOfComments)
     var postdata = {'story_id':props.post.story_id}
     POST_SERVICE.GET_COMMENTS(postdata)
     .then(resp => {
@@ -137,8 +141,10 @@ export default function Post(props) {
     POST_SERVICE.LIKE_POST(dat)
     .then(response => {
       if(response.data.response.isLiked==true){
+        setLikeCount(likeCount+1)
         setSnackBarMessage('You liked this story!');}
       else{
+        setLikeCount(likeCount-1)
         setSnackBarMessage('You unliked this story!');}
       setLiked(response.data.response.isLiked);
     })
@@ -166,6 +172,7 @@ export default function Post(props) {
     };
     POST_SERVICE.POST_COMMENT({text:commentValue,username: localStorage.getItem('username'),story_id:storyData.story_id})
     .then((response) => {
+        setCommentCount(commentCount+1)
         setSnackBarMessage("Your comment is added!");
       setOpenSnackBar(true);
     }).catch((error) => {
@@ -182,7 +189,7 @@ export default function Post(props) {
   const showAddComment = () => {
     return (
 
-      <Paper style={{ padding: "40px 20px", marginTop: 30 }}>
+      <Paper style={{ padding: "20px 20px", marginTop: 10 }}>
         <Grid container wrap="nowrap" spacing={2}>
           <Grid item>
             <Link href="/">
@@ -324,13 +331,14 @@ export default function Post(props) {
       
       <CardActions disableSpacing>
       {localStorage.getItem('jwtToken') ? 
-        <div><IconButton
+        <div><Grid container columns={2} alignItems="center" spacing={2}><IconButton
           aria-label="add to favorites"
           color={liked ? "secondary" : ""}
           onClick={handleLike}
         >
           <FavoriteIcon />
         </IconButton>
+        <Typography>{likeCount}</Typography></Grid>
 
 
         <Snackbar
@@ -356,9 +364,11 @@ export default function Post(props) {
           }
         />
 
+      <Grid container columns={2} alignItems="center" spacing={2}>
         <IconButton onClick={handleExpandComment}>
           <AddCommentIcon />
-        </IconButton></div>:<div/>}
+        </IconButton><Typography>{commentCount}</Typography>
+        </Grid></div>:<div/>}
 
         <IconButton
           className={clsx(classes.expand, {
@@ -374,14 +384,14 @@ export default function Post(props) {
       <Collapse in={expandComment} timeout="auto" unmountOnExit>
         <CardContent>
           <div style={{ padding: 14 }} className="App">
-            <h1>Comments</h1>
+            <h2>Comments</h2>
             {showAddComment()}
             {comments.map((item, index) => {
               if (item) {
                 return (
                   <Paper
                     key={index}
-                    style={{ padding: "40px 20px", marginTop: 100 }}
+                    style={{ padding: "20px 20px", marginTop: 10 }}
                   >
                     <Grid container wrap="nowrap" spacing={2}>
                       <Grid item>
