@@ -415,3 +415,53 @@ class DateSearch(generics.CreateAPIView):
 
 
         return JsonResponse({'return': result}, status=200)
+
+
+
+class LocationSearch(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = LocationSearchSerializer
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+
+        body = request.data
+        required_areas = {'search_text', 'page_number', 'page_size'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+
+
+        search_text = body.get('search_text')
+        page_number = body.get('page_number')
+        page_size = body.get('page_size')
+
+        if page_number<1:
+            result = []
+            return JsonResponse({'return': result}, status=200)
+
+        locations_all = Location.objects.filter()
+        locations = []
+
+        for each in locations_all:
+
+            distance_value = nltk.jaccard_distance(set(nltk.ngrams(search_text.lower(), n=2)), set(nltk.ngrams(each.location.lower(), n=2)))
+            similarity_value = 1-distance_value
+            if distance_value<0.75:
+                locations.append((similarity_value, each))
+
+
+        locations = sorted(locations, key=lambda x: x[0], reverse=True)
+        locations = [each[1] for each in locations]
+        locations = locations[(page_number-1)*page_size: page_number*page_size]
+        if len(locations)!=0:
+            serialized_obj = serializers.serialize('json', locations)
+            serialized_obj = json.loads(str(serialized_obj))
+
+
+            result = [each["fields"] for each in serialized_obj]
+
+        else:
+            result = []
+
+
+        return JsonResponse({'return': result}, status=200)
