@@ -40,6 +40,10 @@ class Comment(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     text = models.CharField(max_length=500)
 
+class Pin(models.Model):
+    comment_id = models.ForeignKey(Comment,on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
+
 
 class Following(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_id')
