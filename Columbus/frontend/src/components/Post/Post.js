@@ -92,6 +92,7 @@ export default function Post(props) {
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const [openLocation, setOpenLocation] = useState(false);
 
 
@@ -99,6 +100,7 @@ export default function Post(props) {
     setStoryData(props.post);
     setCurUser(props.curUser);
     setLiked(props.post.is_liked)
+    setLikeCount(props.post.numberOfLikes)
     var postdata = {'story_id':props.post.story_id}
     POST_SERVICE.GET_COMMENTS(postdata)
     .then(resp => {
@@ -137,8 +139,10 @@ export default function Post(props) {
     POST_SERVICE.LIKE_POST(dat)
     .then(response => {
       if(response.data.response.isLiked==true){
+        setLikeCount(likeCount+1)
         setSnackBarMessage('You liked this story!');}
       else{
+        setLikeCount(likeCount-1)
         setSnackBarMessage('You unliked this story!');}
       setLiked(response.data.response.isLiked);
     })
@@ -331,7 +335,7 @@ export default function Post(props) {
         >
           <FavoriteIcon />
         </IconButton>
-
+              <Typography>{likeCount}</Typography>
 
         <Snackbar
           anchorOrigin={{
