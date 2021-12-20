@@ -127,3 +127,10 @@ class ActivityStreamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['limit', 'offset']
+
+class ReportStorySerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=100)
+
+    class Meta:
+        model = Comment
+        fields = ['username', 'story_id', 'text']

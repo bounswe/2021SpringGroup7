@@ -30,6 +30,16 @@ class Report(models.Model):
     reporter_id = models.ForeignKey(User,on_delete=models.CASCADE)
     report = models.CharField(max_length=500)
 
+class ReportUser(models.Model):
+    reported_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name='reported_id')
+    reporter_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name='reporter_id')
+    report = models.CharField(max_length=500)
+
+class ReportTag(models.Model):
+    tag_id = models.ForeignKey(Tag,on_delete=models.CASCADE)
+    reporter_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    report = models.CharField(max_length=500)
+
 class Like(models.Model):
     story_id = models.ForeignKey(Story,on_delete=models.CASCADE)
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -39,6 +49,11 @@ class Comment(models.Model):
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     text = models.CharField(max_length=500)
+
+class ReportComment(models.Model):
+    comment_id = models.ForeignKey(Comment,on_delete=models.CASCADE)
+    reporter_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    report = models.CharField(max_length=500)
 
 class Pin(models.Model):
     comment_id = models.ForeignKey(Comment,on_delete=models.CASCADE)
