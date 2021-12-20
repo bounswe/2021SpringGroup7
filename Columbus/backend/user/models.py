@@ -45,6 +45,10 @@ class Following(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_id')
     follow = models.ForeignKey(User, on_delete=models.CASCADE,related_name='follow')
 
+class Blocking(models.Model):
+    user_id_block = models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_id_block')
+    block = models.ForeignKey(User, on_delete=models.CASCADE,related_name='block')
+
 class Profile(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     photo_url = models.CharField(max_length=500,null=True)
