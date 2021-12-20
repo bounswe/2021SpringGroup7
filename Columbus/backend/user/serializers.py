@@ -77,6 +77,11 @@ class LikeSerializer(serializers.ModelSerializer):
         model = Like
         fields = ['story_id','user_id']
 
+class PinCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pin
+        fields = ['comment_id','user_id']
+
 class HomePageSerializer(serializers.ModelSerializer):
     page_number = serializers.IntegerField()
     page_size = serializers.IntegerField()
