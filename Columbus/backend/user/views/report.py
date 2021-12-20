@@ -54,92 +54,42 @@ class ReportStory(generics.CreateAPIView):
             return JsonResponse({'return': 'error'}, status=400)
 
 
-
-
-class CommentUpdate(generics.CreateAPIView):
+class ReportUserAPI(generics.CreateAPIView):
     queryset = User.objects.all()
-    serializer_class = CommentUpdateSerializer
+    serializer_class = ReportUserSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         body = request.data
-        required_areas = {'comment_id', 'text'}
+        required_areas = {'reported_username', 'reporter_username', 'report'}
         if set(body.keys()) != required_areas:
             return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
 
 
-        comment_id = body.get('comment_id')
-        text = body.get('text')
+        reported_id = body.get('reported_username')
+        reporter_id = body.get('reporter_username')
+        text = body.get('report')
 
 
         try:
-            comment = Comment.objects.get(pk=comment_id)
+            reported_id = User.objects.get(username=reported_id)
         except:
-            return JsonResponse({'return': 'comment not found'}, status=400)
+            return JsonResponse({'return': 'reported not found'}, status=400)
 
 
         try:
-            comment.text = text
-            comment.date = timezone.now()
-            comment.save()
+            reporter_id = User.objects.get(username=reporter_id)
+        except:
+            return JsonResponse({'return': 'reporter not found'}, status=400)
+
+
+
+        try:
+            report = ReportUser(reported_id=reported_id, reporter_id=reporter_id, report=text)
+            report.save()
             dt = datetime.now(timezone.utc).astimezone()
-            ActivityStream.objects.create(type='CommentUpdate', actor=comment.user_id, comment=comment, date=dt)
-            return JsonResponse({'return': comment.id})
+            ActivityStream.objects.create(type='ReportUserCreate', actor=reporter_id, target=reported_id, date=dt)
+            return JsonResponse({'return': report.id})
         except:
             return JsonResponse({'return': 'error'}, status=400)
-
-
-class GetComment(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = GetCommentSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, *args, **kwargs):
-        body = request.data
-        required_areas = {'story_id'}
-        if set(body.keys()) != required_areas:
-            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
-
-
-        story_id = body.get('story_id')
-
-        comments = Comment.objects.filter(story_id__id=story_id)
-        serialized_obj = serializers.serialize('json', comments)
-        serialized_obj = json.loads(str(serialized_obj))
-        serialized_obj = [each["fields"] for each in serialized_obj]
-        for each in serialized_obj:
-            each["username"] = User.objects.get(id=each["user_id"]).username
-
-        try:
-            return JsonResponse({'return': serialized_obj})
-        except:
-            return JsonResponse({'return': 'error'}, status=400)
-
-
-
-class CommentDelete(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = CommentDeleteSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, *args, **kwargs):
-        body = request.data
-        required_areas = {'comment_id'}
-        if set(body.keys()) != required_areas:
-            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
-
-
-        comment_id = body.get('comment_id')
-
-        try:
-            comment = Comment.objects.get(id=comment_id)
-            dt = datetime.now(timezone.utc).astimezone()
-            ActivityStream.objects.create(type='CommentDelete', actor=comment.user_id, comment=comment, date=dt)
-            comment.delete()
-        except:
-            return JsonResponse({'return': 'comment not found'}, status=400)
-
-        return JsonResponse({'return': 'successful'})
