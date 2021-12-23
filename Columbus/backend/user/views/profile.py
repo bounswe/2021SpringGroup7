@@ -26,9 +26,27 @@ class GetProfileInfo(generics.ListAPIView):
         except:
             profile_info = Profile.objects.create(user_id=user_info)
 
-        followings = list(Following.objects.filter(user_id=user_info).values('follow','follow__username'))
-        followers = list(Following.objects.filter(follow=user_info).values('user_id','user_id__username'))
 
+        followings_query = Following.objects.filter(user_id=user_info).values('follow','follow__username')
+        followings = []
+        for user in followings_query:
+            print(user)
+            temp = dict()
+            temp['user_id']=user['follow']
+            temp['username'] = user['follow__username']
+            temp['photo_url'] = Profile.objects.get(user_id=user['follow']).photo_url
+            followings.append(temp)
+
+
+        followers_query = Following.objects.filter(follow=user_info).values('user_id','user_id__username')
+        followers = []
+        for user in followers_query:
+            print(user)
+            temp = dict()
+            temp['user_id']=user['user_id']
+            temp['username'] = user['user_id__username']
+            temp['photo_url'] = Profile.objects.get(user_id=user['user_id']).photo_url
+            followers.append(temp)
 
         try:
             location = ast.literal_eval(profile_info.location)
