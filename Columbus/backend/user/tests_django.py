@@ -5,10 +5,11 @@ import ast
 from .views import *
 
 class MockRequest:
-    def __init__(self, method, body, uri="ec2-35"):
+    def __init__(self, method, body, user=None,uri="ec2-35"):
         self.method = method
         self.data = body
         self.absolute_uri = uri
+        self.user=user
 
     def build_absolute_uri(self):
         return self.absolute_uri
@@ -146,17 +147,17 @@ class ProfileInformationTestCase(TestCase):
         user.save()
         profile.save()
     def test_get_profile_information(self):
-        request = MockRequest(method='GET',body={})
+        request = MockRequest(method='GET',body={},user=self.user)
         get_profile_info_api = profile.GetProfileInfo()
         response = get_profile_info_api.get(request=request,user_id=self.user_id).content
-        expected_response = {'response': {'first_name': 'hamza', 'last_name': 'hamza', 'birthday': '2021-05-05', 'location':[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}], 'photo_url': 'temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'followers': [], 'followings': [], 'biography': 'temp likes being cool','user_id':self.user_id}}
+        expected_response = {'response': {'first_name': 'hamza', 'last_name': 'hamza', 'birthday': '2021-05-05', 'location':[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}], 'photo_url': 'temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'followers': [], 'followings': [], 'biography': 'temp likes being cool','user_id':self.user_id,'public':True}}
         self.assertEqual(json.loads(response.decode('utf-8')),expected_response)
 
     def test_set_profile_information(self):
-        request = MockRequest(method='POST', body={'user_id':self.user_id,'first_name': 'changed_hamza', 'last_name': 'changed_hamza','location':[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}], 'birthday': '2021-06-06','photo_url': 'changed_temp.png','biography': 'changed temp likes being cool'})
+        request = MockRequest(method='POST', body={'user_id':self.user_id,'first_name': 'changed_hamza', 'last_name': 'changed_hamza','location':[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}], 'birthday': '2021-06-06','photo_url': 'changed_temp.png','biography': 'changed temp likes being cool','public':False})
         set_profile_info_api = profile.SetProfileInfo()
         response = set_profile_info_api.post(request=request).content
-        expected_response = {'response': {'first_name': 'changed_hamza', 'last_name': 'changed_hamza', 'birthday': '2021-06-06', 'location': [{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}], 'photo_url': 'changed_temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'biography': 'changed temp likes being cool','user_id':self.user_id}}
+        expected_response = {'response': {'first_name': 'changed_hamza', 'last_name': 'changed_hamza', 'birthday': '2021-06-06', 'location': [{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}], 'photo_url': 'changed_temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'biography': 'changed temp likes being cool','user_id':self.user_id,'public':False}}
 
         self.assertEqual(json.loads(response.decode('utf-8')), expected_response)
 

@@ -55,9 +55,10 @@ class SetProfileSerializer(serializers.ModelSerializer):
     location = LocationSerializer(many=True)
     biography = serializers.CharField()
     photo_url = serializers.CharField()
+    public = serializers.BooleanField()
     class Meta:
         model = User
-        fields = ['id','first_name', 'last_name','photo_url','birthday','location','biography']
+        fields = ['id','first_name', 'last_name','photo_url','birthday','location','biography','public']
 
 
 class FollowSerializer(serializers.ModelSerializer):
