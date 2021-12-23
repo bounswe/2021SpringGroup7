@@ -63,7 +63,14 @@ class GetPostLikes(generics.ListAPIView):
         except:
             return JsonResponse({'response': 'provide valid story_id or story does not exist'})
 
-        likers = list(Like.objects.filter(story_id=story_id).values('user_id','user_id__username'))
+        likers_query = Like.objects.filter(story_id=story_id).values('user_id','user_id__username')
+        likers = []
+        for user in likers_query:
+            temp = dict()
+            temp['user_id']=user['user_id']
+            temp['username'] = user['user_id__username']
+            temp['photo_url'] = Profile.objects.get(user_id=user['user_id']).photo_url
+            likers.append(temp)
 
         result_dict = {
             'like':likers,
