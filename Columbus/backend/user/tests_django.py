@@ -186,7 +186,7 @@ class ProfileInformationTestCase(TestCase):
         response.pop('createDateTime')
         response.pop('lastUpdate')
         response = {'return':[response]}
-        expected_response = {'return': [{'title': 'title', 'text': '', 'multimedia': '', 'user_id': self.user_temp.id, 'time_start': '2020-01-01', 'time_end': '2021-01-01', 'numberOfLikes': 1, 'numberOfComments': 0, 'owner_username': 'temp_name', 'is_liked': True, 'story_id': self.story_temp.id, 'locations': [], 'tags': [], 'photo_url': None}]}
+        expected_response = {'return': [{'title': 'title', 'text': '', 'multimedia': '', 'user_id': self.user_temp.id, 'time_start': '2020-01-01', 'time_end': '2021-01-01', 'numberOfLikes': 1, 'numberOfComments': 0, 'owner_username': 'temp_name', 'is_liked': False, 'story_id': self.story_temp.id, 'locations': [], 'tags': [], 'photo_url': None}]}
 
         self.assertEqual(response,expected_response)
 

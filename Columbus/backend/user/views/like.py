@@ -118,7 +118,7 @@ class GetUserLikes(generics.CreateAPIView):
             result = [each["fields"] for each in serialized_obj]
             for i, each in enumerate(result):
                 each["owner_username"] = stories[i].user_id.username
-                each["is_liked"] = len(Like.objects.filter(story_id=stories[i], user_id__username=username))>0
+                each["is_liked"] = len(Like.objects.filter(story_id=stories[i], user_id__username=request.user))>0
                 each["story_id"] = stories[i].id
 
                 locations = Location.objects.filter(story_id=stories[i])
