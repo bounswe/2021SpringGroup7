@@ -28,6 +28,8 @@ class GetProfileInfo(generics.ListAPIView):
 
         followings = list(Following.objects.filter(user_id=user_info).values('follow','follow__username'))
         followers = list(Following.objects.filter(follow=user_info).values('user_id','user_id__username'))
+
+
         try:
             location = ast.literal_eval(profile_info.location)
         except:
@@ -54,7 +56,7 @@ class SetProfileInfo(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
         body = request.data
-        user_id = body['id']
+        user_id = body['user_id']
         try:
             user_info = User.objects.get(id=user_id)
         except:
@@ -67,8 +69,9 @@ class SetProfileInfo(generics.CreateAPIView):
             profile_info = Profile.objects.create(user_id=user_info)
 
         required_areas_location = {'location', 'latitude', 'longitude', 'type'}
-        if set(body['location'].keys()) != required_areas_location:
-            return JsonResponse({'return': 'location not in appropriate format'}, status=400)
+        for each_location in body['location']:
+            if set(each_location.keys()) != required_areas_location:
+                return JsonResponse({'return': 'location not in appropriate format'}, status=400)
 
         dt = datetime.now(timezone.utc).astimezone()
         ActivityStream.objects.create(type='SetProfile', actor=user_info, date=dt)

@@ -52,7 +52,7 @@ class LocationSerializer(serializers.ModelSerializer):
 class SetProfileSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     birthday = serializers.DateTimeField()
-    location = LocationSerializer(many=False)
+    location = LocationSerializer(many=True)
     biography = serializers.CharField()
     photo_url = serializers.CharField()
     class Meta:
