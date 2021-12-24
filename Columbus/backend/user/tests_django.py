@@ -354,6 +354,7 @@ class LikePostTestCase(TestCase):
         user.save()
         self.user_id=user.id
         story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05',location=[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}])
         story.save()
         story.id = 1
         story.save()
@@ -363,6 +364,15 @@ class LikePostTestCase(TestCase):
         like_post_api = like.LikePost()
         response = like_post_api.post(request=request).content
         self.assertEqual(json.loads(response.decode('utf-8'))["response"], {"user_id": self.user_id, "story_id": 1, "isLiked": True})
+
+    def test_get_post_like(self):
+        request = MockRequest(method='POST', body={"user_id": self.user_id, "story_id":1})
+        like_post_api = like.LikePost()
+        response =  like_post_api.post(request=request).content
+        request = MockRequest(method='GET', body={})
+        like_post_api = like.GetPostLikes()
+        response = like_post_api.get(request=request,story_id=1).content
+        self.assertEqual(json.loads(response.decode('utf-8')), {'return': {'like': [{'user_id': 13, 'username': 'user_name1', 'photo_url': 'temp.png'}], 'number_of_likes': 1}})
 
 
 class FollowTestCase(TestCase):
