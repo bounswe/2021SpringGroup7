@@ -146,11 +146,8 @@ class DeleteProfile(generics.CreateAPIView):
             user = User.objects.get(id=user_id)
         except:
             return JsonResponse({'response': 'provide valid user_id or user does not exist'},status=400)
-        print(user.username)
-        print(request.user)
         if str(user.username) != str(request.user):
             return JsonResponse({'response': 'Forbidden'},status=403)
-        print(user)
         user = authenticate(request, username=user.username, password=password)
         if user:
             user = User.objects.get(id=user_id)
