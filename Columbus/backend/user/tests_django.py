@@ -179,7 +179,7 @@ class ProfileInformationTestCase(TestCase):
         expected_response = {'response': {'user_id': self.user.id, 'story_id': self.story_temp.id, 'isLiked': True}}
         self.assertEqual(json.loads(response.decode('utf-8')), expected_response)
 
-        request = MockRequest(method='POST', body={'username':self.user.username,'page_number':1, 'page_size':1})
+        request = MockRequest(method='POST', body={'username':self.user.username,'page_number':1, 'page_size':1},user=self.user)
         get_liked_posts_api = like.GetUserLikes()
         response = get_liked_posts_api.post(request=request).content
         response = json.loads(response.decode('utf-8'))['return'][0]
