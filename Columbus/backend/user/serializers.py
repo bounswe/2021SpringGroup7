@@ -83,6 +83,14 @@ class PinCommentSerializer(serializers.ModelSerializer):
         model = PinnedComment
         fields = ['comment_id','story_id']
 
+class DeleteProfileSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+    class Meta:
+        model = User
+        fields = ['user_id', 'password']
+
+
+
 class HomePageSerializer(serializers.ModelSerializer):
     page_number = serializers.IntegerField()
     page_size = serializers.IntegerField()
