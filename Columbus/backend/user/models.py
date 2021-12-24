@@ -61,6 +61,10 @@ class Pin(models.Model):
     comment_id = models.ForeignKey(Comment,on_delete=models.CASCADE)
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
 
+class PinnedComment(models.Model):
+    comment_id = models.ForeignKey(Comment,on_delete=models.CASCADE)
+    story_id = models.ForeignKey(Story,on_delete=models.CASCADE)
+
 
 class Following(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_id')

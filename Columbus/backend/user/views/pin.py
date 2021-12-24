@@ -3,10 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from ..serializers import *
 from rest_framework import generics
 from django.http import JsonResponse
-from ..models import Like,Story, Comment
-from django.contrib.auth.models import User
-from django.core import serializers
-import json
+from ..models import Story, PinnedComment
 from datetime import datetime, timezone
 
 class PinComment(generics.CreateAPIView):
@@ -15,24 +12,31 @@ class PinComment(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
         body = request.data
-        required_areas = {'comment_id','user_id'}
+        required_areas = {'comment_id','story_id'}
+        user = request.user
         if set(body.keys()) != required_areas:
             return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
 
-        user_id = body.get('user_id')
+        story_id = body.get('story_id')
         comment_id= body.get('comment_id')
         try:
-            user = User.objects.get(id=user_id)
+            story = Story.objects.get(id=story_id)
             comment = Comment.objects.get(id=comment_id)
         except:
             return JsonResponse({'return': 'The user or comment does not exist'}, status=400)
 
+        if str(story.user_id.username) != str(user):
+            return JsonResponse({'return': 'The user is not allowed for the action'}, status=400)
+
+        if bool(comment.parent_comment_id):
+            return JsonResponse({'return': 'This is a reply. Only comments can be pinned'}, status=400)
+
         result_dict = {
-            'user_id' : user_id,
+            'story_id' : story_id,
             'comment_id' : comment_id
         }
 
-        pin_relation = Pin.objects.filter(comment_id=comment, user_id=user)
+        pin_relation = PinnedComment.objects.filter(comment_id=comment, story_id=story)
         if bool(pin_relation):
             dt = datetime.now(timezone.utc).astimezone()
             ActivityStream.objects.create(type='Unpin', actor=user, comment=comment, date=dt)
@@ -40,7 +44,7 @@ class PinComment(generics.CreateAPIView):
             result_dict['isPinned'] = False
 
         else:
-            pin_relation = Pin(comment_id=comment,user_id=user)
+            pin_relation = PinnedComment(comment_id=comment, story_id=story)
             pin_relation.save()
             dt = datetime.now(timezone.utc).astimezone()
             ActivityStream.objects.create(type='Pin', actor=user, comment=comment, date=dt)
