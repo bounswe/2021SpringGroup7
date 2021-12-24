@@ -74,6 +74,7 @@ class Profile(models.Model):
     biography = models.CharField(max_length=500,null=True)
     birthday = models.DateField(null=True)
     location = models.CharField(null=True,max_length=500)
+    public = models.BooleanField(default=True)
 
 class ActivityStream(models.Model):
     class Meta:

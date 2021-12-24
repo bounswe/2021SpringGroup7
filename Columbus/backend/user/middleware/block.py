@@ -10,18 +10,14 @@ class CheckBlock(object):
         return self.get_response(request)
 
     def process_view(self, request, view_func, view_args, view_kwargs):
-        print('started')
         try:
             request_owner_username = request.user
             request_owner = User.objects.get(username=request_owner_username)
-            print(request_owner)
         except:
             return
-        print(view_kwargs)
         try:
             user_id = view_kwargs['user_id']
             user= User.objects.get(id=user_id)
-            print(user)
             if self.is_blocked(request_owner,user):
                 return JsonResponse({'response': 'Forbidden'},status=403)
         except:

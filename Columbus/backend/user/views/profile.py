@@ -15,6 +15,7 @@ class GetProfileInfo(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
+        request_owner = User.objects.get(username=request.user)
         user_id = kwargs['user_id']
         try:
             user_info = User.objects.get(id=user_id)
@@ -26,8 +27,40 @@ class GetProfileInfo(generics.ListAPIView):
         except:
             profile_info = Profile.objects.create(user_id=user_info)
 
-        followings = list(Following.objects.filter(user_id=user_info).values('follow','follow__username'))
-        followers = list(Following.objects.filter(follow=user_info).values('user_id','user_id__username'))
+
+        followings_query = Following.objects.filter(user_id=user_info).values('follow','follow__username')
+        followings = []
+        for user in followings_query:
+            print(user)
+            temp = dict()
+            temp['user_id']=user['follow']
+            temp['username'] = user['follow__username']
+            temp['photo_url'] = Profile.objects.get(user_id=user['follow']).photo_url
+            followings.append(temp)
+
+
+        followers_query = Following.objects.filter(follow=user_info).values('user_id','user_id__username')
+        followers = []
+        for user in followers_query:
+            temp = dict()
+            temp['user_id']=user['user_id']
+            temp['username'] = user['user_id__username']
+            temp['photo_url'] = Profile.objects.get(user_id=user['user_id']).photo_url
+            followers.append(temp)
+
+        if (not profile_info.public) and (request_owner.id not in list(Following.objects.filter(follow=user_info).values_list('user_id',flat=True))):
+            result_dict = {
+                'first_name': user_info.first_name,
+                'last_name': user_info.last_name,
+                'photo_url': profile_info.photo_url,
+                'username': user_info.username,
+                'followers_count': len(followers),
+                'followings_count': len(followings),
+                'biography': profile_info.biography,
+                'public': profile_info.public
+            }
+            return JsonResponse({'response': result_dict})
+
         try:
             location = ast.literal_eval(profile_info.location)
         except:
@@ -44,7 +77,8 @@ class GetProfileInfo(generics.ListAPIView):
             'followers': followers,
             'followings': followings,
             'biography': profile_info.biography,
-            'user_id':user_info.id
+            'user_id':user_info.id,
+            'public':profile_info.public
         }
         return JsonResponse({'response':result_dict})
 
@@ -54,7 +88,7 @@ class SetProfileInfo(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
         body = request.data
-        user_id = body['id']
+        user_id = body['user_id']
         try:
             user_info = User.objects.get(id=user_id)
         except:
@@ -67,8 +101,9 @@ class SetProfileInfo(generics.CreateAPIView):
             profile_info = Profile.objects.create(user_id=user_info)
 
         required_areas_location = {'location', 'latitude', 'longitude', 'type'}
-        if set(body['location'].keys()) != required_areas_location:
-            return JsonResponse({'return': 'location not in appropriate format'}, status=400)
+        for each_location in body['location']:
+            if set(each_location.keys()) != required_areas_location:
+                return JsonResponse({'return': 'location not in appropriate format'}, status=400)
 
         dt = datetime.now(timezone.utc).astimezone()
         ActivityStream.objects.create(type='SetProfile', actor=user_info, date=dt)
@@ -78,6 +113,7 @@ class SetProfileInfo(generics.CreateAPIView):
         profile_info.location = body['location']
         profile_info.birthday = body['birthday']
         profile_info.photo_url = body['photo_url']
+        profile_info.public = body['public']
         user_info.save()
         profile_info.save()
         result_dict = {
@@ -89,6 +125,7 @@ class SetProfileInfo(generics.CreateAPIView):
             'username': user_info.username,
             'email': user_info.email,
             'biography': profile_info.biography,
-            'user_id':user_info.id
+            'user_id':user_info.id,
+            'public':profile_info.public
         }
         return JsonResponse({'response':result_dict})
