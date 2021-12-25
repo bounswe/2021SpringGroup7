@@ -23,4 +23,5 @@ path('get_user_likes/', views.like.GetUserLikes.as_view()),
 path('activity_stream/', views.activity_stream.ActivityStreamAPI.as_view()),
 path('report_story/', views.report.ReportStory.as_view()),
 path('report_user/', views.report.ReportUserAPI.as_view()),
+path('get_notifications/', views.activity_stream.GetNotifications.as_view()),
 ]

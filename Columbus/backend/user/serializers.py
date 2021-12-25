@@ -142,3 +142,11 @@ class ReportUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportUser
         fields = ['reported_username', 'reporter_username', 'report']
+
+class GetNotificationsSerializer(serializers.ModelSerializer):
+    user_name = serializers.CharField(max_length=100)
+    limit = serializers.IntegerField()
+
+    class Meta:
+        model = Comment
+        fields = ['user_name', 'limit']

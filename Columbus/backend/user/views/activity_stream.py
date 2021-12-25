@@ -5,7 +5,34 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from ..models import *
-from ..models import ActivityStream
+
+class GetNotifications(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = GetNotificationsSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        body = request.data
+        required_areas = {'user_name', 'limit'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+
+        username = body.get('user_name')
+        limit = int(body.get('limit'))
+
+        notifications = ActivityStream.objects.filter(story__user_id__username=username).exclude(story=None) | \
+                              ActivityStream.objects.filter(type='Follow', target__username=username) | \
+                              ActivityStream.objects.filter(type='Unfollow', target__username=username) | \
+                              ActivityStream.objects.filter(type='CommentUpdate', comment__story_id__user_id__username=username) | \
+                              ActivityStream.objects.filter(type='Pin', comment__user_id__username=username) | \
+                              ActivityStream.objects.filter(type='Unpin', comment__user_id__username=username)
+        notifications = notifications.order_by('-date')
+        length = len(notifications)
+        notifications = notifications[:limit]
+        notifications = create_story_notifications(notifications)
+        response = {"numberOfNotifications": length,"notifications" : notifications}
+        return Response(response, status=200)
 
 
 class ActivityStreamAPI(generics.CreateAPIView):
@@ -160,7 +187,7 @@ def _like(activity):
 def _unlike(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": f"{activity.actor.username} uliked {activity.story.id} ",
+            "summary": f"{activity.actor.username} unliked {activity.story.id} ",
             "id": activity.id,
             "type": "Unlike",
             "actor": {
@@ -325,3 +352,117 @@ def create_activity_response(activities):
 
     response['orderedItems'] = items
     return response
+
+def create_story_notifications(story_notifications):
+    notification_list = ['Follow','Unfollow','Like', 'Unlike','CommentUpdate','CommentCreate', 'Pin', 'Unpin']
+    functions = { 'Follow': _follow,'Unfollow':_unfollow, 'Like': _like_notify, 'Unlike': _unlike_notify
+                 , 'CommentUpdate': _comment_update_notify, 'CommentCreate': _comment_create_notify,
+                  'Pin': _pin_notify,'Unpin':_unpin_notify}
+    response = {"@context": "https://www.w3.org/ns/notification",
+                "summary": "Notifications List",
+                "type": "OrderedCollection",
+                "total_items": len(story_notifications)}
+    items = []
+    for notification in story_notifications:
+        if notification.type in notification_list:
+            items.append(functions[notification.type](notification))
+
+    response['orderedItems'] = items
+    return response
+
+
+def _comment_update_notify(activity):
+    return {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "summary": f"{activity.actor.username} updated comment : {activity.comment.text}",
+            "id": activity.id,
+            "type": "CommentUpdate",
+            "actor": {
+                "type": "https://schema.org/Person",
+                "@id": activity.actor.username,
+            },
+            "object": {
+                "type": "https://schema.org/Comment",
+                "@id": activity.comment.id
+            },
+    }
+
+def _like_notify(activity):
+    return {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "summary": f"{activity.actor.username} liked story with title : {activity.story.title} ",
+            "id": activity.id,
+            "type": "Like",
+            "actor": {
+                "type": "https://schema.org/Person",
+                "@id": activity.actor.username,
+            },
+            "object": {
+                "type": "https://schema.org/ShortStory",
+                "@id": activity.story.id
+            }
+    }
+
+def _unlike_notify(activity):
+    return {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "summary": f"{activity.actor.username} unliked story with title {activity.story.title} ",
+            "id": activity.id,
+            "type": "Unlike",
+            "actor": {
+                "type": "https://schema.org/Person",
+                "@id": activity.actor.username,
+            },
+            "object": {
+                "type": "https://schema.org/ShortStory",
+                "@id": activity.story.id
+            }
+    }
+
+def _comment_create_notify(activity):
+    return {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "summary": f"{activity.actor.username} added comment to story with title : {activity.story.title} ",
+            "id": activity.id,
+            "type": "CommentCreate",
+            "actor": {
+                "type": "https://schema.org/Person",
+                "@id": activity.actor.username,
+            },
+            "object": {
+                "type": "https://schema.org/ShortStory",
+                "@id": activity.story.id
+            },
+    }
+
+def _unpin_notify(activity):
+    return {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "summary": f"{activity.actor.username} unpinned comment : {activity.comment.text} ",
+            "id": activity.id,
+            "type": "Unpin",
+            "actor": {
+                "type": "https://schema.org/Person",
+                "@id": activity.actor.username,
+            },
+            "object": {
+                "type": "https://schema.org/Comment",
+                "@id": activity.comment.id
+            }
+    }
+
+def _pin_notify(activity):
+    return {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "summary": f"{activity.actor.username} pinned comment : {activity.comment.text}",
+            "id": activity.id,
+            "type": "Pin",
+            "actor": {
+                "type": "https://schema.org/Person",
+                "@id": activity.actor.username,
+            },
+            "object": {
+                "type": "https://schema.org/Comment",
+                "@id": activity.comment.id
+            }
+    }
