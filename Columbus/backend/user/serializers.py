@@ -160,3 +160,12 @@ class AdminLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
         fields = ['admin_username', 'admin_password']
+
+class AdminActionSerializer(serializers.ModelSerializer):
+    report_id = serializers.IntegerField()
+    safe = serializers.BooleanField()
+    class Meta:
+        model = Admin
+        fields = ['login_hash','report_id', 'safe']
+
+

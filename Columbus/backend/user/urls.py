@@ -26,5 +26,5 @@ path('report_user/', views.report.ReportUserAPI.as_view()),
 path('delete_profile/', views.profile.DeleteProfile.as_view()),
 path('admin/login', views.admin.AdminLogin.as_view()),
 path('admin/get_reported_stories', views.admin.GetReportStory.as_view()),
-
+path('admin/action_reported_stories', views.admin.AdminActionReportStory.as_view()),
 ]

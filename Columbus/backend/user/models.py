@@ -13,6 +13,18 @@ class Story(models.Model):
     numberOfLikes = models.IntegerField(default=0)
     numberOfComments = models.IntegerField(default=0)
 
+class SpamStory(models.Model):
+    title = models.CharField(max_length=100)
+    text = models.CharField(max_length=3000, default="")
+    multimedia = models.CharField(max_length=100, default="")
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    time_start = models.DateField()
+    time_end = models.DateField(blank=True, null=True)
+    createDateTime = models.DateTimeField(auto_now_add=True)
+    lastUpdate = models.DateTimeField(auto_now=True)
+    numberOfLikes = models.IntegerField(default=0)
+    numberOfComments = models.IntegerField(default=0)
+
 class Tag(models.Model):
     story_id = models.ForeignKey(Story,on_delete=models.CASCADE)
     tag = models.CharField(max_length=100)
