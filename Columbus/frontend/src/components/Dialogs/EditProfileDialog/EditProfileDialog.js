@@ -28,10 +28,21 @@ export default function EditProfileDialog(props) {
  const [fileUploadProgress, setFileUploadProgress] = useState(0);
  const [file, setFile] = useState(curProfileInfo['profilePic']);
 
- const [dateValue, setDateValue] = useState(new Date(curProfileInfo['birthday']));
+ const [dateValue, setDateValue] = useState(Date.now());
 
  const [message, setMessage] = useState('');
  const [openMessage, setOpenMessage] = useState(false);
+
+
+ useEffect(() => { 
+   if (!curProfileInfo['birthday']) {
+   setDateValue(new Date( parseInt(curProfileInfo['birthday'].substring(0,4)),
+                          parseInt(curProfileInfo['birthday'].substring(5,7)) - 1, 
+                          parseInt(curProfileInfo['birthday'].substring(8,10)),
+                                                        3, 0, 0));  
+   }
+                                              
+ }, [])
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -62,15 +73,15 @@ export default function EditProfileDialog(props) {
     const birthday = year + "-" + month + "-" + day;
 
     USER_SERVICE.SET_PROFILEINFO({
-                                    'id'        : localStorage.getItem('userid'),
+                                    'user_id'   : localStorage.getItem('userid'),
                                     'username'  : curProfileInfo['username'],  
                                     'first_name': data.get('firstName'), 
                                     'last_name' : data.get('lastName'), 
                                     'photo_url' : imgUrl,
-                                    'email'     : curProfileInfo['email'], 
                                     'birthday'  : birthday,
-                                    'location'  : {"location": data.get('location'), "latitude": 1, "longitude": 1, "type": "Real"},
-                                    'biography' : data.get('biography')
+                                    'location'  : [{"location": "", "latitude": 1, "longitude": 1, "type": "Real"}],
+                                    'biography' : data.get('biography'),
+                                    'public' : true
                                   })
     .then((res) => {
           setMessage("You have successfully edit your profile information!");
@@ -96,7 +107,7 @@ export default function EditProfileDialog(props) {
          <Box component="form" onSubmit={handleEditProfile} id="edit-form" sx={{ mt: 3 }}>
             <Grid container spacing={2}>
              
-               <Grid item xs={6} >
+               <Grid item xs={12} >
                  <Typography variant="inherit" noWrap>
                         {file ? file.name : ""}
                       </Typography>
@@ -131,7 +142,7 @@ export default function EditProfileDialog(props) {
                   
 
               </Grid>
-			        <Grid item xs={6} >
+			        <Grid item xs={12} >
                 
                 <TextField
                   disabled
@@ -175,23 +186,12 @@ export default function EditProfileDialog(props) {
                   defaultValue={curProfileInfo['email']}
                 />
               </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  id="location"
-                  type="location"
-                  label="Location"
-                  name="location"
-                  defaultValue={curProfileInfo['location']}
-                />
-              </Grid>
-              <Grid item xs={6} >
+              <Grid item xs={12} sm={12}>
                  <LocalizationProvider dateAdapter={AdapterDateFns}>
                    <DesktopDatePicker
-                      mask="____-__-__"
                       id="birthday"
                       label="Birthday"
-                      inputFormat="yyyy-MM-dd"
+                      inputFormat="dd/MM/yyyy"
                       maxDate={Date.now()}
                       value={dateValue}
                       onChange={handleDateChange}
@@ -199,7 +199,7 @@ export default function EditProfileDialog(props) {
                   />
                   </LocalizationProvider>
               </Grid>
-              <Grid item xs={12} >
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   id="biography"
