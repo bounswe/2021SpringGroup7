@@ -3,6 +3,7 @@ from .models import *
 from django.contrib.auth.models import User
 import ast
 from .views import *
+import requests as rq
 
 class MockRequest:
     def __init__(self, method, body, user=None,uri="ec2-35"):
@@ -160,6 +161,13 @@ class ProfileInformationTestCase(TestCase):
         expected_response = {'response': {'first_name': 'changed_hamza', 'last_name': 'changed_hamza', 'birthday': '2021-06-06', 'location': [{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}], 'photo_url': 'changed_temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'biography': 'changed temp likes being cool','user_id':self.user_id,'public':False}}
 
         self.assertEqual(json.loads(response.decode('utf-8')), expected_response)
+
+    def test_delete_profile(self):
+        request = MockRequest(method='GET', body={'user_id':self.user_id,'password':'123456'}, user=self.user)
+        delete_profile_api = profile.DeleteProfile()
+        response = delete_profile_api.post(request=request).content
+        self.assertEqual(json.loads(response.decode('utf-8')),{'response': 'Provide valid password'}
+)
 
     def test_get_shared_posts(self):
         request = MockRequest(method='POST', body={'username':self.user.username,'page_number':1, 'page_size':1})

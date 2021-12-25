@@ -10,6 +10,7 @@ from ..models import Following,Location
 import json
 import ast
 from datetime import datetime, timezone
+from django.contrib.auth import authenticate, login as auth_login
 
 class GetProfileInfo(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
@@ -129,3 +130,27 @@ class SetProfileInfo(generics.CreateAPIView):
             'public':profile_info.public
         }
         return JsonResponse({'response':result_dict})
+
+class DeleteProfile(generics.CreateAPIView):
+    serializer_class = DeleteProfileSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+        body = request.data
+        required_areas = {'user_id', 'password'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+        user_id = body['user_id']
+        password = body['password']
+        try:
+            user = User.objects.get(id=user_id)
+        except:
+            return JsonResponse({'response': 'provide valid user_id or user does not exist'},status=400)
+        if str(user.username) != str(request.user):
+            return JsonResponse({'response': 'Forbidden'},status=403)
+        user = authenticate(request, username=user.username, password=password)
+        if user:
+            user = User.objects.get(id=user_id)
+            user.delete()
+            return JsonResponse({'response': f'{request.user} is deleted'}, status=403)
+        return JsonResponse({'response': 'Provide valid password'})
