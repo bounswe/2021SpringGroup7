@@ -95,7 +95,7 @@ function Profile({...props}) {
                                 "followings": proInfo['followings'],
                                 "biography" : proInfo['biography']
                                               }
-              );   // profile info will be updated in the end of the render
+              ); 
               if(res.data.response['followers'].some(follower => follower['user_id'].toString() === curUserId)) 
               {
                 setIsCurUserFollowing(true);
@@ -183,25 +183,14 @@ function Profile({...props}) {
 
                     <Grid item xs>
                          <Stack spacing={1}>
-                           {profileInfo['location'] && curUserId === userId ? <Button 
-                                                        size="medium"
-                                                        variant="text"
-                                                        startIcon={ <LocationOnIcon color="primary"></LocationOnIcon>}
-                                                        className={classes.buttonText}
-                                                        onClick={handleEditProfileDialogOpen}
-                                                        >
-                                                          {profileInfo['location']}
-                                                        </Button>
 
-                                                      : <Stack direction='row' justifyContent='center'><LocationOnIcon color="primary"></LocationOnIcon><Typography> {profileInfo['location']}</Typography></Stack>    
-                              }
                            {profileInfo['birthday'] && curUserId === userId ? <Button 
                                                         size="medium"
                                                         variant="text"
                                                         startIcon={ <CakeIcon color="primary"></CakeIcon>}
                                                         onClick={handleEditProfileDialogOpen}
                                                         >
-                                                        {profileInfo['birthday']}
+                                                        {profileInfo['birthday'].substring(8,10) + '.' + profileInfo['birthday'].substring(5,7)  + '.' + profileInfo['birthday'].substring(0,4)}
                                                       </Button>
                                                       : <Stack direction='row' justifyContent='center'><CakeIcon color="primary"></CakeIcon><Typography> {profileInfo['birthday']}</Typography></Stack>
                               }
