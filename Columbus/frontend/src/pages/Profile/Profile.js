@@ -103,6 +103,12 @@ function Profile({...props}) {
                 setIsCurUserFollowing(false);
               }
               setInfoLoading(false);
+
+              console.log('birttt ', new Date(Date.UTC(parseInt(res.data.response['birthday'].substring(0,4)),
+                                                       parseInt(res.data.response['birthday'].substring(5,7)) - 1, 
+                                                       parseInt(res.data.response['birthday'].substring(8,10)),
+                                                        3, 0, 0))
+                                                        .toLocaleDateString('en-US',{ year: "numeric", month: "long", day: "numeric" }))
         })
         .catch((error) => {
           console.log('err ', error);
@@ -189,8 +195,15 @@ function Profile({...props}) {
                                                         variant="text"
                                                         startIcon={ <CakeIcon color="primary"></CakeIcon>}
                                                         onClick={handleEditProfileDialogOpen}
+                                                        className={classes.buttonText} 
                                                         >
-                                                        {profileInfo['birthday'].substring(8,10) + '.' + profileInfo['birthday'].substring(5,7)  + '.' + profileInfo['birthday'].substring(0,4)}
+                                                        {new Date(Date.UTC(
+                                                          parseInt(profileInfo['birthday'].substring(0,4)),
+                                                          parseInt(profileInfo['birthday'].substring(5,7))-1, 
+                                                          parseInt(profileInfo['birthday'].substring(8,10)), 
+                                                                    3, 0, 0))
+                                                        .toLocaleDateString('en-US',{ year: "numeric", month: "long", day: "numeric" })
+                                                        }
                                                       </Button>
                                                       : <Stack direction='row' justifyContent='center'><CakeIcon color="primary"></CakeIcon><Typography> {profileInfo['birthday']}</Typography></Stack>
                               }
