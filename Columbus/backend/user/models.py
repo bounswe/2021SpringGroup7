@@ -29,6 +29,10 @@ class Tag(models.Model):
     story_id = models.ForeignKey(Story,on_delete=models.CASCADE)
     tag = models.CharField(max_length=100)
 
+class SpamTag(models.Model):
+    story_id = models.ForeignKey(Story,on_delete=models.CASCADE)
+    tag = models.CharField(max_length=100)
+
 class Location(models.Model):
     story_id = models.ForeignKey(Story,on_delete=models.CASCADE)
     location = models.CharField(max_length=100)

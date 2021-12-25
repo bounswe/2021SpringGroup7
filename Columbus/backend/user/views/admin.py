@@ -306,3 +306,60 @@ class AdminActionReportComment(generics.CreateAPIView):
             reported_comment.delete()
             report.delete()
             return JsonResponse({'return': 'Comment is carried to the spam folder'})
+
+class GetReportTag(generics.CreateAPIView):
+    serializer_class = AdminSerializer
+    def post(self, request, *args, **kwargs):
+        body = request.data
+        required_areas = {'login_hash'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+        login_hash = body.get('login_hash')
+        try:
+            Admin.objects.get(login_hash=login_hash)
+        except:
+            return JsonResponse({'return': 'Invalid Hash'}, status=400)
+
+        reported_tag = ReportTag.objects.all().first()
+        tag = Tag.objects.filter(id=reported_tag.tag_id.id).values()[0]
+
+        result_dict = {
+            "reported_tag":tag,
+            "report":reported_tag.report,
+            "reporter_id":reported_tag.reporter_id.id,
+            "report_id":reported_tag.id
+        }
+        return JsonResponse({'return': result_dict})
+
+class AdminActionReportTag(generics.CreateAPIView):
+    serializer_class = AdminActionSerializer
+    def post(self, request, *args, **kwargs):
+        body = request.data
+        required_areas = {'login_hash','report_id','safe'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+
+        login_hash = body.get('login_hash')
+        report_id = body.get('report_id')
+        safe = body.get('safe')
+        try:
+            Admin.objects.get(login_hash=login_hash)
+        except:
+            return JsonResponse({'return': 'Invalid Hash'}, status=400)
+
+        try:
+            report = ReportTag.objects.get(id=report_id)
+        except:
+            return JsonResponse({'return': 'Report does not exist'}, status=400)
+
+        if safe:
+            report.delete()
+            return JsonResponse({'return': 'Report is deleted without any action'})
+        else:
+            reported_tag = report.tag_id
+            spam_tag = SpamTag(story_id=reported_tag.story_id, tag=reported_tag.tag)
+            spam_tag.save()
+            reported_tag.delete()
+            report.delete()
+            return JsonResponse({'return': 'Tag is carried to the spam folder'})
+

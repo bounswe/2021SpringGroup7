@@ -32,4 +32,6 @@ path('admin/action_reported_users', views.admin.AdminActionReportUser.as_view())
 path('admin/remove_users_from_black_list', views.admin.AdminRemoveFromBlackList.as_view()),
 path('admin/get_reported_comments', views.admin.GetReportComment.as_view()),
 path('admin/action_reported_comments', views.admin.AdminActionReportComment.as_view()),
+path('admin/get_reported_tags', views.admin.GetReportTag.as_view()),
+path('admin/action_reported_tags', views.admin.AdminActionReportTag.as_view()),
 ]
