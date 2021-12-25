@@ -21,16 +21,17 @@ class GetNotifications(generics.CreateAPIView):
         username = body.get('user_name')
         limit = int(body.get('limit'))
 
-        story_notifications = ActivityStream.objects.filter(story__user_id__username=username).exclude(story=None) | \
+        notifications = ActivityStream.objects.filter(story__user_id__username=username).exclude(story=None) | \
                               ActivityStream.objects.filter(type='Follow', target__username=username) | \
                               ActivityStream.objects.filter(type='Unfollow', target__username=username) | \
                               ActivityStream.objects.filter(type='CommentUpdate', comment__story_id__user_id__username=username) | \
                               ActivityStream.objects.filter(type='Pin', comment__user_id__username=username) | \
                               ActivityStream.objects.filter(type='Unpin', comment__user_id__username=username)
-        story_notifications = story_notifications.order_by('-date')
-        story_notifications = story_notifications[:limit]
-
-        response = create_story_notifications(story_notifications)
+        notifications = notifications.order_by('-date')
+        length = len(notifications)
+        notifications = notifications[:limit]
+        notifications = create_story_notifications(notifications)
+        response = {"numberOfNotifications": length,"notifications" : notifications}
         return Response(response, status=200)
 
 
