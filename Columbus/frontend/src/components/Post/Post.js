@@ -103,7 +103,7 @@ export default function Post(props) {
     POST_SERVICE.GET_COMMENTS(postdata)
     .then(resp => {
       setComments(
-        resp.data.return
+        resp.data.return['comments']
       );
     })
     .catch((error) => { 
