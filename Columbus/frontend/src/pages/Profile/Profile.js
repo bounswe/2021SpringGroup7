@@ -34,6 +34,7 @@ import EditProfileDialog from "../../components/Dialogs/EditProfileDialog/EditPr
 import FollowUnfollow from "./Profile.follow"
 import ProfilePostScroll from "../../components/PostScroll/ProfilePostScroll"
 import LikedPostScroll from "../../components/PostScroll/LikedPostScroll"
+import VerticalMenu from "./VerticalMenu";
 
 import USER_SERVICE from "../../services/user";
 
@@ -86,7 +87,7 @@ function Profile({...props}) {
                                               });
 
   //const [sharedPosts, setSharedPosts] = useState(dummyPosts.slice(0,1));
-  const [likedPosts, setLikedPosts] = useState(dummyPosts.slice(1,4));
+  //const [likedPosts, setLikedPosts] = useState(dummyPosts.slice(1,4));
   
   const [tabValue, setTabValue] = useState('shared');
   const [infoLoading, setInfoLoading] = useState(true);
@@ -94,6 +95,7 @@ function Profile({...props}) {
   const [followingsOpen, setFollowingsOpen] = useState(false);
   const [followersOpen, setFollowersOpen] = useState(false);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const [verticalMenuOpen, setVerticalMenuOpen] = useState(false);
 
 
   useEffect(() => {
@@ -101,7 +103,7 @@ function Profile({...props}) {
      USER_SERVICE.GET_PROFILEINFO(userId)
       .then((res) => {
         const proInfo = res.data.response;
-        console.log('profile info ',  res.data.response['username'])
+        //console.log('profile info ',  res.data.response['username'])
               setProfileInfo({
                                 "first_name": proInfo['first_name'],
                                 "last_name" : proInfo['last_name'],
@@ -156,6 +158,11 @@ function Profile({...props}) {
   const  handleEditProfileDialogClose = (value) => {
     setEditProfileOpen(false);
   };
+
+  const handleVerticalMenuClose = () => {
+    setVerticalMenuOpen(false);
+  };
+
 
 
   if (loading) {
@@ -242,7 +249,19 @@ function Profile({...props}) {
                     <Card  variant="elevation">
                       <CardHeader 
                         title={profileInfo['first_name'] + " " + profileInfo['last_name']}
-                        subheader={profileInfo['username']}/>
+                        subheader={profileInfo['username']}
+                        action={curUserId === userId ? <></>
+                                                  : <>
+                                                   <VerticalMenu
+                                                    anchorEl={verticalMenuOpen}
+                                                    setAnchorEl={setVerticalMenuOpen}
+                                                    onClose={handleVerticalMenuClose}
+                                                    userThatIsToBeViewed={userId}
+                                                    usernameViewed={profileInfo['username']}
+                                                    userThatViews={curUserId}>
+                                                  </VerticalMenu>
+                                                    </>
+                                  }/>
                     
                     <CardContent>
                         {!profileInfo['biography'] ? <>
