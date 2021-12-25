@@ -53,17 +53,17 @@ export const styles = StyleSheet.create({
   },
   biographyContainer: {
     display: 'flex',
-    flex: 1,
+    marginVertical: 4,
     paddingHorizontal: 8,
   },
   editContainer: {
     display: 'flex',
-    flex: 1,
+    marginVertical: 8,
     paddingHorizontal: 8,
   },
   contentContainer: {
     display: 'flex',
     flex: 6,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
   },
 });
