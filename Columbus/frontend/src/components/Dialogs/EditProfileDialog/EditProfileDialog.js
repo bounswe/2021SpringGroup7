@@ -35,7 +35,7 @@ export default function EditProfileDialog(props) {
 
 
  useEffect(() => { 
-   if (!curProfileInfo && !curProfileInfo['birthday']) {
+   if (!!curProfileInfo && !!curProfileInfo['birthday']) {
    setDateValue(new Date( parseInt(curProfileInfo['birthday'].substring(0,4)),
                           parseInt(curProfileInfo['birthday'].substring(5,7)) - 1, 
                           parseInt(curProfileInfo['birthday'].substring(8,10)),
