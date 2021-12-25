@@ -175,3 +175,10 @@ class BlackListSerializer(serializers.ModelSerializer):
         fields = ['login_hash','username']
 
 
+class GetNotificationsSerializer(serializers.ModelSerializer):
+    user_name = serializers.CharField(max_length=100)
+    limit = serializers.IntegerField()
+
+    class Meta:
+        model = Comment
+        fields = ['user_name', 'limit']
