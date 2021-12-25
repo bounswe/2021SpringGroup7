@@ -50,7 +50,7 @@ class LocationSerializer(serializers.ModelSerializer):
 
 
 class SetProfileSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField()
+    user_id = serializers.IntegerField()
     birthday = serializers.DateTimeField()
     location = LocationSerializer(many=True)
     biography = serializers.CharField()
@@ -58,7 +58,7 @@ class SetProfileSerializer(serializers.ModelSerializer):
     public = serializers.BooleanField()
     class Meta:
         model = User
-        fields = ['id','first_name', 'last_name','photo_url','birthday','location','biography','public']
+        fields = ['user_id','first_name', 'last_name','photo_url','birthday','location','biography','public']
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -96,7 +96,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ['username', 'story_id', 'text']
+        fields = ['username', 'story_id', 'text','parent_comment_id']
 
 
 class CommentUpdateSerializer(serializers.ModelSerializer):

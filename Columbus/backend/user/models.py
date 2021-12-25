@@ -49,6 +49,8 @@ class Comment(models.Model):
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     text = models.CharField(max_length=500)
+    parent_comment_id = models.IntegerField(null=True)
+
 
 class ReportComment(models.Model):
     comment_id = models.ForeignKey(Comment,on_delete=models.CASCADE)
