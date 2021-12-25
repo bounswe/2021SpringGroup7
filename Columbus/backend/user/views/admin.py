@@ -1,6 +1,6 @@
 from ..models import *
 from rest_framework import generics
-from ..serializers import AdminSerializer,AdminLoginSerializer, AdminActionSerializer
+from ..serializers import *
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse
@@ -217,7 +217,7 @@ class AdminActionReportUser(generics.CreateAPIView):
             return JsonResponse({'return': 'User is carried to the black list'})
 
 class AdminRemoveFromBlackList(generics.CreateAPIView):
-    serializer_class = AdminActionSerializer
+    serializer_class = BlackListSerializer
     def post(self, request, *args, **kwargs):
         body = request.data
         required_areas = {'login_hash','username'}
@@ -241,3 +241,68 @@ class AdminRemoveFromBlackList(generics.CreateAPIView):
         user.save()
 
         return JsonResponse({'response': f'{username} is removed from black list'})
+
+class GetReportComment(generics.CreateAPIView):
+    serializer_class = AdminSerializer
+    def post(self, request, *args, **kwargs):
+        body = request.data
+        required_areas = {'login_hash'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+        login_hash = body.get('login_hash')
+        try:
+            Admin.objects.get(login_hash=login_hash)
+        except:
+            return JsonResponse({'return': 'Invalid Hash'}, status=400)
+
+        reported_comment = ReportComment.objects.all().first()
+        comments = Comment.objects.filter(id=reported_comment.comment_id.id)
+        serialized_obj = serializers.serialize('json', comments)
+        serialized_obj = json.loads(str(serialized_obj))
+        serialized_obj = [dict(each["fields"], **{"id": each["pk"]}) for each in serialized_obj]
+        print(serialized_obj)
+
+        for each in serialized_obj:
+            each["username"] = User.objects.get(id=each["user_id"]).username
+            each['photo_url'] = Profile.objects.get(user_id__id=each["user_id"]).photo_url
+        result_dict = {
+            "reported_comment": serialized_obj[0],
+            "report":reported_comment.report,
+            "report_id":reported_comment.id,
+            'reporter_id' : reported_comment.reporter_id.id
+        }
+
+        return JsonResponse({'return': result_dict}, status=400)
+
+class AdminActionReportComment(generics.CreateAPIView):
+    serializer_class = AdminActionSerializer
+    def post(self, request, *args, **kwargs):
+        body = request.data
+        required_areas = {'login_hash','report_id','safe'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+
+        login_hash = body.get('login_hash')
+        report_id = body.get('report_id')
+        safe = body.get('safe')
+
+        try:
+            Admin.objects.get(login_hash=login_hash)
+        except:
+            return JsonResponse({'return': 'Invalid Hash'}, status=400)
+
+        try:
+            report = ReportComment.objects.get(id=report_id)
+        except:
+            return JsonResponse({'return': 'Report does not exist'}, status=400)
+
+        if safe:
+            report.delete()
+            return JsonResponse({'return': 'Report is deleted without any action'})
+        else:
+            reported_comment = report.comment_id
+            spam_comment = SpamComment(story_id=reported_comment.story_id, text=reported_comment.text, user_id=reported_comment.user_id,parent_comment_id=reported_comment.parent_comment_id)
+            spam_comment.save()
+            reported_comment.delete()
+            report.delete()
+            return JsonResponse({'return': 'Comment is carried to the spam folder'})
