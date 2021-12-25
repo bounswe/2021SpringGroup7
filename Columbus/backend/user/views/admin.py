@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse
 from django.core import serializers
 from datetime import datetime
-
+import ast
 import json
 
 class AdminLogin(generics.CreateAPIView):
@@ -113,6 +113,131 @@ class AdminActionReportStory(generics.CreateAPIView):
                   time_end=reported_story.time_end, numberOfLikes=0, numberOfComments=0)
             spam_story.save()
             reported_story.delete()
+            report.delete()
             return JsonResponse({'return': 'Story is carried to the spam folder'})
 
+class GetReportUser(generics.CreateAPIView):
+    serializer_class = AdminSerializer
+    def post(self, request, *args, **kwargs):
+        body = request.data
+        required_areas = {'login_hash'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+        login_hash = body.get('login_hash')
+        try:
+            Admin.objects.get(login_hash=login_hash)
+        except:
+            return JsonResponse({'return': 'Invalid Hash'}, status=400)
 
+        report = ReportUser.objects.all().values().first()
+        if not report:
+            return JsonResponse({'return': 'No Reported User'})
+        try:
+            user_info = User.objects.get(id=report['reported_id_id'])
+        except:
+            return JsonResponse({'response': 'provide valid user_id or user does not exist'})
+
+        try:
+            profile_info = Profile.objects.get(user_id=user_info)
+        except:
+            profile_info = Profile.objects.create(user_id=user_info)
+        followings_query = Following.objects.filter(user_id=user_info).values('follow', 'follow__username')
+        followings = []
+        for user in followings_query:
+            print(user)
+            temp = dict()
+            temp['user_id'] = user['follow']
+            temp['username'] = user['follow__username']
+            temp['photo_url'] = Profile.objects.get(user_id=user['follow']).photo_url
+            followings.append(temp)
+
+        followers_query = Following.objects.filter(follow=user_info).values('user_id', 'user_id__username')
+        followers = []
+        for user in followers_query:
+            temp = dict()
+            temp['user_id'] = user['user_id']
+            temp['username'] = user['user_id__username']
+            temp['photo_url'] = Profile.objects.get(user_id=user['user_id']).photo_url
+            followers.append(temp)
+
+        try:
+            location = ast.literal_eval(profile_info.location)
+        except:
+            location = None
+        user_dict = {
+            'first_name': user_info.first_name,
+            'last_name': user_info.last_name,
+            'birthday': profile_info.birthday,
+            'location': location,
+            'photo_url': profile_info.photo_url,
+            'username': user_info.username,
+            'email': user_info.email,
+            'followers': followers,
+            'followings': followings,
+            'biography': profile_info.biography,
+            'user_id': user_info.id,
+            'public': profile_info.public
+        }
+        result_dict = {
+            'reported_user':user_dict,
+            'report_text':report['report'],
+            'report_id':report['id']
+        }
+        return JsonResponse({'return': result_dict})
+
+class AdminActionReportUser(generics.CreateAPIView):
+    serializer_class = AdminActionSerializer
+    def post(self, request, *args, **kwargs):
+        body = request.data
+        required_areas = {'login_hash','report_id','safe'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+
+        login_hash = body.get('login_hash')
+        report_id = body.get('report_id')
+        safe = body.get('safe')
+
+        try:
+            Admin.objects.get(login_hash=login_hash)
+        except:
+            return JsonResponse({'return': 'Invalid Hash'}, status=400)
+
+        try:
+            report = ReportUser.objects.get(id=report_id)
+        except:
+            return JsonResponse({'return': 'Report does not exist'}, status=400)
+
+        if safe:
+            report.delete()
+            return JsonResponse({'return': 'Report is deleted without any action'})
+        else:
+            report.reported_id.is_active = False
+            report.reported_id.save()
+            report.delete()
+            return JsonResponse({'return': 'User is carried to the black list'})
+
+class AdminRemoveFromBlackList(generics.CreateAPIView):
+    serializer_class = AdminActionSerializer
+    def post(self, request, *args, **kwargs):
+        body = request.data
+        required_areas = {'login_hash','username'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+
+        login_hash = body.get('login_hash')
+        username = body.get('username')
+
+        try:
+            Admin.objects.get(login_hash=login_hash)
+        except:
+            return JsonResponse({'return': 'Invalid Hash'}, status=400)
+
+        try:
+            user = User.objects.get(username=username)
+        except:
+            return JsonResponse({'response': 'provide valid username or user does not exist'})
+
+        user.is_active=True
+        user.save()
+
+        return JsonResponse({'response': f'{username} is removed from black list'})

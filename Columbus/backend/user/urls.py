@@ -27,4 +27,7 @@ path('delete_profile/', views.profile.DeleteProfile.as_view()),
 path('admin/login', views.admin.AdminLogin.as_view()),
 path('admin/get_reported_stories', views.admin.GetReportStory.as_view()),
 path('admin/action_reported_stories', views.admin.AdminActionReportStory.as_view()),
+path('admin/get_reported_users', views.admin.GetReportUser.as_view()),
+path('admin/action_reported_users', views.admin.AdminActionReportUser.as_view()),
+path('admin/remove_users_from_black_list', views.admin.AdminRemoveFromBlackList.as_view()),
 ]

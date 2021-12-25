@@ -168,4 +168,10 @@ class AdminActionSerializer(serializers.ModelSerializer):
         model = Admin
         fields = ['login_hash','report_id', 'safe']
 
+class BlackListSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=100)
+    class Meta:
+        model = Admin
+        fields = ['login_hash','username']
+
 
