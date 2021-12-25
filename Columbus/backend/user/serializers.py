@@ -150,3 +150,11 @@ class ReportUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportUser
         fields = ['reported_username', 'reporter_username', 'report']
+
+class AdminPageSerializer(serializers.ModelSerializer):
+    page_number = serializers.IntegerField()
+    page_size = serializers.IntegerField()
+
+    class Meta:
+        model = None
+        fields = ['page_number', 'page_size']

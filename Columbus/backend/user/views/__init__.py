@@ -10,3 +10,4 @@ from .activity_stream import *
 from .block import *
 from .pin import *
 from .report import *
+from .admin import *

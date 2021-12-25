@@ -51,7 +51,6 @@ class Comment(models.Model):
     text = models.CharField(max_length=500)
     parent_comment_id = models.IntegerField(null=True)
 
-
 class ReportComment(models.Model):
     comment_id = models.ForeignKey(Comment,on_delete=models.CASCADE)
     reporter_id = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -91,3 +90,7 @@ class ActivityStream(models.Model):
     comment = models.ForeignKey(Comment, null=True, on_delete=models.CASCADE)
     story = models.ForeignKey(Story, null=True, on_delete=models.CASCADE)
     date = models.DateTimeField()
+
+class Admin(models.Model):
+    admin_username = models.CharField(max_length=500)
+    admin_password = models.CharField(max_length=500)
