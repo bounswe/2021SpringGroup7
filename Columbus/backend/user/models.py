@@ -94,3 +94,4 @@ class ActivityStream(models.Model):
 class Admin(models.Model):
     admin_username = models.CharField(max_length=500)
     admin_password = models.CharField(max_length=500)
+    login_hash = models.CharField(max_length=500,null=True)

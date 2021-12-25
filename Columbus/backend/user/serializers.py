@@ -151,10 +151,12 @@ class ReportUserSerializer(serializers.ModelSerializer):
         model = ReportUser
         fields = ['reported_username', 'reporter_username', 'report']
 
-class AdminPageSerializer(serializers.ModelSerializer):
-    page_number = serializers.IntegerField()
-    page_size = serializers.IntegerField()
-
+class AdminSerializer(serializers.ModelSerializer):
     class Meta:
-        model = None
-        fields = ['page_number', 'page_size']
+        model = Admin
+        fields = ['login_hash']
+
+class AdminLoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Admin
+        fields = ['admin_username', 'admin_password']
