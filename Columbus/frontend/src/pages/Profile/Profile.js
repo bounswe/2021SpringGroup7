@@ -35,6 +35,18 @@ import LikedPostScroll from "../../components/PostScroll/LikedPostScroll"
 
 import USER_SERVICE from "../../services/user";
 
+
+function convertBirthday(birthday) {
+
+  return new Date(Date.UTC(
+                            parseInt(birthday.substring(0,4)),
+                            parseInt(birthday.substring(5,7))-1, 
+                            parseInt(birthday.substring(8,10)), 
+                                      3, 0, 0))
+                          .toLocaleDateString('en-US',{ year: "numeric", month: "long", day: "numeric" })
+
+}
+
 function Profile({...props}) {
   const navigate = useNavigate();
   let { userId } = useParams();                     // viewing this user's profile
@@ -88,7 +100,7 @@ function Profile({...props}) {
                                 "last_name" : proInfo['last_name'],
                                 "birthday"  : proInfo['birthday'],
                                 "photo_url" : proInfo['photo_url'],
-                                "location"  : proInfo['location']['location'],
+                                "location"  : "",
                                 "username"  : proInfo['username'],
                                 "email"     : proInfo['email'],
                                 "followers" : proInfo['followers'],
@@ -103,12 +115,6 @@ function Profile({...props}) {
                 setIsCurUserFollowing(false);
               }
               setInfoLoading(false);
-
-              console.log('birttt ', new Date(Date.UTC(parseInt(res.data.response['birthday'].substring(0,4)),
-                                                       parseInt(res.data.response['birthday'].substring(5,7)) - 1, 
-                                                       parseInt(res.data.response['birthday'].substring(8,10)),
-                                                        3, 0, 0))
-                                                        .toLocaleDateString('en-US',{ year: "numeric", month: "long", day: "numeric" }))
         })
         .catch((error) => {
           console.log('err ', error);
@@ -197,15 +203,12 @@ function Profile({...props}) {
                                                         onClick={handleEditProfileDialogOpen}
                                                         className={classes.buttonText} 
                                                         >
-                                                        {new Date(Date.UTC(
-                                                          parseInt(profileInfo['birthday'].substring(0,4)),
-                                                          parseInt(profileInfo['birthday'].substring(5,7))-1, 
-                                                          parseInt(profileInfo['birthday'].substring(8,10)), 
-                                                                    3, 0, 0))
-                                                        .toLocaleDateString('en-US',{ year: "numeric", month: "long", day: "numeric" })
-                                                        }
+                                                        {convertBirthday(profileInfo['birthday'])}
                                                       </Button>
-                                                      : <Stack direction='row' justifyContent='center'><CakeIcon color="primary"></CakeIcon><Typography> {profileInfo['birthday']}</Typography></Stack>
+                                                      : <Stack direction='row' justifyContent='center'>
+                                                          <CakeIcon color="primary"></CakeIcon>
+                                                        <Typography> {convertBirthday(profileInfo['birthday'])}</Typography>
+                                                        </Stack>
                               }
                           </Stack>
                     </Grid>
