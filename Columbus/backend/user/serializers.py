@@ -80,8 +80,8 @@ class LikeSerializer(serializers.ModelSerializer):
 
 class PinCommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Pin
-        fields = ['comment_id','user_id']
+        model = PinnedComment
+        fields = ['comment_id','story_id']
 
 class HomePageSerializer(serializers.ModelSerializer):
     page_number = serializers.IntegerField()

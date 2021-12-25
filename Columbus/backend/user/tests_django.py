@@ -321,8 +321,8 @@ class GetCommentTestCase(TestCase):
         request = MockRequest(method='POST', body={"story_id": 1})
         get_comment_api = comment.GetComment()
         response = get_comment_api.post(request=request).content
-        self.assertEqual(json.loads(response.decode('utf-8'))["return"][0]['story_id'],1)
-        self.assertEqual(json.loads(response.decode('utf-8'))["return"][0]['text'], "new text")
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"]['comments'][0]['story_id'],1)
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"]['comments'][0]['text'], "new text")
 
 class PostCreateTestCase(TestCase):
     def setUp(self):

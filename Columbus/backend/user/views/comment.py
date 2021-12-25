@@ -130,9 +130,18 @@ class GetComment(generics.CreateAPIView):
                     if parent['id']==child["parent_comment_id"]:
                         parent['child_comments'].append(child)
 
-        result_dict = [each for each in serialized_obj if not each["parent_comment_id"]]
+        serialized_obj = [each for each in serialized_obj if not each["parent_comment_id"]]
 
+        pinned_comments_id = list(PinnedComment.objects.filter(story_id=story_id).values_list('comment_id',flat=True))
+        pinned_comments = [comment for comment in serialized_obj if comment['id'] in pinned_comments_id]
+        comments = [comment for comment in serialized_obj if comment['id'] not in pinned_comments_id]
+        pinned_comments = sorted(pinned_comments,key=lambda element: element['date'])
+        comments = sorted(comments, key=lambda element: element['date'])
 
+        result_dict = {
+            "pinned_comments": pinned_comments,
+            "comments": comments
+            }
         try:
             return JsonResponse({'return': result_dict})
         except:
