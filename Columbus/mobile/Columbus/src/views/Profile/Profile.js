@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useMutation} from 'react-query';
 import {SERVICE} from '../../services/services';
 import PostCard from '../../components/PostCard';
+import ConnectionModal from './components/ConnectionModal/ConnectionModal';
 
 const Profile = ({navigation, route}) => {
   const {user, logout} = useAuth();
@@ -23,6 +24,10 @@ const Profile = ({navigation, route}) => {
   const [userInfo, setUserInfo] = useState(null);
   const [storyLoading, setStoryLoading] = useState(true);
   const [userStories, setUserStories] = useState([]);
+  const [showConnectionsModal, setShowConnectionsModal] = useState(false);
+  const [connectionModalData, setConnectionModalData] = useState(null);
+  const [connectionModalHeaders, setConnectionModalHeaders] = useState('');
+
   let token = '';
 
   useLayoutEffect(() => {
@@ -82,6 +87,18 @@ const Profile = ({navigation, route}) => {
     logout();
   };
 
+  const openFollowersModal = () => {
+    setConnectionModalData(userInfo.followers);
+    setConnectionModalHeaders('Followers');
+    setShowConnectionsModal(true);
+  };
+
+  const openFollowingsModal = () => {
+    setConnectionModalData(userInfo.followings);
+    setConnectionModalHeaders('Followings');
+    setShowConnectionsModal(true);
+  };
+
   if (loading) {
     return <PageSpinner></PageSpinner>;
   }
@@ -106,21 +123,19 @@ const Profile = ({navigation, route}) => {
         </View>
         <View style={styles.headerRightSideContainer}>
           <View style={styles.infoBoxContainer}>
-            {/* <InfoBox
-              heading="Story"
-              number={
-                userInfo?.stories ? userInfo?.stories?.length : 0
-              }></InfoBox> */}
+            {!storyLoading && userStories.length !== 0 && (
+              <InfoBox
+                heading="Story"
+                number={userStories ? userStories?.length : 0}></InfoBox>
+            )}
             <InfoBox
               heading="Followers"
-              number={
-                userInfo?.followers ? userInfo?.followers.length : 0
-              }></InfoBox>
+              number={userInfo?.followers ? userInfo?.followers.length : 0}
+              handleModal={openFollowersModal}></InfoBox>
             <InfoBox
               heading="Following"
-              number={
-                userInfo?.followings ? userInfo?.followings.length : 0
-              }></InfoBox>
+              number={userInfo?.followings ? userInfo?.followings.length : 0}
+              handleModal={openFollowingsModal}></InfoBox>
           </View>
           <View style={styles.mainInfoContainer}>
             {userInfo.birthday && (
@@ -151,6 +166,15 @@ const Profile = ({navigation, route}) => {
           Edit Profile
         </Button>
       </View>
+      {showConnectionsModal && (
+        <ConnectionModal
+          showModal={showConnectionsModal}
+          closeModal={() => setShowConnectionsModal(false)}
+          data={connectionModalData}
+          header={connectionModalHeaders}
+          navigation={navigation}
+        />
+      )}
       <View style={styles.contentContainer}>
         {storyLoading && <Spinner></Spinner>}
         {!storyLoading && userStories.length !== 0 && (
