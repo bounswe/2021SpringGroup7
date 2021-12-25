@@ -12,7 +12,8 @@ import {
   Button,
   Card,
   CardHeader,
-  CardContent
+  CardContent,
+  IconButton
 } from "@material-ui/core";
 
 import Stack from '@mui/material/Stack';
@@ -22,6 +23,7 @@ import Tab from '@mui/material/Tab';
 
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CakeIcon from '@mui/icons-material/Cake';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Post from "../../components/Post/Post";
 
 import {dummyPosts} from "../Home/Home.constants"
@@ -38,12 +40,17 @@ import USER_SERVICE from "../../services/user";
 
 function convertBirthday(birthday) {
 
-  return new Date(Date.UTC(
+  let birthdayReadable = ''
+  if(!!birthday) {
+  birthdayReadable = new Date(Date.UTC(
                             parseInt(birthday.substring(0,4)),
                             parseInt(birthday.substring(5,7))-1, 
                             parseInt(birthday.substring(8,10)), 
                                       3, 0, 0))
                           .toLocaleDateString('en-US',{ year: "numeric", month: "long", day: "numeric" })
+  }
+
+  return birthdayReadable
 
 }
 
