@@ -48,19 +48,19 @@ class GetProfileInfo(generics.ListAPIView):
             temp['username'] = user['user_id__username']
             temp['photo_url'] = Profile.objects.get(user_id=user['user_id']).photo_url
             followers.append(temp)
-
-        if (not profile_info.public) and (request_owner.id not in list(Following.objects.filter(follow=user_info).values_list('user_id',flat=True))):
-            result_dict = {
-                'first_name': user_info.first_name,
-                'last_name': user_info.last_name,
-                'photo_url': profile_info.photo_url,
-                'username': user_info.username,
-                'followers_count': len(followers),
-                'followings_count': len(followings),
-                'biography': profile_info.biography,
-                'public': profile_info.public
-            }
-            return JsonResponse({'response': result_dict})
+        if request_owner.id != user_id:
+            if (not profile_info.public) and (request_owner.id not in list(Following.objects.filter(follow=user_info).values_list('user_id',flat=True))):
+                result_dict = {
+                    'first_name': user_info.first_name,
+                    'last_name': user_info.last_name,
+                    'photo_url': profile_info.photo_url,
+                    'username': user_info.username,
+                    'followers_count': len(followers),
+                    'followings_count': len(followings),
+                    'biography': profile_info.biography,
+                    'public': profile_info.public
+                }
+                return JsonResponse({'response': result_dict})
 
         try:
             location = ast.literal_eval(profile_info.location)
