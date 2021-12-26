@@ -254,7 +254,7 @@ class CommentCreateTestCase(TestCase):
         request = MockRequest(method='POST', body={"username": "user_name", "story_id":1 , "text" : "new text","parent_comment_id":None})
         comment_create_api = comment.CommentCreate()
         response = comment_create_api.post(request=request).content
-        self.assertEqual(json.loads(response.decode('utf-8'))["return"], 1)
+        self.assertEqual(type(json.loads(response.decode('utf-8'))["return"]), int)
 
     def test_not_found_story_for_comment(self):
         request = MockRequest(method='POST', body={"username": "user_name", "story_id": 10, "text": "new text","parent_comment_id":None})
@@ -380,7 +380,7 @@ class LikePostTestCase(TestCase):
         request = MockRequest(method='GET', body={})
         like_post_api = like.GetPostLikes()
         response = like_post_api.get(request=request,story_id=1).content
-        self.assertEqual(json.loads(response.decode('utf-8')), {'return': {'like': [{'user_id': 13, 'username': 'user_name1', 'photo_url': 'temp.png'}], 'number_of_likes': 1}})
+        self.assertEqual(json.loads(response.decode('utf-8')), {'return': {'like': [{'user_id': self.user_id, 'username': 'user_name1', 'photo_url': 'temp.png'}], 'number_of_likes': 1}})
 
 
 class FollowTestCase(TestCase):

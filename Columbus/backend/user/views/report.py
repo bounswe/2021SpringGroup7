@@ -158,11 +158,6 @@ class ReportTagAPI(generics.CreateAPIView):
         except:
             return JsonResponse({'return': 'tag not found'}, status=400)
 
-        report = ReportTag(tag_id=tag, report=text, reporter_id=user_id)
-        report.save()
-        dt = datetime.now(timezone.utc).astimezone()
-        ActivityStream.objects.create(type='ReportTagCreate', actor=user_id, tag=tag, date=dt)
-        return JsonResponse({'return': report.id})
 
         try:
             report = ReportTag(tag_id=tag, report=text, reporter_id=user_id)
