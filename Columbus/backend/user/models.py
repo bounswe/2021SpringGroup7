@@ -112,6 +112,7 @@ class ActivityStream(models.Model):
     target = models.ForeignKey(User, null=True, on_delete=models.CASCADE,related_name='target')
     comment = models.ForeignKey(Comment, null=True, on_delete=models.CASCADE)
     story = models.ForeignKey(Story, null=True, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, null=True, on_delete=models.CASCADE)
     date = models.DateTimeField()
 
 class Admin(models.Model):
