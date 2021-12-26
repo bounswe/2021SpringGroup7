@@ -61,6 +61,7 @@ class GetProfileInfo(generics.ListAPIView):
                     'public': profile_info.public
                 }
                 return JsonResponse({'response': result_dict})
+        ##dummy pipelie trigger
 
         try:
             location = ast.literal_eval(profile_info.location)
