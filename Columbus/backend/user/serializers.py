@@ -144,12 +144,46 @@ class ReportStorySerializer(serializers.ModelSerializer):
         model = Comment
         fields = ['username', 'story_id', 'text']
 
+class ReportCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReportComment
+        fields = ['comment_id', 'reporter_id', 'report']
+
+class ReportTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReportTag
+        fields = ['tag_id', 'reporter_id', 'report']
+
 class ReportUserSerializer(serializers.ModelSerializer):
     reported_username = serializers.CharField(max_length=100)
     reporter_username = serializers.CharField(max_length=100)
     class Meta:
         model = ReportUser
         fields = ['reported_username', 'reporter_username', 'report']
+
+class AdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Admin
+        fields = ['login_hash']
+
+class AdminLoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Admin
+        fields = ['admin_username', 'admin_password']
+
+class AdminActionSerializer(serializers.ModelSerializer):
+    report_id = serializers.IntegerField()
+    safe = serializers.BooleanField()
+    class Meta:
+        model = Admin
+        fields = ['login_hash','report_id', 'safe']
+
+class BlackListSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=100)
+    class Meta:
+        model = Admin
+        fields = ['login_hash','username']
+
 
 class GetNotificationsSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(max_length=100)
