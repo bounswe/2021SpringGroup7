@@ -144,6 +144,16 @@ class ReportStorySerializer(serializers.ModelSerializer):
         model = Comment
         fields = ['username', 'story_id', 'text']
 
+class ReportCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReportComment
+        fields = ['comment_id', 'reporter_id', 'report']
+
+class ReportTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReportTag
+        fields = ['tag_id', 'reporter_id', 'report']
+
 class ReportUserSerializer(serializers.ModelSerializer):
     reported_username = serializers.CharField(max_length=100)
     reporter_username = serializers.CharField(max_length=100)
