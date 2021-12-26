@@ -25,6 +25,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CakeIcon from '@mui/icons-material/Cake';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Post from "../../components/Post/Post";
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import {dummyPosts} from "../Home/Home.constants"
 import {useStyles} from "./Profile.styles"
@@ -36,6 +37,7 @@ import ProfilePostScroll from "../../components/PostScroll/ProfilePostScroll"
 import LikedPostScroll from "../../components/PostScroll/LikedPostScroll"
 
 import USER_SERVICE from "../../services/user";
+import SettingsDialog from "../../components/Dialogs/SettingsDialog/SettingsDialog"
 
 
 function convertBirthday(birthday) {
@@ -94,14 +96,14 @@ function Profile({...props}) {
   const [followingsOpen, setFollowingsOpen] = useState(false);
   const [followersOpen, setFollowersOpen] = useState(false);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
-
+  const [openSettings, setOpenSettings] = useState(false);
 
   useEffect(() => {
 
      USER_SERVICE.GET_PROFILEINFO(userId)
       .then((res) => {
         const proInfo = res.data.response;
-        console.log('profile info ',  res.data.response['username'])
+        console.log('profile info ',  res)
               setProfileInfo({
                                 "first_name": proInfo['first_name'],
                                 "last_name" : proInfo['last_name'],
@@ -143,6 +145,14 @@ function Profile({...props}) {
 
   const handleEditProfileDialogOpen = () => {
     setEditProfileOpen(true);
+  };
+
+  const handleSettingsOpen = (event) => {
+    setOpenSettings(true);
+  };
+
+  const handleSettingsClose = (event) => {
+    setOpenSettings(false);
   };
 
   const handleFollowingsDialogClose = (value) => {
@@ -242,7 +252,23 @@ function Profile({...props}) {
                     <Card  variant="elevation">
                       <CardHeader 
                         title={profileInfo['first_name'] + " " + profileInfo['last_name']}
-                        subheader={profileInfo['username']}/>
+                        subheader={profileInfo['username']}
+                        action={ curUserId === userId ? 
+                                                      <>
+                                                      <IconButton
+                                                        size="small"
+                                                        onClick={handleSettingsOpen}
+                                                      >
+                                                        <SettingsIcon />
+                                                      </IconButton>
+                                                      <SettingsDialog
+                                                        open={openSettings}
+                                                        onClose={handleSettingsClose}
+                                                        curProfileInfo={profileInfo}>
+                                                        </SettingsDialog>
+                                                      </>
+                                                        :
+                                                        <></>}/>
                     
                     <CardContent>
                         {!profileInfo['biography'] ? <>
