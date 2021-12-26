@@ -144,7 +144,6 @@ class GetReportUser(generics.CreateAPIView):
         followings_query = Following.objects.filter(user_id=user_info).values('follow', 'follow__username')
         followings = []
         for user in followings_query:
-            print(user)
             temp = dict()
             temp['user_id'] = user['follow']
             temp['username'] = user['follow__username']
@@ -260,7 +259,6 @@ class GetReportComment(generics.CreateAPIView):
         serialized_obj = serializers.serialize('json', comments)
         serialized_obj = json.loads(str(serialized_obj))
         serialized_obj = [dict(each["fields"], **{"id": each["pk"]}) for each in serialized_obj]
-        print(serialized_obj)
 
         for each in serialized_obj:
             each["username"] = User.objects.get(id=each["user_id"]).username

@@ -1,9 +1,8 @@
 from django.test import TestCase
-from .models import *
+from ..models import *
 from django.contrib.auth.models import User
 import ast
-from .views import *
-import requests as rq
+from ..views import *
 
 class MockRequest:
     def __init__(self, method, body, user=None,uri="ec2-35"):
