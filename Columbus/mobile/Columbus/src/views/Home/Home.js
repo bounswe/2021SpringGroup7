@@ -33,7 +33,6 @@ const Home = () => {
   const fetchStories = useMutation(params => SERVICE.fetchPost(params, token), {
     onSuccess(response) {
       setPosts(response.data.return);
-      console.log(response.data.return);
       setLoading(false);
     },
     onError({response}) {
