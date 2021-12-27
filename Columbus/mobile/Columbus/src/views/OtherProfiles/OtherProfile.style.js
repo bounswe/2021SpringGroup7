@@ -53,8 +53,8 @@ export const styles = StyleSheet.create({
   },
   biographyContainer: {
     display: 'flex',
-    marginVertical: 4,
     paddingHorizontal: 8,
+    marginVertical: 4,
   },
   editContainer: {
     display: 'flex',
@@ -64,6 +64,6 @@ export const styles = StyleSheet.create({
   contentContainer: {
     display: 'flex',
     flex: 6,
-    paddingHorizontal: 8,
+    paddingHorizontal: 16,
   },
 });
