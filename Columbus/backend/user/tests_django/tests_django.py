@@ -1,8 +1,8 @@
 from django.test import TestCase
-from .models import *
+from ..models import *
 from django.contrib.auth.models import User
 import ast
-from .views import *
+from ..views import *
 
 class MockRequest:
     def __init__(self, method, body, user=None,uri="ec2-35"):
@@ -161,6 +161,13 @@ class ProfileInformationTestCase(TestCase):
 
         self.assertEqual(json.loads(response.decode('utf-8')), expected_response)
 
+    def test_delete_profile(self):
+        request = MockRequest(method='GET', body={'user_id':self.user_id,'password':'123456'}, user=self.user)
+        delete_profile_api = profile.DeleteProfile()
+        response = delete_profile_api.post(request=request).content
+        self.assertEqual(json.loads(response.decode('utf-8')),{'response': 'Provide valid password'}
+)
+
     def test_get_shared_posts(self):
         request = MockRequest(method='POST', body={'username':self.user.username,'page_number':1, 'page_size':1})
         get_shared_posts_api = profile_post.ProfilePost()
@@ -244,13 +251,13 @@ class CommentCreateTestCase(TestCase):
         story.save()
 
     def test_create_comment(self):
-        request = MockRequest(method='POST', body={"username": "user_name", "story_id":1 , "text" : "new text"})
+        request = MockRequest(method='POST', body={"username": "user_name", "story_id":1 , "text" : "new text","parent_comment_id":None})
         comment_create_api = comment.CommentCreate()
         response = comment_create_api.post(request=request).content
-        self.assertEqual(json.loads(response.decode('utf-8'))["return"], 1)
+        self.assertEqual(type(json.loads(response.decode('utf-8'))["return"]), int)
 
     def test_not_found_story_for_comment(self):
-        request = MockRequest(method='POST', body={"username": "user_name", "story_id": 10, "text": "new text"})
+        request = MockRequest(method='POST', body={"username": "user_name", "story_id": 10, "text": "new text","parent_comment_id":None})
         comment_create_api = comment.CommentCreate()
         response = comment_create_api.post(request=request).content
         self.assertEqual(json.loads(response.decode('utf-8'))["return"], 'story not found')
@@ -309,6 +316,7 @@ class GetCommentTestCase(TestCase):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
         story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05',location=[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}])
         story.save()
         story.id = 1
         story.save()
@@ -320,8 +328,8 @@ class GetCommentTestCase(TestCase):
         request = MockRequest(method='POST', body={"story_id": 1})
         get_comment_api = comment.GetComment()
         response = get_comment_api.post(request=request).content
-        self.assertEqual(json.loads(response.decode('utf-8'))["return"][0]['story_id'],1)
-        self.assertEqual(json.loads(response.decode('utf-8'))["return"][0]['text'], "new text")
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"]['comments'][0]['story_id'],1)
+        self.assertEqual(json.loads(response.decode('utf-8'))["return"]['comments'][0]['text'], "new text")
 
 class PostCreateTestCase(TestCase):
     def setUp(self):
@@ -372,7 +380,7 @@ class LikePostTestCase(TestCase):
         request = MockRequest(method='GET', body={})
         like_post_api = like.GetPostLikes()
         response = like_post_api.get(request=request,story_id=1).content
-        self.assertEqual(json.loads(response.decode('utf-8')), {'return': {'like': [{'user_id': 13, 'username': 'user_name1', 'photo_url': 'temp.png'}], 'number_of_likes': 1}})
+        self.assertEqual(json.loads(response.decode('utf-8')), {'return': {'like': [{'user_id': self.user_id, 'username': 'user_name1', 'photo_url': 'temp.png'}], 'number_of_likes': 1}})
 
 
 class FollowTestCase(TestCase):

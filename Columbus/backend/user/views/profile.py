@@ -10,6 +10,7 @@ from ..models import Following,Location
 import json
 import ast
 from datetime import datetime, timezone
+from django.contrib.auth import authenticate, login as auth_login
 
 class GetProfileInfo(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
@@ -25,6 +26,7 @@ class GetProfileInfo(generics.ListAPIView):
         try:
             profile_info = Profile.objects.get(user_id=user_info)
         except:
+            Profile.objects.all(user_id=user_info).delete()
             profile_info = Profile.objects.create(user_id=user_info)
 
 
@@ -48,18 +50,23 @@ class GetProfileInfo(generics.ListAPIView):
             temp['photo_url'] = Profile.objects.get(user_id=user['user_id']).photo_url
             followers.append(temp)
 
-        if (not profile_info.public) and (request_owner.id not in list(Following.objects.filter(follow=user_info).values_list('user_id',flat=True))):
-            result_dict = {
-                'first_name': user_info.first_name,
-                'last_name': user_info.last_name,
-                'photo_url': profile_info.photo_url,
-                'username': user_info.username,
-                'followers_count': len(followers),
-                'followings_count': len(followings),
-                'biography': profile_info.biography,
-                'public': profile_info.public
-            }
-            return JsonResponse({'response': result_dict})
+
+        if request_owner.id != user_info.id:
+            if (not profile_info.public) and (request_owner.id not in list(Following.objects.filter(follow=user_info).values_list('user_id',flat=True))):
+                result_dict = {
+                    'first_name': user_info.first_name,
+                    'last_name': user_info.last_name,
+                    'photo_url': profile_info.photo_url,
+                    'username': user_info.username,
+                    'followers_count': len(followers),
+                    'followings_count': len(followings),
+                    'biography': profile_info.biography,
+                    'public': profile_info.public,
+                    'request_owner.id':request_owner.id,
+                    'user.id':user_info.id
+                }
+                return JsonResponse({'response': result_dict})
+        ##dummy pipelie trigger
 
         try:
             location = ast.literal_eval(profile_info.location)
@@ -129,3 +136,27 @@ class SetProfileInfo(generics.CreateAPIView):
             'public':profile_info.public
         }
         return JsonResponse({'response':result_dict})
+
+class DeleteProfile(generics.CreateAPIView):
+    serializer_class = DeleteProfileSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+        body = request.data
+        required_areas = {'user_id', 'password'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+        user_id = body['user_id']
+        password = body['password']
+        try:
+            user = User.objects.get(id=user_id)
+        except:
+            return JsonResponse({'response': 'provide valid user_id or user does not exist'},status=400)
+        if str(user.username) != str(request.user):
+            return JsonResponse({'response': 'Forbidden'},status=403)
+        user = authenticate(request, username=user.username, password=password)
+        if user:
+            user = User.objects.get(id=user_id)
+            user.delete()
+            return JsonResponse({'response': f'{request.user} is deleted'}, status=403)
+        return JsonResponse({'response': 'Provide valid password'})

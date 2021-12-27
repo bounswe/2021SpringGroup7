@@ -12,7 +12,8 @@ import {
   Button,
   Card,
   CardHeader,
-  CardContent
+  CardContent,
+  IconButton
 } from "@material-ui/core";
 
 import Stack from '@mui/material/Stack';
@@ -22,6 +23,7 @@ import Tab from '@mui/material/Tab';
 
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CakeIcon from '@mui/icons-material/Cake';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Post from "../../components/Post/Post";
 
 import {dummyPosts} from "../Home/Home.constants"
@@ -34,6 +36,23 @@ import ProfilePostScroll from "../../components/PostScroll/ProfilePostScroll"
 import LikedPostScroll from "../../components/PostScroll/LikedPostScroll"
 
 import USER_SERVICE from "../../services/user";
+
+
+function convertBirthday(birthday) {
+
+  let birthdayReadable = ''
+  if(!!birthday) {
+  birthdayReadable = new Date(Date.UTC(
+                            parseInt(birthday.substring(0,4)),
+                            parseInt(birthday.substring(5,7))-1, 
+                            parseInt(birthday.substring(8,10)), 
+                                      3, 0, 0))
+                          .toLocaleDateString('en-US',{ year: "numeric", month: "long", day: "numeric" })
+  }
+
+  return birthdayReadable
+
+}
 
 function Profile({...props}) {
   const navigate = useNavigate();
@@ -88,14 +107,14 @@ function Profile({...props}) {
                                 "last_name" : proInfo['last_name'],
                                 "birthday"  : proInfo['birthday'],
                                 "photo_url" : proInfo['photo_url'],
-                                "location"  : proInfo['location']['location'],
+                                "location"  : "",
                                 "username"  : proInfo['username'],
                                 "email"     : proInfo['email'],
                                 "followers" : proInfo['followers'],
                                 "followings": proInfo['followings'],
                                 "biography" : proInfo['biography']
                                               }
-              );   // profile info will be updated in the end of the render
+              ); 
               if(res.data.response['followers'].some(follower => follower['user_id'].toString() === curUserId)) 
               {
                 setIsCurUserFollowing(true);
@@ -183,27 +202,20 @@ function Profile({...props}) {
 
                     <Grid item xs>
                          <Stack spacing={1}>
-                           {profileInfo['location'] && curUserId === userId ? <Button 
-                                                        size="medium"
-                                                        variant="text"
-                                                        startIcon={ <LocationOnIcon color="primary"></LocationOnIcon>}
-                                                        className={classes.buttonText}
-                                                        onClick={handleEditProfileDialogOpen}
-                                                        >
-                                                          {profileInfo['location']}
-                                                        </Button>
 
-                                                      : <Stack direction='row' justifyContent='center'><LocationOnIcon color="primary"></LocationOnIcon><Typography> {profileInfo['location']}</Typography></Stack>    
-                              }
                            {profileInfo['birthday'] && curUserId === userId ? <Button 
                                                         size="medium"
                                                         variant="text"
                                                         startIcon={ <CakeIcon color="primary"></CakeIcon>}
                                                         onClick={handleEditProfileDialogOpen}
+                                                        className={classes.buttonText} 
                                                         >
-                                                        {profileInfo['birthday']}
+                                                        {convertBirthday(profileInfo['birthday'])}
                                                       </Button>
-                                                      : <Stack direction='row' justifyContent='center'><CakeIcon color="primary"></CakeIcon><Typography> {profileInfo['birthday']}</Typography></Stack>
+                                                      : <Stack direction='row' justifyContent='center'>
+                                                          <CakeIcon color="primary"></CakeIcon>
+                                                        <Typography> {convertBirthday(profileInfo['birthday'])}</Typography>
+                                                        </Stack>
                               }
                           </Stack>
                     </Grid>

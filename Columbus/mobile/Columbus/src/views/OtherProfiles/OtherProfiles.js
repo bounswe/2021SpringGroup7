@@ -1,59 +1,90 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {Button, ScrollView, Spinner, VStack} from 'native-base';
-
-import InfoBox from './components/InfoBox';
-import InfoWithIcon from './components/InfoWithIcon';
-import CustomAvatar from './components/CustomAvatar';
-
-import PageSpinner from '../../components/PageSpinner/PageSpinner';
-import getInitials from '../../utils/getInitial';
-import {useAuth} from '../../context/AuthContext';
-
-import {styles} from './Profile.style';
+import {useMutation} from 'react-query';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-import {useMutation} from 'react-query';
-import {SERVICE} from '../../services/services';
+import PageSpinner from '../../components/PageSpinner/PageSpinner';
 import PostCard from '../../components/PostCard';
-import ConnectionModal from './components/ConnectionModal/ConnectionModal';
+import getInitials from '../../utils/getInitial';
+import {useAuth} from '../../context/AuthContext';
+import {SERVICE} from '../../services/services';
 
-const Profile = ({navigation, route}) => {
+import InfoBox from '../Profile/components/InfoBox';
+import InfoWithIcon from '../Profile/components/InfoWithIcon';
+import CustomAvatar from '../Profile/components/CustomAvatar';
+import ConnectionModal from '../Profile/components/ConnectionModal/ConnectionModal';
+
+import {styles} from './OtherProfile.style';
+
+const OtherProfiles = ({navigation, route}) => {
   const {user, logout} = useAuth();
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [storyLoading, setStoryLoading] = useState(true);
-  const [userStories, setUserStories] = useState([]);
+  const [userStories, setUserStories] = useState(null);
   const [showConnectionsModal, setShowConnectionsModal] = useState(false);
   const [connectionModalData, setConnectionModalData] = useState(null);
   const [connectionModalHeaders, setConnectionModalHeaders] = useState('');
-
-  let token = '';
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isPublicProfile, setIsPublicProfile] = useState(true);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          style={styles.headerExitIconContainer}
-          onPress={handleLogout}>
-          <Icon name="reply" size={18} />
-          <Text>Exit</Text>
-        </TouchableOpacity>
-      ),
+      title: route.params.username,
     });
-  }, [navigation]);
+  }, [navigation, route.params.username]);
 
   useEffect(() => {
     setLoading(true);
-    if (user) {
-      handleSetUserInfo(user.userInfo);
-      token = user.userInfo.token;
-      userStoriesRequest(user.userInfo.username);
+    setStoryLoading(true);
+    if (userInfo === null) {
+      userInfoRequest(route.params.userId, route.params.token);
     }
-  }, [user]);
+  }, [route.params]);
+
+  const fetchUserInformations = useMutation(
+    params => SERVICE.fetchUserInfo(params),
+    {
+      onSuccess(response) {
+        setUserInfo(response.data.response);
+        setIsFollowing(
+          response.data.response['followers'].some(
+            follower => follower['user_id'] === user.userInfo.user_id,
+          ),
+        );
+        if (response.data.response.public) {
+          userStoriesRequest(route.params.username);
+          setIsPublicProfile(true);
+        } else if (
+          !response.data.response.public &&
+          response.data.response['followers'].some(
+            follower => follower['user_id'] === user.userInfo.user_id,
+          )
+        ) {
+          userStoriesRequest(route.params.username);
+          setIsPublicProfile(false);
+        } else {
+          setIsPublicProfile(false);
+        }
+        setLoading(false);
+      },
+      onError({response}) {
+        console.log('res error res: ', response);
+      },
+    },
+  );
+
+  const userInfoRequest = async (userId, token) => {
+    try {
+      await fetchUserInformations.mutateAsync({params: {userId, token}});
+    } catch (e) {
+      console.log('e: ', e);
+    }
+  };
 
   const fetchUserStories = useMutation(
-    params => SERVICE.fetchUserPosts(params, token),
+    params => SERVICE.fetchUserPosts(params, route.params.token),
     {
       onSuccess(response) {
         setUserStories(response.data.return);
@@ -76,11 +107,6 @@ const Profile = ({navigation, route}) => {
     } catch (e) {
       console.log('e: ', e);
     }
-  };
-
-  const handleSetUserInfo = async userData => {
-    await setUserInfo(userData);
-    setLoading(false);
   };
 
   const handleLogout = () => {
@@ -155,16 +181,11 @@ const Profile = ({navigation, route}) => {
         <Text>{userInfo.biography}</Text>
       </View>
       <View style={styles.editContainer}>
-        <Button
-          variant="outline"
-          onPress={() => {
-            navigation.push('EditProfile', {
-              userInfo,
-              token: user.userInfo.token,
-            });
-          }}>
-          Edit Profile
-        </Button>
+        {isFollowing ? (
+          <Button variant="outline">Unfollow</Button>
+        ) : (
+          <Button variant="solid">Follow</Button>
+        )}
       </View>
       {showConnectionsModal && (
         <ConnectionModal
@@ -176,28 +197,57 @@ const Profile = ({navigation, route}) => {
         />
       )}
       <View style={styles.contentContainer}>
-        {storyLoading && <Spinner></Spinner>}
-        {!storyLoading && userStories.length !== 0 && (
-          <ScrollView>
-            <VStack
-              flex={1}
-              px="3"
-              space={10}
-              alignItems="center"
-              pb={10}
-              mt={5}>
-              {userStories.map(item => {
-                return <PostCard data={item} key={item.story_id} />;
-              })}
-            </VStack>
-          </ScrollView>
-        )}
-        {!storyLoading && userStories.length === 0 && (
-          <Text style={{textAlign: 'center'}}>You do not share any story!</Text>
+        {storyLoading ? (
+          <Spinner></Spinner>
+        ) : isPublicProfile ? (
+          userStories.length !== 0 ? (
+            <ScrollView>
+              <VStack
+                flex={1}
+                px="3"
+                space={10}
+                alignItems="center"
+                pb={10}
+                mt={5}>
+                {userStories.map(item => {
+                  return <PostCard data={item} key={item.story_id} />;
+                })}
+              </VStack>
+            </ScrollView>
+          ) : (
+            <Text style={{textAlign: 'center'}}>
+              You do not share any story!
+            </Text>
+          )
+        ) : isFollowing ? (
+          userStories.length !== 0 ? (
+            <ScrollView>
+              <VStack
+                flex={1}
+                px="3"
+                space={10}
+                alignItems="center"
+                pb={10}
+                mt={5}>
+                {userStories.map(item => {
+                  return <PostCard data={item} key={item.story_id} />;
+                })}
+              </VStack>
+            </ScrollView>
+          ) : (
+            <Text style={{textAlign: 'center'}}>
+              You do not share any story!
+            </Text>
+          )
+        ) : (
+          <Text style={{textAlign: 'center'}}>
+            This is a private account and you have to follow to view user
+            stories!
+          </Text>
         )}
       </View>
     </View>
   );
 };
 
-export default Profile;
+export default OtherProfiles;
