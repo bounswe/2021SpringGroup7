@@ -48,7 +48,9 @@ class GetProfileInfo(generics.ListAPIView):
             temp['username'] = user['user_id__username']
             temp['photo_url'] = Profile.objects.get(user_id=user['user_id']).photo_url
             followers.append(temp)
-        if request_owner.id != user_id:
+
+
+        if request_owner.id != int(user_id):
             if (not profile_info.public) and (request_owner.id not in list(Following.objects.filter(follow=user_info).values_list('user_id',flat=True))):
                 result_dict = {
                     'first_name': user_info.first_name,
