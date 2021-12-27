@@ -23,11 +23,14 @@ import PostTimeInfo from './SubComponents/PostTimeInfo';
 import Tags from './SubComponents/Tags';
 import PostingTime from './SubComponents/PostingTime';
 import LikeAndShare from './SubComponents/LikeAndShare';
+import {useAuth} from './../../context/AuthContext'
 
 const PostCard = props => {
   const {isOpen, onOpen, onClose} = useDisclose();
   const navigation = useNavigation();
   const postData = props.data;
+  const { user} = useAuth();
+
 
   return (
     <Box
@@ -79,7 +82,7 @@ const PostCard = props => {
 
         <HStack style={{justifyContent: 'space-between', width: '100%'}}>
           <PostingTime data={postData.createDateTime} />
-          <LikeAndShare data={{is_liked:postData.is_liked,story_id:postData.story_id}} />
+          <LikeAndShare data={{is_liked:postData.is_liked,story_id:postData.story_id,own_post:postData.owner_username==user?.userInfo?.username}} />
         </HStack>
 
         <Text
