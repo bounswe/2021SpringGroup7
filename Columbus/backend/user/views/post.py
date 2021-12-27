@@ -196,3 +196,26 @@ class PostDelete(generics.CreateAPIView):
             return JsonResponse({'return': 'story not found'}, status=400)
 
         return JsonResponse({'return': 'successful'})
+
+
+class GetPopularTags(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user_id = kwargs['user_id']
+        try:
+            user_info = User.objects.get(id=user_id)
+        except:
+            return JsonResponse({'response': 'provide valid user_id or user does not exist'})
+
+        tag_list = Tag.objects.filter(story_id__user_id__username=user_info.username)
+        popular_tags = {}
+        for tag in tag_list:
+            if tag.tag in popular_tags:
+                popular_tags[tag.tag] = popular_tags[tag.tag] + 1
+            else:
+                popular_tags[tag.tag] = 1
+        result_dict = {tag: popular_tags[tag] for tag in sorted(popular_tags, key=popular_tags.get, reverse=True)}
+
+        return JsonResponse({'return': result_dict})
