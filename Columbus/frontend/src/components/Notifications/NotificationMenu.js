@@ -1,15 +1,32 @@
-import React from "react";
+import {React, useState, useEffect} from "react";
 
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import Divider from '@mui/material/Divider';
+            import ListItem from '@mui/material/ListItem';
 
 import Notification from "./Notification";
-import {notifications} from './Notifications.data'
+import USER_SERVICE from '../../services/user';
 
 export default function NotificationMenu(props) { 
 
 const { isNotificationsOpen, setIsNotificationsOpen, isNotificationMenuOpen } = props;
+
+const [notifications, setNotifications] = useState([]);
+const [isLoading, setIsLoading] = useState(true);
+
+useEffect(() => {
+
+        USER_SERVICE.GET_NOTIFICATIONS(localStorage.getItem('username'))
+            .then((res) => {
+              setNotifications(res.data.notifications.orderedItems)
+              setIsLoading(false);
+            })
+            .catch((error) => {
+
+            })
+    }, [isNotificationsOpen])
+
 
 const handleNotificationsClose = () => {
   setIsNotificationsOpen(null);
@@ -25,7 +42,7 @@ const renderNotifications = (
         'aria-labelledby': 'long-button',
       }}
       PaperProps={{
-        style: { maxHeight: 48 * 4.5, width: '40ch'}
+        style: { maxHeight: 64 * 4.5, width: '50ch'}
       }}
       anchorOrigin={{
         vertical: 'bottom',
@@ -38,10 +55,10 @@ const renderNotifications = (
       >
       {notifications.map((notification) => (
         <>
-        <Divider textAlign="right">{notification['time']}</Divider>
-          <MenuItem key={notification} onClick={handleNotificationsClose}>
+        <Divider textAlign="right">{'1 min ago'}</Divider>
+          <ListItem key={notification} >
             <Notification  notification={notification}></Notification>
-          </MenuItem>
+          </ListItem>
         </>
       ))}
       <Divider />
