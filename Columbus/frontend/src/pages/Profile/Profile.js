@@ -102,33 +102,32 @@ function Profile({...props}) {
      USER_SERVICE.GET_PROFILEINFO(userId)
       .then((res) => {
         const proInfo = res.data.response;
-        //console.log('profile info ',  res.data.response['username'])
-              setProfileInfo({
-                                "first_name": proInfo['first_name'],
-                                "last_name" : proInfo['last_name'],
-                                "birthday"  : proInfo['birthday'],
-                                "photo_url" : proInfo['photo_url'],
-                                "location"  : "",
-                                "username"  : proInfo['username'],
-                                "email"     : proInfo['email'],
-                                "followers" : proInfo['followers'],
-                                "followings": proInfo['followings'],
-                                "biography" : proInfo['biography']
-                                              }
-              ); 
-              if(res.data.response['followers'].some(follower => follower['user_id'].toString() === curUserId)) 
-              {
-                setIsCurUserFollowing(true);
-              } else {
-                setIsCurUserFollowing(false);
-              }
-              setInfoLoading(false);
+        setProfileInfo({
+                          "first_name": proInfo['first_name'],
+                          "last_name" : proInfo['last_name'],
+                          "birthday"  : proInfo['birthday'],
+                          "photo_url" : proInfo['photo_url'],
+                          "location"  : "",
+                          "username"  : proInfo['username'],
+                          "email"     : proInfo['email'],
+                          "followers" : proInfo['followers'],
+                          "followings": proInfo['followings'],
+                          "biography" : proInfo['biography']
+                                        }
+        ); 
+        if(res.data.response['followers'].some(follower => follower['user_id'].toString() === curUserId)) 
+        {
+          setIsCurUserFollowing(true);
+        } else {
+          setIsCurUserFollowing(false);
+        }
+        setInfoLoading(false);
         })
-        .catch((error) => {
-          if(error.response.status == 403) {
-            setIsBlocked(true);
-          }
-        });
+      .catch((error) => {
+        if(error.response.status == 403) {
+          setIsBlocked(true);
+        }
+      });
 
     }, [editProfileOpen, userId, isFollowClicked, isBlocked]);
 
