@@ -86,8 +86,7 @@ function Profile({...props}) {
                                                   "biography": ""
                                               });
 
-  //const [sharedPosts, setSharedPosts] = useState(dummyPosts.slice(0,1));
-  //const [likedPosts, setLikedPosts] = useState(dummyPosts.slice(1,4));
+  const [isBlocked, setIsBlocked] = useState(false);
   
   const [tabValue, setTabValue] = useState('shared');
   const [infoLoading, setInfoLoading] = useState(true);
@@ -103,7 +102,7 @@ function Profile({...props}) {
      USER_SERVICE.GET_PROFILEINFO(userId)
       .then((res) => {
         const proInfo = res.data.response;
-        //console.log('profile info ',  res.data.response['username'])
+        //console.log('profile info ',  res)
               setProfileInfo({
                                 "first_name": proInfo['first_name'],
                                 "last_name" : proInfo['last_name'],
@@ -126,7 +125,9 @@ function Profile({...props}) {
               setInfoLoading(false);
         })
         .catch((error) => {
-          console.log('err ', error);
+          if(error.response.status == 403) {
+            setIsBlocked(true);
+          }
         });
 
     }, [editProfileOpen, userId, isFollowClicked]);
@@ -174,6 +175,17 @@ function Profile({...props}) {
       </Wrapper>
     );
   }
+
+  if (isBlocked) {
+    return (
+      <Wrapper>
+        <Box className={classes.emptyBody}>
+          You cannot view this user's profile ! You have blocked the user or it blocked you.
+        </Box>
+      </Wrapper>
+    );
+  }
+
   return (
     <div>
       <Wrapper>
