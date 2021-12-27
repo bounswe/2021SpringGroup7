@@ -55,8 +55,8 @@ const renderNotifications = (
       >
       {notifications.map((notification) => (
         <>
-        <Divider textAlign="right">{'1 min ago'}</Divider>
-          <ListItem key={notification} >
+        <Divider textAlign="right"></Divider>
+          <ListItem key={notification}>
             <Notification  notification={notification}></Notification>
           </ListItem>
         </>
