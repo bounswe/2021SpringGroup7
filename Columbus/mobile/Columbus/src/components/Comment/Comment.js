@@ -24,7 +24,7 @@ import CommentMenu from './CommentMenu';
 const Comment = props => {
   const [showModal, setShowModal] = useState(false);
   const [modalSize, setModalSize] = useState('sm');
-  const {logout, user} = useAuth();
+  const { user} = useAuth();
   
 
   const colors = ['amber.500', 'purple.500', 'red.500', 'blue.500'];

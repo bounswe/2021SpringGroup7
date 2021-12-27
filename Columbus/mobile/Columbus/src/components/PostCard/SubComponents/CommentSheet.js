@@ -24,7 +24,7 @@ import moment from 'moment';
 import {useMutation} from 'react-query';
 
 function CommentSheet(props) {
-  const {logout, user} = useAuth();
+  const { user} = useAuth();
   const navigation = useNavigation();
   const {isOpen, onOpen, onClose} = useDisclose();
   const [comments, setComments] = useState([]);
@@ -32,7 +32,7 @@ function CommentSheet(props) {
   const [loading, setLoading] = useState(true);
   const [commentToPost, setCommentToPost] = useState('');
   let token = '';
-  
+
   useEffect(() => {
     if (user) {
       getComments();
@@ -109,8 +109,6 @@ function CommentSheet(props) {
     }
   };
 
-  
-
   if (loading == true) {
     <View
       style={{
@@ -140,21 +138,20 @@ function CommentSheet(props) {
             </Text>
             <ScrollView width="100%">
               <VStack space={3} mt={5} mb={5}>
-                
                 {pinnedComments.map((item, index) => {
                   return (
                     <View style={{display: 'flex', flexDirection: 'column'}}>
-                        <Comment
-                          pinned={true}
-                          data={item}
-                          isChild={false}
-                          key={index}
-                          isPinnable={props.own_post}
-                          isDeletable={
-                            props.own_post ||
-                            item.username == user?.userInfo.username
-                          }
-                        />
+                      <Comment
+                        pinned={true}
+                        data={item}
+                        isChild={false}
+                        key={index}
+                        isPinnable={props.own_post}
+                        isDeletable={
+                          props.own_post ||
+                          item.username == user?.userInfo.username
+                        }
+                      />
                       {item.child_comments?.length > 0 && (
                         <VStack space={3} mt={5} mb={5} pl="20%">
                           {item.child_comments.map(child_item => {
@@ -171,34 +168,26 @@ function CommentSheet(props) {
                                 }
                               />
                             );
-                            {
-                              /* return <Text>{child_item.text}</Text> */
-                            }
                           })}
                         </VStack>
                       )}
                     </View>
                   );
-
-                  {
-                    /* return <Comment data={item} key={item.text} isPinnable={props.own_post} isDeletable={props.own_post || item.username==user?.userInfo.username}  /> */
-                  }
                 })}
 
                 {comments.map((item, index) => {
                   return (
                     <View style={{display: 'flex', flexDirection: 'column'}}>
-                      
-                        <Comment
-                          data={item}
-                          isChild={false}
-                          key={index}
-                          isPinnable={props.own_post}
-                          isDeletable={
-                            props.own_post ||
-                            item.username == user?.userInfo.username
-                          }
-                        />
+                      <Comment
+                        data={item}
+                        isChild={false}
+                        key={index}
+                        isPinnable={props.own_post}
+                        isDeletable={
+                          props.own_post ||
+                          item.username == user?.userInfo.username
+                        }
+                      />
 
                       {item.child_comments?.length > 0 && (
                         <VStack space={3} mt={5} mb={5} pl="20%">
@@ -216,18 +205,11 @@ function CommentSheet(props) {
                                 }
                               />
                             );
-                            {
-                              /* return <Text>{child_item.text}</Text> */
-                            }
                           })}
                         </VStack>
                       )}
                     </View>
                   );
-
-                  {
-                    /* return <Comment data={item} key={item.text} isPinnable={props.own_post} isDeletable={props.own_post || item.username==user?.userInfo.username}  /> */
-                  }
                 })}
               </VStack>
             </ScrollView>

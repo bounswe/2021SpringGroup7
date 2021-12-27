@@ -10,7 +10,7 @@ import {SERVICE} from '../../../services/services';
 
 function LikeAndShare(props) {
   const navigation = useNavigation();
-  const {logout, user} = useAuth();
+  const { user} = useAuth();
   const [liked, setLiked] = useState(props.data?.is_liked);
 
   const likeStory = useMutation(params => SERVICE.like({params, token}), {

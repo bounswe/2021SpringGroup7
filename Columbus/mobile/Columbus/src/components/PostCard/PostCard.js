@@ -29,7 +29,7 @@ const PostCard = props => {
   const {isOpen, onOpen, onClose} = useDisclose();
   const navigation = useNavigation();
   const postData = props.data;
-  const {logout, user} = useAuth();
+  const { user} = useAuth();
 
 
   return (

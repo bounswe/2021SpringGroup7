@@ -15,7 +15,7 @@ import PageSpinner from '../../components/PageSpinner';
 import PostCard from '../../components/PostCard';
 
 const Home = () => {
-  const {logout, user} = useAuth();
+  const { user} = useAuth();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
 

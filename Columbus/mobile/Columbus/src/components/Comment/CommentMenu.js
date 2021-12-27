@@ -17,7 +17,7 @@ import {useAuth} from '../../context/AuthContext';
 
 
 const CommentMenu = props => {
-  const {logout, user} = useAuth();
+  const { user} = useAuth();
   const [editable, setEditable] = useState(props?.data?.username ==user?.userInfo?.username)
   const [reportable, setReportable] = useState(!(props?.data?.username == user?.userInfo?.username))
   const [deletable, setDeletable] = useState(props.isDeletable)
