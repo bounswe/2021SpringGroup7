@@ -1,99 +1,162 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate, useParams  } from "react-router-dom";
 import Wrapper from "../../components/Wrapper";
 import {
   Paper,
   Avatar,
   Container,
+  Grid,
   Box,
   CircularProgress,
   Typography,
-  DialogTitle,
-  Dialog,
-  makeStyles,
+  Button,
+  Card,
+  CardHeader,
+  CardContent,
+  IconButton
 } from "@material-ui/core";
-import PostCard from "../../components/Post";
-import api from "../../services/post";
-import CreatePostDialog from "../../components/CreatePost/index";
-const useStyles = makeStyles((theme) => ({
-  toolbar: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-  },
-  name: {
-    flex: 4,
-  },
-  toolbarSecondary: {
-    justifyContent: "flex-end",
-    overflowX: "auto",
-  },
-  toolbarLink: {
-    padding: theme.spacing(1),
-    flexShrink: 0,
-  },
-  emptyBody: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: 680,
-    backgroundColor: "white",
-  },
-  emptyPost: {
-    marginTop: 16,
-  },
-}));
 
-function Profile(props) {
+import Stack from '@mui/material/Stack';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+
+
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import CakeIcon from '@mui/icons-material/Cake';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Post from "../../components/Post/Post";
+
+import {dummyPosts} from "../Home/Home.constants"
+import {useStyles} from "./Profile.styles"
+
+import FollowerDialog from "../../components/Dialogs/FollowerDialog/FollowerDialog"
+import EditProfileDialog from "../../components/Dialogs/EditProfileDialog/EditProfileDialog"
+import FollowUnfollow from "./Profile.follow"
+import ProfilePostScroll from "../../components/PostScroll/ProfilePostScroll"
+import LikedPostScroll from "../../components/PostScroll/LikedPostScroll"
+
+import USER_SERVICE from "../../services/user";
+
+
+function convertBirthday(birthday) {
+
+  let birthdayReadable = ''
+  if(!!birthday) {
+  birthdayReadable = new Date(Date.UTC(
+                            parseInt(birthday.substring(0,4)),
+                            parseInt(birthday.substring(5,7))-1, 
+                            parseInt(birthday.substring(8,10)), 
+                                      3, 0, 0))
+                          .toLocaleDateString('en-US',{ year: "numeric", month: "long", day: "numeric" })
+  }
+
+  return birthdayReadable
+
+}
+
+function Profile({...props}) {
+  const navigate = useNavigate();
+  let { userId } = useParams();                     // viewing this user's profile
+  if(!userId) {
+
+    userId = localStorage.getItem('userid');
+  }
   const classes = useStyles();
-  const [loading, setLoading] = useState(true);
-  const [posts, setPosts] = useState([]);
-  const [name, setName] = useState("");
-  const [nofFollowers, setNofFollowers] = useState(0);
-  const [nofFollowing, setNofFollowing] = useState(0);
-  const [OpenDialogFollowing, setOpenDialogFollowing] = React.useState(false);
-  const [OpenDialogFollower, setOpenDialogFollower] = React.useState(false);
-  const [username, setUsername] = useState("");
-  const [following, setFollowing] = useState([]);
-  const [follower, setFollower] = useState([]);
-  const [postIds, setPostIds] = useState([]);
+  const curUserId = localStorage.getItem('userid');    // user in current session
+  //const userId  = viewedUserId;                        
 
-  const handleClickOpenDialogFollowing = () => {
-    setOpenDialogFollowing(true);
-  };
-  const handleClickOpenDialogFollower = () => {
-    setOpenDialogFollower(true);
-  };
+  const [loading, setLoading] = useState(false);
 
-  const handleCloseDialogFollowing = (value) => {
-    setOpenDialogFollowing(false);
-  };
-  const handleCloseDialogFollower = (value) => {
-    setOpenDialogFollower(false);
-  };
+  //const [curUserId, setCurUserId] = useState(6);                
+  //const [userId, setUserId] = useState(4);                        
+  const [isCurUserFollowing,setIsCurUserFollowing] = useState([]);
+  const [isFollowClicked,setIsFollowClicked] = useState([]);
+
+  const [profileInfo, setProfileInfo] = useState({
+                                                  "first_name": "",
+                                                  "last_name": "",
+                                                  "birthday": null,
+                                                  "location": "",
+                                                  "username": "",
+                                                  "photo_url": "",
+                                                  "email": "",
+                                                  "followers": [],
+                                                  "followings": [],
+                                                  "biography": ""
+                                              });
+
+  //const [sharedPosts, setSharedPosts] = useState(dummyPosts.slice(0,1));
+  const [likedPosts, setLikedPosts] = useState(dummyPosts.slice(1,4));
+  
+  const [tabValue, setTabValue] = useState('shared');
+  const [infoLoading, setInfoLoading] = useState(true);
+
+  const [followingsOpen, setFollowingsOpen] = useState(false);
+  const [followersOpen, setFollowersOpen] = useState(false);
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
+
 
   useEffect(() => {
-    api
-      .GET_PROFILE("atainan")
-      .then((resp) => {
-        setLoading(false);
-        setUsername(resp.username);
-        setPosts(resp.posts);
-        setName(resp.first_name + " " + resp.last_name);
-        setNofFollowers(resp.nofFollowers);
-        setNofFollowing(resp.nofFollowings);
-        setFollowing(resp.followings);
-        setFollower(resp.followers);
-        setPostIds(resp.postIds);
-      })
-      .catch((error) => alert(error));
-  }, []);
 
-  const renderEmptyPost = () => {
-    return (
-      <Box className={classes.emptyPost}>
-        <Typography>You do not shared story yet!</Typography>
-      </Box>
-    );
+     USER_SERVICE.GET_PROFILEINFO(userId)
+      .then((res) => {
+        const proInfo = res.data.response;
+        console.log('profile info ',  res.data.response['username'])
+              setProfileInfo({
+                                "first_name": proInfo['first_name'],
+                                "last_name" : proInfo['last_name'],
+                                "birthday"  : proInfo['birthday'],
+                                "photo_url" : proInfo['photo_url'],
+                                "location"  : "",
+                                "username"  : proInfo['username'],
+                                "email"     : proInfo['email'],
+                                "followers" : proInfo['followers'],
+                                "followings": proInfo['followings'],
+                                "biography" : proInfo['biography']
+                                              }
+              ); 
+              if(res.data.response['followers'].some(follower => follower['user_id'].toString() === curUserId)) 
+              {
+                setIsCurUserFollowing(true);
+              } else {
+                setIsCurUserFollowing(false);
+              }
+              setInfoLoading(false);
+        })
+        .catch((error) => {
+          console.log('err ', error);
+        });
+
+    }, [editProfileOpen, userId, isFollowClicked]);
+
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
   };
+
+  const handleFollowingsDialogOpen = () => {
+    setFollowingsOpen(true);
+  };
+  const handleFollowersDialogOpen = () => {
+    setFollowersOpen(true);
+  };
+
+  const handleEditProfileDialogOpen = () => {
+    setEditProfileOpen(true);
+  };
+
+  const handleFollowingsDialogClose = (value) => {
+    setFollowingsOpen(false);
+  };
+
+ const handleFollowersDialogClose = (value) => {
+    setFollowersOpen(false);
+  };
+
+  const  handleEditProfileDialogClose = (value) => {
+    setEditProfileOpen(false);
+  };
+
 
   if (loading) {
     return (
@@ -108,150 +171,220 @@ function Profile(props) {
     <div>
       <Wrapper>
         <Paper
-          elevation={3}
-          style={{
-            width: "100%",
-            minHeight: 1090,
-            padding: "4%",
-            borderRadius: 10,
-            marginBottom: 40,
-          }}
+          elevation={1}
+          className={classes.profilePaper}
         >
-          <Container style={{ display: "flex", flexDirection: "row" }}>
-            <Avatar
-              alt="Remy Sharp"
-              src="https://i.internethaber.com/storage/files/images/2019/05/08/avatar-2-3-ve-4un-vizyon-tarihle-lna9_cover.jpg"
-              elevation={10}
-              style={{
-                width: 100,
-                height: 100,
-                marginLeft: 50,
-              }}
-            />
+          <Container fixed>
+            <Box className={classes.profileInfo}>
 
-            <div>
-              <Typography
-                component="h2"
-                variant="h3"
-                color="inherit"
-                align="center"
-                noWrap
-                className={classes.toolbarTitle}
-                gutterBottom
-              >
-                {name}
-              </Typography>
+              <Grid xs container direction="column" spacing={6}>
 
-              <Container style={{ display: "flex", flexDirection: "row" }}>
-                <p
-                  onClick={handleClickOpenDialogFollowing}
-                  style={{ margin: 20, fontSize: 30 }}
-                >
-                  Following: {nofFollowing}
-                </p>
-                <Dialog
-                  open={OpenDialogFollowing}
-                  onClose={handleCloseDialogFollowing}
-                  style={{ minWidth: 300, borderRadius: 10 }}
-                  aria-labelledby="simple-dialog-title"
-                >
-                  <DialogTitle
-                    id="simple-dialog-title"
-                    style={{ minWidth: 300, textAlign: "center" }}
-                  >
-                    Followings
-                  </DialogTitle>
-                  {following.map((item, index) => {
-                    return (
-                      <Container
-                        key={index}
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          padding: "4%",
-                          textAlign: "center",
-                        }}
+                <Grid item container spacing={5}>
+
+                  <Grid item container direction="column" xs={3} spacing={2}>
+                    
+                    <Grid item xs >
+                        <Container>
+                         <Box sx={{width:"100%"}}>
+                          <Button disabled>
+                              <Avatar 
+                                src={profileInfo['photo_url']}
+                                style={{height:80,width:80}}>
+                                {profileInfo['first_name'] && profileInfo['last_name'] ? <>{profileInfo['first_name'].slice(0,1) + profileInfo['last_name'].slice(0,1)}
+                                                                                            </>
+                                                                                        : <></>}
+                                </Avatar>
+                          </Button>
+                         </Box>
+                       </Container>
+                      
+                    </Grid>
+
+                    <Grid item xs>
+                         <Stack spacing={1}>
+
+                           {profileInfo['birthday'] && curUserId === userId ? <Button 
+                                                        size="medium"
+                                                        variant="text"
+                                                        startIcon={ <CakeIcon color="primary"></CakeIcon>}
+                                                        onClick={handleEditProfileDialogOpen}
+                                                        className={classes.buttonText} 
+                                                        >
+                                                        {convertBirthday(profileInfo['birthday'])}
+                                                      </Button>
+                                                      : <Stack direction='row' justifyContent='center'>
+                                                          <CakeIcon color="primary"></CakeIcon>
+                                                        <Typography> {convertBirthday(profileInfo['birthday'])}</Typography>
+                                                        </Stack>
+                              }
+                          </Stack>
+                    </Grid>
+
+                    {curUserId === userId ? 
+                                            <Grid item xs>
+                                                  <Button 
+                                                    color="primary" 
+                                                    variant="contained"
+                                                    className={classes.buttonText} 
+                                                    onClick={handleEditProfileDialogOpen}
+                                                    >
+                                                      Edit Profile
+                                                  </Button>
+                                            </Grid>
+                                          :
+                                          <></>
+                    }
+                  </Grid>
+
+                  <Grid item xs={7} sm>
+
+
+                    <Card  variant="elevation">
+                      <CardHeader 
+                        title={profileInfo['first_name'] + " " + profileInfo['last_name']}
+                        subheader={profileInfo['username']}/>
+                    
+                    <CardContent>
+                        {!profileInfo['biography'] ? <>
+                                                { curUserId === userId ? <>
+                                                                          <Typography variant="h6" color="primary">
+                                                                            My Biography
+                                                                          </Typography>
+                                                                          <Button
+                                                                            className={classes.buttonText} 
+                                                                            onClick={handleEditProfileDialogOpen}>
+                                                                            Add biography to introduce yourself to others!
+                                                                          </Button>
+                                                                        </>
+                                                                        :
+                                                                        <></>
+                                                  }
+                                                </>
+                                            : <>
+                                                <Typography variant="h6" color="primary">
+                                                   My Biography
+                                                </Typography>
+                                                <Typography variant="body2">
+                                                  {profileInfo['biography']}
+                                                </Typography>
+                                              </>
+                      }
+                        
+                      </CardContent>
+                    </Card>
+                  </Grid>
+
+                  <Grid item container xs={2}>
+                     <Grid item>
+                       <Container>
+                         <Box sx={{width:"100%"}}></Box>
+                       </Container>
+                       </Grid>
+                    <Grid item>
+                    <Stack spacing={1}>
+
+                      <Button
+                        onClick={handleFollowersDialogOpen}
+                        className={classes.buttonText}
                       >
-                        <Avatar
-                          alt="r b"
-                          src=""
-                          elevation={10}
-                          style={{
-                            width: 40,
-                            height: 40,
+                        {profileInfo['followers'].length}
+                        <br />
+                        Followers 
 
-                            marginRight: "4%",
-                          }}
-                        >
-                          {item.substring(0, 2).toUpperCase()}
-                        </Avatar>
-                        <h3 style={{ margin: 0, marginTop: "3%" }}>{item}</h3>
-                      </Container>
-                    );
-                  })}
-                  {/* {getFollowing()} */}
-                </Dialog>
-                <p
-                  style={{ margin: 20, fontSize: 30 }}
-                  onClick={handleClickOpenDialogFollower}
-                >
-                  Followers: {nofFollowers}
-                </p>
-                <Dialog
-                  open={OpenDialogFollower}
-                  onClose={handleCloseDialogFollower}
-                  style={{ minWidth: 300, borderRadius: 10 }}
-                >
-                  <DialogTitle
-                    id="simple-dialog-title"
-                    style={{ minWidth: 300, textAlign: "center" }}
-                  >
-                    Followings
-                  </DialogTitle>
-                  {follower.map((item, index) => {
-                    return (
-                      <Container
-                        key={index}
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          padding: "4%",
-                          textAlign: "center",
-                        }}
+                      </Button>
+                        <Button 
+                        onClick={handleFollowingsDialogOpen}
+                        className={classes.buttonText} 
                       >
-                        <Avatar
-                          alt="r b"
-                          src=""
-                          elevation={10}
-                          style={{
-                            width: 40,
-                            height: 40,
+                        {profileInfo['followings'].length}
+                          <br />
+                        Followings     
+                      </Button>
+                       {curUserId !== userId ? <FollowUnfollow 
+                                                  isCurUserFollowing={isCurUserFollowing} 
+                                                  curUser={curUserId} 
+                                                  followUser={userId}
+                                                  setIsCurUserFollowing={setIsCurUserFollowing}
+                                                  setIsFollowClicked={setIsFollowClicked}>
+                                                  </FollowUnfollow>
+                                            :
+                                            <></>
+                        }
+                      
+                   
+                    </Stack>
+                    </Grid>
 
-                            marginRight: "4%",
-                          }}
-                        >
-                          {item.substring(0, 2).toUpperCase()}
-                        </Avatar>
-                        <h3 style={{ margin: 0, marginTop: "3%" }}>{item}</h3>
-                      </Container>
-                    );
-                  })}
-                  {/* {getFollowing()} */}
-                </Dialog>
-              </Container>
-            </div>
+                     
+                  </Grid>
+
+              </Grid>
+
+              <Grid container>
+
+                <Grid item xs= {5}>
+ 
+                    <Box width="100%"/>
+
+
+                </Grid>
+                <Grid item xs= {7}>
+                     <Tabs
+                      value={tabValue}
+                      onChange={handleTabChange}
+                      textColor="primary"
+                      indicatorColor="primary"
+                      aria-label="secondary tabs example"
+                    >
+                      <Tab value="shared" label="Shared Stories" />
+                      <Tab value="liked" label="Liked Stories" />
+                    </Tabs>
+                </Grid>
+                <Grid item xs= {2}>
+                           <Box width="100%"/>
+                    </Grid>
+              </Grid>  
+              </Grid>  
+            </Box>
           </Container>
-          <CreatePostDialog></CreatePostDialog>
-          {postIds.length === 0 && renderEmptyPost()}
-          {postIds.length !== 0 &&
-            postIds.map((item, index) => {
-              console.log("item: ", item.id);
-              return <PostCard key={index} props={{ id: 3 }}></PostCard>;
-            })}
+          
+          <Container>
+            {infoLoading ? <CircularProgress></CircularProgress>
+                        :  <>{tabValue === "shared" ? <>
+                                        <ProfilePostScroll 
+                                          userToBeViewed={profileInfo['username']} 
+                                          userThatViews={localStorage.getItem('username')}
+                                        >
+                                        </ProfilePostScroll>
+                                      </>
+                                   :  <>
+                                        <LikedPostScroll 
+                                          userToBeViewed={profileInfo['username']} 
+                                          userThatViews={localStorage.getItem('username')}
+                                         >
+                                        </LikedPostScroll>
+                                      </> }
+                              </>}
+          </Container>
         </Paper>
+        <FollowerDialog open={followingsOpen} onClose={handleFollowingsDialogClose} accounts={profileInfo['followings']} title={'Followings'}/>
+        <FollowerDialog open={followersOpen}  onClose={handleFollowersDialogClose}  accounts={profileInfo['followers']} title={'Followers'}/>
+        <EditProfileDialog  open={editProfileOpen} onClose={handleEditProfileDialogClose} curProfileInfo={profileInfo}></EditProfileDialog>
       </Wrapper>
     </div>
   );
 }
 
 export default Profile;
+
+
+
+
+/*
+                                    {sharedPosts.map((item) => {
+                                                        return (
+                                                          <Post post={item} curUser={curUserId}></Post>
+                                                        );
+                                                      })
+                                          }
+*/

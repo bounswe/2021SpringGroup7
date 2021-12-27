@@ -14,7 +14,7 @@ import {
 } from 'native-base';
 import {useMutation} from 'react-query';
 
-import AuthLayout from '../../layout/AuthLayout';
+import AuthLayout from '../../layouts/AuthLayout';
 import {SERVICE} from '../../services/services';
 import CustomModal from '../../components/CustomModal';
 import {useAuth} from '../../context/AuthContext';
@@ -43,23 +43,30 @@ const Login = ({navigation}) => {
 
   const submitLogin = useMutation(params => SERVICE.loginRequest({params}), {
     onSuccess(response) {
-      login();
+      const data = {
+        username: formData.username,
+        ...response.data.return,
+      };
+      setLoginContext(data);
       setIsButtonLoading(false);
-      // navigation.navigate('HomePage');
     },
     onError({response}) {
-      console.log('res: ', response);
       setIsButtonLoading(false);
-      setModalMessage(response.data.return);
+      setModalMessage(response.return);
       setShowModal(true);
     },
   });
+
+  const setLoginContext = async data => {
+    console.log('context set func');
+    await login(data);
+  };
 
   const handleLogin = async () => {
     setIsButtonLoading(true);
 
     const data = JSON.stringify({
-      user_name: formData.username,
+      username: formData.username,
       password: formData.password,
     });
     try {
@@ -96,8 +103,8 @@ const Login = ({navigation}) => {
         </Heading>
         <Center mt={5}>
           <Image
-            source={require('../../assets/Logo/Columbus.png')}
-            alt="Columbus Registerr"
+            source={require('../../assets/logo/Columbus.png')}
+            alt="Columbus Logo"
           />
         </Center>
         <VStack space={3} mt="5">

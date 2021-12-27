@@ -8,20 +8,22 @@ import {
   useEffect,
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useQuery} from 'react-query';
 
-import {SERVICE} from '../../services/services';
 import queryClient from '../../configs/reactQuery';
 import {AUTH_KEY} from '../../constants/storageKeys';
+import {SERVICE} from '../../services/services';
+import {useMutation} from 'react-query';
 
 const AuthContext = createContext({
   user: {isAuthenticated: false},
-  login: () => undefined,
+  login: data => data,
+  updateUserInfo: data => data,
   logout: () => undefined,
 });
 
 function AuthProvider({children}) {
   const [user, setUser] = useState({
+    userInfo: {},
     isAuthenticated: false,
   });
 
@@ -30,60 +32,59 @@ function AuthProvider({children}) {
     async function fetchAsyncStorage() {
       const asycnStorage = await AsyncStorage.getItem(AUTH_KEY);
       if (asycnStorage) {
-        const loginValues = await AsyncStorage.getItem(AUTH_KEY);
+        const tempData = await AsyncStorage.getItem(AUTH_KEY);
+        loginValues = JSON.parse(tempData);
         setUser({
-          ...loginValues,
+          userInfo: loginValues,
           isAuthenticated: true,
+        });
+        await fetchUserInfo.mutateAsync({
+          params: {userId: loginValues.user_id, token: loginValues.token},
         });
       }
     }
     fetchAsyncStorage();
   }, [setUser]);
 
-  // const {refetch} = useQuery(
-  //   'getUserInfo',
-  //   () =>
-  //     SERVICE.userInfo(
-  //       JSON.stringify({
-  //         userId: 'me',
-  //       }),
-  //     ),
-  //   {
-  //     enabled: false,
-  //     onSuccess({data}) {
-  //       const userInformations = data?.user;
-  //       if (userInformations) {
-  //         AsyncStorage.setItem(AUTH_KEY, JSON.stringify(userInformations));
-  //         setUser({
-  //           ...userInformations,
-  //           isAuthenticated: true,
-  //         });
-  //       }
-  //     },
-  //   },
-  // );
-
-  const refetch = async () => {
-    console.log('refetch');
-    userInformations = {
-      id: 1234,
-      name: 'onur',
-      surname: 'avci',
-      email: 'onurcannavci@gmail.com',
-    };
-    //TODO: Fix write data to AsyncStorage
-    if (userInformations) {
-      await AsyncStorage.setItem(AUTH_KEY, JSON.stringify(userInformations));
-      setUser({
-        ...userInformations,
-        isAuthenticated: true,
-      });
-    }
+  const updateUserInfo = async data => {
+    await setUser(prevState => ({
+      userInfo: {
+        ...prevState.userInfo,
+        ...data,
+      },
+      isAuthenticated: prevState.isAuthenticated,
+    }));
   };
 
-  const login = useCallback(() => {
-    refetch();
-  }, [refetch]);
+  const fetchUserInfo = useMutation(params => SERVICE.fetchUserInfo(params), {
+    onSuccess(response) {
+      handleSetUserInfo(response.data.response);
+    },
+    onError({response}) {
+      console.log('res error: ', response);
+    },
+  });
+
+  const handleSetUserInfo = async data => {
+    await setUser(prevState => ({
+      userInfo: {
+        ...prevState.userInfo,
+        ...data,
+      },
+      isAuthenticated: prevState.isAuthenticated,
+    }));
+  };
+
+  const login = async data => {
+    await setUser({
+      userInfo: {token: data.token, user_id: data.user_id},
+      isAuthenticated: true,
+    });
+    await AsyncStorage.setItem(AUTH_KEY, JSON.stringify(data));
+    await fetchUserInfo.mutateAsync({
+      params: {userId: data.user_id, token: data.token},
+    });
+  };
 
   const logout = useCallback(async () => {
     await AsyncStorage.removeItem(AUTH_KEY);
@@ -91,7 +92,10 @@ function AuthProvider({children}) {
     setUser({isAuthenticated: false});
   }, [setUser]);
 
-  const value = useMemo(() => ({user, login, logout}), [user, login, logout]);
+  const value = useMemo(
+    () => ({user, login, logout, updateUserInfo}),
+    [user, login, logout, updateUserInfo],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
