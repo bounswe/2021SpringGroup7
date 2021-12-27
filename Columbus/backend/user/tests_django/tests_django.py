@@ -91,7 +91,6 @@ class ModelTestCase(TestCase):
         self.assertEqual(profile.photo_url, None)
         self.assertEqual(profile.biography, None)
         self.assertEqual(profile.birthday, None)
-        self.assertEqual(profile.location, None)
 
 
 class HomePageTestCase(TestCase):
@@ -139,7 +138,7 @@ class ProfileInformationTestCase(TestCase):
         self.user_id=user.id
         self.user=user
         self.user_temp = temp_user
-        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05',location=[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}])
+        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
         story_user = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
         story_temp = Story.objects.create(title="title", text="", multimedia="", user_id=temp_user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
         self.story_temp=story_temp
@@ -150,14 +149,14 @@ class ProfileInformationTestCase(TestCase):
         request = MockRequest(method='GET',body={},user=self.user)
         get_profile_info_api = profile.GetProfileInfo()
         response = get_profile_info_api.get(request=request,user_id=self.user_id).content
-        expected_response = {'response': {'first_name': 'hamza', 'last_name': 'hamza', 'birthday': '2021-05-05', 'location':[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}], 'photo_url': 'temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'followers': [], 'followings': [], 'biography': 'temp likes being cool','user_id':self.user_id,'public':True}}
+        expected_response = {'response': {'first_name': 'hamza', 'last_name': 'hamza', 'birthday': '2021-05-05', 'photo_url': 'temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'followers': [], 'followings': [], 'biography': 'temp likes being cool','user_id':self.user_id,'public':True}}
         self.assertEqual(json.loads(response.decode('utf-8')),expected_response)
 
     def test_set_profile_information(self):
-        request = MockRequest(method='POST', body={'user_id':self.user_id,'first_name': 'changed_hamza', 'last_name': 'changed_hamza','location':[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}], 'birthday': '2021-06-06','photo_url': 'changed_temp.png','biography': 'changed temp likes being cool','public':False})
+        request = MockRequest(method='POST', body={'user_id':self.user_id,'first_name': 'changed_hamza', 'last_name': 'changed_hamza', 'birthday': '2021-06-06','photo_url': 'changed_temp.png','biography': 'changed temp likes being cool','public':False})
         set_profile_info_api = profile.SetProfileInfo()
         response = set_profile_info_api.post(request=request).content
-        expected_response = {'response': {'first_name': 'changed_hamza', 'last_name': 'changed_hamza', 'birthday': '2021-06-06', 'location': [{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}], 'photo_url': 'changed_temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'biography': 'changed temp likes being cool','user_id':self.user_id,'public':False}}
+        expected_response = {'response': {'first_name': 'changed_hamza', 'last_name': 'changed_hamza', 'birthday': '2021-06-06','photo_url': 'changed_temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'biography': 'changed temp likes being cool','user_id':self.user_id,'public':False}}
 
         self.assertEqual(json.loads(response.decode('utf-8')), expected_response)
 
@@ -316,7 +315,7 @@ class GetCommentTestCase(TestCase):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
         story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
-        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05',location=[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}])
+        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
         story.save()
         story.id = 1
         story.save()
@@ -362,7 +361,7 @@ class LikePostTestCase(TestCase):
         user.save()
         self.user_id=user.id
         story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
-        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05',location=[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}])
+        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
         story.save()
         story.id = 1
         story.save()
