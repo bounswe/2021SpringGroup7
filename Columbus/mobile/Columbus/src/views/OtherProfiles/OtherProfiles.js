@@ -286,7 +286,7 @@ const OtherProfiles = ({navigation, route}) => {
             </ScrollView>
           ) : (
             <Text style={{textAlign: 'center'}}>
-              You do not share any story!
+              {`${route.params.username} does not share any story!`}
             </Text>
           )
         ) : isFollowing ? (
@@ -306,7 +306,7 @@ const OtherProfiles = ({navigation, route}) => {
             </ScrollView>
           ) : (
             <Text style={{textAlign: 'center'}}>
-              You do not share any story!
+              {`${route.params.username} does not share any story!`}
             </Text>
           )
         ) : (
