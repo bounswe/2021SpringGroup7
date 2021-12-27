@@ -102,7 +102,7 @@ function Profile({...props}) {
      USER_SERVICE.GET_PROFILEINFO(userId)
       .then((res) => {
         const proInfo = res.data.response;
-        //console.log('profile info ',  res)
+        //console.log('profile info ',  res.data.response['username'])
               setProfileInfo({
                                 "first_name": proInfo['first_name'],
                                 "last_name" : proInfo['last_name'],
