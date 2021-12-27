@@ -143,11 +143,6 @@ const Profile = ({navigation, route}) => {
                 iconName="birthday-cake"
                 data={userInfo.birthday}></InfoWithIcon>
             )}
-            {userInfo.location && (
-              <InfoWithIcon
-                iconName="map-marker-alt"
-                data={userInfo.location.location}></InfoWithIcon>
-            )}
           </View>
         </View>
       </View>
