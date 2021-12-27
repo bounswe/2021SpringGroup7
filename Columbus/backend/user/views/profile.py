@@ -26,6 +26,7 @@ class GetProfileInfo(generics.ListAPIView):
         try:
             profile_info = Profile.objects.get(user_id=user_info)
         except:
+            Profile.objects.all(user_id=user_info).delete()
             profile_info = Profile.objects.create(user_id=user_info)
 
 
@@ -50,7 +51,7 @@ class GetProfileInfo(generics.ListAPIView):
             followers.append(temp)
 
 
-        if request_owner.id != int(user_id):
+        if request_owner.id != user_info.id:
             if (not profile_info.public) and (request_owner.id not in list(Following.objects.filter(follow=user_info).values_list('user_id',flat=True))):
                 result_dict = {
                     'first_name': user_info.first_name,
@@ -60,7 +61,9 @@ class GetProfileInfo(generics.ListAPIView):
                     'followers_count': len(followers),
                     'followings_count': len(followings),
                     'biography': profile_info.biography,
-                    'public': profile_info.public
+                    'public': profile_info.public,
+                    'request_owner.id':request_owner.id,
+                    'user.id':user_info.id
                 }
                 return JsonResponse({'response': result_dict})
         ##dummy pipelie trigger
