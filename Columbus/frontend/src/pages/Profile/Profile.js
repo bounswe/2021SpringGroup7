@@ -130,7 +130,7 @@ function Profile({...props}) {
           }
         });
 
-    }, [editProfileOpen, userId, isFollowClicked]);
+    }, [editProfileOpen, userId, isFollowClicked, isBlocked]);
 
 
   const handleTabChange = (event, newValue) => {
@@ -270,7 +270,8 @@ function Profile({...props}) {
                                                     onClose={handleVerticalMenuClose}
                                                     userThatIsToBeViewed={userId}
                                                     usernameViewed={profileInfo['username']}
-                                                    userThatViews={curUserId}>
+                                                    userThatViews={curUserId}
+                                                    setIsBlocked={setIsBlocked}>
                                                   </VerticalMenu>
                                                     </>
                                   }/>

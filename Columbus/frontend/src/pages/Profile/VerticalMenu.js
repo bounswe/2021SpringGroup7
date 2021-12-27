@@ -14,7 +14,7 @@ const ITEM_HEIGHT = 48;
 
 export default function VerticalMenu(props) {
 
-  const { anchorEl, setAnchorEl, onClose, userThatIsToBeViewed, usernameViewed, userThatViews} = props;
+  const { anchorEl, setAnchorEl, onClose, userThatIsToBeViewed, usernameViewed, userThatViews, setIsBlocked} = props;
   const open = Boolean(anchorEl);
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [message, setMessage] = useState(false);
@@ -43,6 +43,7 @@ export default function VerticalMenu(props) {
             setSuccess(true);
             setOpenSnackBar(true);
             onClose();
+            setIsBlocked(true);
       })
       .catch((error) => {
             setMessage("Blocking is not successful. Please, try again later.");
