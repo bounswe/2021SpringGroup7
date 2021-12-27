@@ -31,7 +31,11 @@ const USER_SERVICE = {
                                                                                           "username": username,
                                                                                           "page_number": pageNumber,
                                                                                           "page_size": pageSize
-                                                                                          }),                                                                                    
+                                                                                          }),   
+  GET_NOTIFICATIONS: (username) => API_INSTANCE.post(`/user/get_notifications/`,{
+                                                                                  "user_name":username,
+                                                                                  "limit": 10
+                                                                                }),                                                                                                                                                                                        
 
 };
 
