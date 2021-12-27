@@ -1,10 +1,11 @@
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
-  headerExitIconContainer: {
+  headerBlockIconContainer: {
     display: 'flex',
     flexDirection: 'column',
-    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 16,
   },
   pageContainer: {

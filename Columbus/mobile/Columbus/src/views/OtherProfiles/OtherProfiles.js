@@ -31,6 +31,12 @@ const OtherProfiles = ({navigation, route}) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity style={styles.headerBlockIconContainer}>
+          <Icon name="user-alt-slash" size={18} />
+          <Text>Block</Text>
+        </TouchableOpacity>
+      ),
       title: route.params.username,
     });
   }, [navigation, route.params.username]);
