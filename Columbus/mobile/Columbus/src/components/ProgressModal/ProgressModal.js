@@ -8,7 +8,6 @@ const CustomModal = props => {
       onClose={props.closeModal}
       closeOnOverlayClick={false}>
       <Modal.Content maxWidth="400px">
-        {/* <Modal.CloseButton /> */}
         <Modal.Header>
           {props.progress === 100
             ? 'Image uploaded successfully'
