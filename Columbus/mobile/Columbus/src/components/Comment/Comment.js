@@ -25,10 +25,15 @@ const Comment = props => {
   const [showModal, setShowModal] = useState(false);
   const [modalSize, setModalSize] = useState('sm');
   const { user} = useAuth();
-  
-
   const colors = ['amber.500', 'purple.500', 'red.500', 'blue.500'];
   const rand = Math.floor(Math.random() * colors.length);
+
+  const reply=(id)=>{
+    setShowModal(false)
+    props.replyCallback(id)
+  }
+
+
   return (
     <Box ml={4}  direction='column'>
       <HStack space={3}>
@@ -92,7 +97,12 @@ const Comment = props => {
           
 
           <Modal.Body>
-            <CommentMenu data={props?.data} pinned={props.pinned} isDeletable={props.isDeletable} isPinnable={props.isPinnable}></CommentMenu>
+            {props.reply ?
+             <CommentMenu replyCallback={()=>reply(props.data.id)} reply={props.reply} data={props?.data} pinned={props.pinned} isDeletable={props.isDeletable} isPinnable={props.isPinnable}></CommentMenu>
+             :
+             <CommentMenu  reply={props.reply} data={props?.data} pinned={props.pinned} isDeletable={props.isDeletable} isPinnable={props.isPinnable}></CommentMenu>
+             }
+
           </Modal.Body>
         </Modal.Content>
       </Modal>

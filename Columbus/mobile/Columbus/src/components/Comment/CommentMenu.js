@@ -26,6 +26,7 @@ const CommentMenu = props => {
 
   
   return (<>
+		          {props.reply&&<Button variant="ghost" colorScheme="blue" onPress={()=>{props.replyCallback()}}>Reply</Button>}
               {pinable&&<Button variant="ghost" colorScheme="blue">{props.pinned?'Unpin':'Pin'}</Button>}
               {editable? <Button variant="ghost" colorScheme="blue">Edit</Button>:<Button variant="ghost" colorScheme="red">Report</Button>}
               {deletable&&<Button variant="ghost" colorScheme="red">Delete</Button>}
