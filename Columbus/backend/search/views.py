@@ -542,6 +542,10 @@ class Search(generics.CreateAPIView):
         page_number = body.get('page_number')
         page_size = body.get('page_size')
         username = body.get('username', '')
+        query_latitude = body.get('query_latitude', 0)
+        query_longitude = body.get('query_longitude', 0)
+        query_distance = body.get('query_distance', -1)
+        location_text = body.get('location_text', '')
 
         if page_number<1:
             result = []
@@ -564,7 +568,7 @@ class Search(generics.CreateAPIView):
 
             stories = sorted(stories, key=lambda x: x[0], reverse=True)
             stories = [each[1] for each in stories]
-            stories = stories[(page_number-1)*page_size: page_number*page_size]
+
 
             stories_returned += stories
 
@@ -578,10 +582,54 @@ class Search(generics.CreateAPIView):
 
             stories = sorted(stories, key=lambda x: x[0], reverse=True)
             stories = [each[1] for each in stories]
-            stories = stories[(page_number-1)*page_size: page_number*page_size]
+
 
             stories_returned += stories
 
+        if query_latitude!=0 and query_longitude!=0 and query_distance!=-1:
+
+            stories = []
+
+            for each in stories_all:
+                locations = Location.objects.filter(story_id = each, type = "Real")
+                shortest_distance = 1000000000
+                for each_location in locations:
+                    if query_latitude!=0 and query_longitude!=0 and each_location.latitude!=0 and each_location.longitude!=0:
+                        distance = math.sqrt((query_latitude-each_location.latitude)**2+(query_longitude-each_location.longitude)**2)*111
+                        if distance<query_distance:
+                            shortest_distance = distance
+                if shortest_distance!=1000000000:
+                    stories.append((-1*shortest_distance, each))
+
+
+
+            stories = sorted(stories, key=lambda x: x[0], reverse=True)
+            stories = [each[1] for each in stories]
+
+            stories_returned += stories
+
+        if location_text != '':
+            stories = []
+
+            for each in stories_all:
+                locations = Location.objects.filter(story_id = each)
+                for each_location in locations:
+                    distance_value = nltk.jaccard_distance(set(nltk.ngrams(location_text.lower(), n=2)), set(nltk.ngrams(each_location.location.lower(), n=2)))
+                    similarity_value = 1-distance_value
+                    if distance_value<0.75:
+                        stories.append((similarity_value, each))
+
+
+            stories = sorted(stories, key=lambda x: x[0], reverse=True)
+            stories = [each[1] for each in stories]
+
+
+            stories_returned += stories
+            
+
+
+        stories_returned = list(set(stories_returned))
+        stories_returned = stories_returned[(page_number-1)*page_size: page_number*page_size]
         if len(stories_returned)!=0:
             serialized_obj = serializers.serialize('json', stories_returned)
             serialized_obj = json.loads(str(serialized_obj))
