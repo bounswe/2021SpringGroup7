@@ -65,7 +65,7 @@ function CommentSheet(props) {
     {
       onSuccess(response) {
         setComments(response.data.return.comments);
-        setPinnedComments(response.data.return.comments);
+        setPinnedComments(response.data.return.pinned_comments);
       },
       onError({response}) {
         console.log('res error: ', response);

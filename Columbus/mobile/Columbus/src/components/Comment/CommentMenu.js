@@ -31,27 +31,73 @@ const CommentMenu = props => {
   const [showEditMenu, setShowEditMenu] = useState(false);
   const [checkMenu, setCheckMenu] = useState(false);
   const [token, setToken] = useState(user?.userInfo?.token)
+  const [editCommentValue, setEditCommentValue] = useState(props.data.text)
 
-  if (showEditMenu) {
-    return (
-      <>
-        <TextArea variant="outline" value={props.data.text} />
-        <Button variant="ghost" colorScheme="blue">
-          {' '}
-          Update Comment
-        </Button>
-        <Button variant="ghost" colorScheme="red">
-          {' '}
-          Cancel
-        </Button>
-      </>
-    );
-  }
+  
+
+  const editComment = useMutation(
+    params => SERVICE.editComment({params, token}),
+    {
+      onSuccess(response) {
+        props.closeCallBack();
+        setCheckMenu(false)
+      },
+      onError({response}) {
+        console.log('res error: ', response);
+      },
+    },
+  );
+  const handleEditComment = async () => {
+    const token = user?.userInfo?.token;
+    setToken(token)
+    const data = JSON.stringify({
+      comment_id: props.data.id,
+      text:editCommentValue
+    });
+    try {
+      await editComment.mutateAsync(data,token);
+    } catch (e) {
+      console.log('e: ', e);
+    }
+  };
+
+  const pinComment = useMutation(
+    params => SERVICE.pinComment({params, token}),
+    {
+      onSuccess(response) {
+        props.closeCallBack();
+        setCheckMenu(false)
+      },
+      onError({response}) {
+        console.log('res error: ', response);
+      },
+    },
+  );
+  const handlePinComment = async () => {
+    const token = user?.userInfo?.token;
+    setToken(token)
+    const data = JSON.stringify({
+      comment_id: props.data.id,
+      story_id: props.data.story_id
+    });
+    try {
+      console.log(data,token)
+      await pinComment.mutateAsync(data,token);
+    } catch (e) {
+      console.log('e: ', e);
+    }
+  };
+
+
+
+
+
   const deleteComment = useMutation(
     params => SERVICE.deleteComment({params, token}),
     {
       onSuccess(response) {
         props.closeCallBack();
+        setCheckMenu(false)
       },
       onError({response}) {
         console.log('res error: ', response);
@@ -64,13 +110,27 @@ const CommentMenu = props => {
     const data = JSON.stringify({
       comment_id: props.data.id,
     });
-    console.log(data,token)
     try {
       await deleteComment.mutateAsync(data,token);
     } catch (e) {
       console.log('e: ', e);
     }
   };
+  if (showEditMenu) {
+    return (
+      <>
+        <TextArea variant="outline" value={editCommentValue} onChangeText={value => setEditCommentValue(value)}/>
+        <Button variant="ghost" colorScheme="blue" onPress={()=>handleEditComment()}>
+          {' '}
+          Update Comment
+        </Button>
+        <Button variant="ghost" colorScheme="red">
+          {' '}
+          Cancel
+        </Button>
+      </>
+    );
+  }
   if (checkMenu) {
     return (
       <>
@@ -122,7 +182,7 @@ const CommentMenu = props => {
         </Button>
       )}
       {pinable && (
-        <Button variant="ghost" colorScheme="blue">
+        <Button variant="ghost" colorScheme="blue" onPress={()=>handlePinComment()}>
           {props.pinned ? 'Unpin' : 'Pin'}
         </Button>
       )}
