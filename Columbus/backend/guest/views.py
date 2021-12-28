@@ -62,11 +62,16 @@ class Login(generics.CreateAPIView):
         user = authenticate(request, username=user_name, password=password)
 
         if user is not None:
-
             auth_login(request, user)
             token, created = Token.objects.get_or_create(user=user)
             user_info = User.objects.get(username=user_name)
-            result_dict = {"first_name": user_info.first_name, "last_name": user_info.last_name, "user_id": user_info.id,"token": str(token)}
+            try:
+                profile = Profile.objects.get(user_id=user_info)
+                photo_url = profile.photo_url
+            except:
+                photo_url = None
+
+            result_dict = {"first_name": user_info.first_name, "last_name": user_info.last_name,"photo_url":photo_url ,"user_id": user_info.id,"token": str(token)}
             return JsonResponse({'return': result_dict})
         else:
             return JsonResponse({'return': 'Login is invalid'}, status=400)

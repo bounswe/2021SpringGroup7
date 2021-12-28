@@ -22,10 +22,11 @@ class PinComment(generics.CreateAPIView):
         try:
             story = Story.objects.get(id=story_id)
             comment = Comment.objects.get(id=comment_id)
+            user = User.objects.get(username=user)
         except:
-            return JsonResponse({'return': 'The user or comment does not exist'}, status=400)
+            return JsonResponse({'return': 'The story or comment does not exist'}, status=400)
 
-        if str(story.user_id.username) != str(user):
+        if story.user_id.username != user.username:
             return JsonResponse({'return': 'The user is not allowed for the action'}, status=400)
 
         if bool(comment.parent_comment_id):

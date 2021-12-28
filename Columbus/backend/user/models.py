@@ -92,6 +92,10 @@ class Following(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_id')
     follow = models.ForeignKey(User, on_delete=models.CASCADE,related_name='follow')
 
+class FollowRequest(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE,related_name='request_owner')
+    follow = models.ForeignKey(User, on_delete=models.CASCADE,related_name='request_reciever')
+
 class Blocking(models.Model):
     user_id_block = models.ForeignKey(User, on_delete=models.CASCADE,related_name='user_id_block')
     block = models.ForeignKey(User, on_delete=models.CASCADE,related_name='block')

@@ -103,7 +103,21 @@ def _comment_delete(activity):
                 "@id": activity.comment.id
             },
     }
-
+def _followrequest(activity):
+    return {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "summary": f"{activity.actor.username} has requested to follow {activity.target.username}",
+            "id": activity.id,
+            "type": "FollowRequest",
+            "actor": {
+                "type": "https://schema.org/Person",
+                "@id": activity.actor.username,
+            },
+            "target": {
+                "type": "https://schema.org/Person",
+                "@id": activity.target.username,
+            }
+    }
 def _follow(activity):
     return {
             "@context": "https://www.w3.org/ns/activitystreams",
