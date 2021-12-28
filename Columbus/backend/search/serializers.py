@@ -60,3 +60,13 @@ class UserSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Story
         fields = ['search_text', 'page_number', 'page_size']
+
+
+class SearchSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=100)
+    search_text = serializers.CharField()
+    page_number = serializers.IntegerField()
+    page_size = serializers.IntegerField()
+    class Meta:
+        model = Story
+        fields = ['username', 'search_text', 'page_number', 'page_size']
