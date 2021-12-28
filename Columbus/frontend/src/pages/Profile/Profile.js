@@ -65,13 +65,12 @@ function Profile({...props}) {
   }
   const classes = useStyles();
   const curUserId = localStorage.getItem('userid');    // user in current session
-  //const userId  = viewedUserId;                       
+                   
 
   const [loading, setLoading] = useState(true);
   const [isAbleToView,setIsAbleToView] = useState(false);
 
-  //const [curUserId, setCurUserId] = useState(6);                
-  //const [userId, setUserId] = useState(4);                        
+                    
   const [isCurUserFollowing,setIsCurUserFollowing] = useState([]);
   const [isFollowClicked,setIsFollowClicked] = useState([]);
 
@@ -88,9 +87,6 @@ function Profile({...props}) {
                                                   "public": true
                                               });
 
-  //const [sharedPosts, setSharedPosts] = useState(dummyPosts.slice(0,1));
-  const [likedPosts, setLikedPosts] = useState(dummyPosts.slice(1,4));
-  
   const [tabValue, setTabValue] = useState('shared');
   const [infoLoading, setInfoLoading] = useState(true);
 
@@ -107,7 +103,7 @@ function Profile({...props}) {
       .then((res) => {
         const proInfo = res.data.response;
         console.log('profile info ', proInfo)
-        if(proInfo['followers']){                 // user in session is able to view this profile
+        if(proInfo['followers']){                                   // user in session is able to view this profile
           setProfileInfo({
                             "first_name": proInfo['first_name'],
                             "last_name" : proInfo['last_name'],
@@ -213,17 +209,13 @@ function Profile({...props}) {
         >
           <Container fixed>
             <Box className={classes.profileInfo}>
-
               <Grid xs container direction="column" spacing={6}>
-
                 <Grid item container spacing={5}>
-
                   <Grid item container direction="column" xs={3} spacing={2}>
-                    
                     <Grid item xs >
                         <Container>
-                         <Box sx={{width:"100%"}}>
-                          <Button disabled>
+                          <Box sx={{width:"100%"}}>
+                            <Button disabled>
                               <Avatar 
                                 src={profileInfo['photo_url']}
                                 style={{height:80,width:80}}>
@@ -231,51 +223,48 @@ function Profile({...props}) {
                                                                                             </>
                                                                                         : <></>}
                                 </Avatar>
-                          </Button>
+                            </Button>
                          </Box>
-                       </Container>
-                      
+                       </Container> 
                     </Grid>
-
                     <Grid item xs>
-                         <Stack spacing={1}>
-
-                           {profileInfo['birthday'] && curUserId === userId ? <Button 
-                                                        size="medium"
-                                                        variant="text"
-                                                        startIcon={ <CakeIcon color="primary"></CakeIcon>}
-                                                        onClick={handleEditProfileDialogOpen}
-                                                        className={classes.buttonText} 
-                                                        >
-                                                        {convertBirthday(profileInfo['birthday'])}
-                                                      </Button>
-                                                      : <Stack direction='row' justifyContent='center'>
-                                                          <CakeIcon color="primary"></CakeIcon>
-                                                        <Typography> {convertBirthday(profileInfo['birthday'])}</Typography>
-                                                        </Stack>
-                              }
-                          </Stack>
+                      <Stack spacing={1}>
+                        {profileInfo['birthday'] && curUserId === userId ? <Button 
+                                                                            size="medium"
+                                                                            variant="text"
+                                                                            startIcon={ <CakeIcon color="primary"></CakeIcon>}
+                                                                            onClick={handleEditProfileDialogOpen}
+                                                                            className={classes.buttonText} 
+                                                                            >
+                                                                            {convertBirthday(profileInfo['birthday'])}
+                                                                          </Button>
+                                                                        : <Stack 
+                                                                            direction='row' 
+                                                                            justifyContent='center'>
+                                                                            <CakeIcon color="primary"/>
+                                                                            <Typography> 
+                                                                              {convertBirthday(profileInfo['birthday'])}
+                                                                            </Typography>
+                                                                          </Stack>
+                          }
+                      </Stack>
                     </Grid>
-
                     {curUserId === userId ? 
-                                            <Grid item xs>
-                                                  <Button 
-                                                    color="primary" 
-                                                    variant="contained"
-                                                    className={classes.buttonText} 
-                                                    onClick={handleEditProfileDialogOpen}
-                                                    >
-                                                      Edit Profile
-                                                  </Button>
-                                            </Grid>
+                                          <Grid item xs>
+                                            <Button 
+                                              color="primary" 
+                                              variant="contained"
+                                              className={classes.buttonText} 
+                                              onClick={handleEditProfileDialogOpen}
+                                              >
+                                                Edit Profile
+                                            </Button>
+                                          </Grid>
                                           :
                                           <></>
                     }
-                  </Grid>
-
+                    </Grid>
                   <Grid item xs={7} sm>
-
-
                     <Card  variant="elevation">
                       <CardHeader 
                         title={profileInfo['first_name'] + " " + profileInfo['last_name']}
@@ -332,75 +321,66 @@ function Profile({...props}) {
                        <Container>
                          <Box sx={{width:"100%"}}></Box>
                        </Container>
-                       </Grid>
-                    <Grid item>
-                    <Stack spacing={1}>
-                      {isAbleToView ? <>
-                                        <Button
-                                            onClick={handleFollowersDialogOpen}
-                                            className={classes.buttonText}
-                                          >
-                                            {profileInfo['followers'].length}
-                                            <br />
-                                            Followers 
+                      </Grid>
+                  <Grid item>
+                  <Stack spacing={1}>
+                    {isAbleToView ? <>
+                                      <Button
+                                          onClick={handleFollowersDialogOpen}
+                                          className={classes.buttonText}
+                                        >
+                                          {profileInfo['followers'].length}
+                                          <br />
+                                          Followers 
 
-                                          </Button>
-                                            <Button 
-                                            onClick={handleFollowingsDialogOpen}
-                                            className={classes.buttonText} 
-                                          >
-                                            {profileInfo['followings'].length}
-                                              <br />
-                                            Followings     
-                                          </Button>
-                                      </>
-                                    : <>
-                                        <Button
-                                            disabled
-                                            className={classes.buttonText}
-                                          >
-                                            {profileInfo['followers_count']}
+                                        </Button>
+                                          <Button 
+                                          onClick={handleFollowingsDialogOpen}
+                                          className={classes.buttonText} 
+                                        >
+                                          {profileInfo['followings'].length}
                                             <br />
-                                            Followers 
+                                          Followings     
+                                        </Button>
+                                    </>
+                                  : <>
+                                      <Button
+                                          disabled
+                                          className={classes.buttonText}
+                                        >
+                                          {profileInfo['followers_count']}
+                                          <br />
+                                          Followers 
 
-                                          </Button>
-                                            <Button 
-                                            disabled
-                                            className={classes.buttonText} 
-                                          >
-                                            {profileInfo['followings_count']}
-                                              <br />
-                                            Followings     
-                                          </Button>
-                                      </>}
-                      
-                       {curUserId !== userId ? <FollowUnfollow 
-                                                  isCurUserFollowing={isCurUserFollowing} 
-                                                  curUser={curUserId} 
-                                                  followUser={userId}
-                                                  setIsCurUserFollowing={setIsCurUserFollowing}
-                                                  setIsFollowClicked={setIsFollowClicked}>
-                                                  </FollowUnfollow>
-                                            :
-                                            <></>
-                        }
-                      
-                   
+                                        </Button>
+                                          <Button 
+                                          disabled
+                                          className={classes.buttonText} 
+                                        >
+                                          {profileInfo['followings_count']}
+                                            <br />
+                                          Followings     
+                                        </Button>
+                                    </>}
+                    
+                      {curUserId !== userId ? <FollowUnfollow 
+                                                isCurUserFollowing={isCurUserFollowing} 
+                                                curUser={curUserId} 
+                                                followUser={userId}
+                                                setIsCurUserFollowing={setIsCurUserFollowing}
+                                                setIsFollowClicked={setIsFollowClicked}>
+                                                </FollowUnfollow>
+                                          :
+                                          <></>
+                      }
                     </Stack>
-                    </Grid>
-
-                     
-                  </Grid>
-
+                  </Grid>                
+                </Grid>
               </Grid>
 
               <Grid container>
-
                 <Grid item xs= {5}>
- 
                     <Box width="100%"/>
-
-
                 </Grid>
                 <Grid item xs= {7}>
                      <Tabs
@@ -415,14 +395,14 @@ function Profile({...props}) {
                     </Tabs>
                 </Grid>
                 <Grid item xs= {2}>
-                           <Box width="100%"/>
-                    </Grid>
+                  <Box width="100%"/>
+                </Grid>
               </Grid>  
-              </Grid>  
-            </Box>
-          </Container>
+            </Grid>  
+          </Box>
+        </Container>
           
-          <Container>
+        <Container>
             {infoLoading ? <CircularProgress></CircularProgress>
                         :  <>{tabValue === "shared" ? <>
                                         <ProfilePostScroll 
@@ -441,15 +421,14 @@ function Profile({...props}) {
                                         </LikedPostScroll>
                                       </> }
                               </>}
-          </Container>
-        </Paper>
+        </Container>
+      </Paper>
         {isAbleToView ? <>
                         <FollowerDialog open={followingsOpen} onClose={handleFollowingsDialogClose} accounts={profileInfo['followings']} title={'Followings'}/>
                         <FollowerDialog open={followersOpen}  onClose={handleFollowersDialogClose}  accounts={profileInfo['followers']} title={'Followers'}/>
                         </>
                       : <></>
         }
-        
         <EditProfileDialog  open={editProfileOpen} onClose={handleEditProfileDialogClose} curProfileInfo={profileInfo}></EditProfileDialog>
       </Wrapper>
     </div>
@@ -457,15 +436,3 @@ function Profile({...props}) {
 }
 
 export default Profile;
-
-
-
-
-/*
-                                    {sharedPosts.map((item) => {
-                                                        return (
-                                                          <Post post={item} curUser={curUserId}></Post>
-                                                        );
-                                                      })
-                                          }
-*/
