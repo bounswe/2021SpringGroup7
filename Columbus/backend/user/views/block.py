@@ -31,6 +31,19 @@ class Block(generics.CreateAPIView):
             instance.delete()
             block_relation = self.get_blocking(user_id_block=user, block=block)
             block_relation.save()
+
+            instance = Following.objects.filter(user_id=user, follow=block)
+            if instance:
+                instance.delete()
+                dt = datetime.now(timezone.utc).astimezone()
+                ActivityStream.objects.create(type='Unfollow', actor=user, target=block, date=dt)
+
+            instance = Following.objects.filter(user_id=block, follow=user)
+            if instance:
+                instance.delete()
+                dt = datetime.now(timezone.utc).astimezone()
+                ActivityStream.objects.create(type='Unfollow', actor=block, target=user, date=dt)
+
             dt = datetime.now(timezone.utc).astimezone()
             ActivityStream.objects.create(type='Block', actor=user, target=block, date=dt)
             return JsonResponse({'return': f'The user {user.username} has blocked {block.username}'})
