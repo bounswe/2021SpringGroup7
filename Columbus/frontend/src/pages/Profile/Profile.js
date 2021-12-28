@@ -65,9 +65,10 @@ function Profile({...props}) {
   }
   const classes = useStyles();
   const curUserId = localStorage.getItem('userid');    // user in current session
-  //const userId  = viewedUserId;                        
+  //const userId  = viewedUserId;                       
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isAbleToView,setIsAbleToView] = useState(false);
 
   //const [curUserId, setCurUserId] = useState(6);                
   //const [userId, setUserId] = useState(4);                        
@@ -78,13 +79,13 @@ function Profile({...props}) {
                                                   "first_name": "",
                                                   "last_name": "",
                                                   "birthday": null,
-                                                  "location": "",
                                                   "username": "",
                                                   "photo_url": "",
                                                   "email": "",
                                                   "followers": [],
                                                   "followings": [],
-                                                  "biography": ""
+                                                  "biography": "",
+                                                  "public": true
                                               });
 
   //const [sharedPosts, setSharedPosts] = useState(dummyPosts.slice(0,1));
@@ -100,34 +101,60 @@ function Profile({...props}) {
 
   useEffect(() => {
 
+    setLoading(true);
+
      USER_SERVICE.GET_PROFILEINFO(userId)
       .then((res) => {
         const proInfo = res.data.response;
-        console.log('profile info ',  res)
-              setProfileInfo({
-                                "first_name": proInfo['first_name'],
-                                "last_name" : proInfo['last_name'],
-                                "birthday"  : proInfo['birthday'],
-                                "photo_url" : proInfo['photo_url'],
-                                "location"  : "",
-                                "username"  : proInfo['username'],
-                                "email"     : proInfo['email'],
-                                "followers" : proInfo['followers'],
-                                "followings": proInfo['followings'],
-                                "biography" : proInfo['biography']
-                                              }
-              ); 
-              if(res.data.response['followers'].some(follower => follower['user_id'].toString() === curUserId)) 
-              {
-                setIsCurUserFollowing(true);
-              } else {
-                setIsCurUserFollowing(false);
-              }
-              setInfoLoading(false);
-        })
-        .catch((error) => {
-          console.log('err ', error);
-        });
+        console.log('profile info ', proInfo)
+        if(proInfo['followers']){                 // user in session is able to view this profile
+          setProfileInfo({
+                            "first_name": proInfo['first_name'],
+                            "last_name" : proInfo['last_name'],
+                            "birthday"  : proInfo['birthday'],
+                            "photo_url" : proInfo['photo_url'],
+                            "username"  : proInfo['username'],
+                            "email"     : proInfo['email'],
+                            "followers" : proInfo['followers'],
+                            "followings": proInfo['followings'],
+                            "biography" : proInfo['biography'],
+                            "public"    : proInfo['public']
+                          }
+          ); 
+          setIsAbleToView(true);
+
+          
+          if(res.data.response['followers'].some(follower => follower['user_id'].toString() === curUserId)) 
+          {
+            setIsCurUserFollowing(true);
+          } else {
+            setIsCurUserFollowing(false);
+          }
+
+        } else {
+          setProfileInfo({
+                            "first_name": proInfo['first_name'],
+                            "last_name" : proInfo['last_name'],
+                            "birthday"  : proInfo['birthday'],
+                            "photo_url" : proInfo['photo_url'],
+                            "username"  : proInfo['username'],
+                            "email"     : proInfo['email'],
+                            "followers_count" : proInfo['followers_count'],
+                            "followings_count": proInfo['followings_count'],
+                            "biography" : proInfo['biography'],
+                            "public"    : proInfo['public']
+                          }
+          ); 
+          setIsCurUserFollowing(false);
+          setIsAbleToView(false);
+        
+        }
+          setInfoLoading(false);
+          setLoading(false);
+      })
+      .catch((error) => {
+        console.log('err ', error);
+      });
 
     }, [editProfileOpen, userId, isFollowClicked]);
 
@@ -308,24 +335,45 @@ function Profile({...props}) {
                        </Grid>
                     <Grid item>
                     <Stack spacing={1}>
+                      {isAbleToView ? <>
+                                        <Button
+                                            onClick={handleFollowersDialogOpen}
+                                            className={classes.buttonText}
+                                          >
+                                            {profileInfo['followers'].length}
+                                            <br />
+                                            Followers 
 
-                      <Button
-                        onClick={handleFollowersDialogOpen}
-                        className={classes.buttonText}
-                      >
-                        {profileInfo['followers'].length}
-                        <br />
-                        Followers 
+                                          </Button>
+                                            <Button 
+                                            onClick={handleFollowingsDialogOpen}
+                                            className={classes.buttonText} 
+                                          >
+                                            {profileInfo['followings'].length}
+                                              <br />
+                                            Followings     
+                                          </Button>
+                                      </>
+                                    : <>
+                                        <Button
+                                            disabled
+                                            className={classes.buttonText}
+                                          >
+                                            {profileInfo['followers_count']}
+                                            <br />
+                                            Followers 
 
-                      </Button>
-                        <Button 
-                        onClick={handleFollowingsDialogOpen}
-                        className={classes.buttonText} 
-                      >
-                        {profileInfo['followings'].length}
-                          <br />
-                        Followings     
-                      </Button>
+                                          </Button>
+                                            <Button 
+                                            disabled
+                                            className={classes.buttonText} 
+                                          >
+                                            {profileInfo['followings_count']}
+                                              <br />
+                                            Followings     
+                                          </Button>
+                                      </>}
+                      
                        {curUserId !== userId ? <FollowUnfollow 
                                                   isCurUserFollowing={isCurUserFollowing} 
                                                   curUser={curUserId} 
@@ -380,6 +428,7 @@ function Profile({...props}) {
                                         <ProfilePostScroll 
                                           userToBeViewed={profileInfo['username']} 
                                           userThatViews={localStorage.getItem('username')}
+                                          isShown={isAbleToView}
                                         >
                                         </ProfilePostScroll>
                                       </>
@@ -387,14 +436,20 @@ function Profile({...props}) {
                                         <LikedPostScroll 
                                           userToBeViewed={profileInfo['username']} 
                                           userThatViews={localStorage.getItem('username')}
+                                          isShown={isAbleToView}
                                          >
                                         </LikedPostScroll>
                                       </> }
                               </>}
           </Container>
         </Paper>
-        <FollowerDialog open={followingsOpen} onClose={handleFollowingsDialogClose} accounts={profileInfo['followings']} title={'Followings'}/>
-        <FollowerDialog open={followersOpen}  onClose={handleFollowersDialogClose}  accounts={profileInfo['followers']} title={'Followers'}/>
+        {isAbleToView ? <>
+                        <FollowerDialog open={followingsOpen} onClose={handleFollowingsDialogClose} accounts={profileInfo['followings']} title={'Followings'}/>
+                        <FollowerDialog open={followersOpen}  onClose={handleFollowersDialogClose}  accounts={profileInfo['followers']} title={'Followers'}/>
+                        </>
+                      : <></>
+        }
+        
         <EditProfileDialog  open={editProfileOpen} onClose={handleEditProfileDialogClose} curProfileInfo={profileInfo}></EditProfileDialog>
       </Wrapper>
     </div>
