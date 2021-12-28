@@ -71,6 +71,10 @@ class SearchSerializer(serializers.ModelSerializer):
     query_longitude = serializers.FloatField()
     query_distance = serializers.FloatField()
     location_text = serializers.CharField()
+    max_latitude = serializers.FloatField()
+    max_longitude = serializers.FloatField()
+    min_latitude = serializers.FloatField()
+    min_longitude = serializers.FloatField()
     class Meta:
         model = Story
-        fields = ['username', 'search_text', 'page_number', 'page_size', 'query_latitude', 'query_longitude', 'query_distance', 'location_text']
+        fields = ['username', 'search_text', 'page_number', 'page_size', 'query_latitude', 'query_longitude', 'query_distance', 'location_text', 'max_latitude', 'max_longitude', 'min_latitude', 'min_longitude']
