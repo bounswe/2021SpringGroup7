@@ -18,8 +18,8 @@ class ReportTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="test", last_name="test")
         self.user_temp = User.objects.create(username="user_name_temp", email="user_email_temp@gmail.com", password="123456",first_name="test", last_name="test")
-        self.profile = Profile.objects.create(user_id=self.user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05',location=[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}])
-        self.profile_temp = Profile.objects.create(user_id=self.user_temp,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05',location=[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}])
+        self.profile = Profile.objects.create(user_id=self.user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
+        self.profile_temp = Profile.objects.create(user_id=self.user_temp,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
         self.story = Story.objects.create(title="title", text="", multimedia="", user_id=self.user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
         self.comment = Comment(story_id=self.story, text="new text", user_id=self.user)
         self.tag = Tag.objects.create(story_id=self.story, tag="travel")
