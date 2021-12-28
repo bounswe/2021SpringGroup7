@@ -382,21 +382,3 @@ class LikePostTestCase(TestCase):
         self.assertEqual(json.loads(response.decode('utf-8')), {'return': {'like': [{'user_id': self.user_id, 'username': 'user_name1', 'photo_url': 'temp.png'}], 'number_of_likes': 1}})
 
 
-class FollowTestCase(TestCase):
-    def setUp(self):
-        user1 = User.objects.create(username="user_name1", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
-        user1.save()
-        self.user_id1 = user1.id
-        self.username1 = user1.username
-        user2 = User.objects.create(username="user_name2", email="user_email2@gmail.com", password="123456",
-                                    first_name="umut", last_name="umut")
-        user2.save()
-        self.user_id2 = user2.id
-        self.username2 = user2.username
-
-    def test_follow(self):
-        request = MockRequest(method='POST', body={"user_id": self.user_id1, "follow":self.user_id2, "action_follow":True})
-        follow_api = follow.Follow()
-        response = follow_api.post(request=request).content
-        self.assertEqual(json.loads(response.decode('utf-8'))["return"], f'The user {self.username1} has followed {self.username2}')
-
