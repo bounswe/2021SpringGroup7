@@ -1,7 +1,7 @@
 import React from 'react';
 import {Modal, Text, Button, Progress, Heading, Center, Box} from 'native-base';
 
-const CustomModal = props => {
+const ProgressModal = props => {
   return (
     <Modal
       isOpen={props.showModal}
@@ -32,4 +32,4 @@ const CustomModal = props => {
   );
 };
 
-export default CustomModal;
+export default ProgressModal;
