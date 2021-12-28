@@ -20,18 +20,20 @@ class GetNotifications(generics.CreateAPIView):
 
         username = body.get('user_name')
         limit = int(body.get('limit'))
-
-        notifications = ActivityStream.objects.filter(story__user_id__username=username).exclude(story=None) | \
+        follow_requests = ActivityStream.objects.filter(type='FollowRequest', target__username=username)
+        follow_requests = follow_requests.order_by('-date')
+        other_notifications = ActivityStream.objects.filter(story__user_id__username=username).exclude(story=None) | \
                               ActivityStream.objects.filter(type='Follow', target__username=username) | \
                               ActivityStream.objects.filter(type='Unfollow', target__username=username) | \
                               ActivityStream.objects.filter(type='CommentUpdate', comment__story_id__user_id__username=username) | \
                               ActivityStream.objects.filter(type='Pin', comment__user_id__username=username) | \
                               ActivityStream.objects.filter(type='Unpin', comment__user_id__username=username)
-        notifications = notifications.order_by('-date')
-        length = len(notifications)
-        notifications = notifications[:limit]
-        notifications = create_story_notifications(notifications)
-        response = {"numberOfNotifications": length,"notifications" : notifications}
+        other_notifications = other_notifications.order_by('-date')
+        length = len(other_notifications)
+        other_notifications = other_notifications[:limit]
+        follow_requests = create_story_notifications(follow_requests)
+        notifications = create_story_notifications(other_notifications)
+        response = {"follow_requests": follow_requests, "numberOfOtherNotifications": length, "other_notifications": notifications}
         return Response(response, status=200)
 
 
@@ -62,6 +64,7 @@ def _comment_create(activity):
             "summary": f"{activity.actor.username} added comment to story : {activity.story.id} ",
             "id": activity.id,
             "type": "CommentCreate",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -78,6 +81,7 @@ def _comment_update(activity):
             "summary": f"{activity.actor.username} updated comment : {activity.comment.id}  ",
             "id": activity.id,
             "type": "CommentUpdate",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -94,6 +98,7 @@ def _comment_delete(activity):
             "summary": f"{activity.actor.username} deleted comment : {activity.comment.id}  ",
             "id": activity.id,
             "type": "CommentDelete",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -109,6 +114,7 @@ def _followrequest(activity):
             "summary": f"{activity.actor.username} has requested to follow {activity.target.username}",
             "id": activity.id,
             "type": "FollowRequest",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -124,6 +130,7 @@ def _follow(activity):
             "summary": f"{activity.actor.username} followed {activity.target.username}",
             "id": activity.id,
             "type": "Follow",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -140,6 +147,7 @@ def _unfollow(activity):
             "summary": f"{activity.actor.username} unfollowed {activity.target.username}",
             "id": activity.id,
             "type": "Unfollow",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -156,6 +164,7 @@ def _block(activity):
             "summary": f"{activity.actor.username} blocked {activity.target.username}",
             "id": activity.id,
             "type": "Block",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -172,6 +181,7 @@ def _unblock(activity):
             "summary": f"{activity.actor.username} unblocked {activity.target.username}",
             "id": activity.id,
             "type": "Unblock",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -188,6 +198,7 @@ def _like(activity):
             "summary": f"{activity.actor.username} liked {activity.story.id} ",
             "id": activity.id,
             "type": "Like",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -204,6 +215,7 @@ def _unlike(activity):
             "summary": f"{activity.actor.username} unliked {activity.story.id} ",
             "id": activity.id,
             "type": "Unlike",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -220,6 +232,7 @@ def _pin(activity):
             "summary": f"{activity.actor.username} pinned {activity.comment.id} ",
             "id": activity.id,
             "type": "Pin",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -236,6 +249,7 @@ def _unpin(activity):
             "summary": f"{activity.actor.username} unpinned {activity.comment.id} ",
             "id": activity.id,
             "type": "Unpin",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -252,6 +266,7 @@ def _logout(activity):
             "summary": f"{activity.actor.username} logged out ",
             "id": activity.id,
             "type": "Logout",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -264,6 +279,7 @@ def _createpost(activity):
             "summary": f"{activity.actor.username} created post",
             "id": activity.id,
             "type": "CreatePost",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -280,6 +296,7 @@ def _updatepost(activity):
             "summary": f"{activity.actor.username} updated {activity.story.id} ",
             "id": activity.id,
             "type": "UpdatePost",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -296,6 +313,7 @@ def _deletepost(activity):
             "summary": f"{activity.actor.username} deleted {activity.story.id} ",
             "id": activity.id,
             "type": "DeletePost",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -312,6 +330,7 @@ def _setprofile(activity):
             "summary": f"{activity.actor.username} set profile informations.",
             "id": activity.id,
             "type": "SetProfile",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -324,6 +343,7 @@ def _reportstorycreate(activity):
             "summary": f"{activity.actor.username} reported {activity.story.id} ",
             "id": activity.id,
             "type": "ReportStoryCreate",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -340,6 +360,7 @@ def _reportusercreate(activity):
             "summary": f"{activity.actor.username} reported {activity.target.username} ",
             "id": activity.id,
             "type": "ReportUserCreate",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -356,6 +377,7 @@ def _reportcommentcreate(activity):
             "summary": f"{activity.actor.username} reported {activity.comment.id} ",
             "id": activity.id,
             "type": "ReportCommentCreate",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -372,6 +394,7 @@ def _reporttagcreate(activity):
             "summary": f"{activity.actor.username} reported {activity.tag.id} ",
             "id": activity.id,
             "type": "ReportTagCreate",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -387,7 +410,8 @@ def create_activity_response(activities):
                  'DeletePost': _deletepost, "CreatePost": _createpost, 'Logout': _logout, 'Like': _like, 'Unlike': _unlike
                  , 'CommentUpdate': _comment_update, 'CommentCreate': _comment_create, 'CommentDelete':  _comment_delete,
                  'Block': _block,'Unblock':_unblock, 'Pin': _pin,'Unpin':_unpin, 'ReportStoryCreate':_reportstorycreate,
-                  'ReportUserCreate':_reportusercreate,'ReportCommentCreate':_reportcommentcreate,'ReportTagCreate':_reporttagcreate}
+                  'ReportUserCreate':_reportusercreate,'ReportCommentCreate':_reportcommentcreate,'ReportTagCreate':_reporttagcreate,
+                 'FollowRequest': _followrequest}
     response = {"@context": "https://www.w3.org/ns/activitystreams",
                 "summary": "Activity stream",
                 "type": "OrderedCollection",
@@ -400,10 +424,10 @@ def create_activity_response(activities):
     return response
 
 def create_story_notifications(story_notifications):
-    notification_list = ['Follow','Unfollow','Like', 'Unlike','CommentUpdate','CommentCreate', 'Pin', 'Unpin']
+    notification_list = ['Follow','Unfollow','Like', 'Unlike','CommentUpdate','CommentCreate', 'Pin', 'Unpin','FollowRequest']
     functions = { 'Follow': _follow,'Unfollow':_unfollow, 'Like': _like_notify, 'Unlike': _unlike_notify
                  , 'CommentUpdate': _comment_update_notify, 'CommentCreate': _comment_create_notify,
-                  'Pin': _pin_notify,'Unpin':_unpin_notify}
+                  'Pin': _pin_notify,'Unpin':_unpin_notify,'FollowRequest': _followrequest}
     response = {"@context": "https://www.w3.org/ns/notification",
                 "summary": "Notifications List",
                 "type": "OrderedCollection",
@@ -423,6 +447,7 @@ def _comment_update_notify(activity):
             "summary": f"{activity.actor.username} updated comment : {activity.comment.text}",
             "id": activity.id,
             "type": "CommentUpdate",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -439,6 +464,7 @@ def _like_notify(activity):
             "summary": f"{activity.actor.username} liked story with title : {activity.story.title} ",
             "id": activity.id,
             "type": "Like",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -455,6 +481,7 @@ def _unlike_notify(activity):
             "summary": f"{activity.actor.username} unliked story with title {activity.story.title} ",
             "id": activity.id,
             "type": "Unlike",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -471,6 +498,7 @@ def _comment_create_notify(activity):
             "summary": f"{activity.actor.username} added comment to story with title : {activity.story.title} ",
             "id": activity.id,
             "type": "CommentCreate",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -487,6 +515,7 @@ def _unpin_notify(activity):
             "summary": f"{activity.actor.username} unpinned comment : {activity.comment.text} ",
             "id": activity.id,
             "type": "Unpin",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
@@ -503,6 +532,7 @@ def _pin_notify(activity):
             "summary": f"{activity.actor.username} pinned comment : {activity.comment.text}",
             "id": activity.id,
             "type": "Pin",
+            "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",
                 "@id": activity.actor.username,
