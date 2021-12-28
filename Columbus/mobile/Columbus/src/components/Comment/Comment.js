@@ -33,6 +33,10 @@ const Comment = props => {
     props.replyCallback(id)
   }
 
+  const closeModal=()=>{
+    setShowModal(false)
+    props.refetchCallback()
+  }
 
   return (
     <Box ml={4}  direction='column'>
@@ -98,9 +102,9 @@ const Comment = props => {
 
           <Modal.Body>
             {props.reply ?
-             <CommentMenu replyCallback={()=>reply(props.data.id)} reply={props.reply} data={props?.data} pinned={props.pinned} isDeletable={props.isDeletable} isPinnable={props.isPinnable}></CommentMenu>
+             <CommentMenu closeCallBack={()=>closeModal()} replyCallback={()=>reply(props.data.id)} reply={props.reply} data={props?.data} pinned={props.pinned} isDeletable={props.isDeletable} isPinnable={props.isPinnable}></CommentMenu>
              :
-             <CommentMenu  reply={props.reply} data={props?.data} pinned={props.pinned} isDeletable={props.isDeletable} isPinnable={props.isPinnable}></CommentMenu>
+             <CommentMenu closeCallBack={()=>closeModal()} reply={props.reply} data={props?.data} pinned={props.pinned} isDeletable={props.isDeletable} isPinnable={props.isPinnable}></CommentMenu>
              }
 
           </Modal.Body>

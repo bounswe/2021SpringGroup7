@@ -21,7 +21,6 @@ import Comment from '../../Comment';
 import {useAuth} from '../../../context/AuthContext';
 import {SERVICE} from '../../../services/services';
 import moment from 'moment';
-
 import {useMutation} from 'react-query';
 
 function CommentSheet(props) {
@@ -33,7 +32,7 @@ function CommentSheet(props) {
   const [loading, setLoading] = useState(true);
   const [commentToPost, setCommentToPost] = useState('');
   const [reply, setReply] = useState(null);
-  const [refetch, setRefetch] = useState(false)
+  const [refetch, setRefetch] = useState(false);
   let token = '';
 
   useEffect(() => {
@@ -42,13 +41,22 @@ function CommentSheet(props) {
     } else {
       setLoading(true);
     }
-  }, [user,refetch]);
+  }, [user, refetch]);
 
+  const refetchCallback = () => {
+    setRefetch(!refetch);
+  };
   const replyCommentCallback = (id, index, isPinned) => {
     if (isPinned) {
-      setReply({username: pinnedComments[index].username, storyId:pinnedComments[index].id});
+      setReply({
+        username: pinnedComments[index].username,
+        storyId: pinnedComments[index].id,
+      });
     } else {
-      setReply({username: comments[index].username, storyId: comments[index].id });
+      setReply({
+        username: comments[index].username,
+        storyId: comments[index].id,
+      });
     }
   };
 
@@ -83,20 +91,10 @@ function CommentSheet(props) {
     {
       onSuccess(response) {
         const {username} = user?.userInfo;
-        // updated_comments = [
-        //   ...comments,
-        //   {
-        //     date: moment().format(`YYYY-MM-DDTHH:mm:ss.sssZ`).toString(),
-        //     text: commentToPost,
-        //     username: username,
 
-        //   },
-        // ];
-        //setComments(updated_comments);
         setCommentToPost('');
-        setReply(null)
-        setRefetch(!refetch)
-
+        setReply(null);
+        setRefetch(!refetch);
       },
       onError({response}) {
         console.log('res error: ', response);
@@ -110,24 +108,23 @@ function CommentSheet(props) {
     }
     const userInfo = user?.userInfo;
     token = userInfo.token;
-    let data={}
-    if(reply){
+    let data = {};
+    if (reply) {
       data = JSON.stringify({
-      username: userInfo.username,
-      story_id: props.data,
-      text: commentToPost,
-      parent_comment_id:reply.storyId
-
-    });
-    } else{
-data = JSON.stringify({
-      username: userInfo.username,
-      story_id: props.data,
-      text: commentToPost,
-      parent_comment_id:0
-    });
+        username: userInfo.username,
+        story_id: props.data,
+        text: commentToPost,
+        parent_comment_id: reply.storyId,
+      });
+    } else {
+      data = JSON.stringify({
+        username: userInfo.username,
+        story_id: props.data,
+        text: commentToPost,
+        parent_comment_id: 0,
+      });
     }
-    
+
     try {
       await commentOnPost.mutateAsync(data, token);
     } catch (e) {
@@ -172,6 +169,7 @@ data = JSON.stringify({
                         pinned={true}
                         data={item}
                         isChild={false}
+                        refetchCallback={() => refetchCallback()}
                         key={index}
                         replyCallback={id =>
                           replyCommentCallback(id, index, true)
@@ -191,6 +189,7 @@ data = JSON.stringify({
                                 reply={false}
                                 isChild={true}
                                 key={child_item.id}
+                                refetchCallback={() => refetchCallback()}
                                 isPinnable={false}
                                 isDeletable={
                                   props.own_post ||
@@ -217,6 +216,7 @@ data = JSON.stringify({
                         replyCallback={id =>
                           replyCommentCallback(id, index, false)
                         }
+                        refetchCallback={() => refetchCallback()}
                         isDeletable={
                           props.own_post ||
                           item.username == user?.userInfo.username
@@ -232,6 +232,7 @@ data = JSON.stringify({
                                 data={child_item}
                                 isChild={true}
                                 key={child_item.id}
+                                refetchCallback={() => refetchCallback()}
                                 isPinnable={false}
                                 isDeletable={
                                   props.own_post ||
@@ -260,10 +261,12 @@ data = JSON.stringify({
             onChangeText={value => setCommentToPost(value)}
             InputLeftElement={
               reply && (
-                <Button onPress={()=>setReply(null)} variant='ghost' size='xs' rightIcon={<Icon name={'reply'}  size={10} />}>
-                  
-                    Replying to {reply.username}
-                  
+                <Button
+                  onPress={() => setReply(null)}
+                  variant="ghost"
+                  size="xs"
+                  rightIcon={<Icon name={'reply'} size={10} />}>
+                  Replying to {reply.username}
                 </Button>
               )
             }

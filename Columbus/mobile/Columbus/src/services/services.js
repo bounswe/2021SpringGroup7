@@ -53,4 +53,10 @@ export const SERVICE = {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
+  deleteComment: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/comment_delete/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
 };
