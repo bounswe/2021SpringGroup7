@@ -546,6 +546,10 @@ class Search(generics.CreateAPIView):
         query_longitude = body.get('query_longitude', 0)
         query_distance = body.get('query_distance', -1)
         location_text = body.get('location_text', '')
+        max_latitude = body.get('max_latitude', -1)
+        max_longitude = body.get('max_longitude', -1)
+        min_latitude = body.get('min_latitude', -1)
+        min_longitude = body.get('min_longitude', -1)
 
         if page_number<1:
             result = []
@@ -553,7 +557,7 @@ class Search(generics.CreateAPIView):
 
         stories_all = Story.objects.filter().order_by('-createDateTime')
 
-        stories_returned = []
+        stories_returned = set(stories_all)
 
         if search_text != '':
             stories = []
@@ -568,9 +572,8 @@ class Search(generics.CreateAPIView):
 
             stories = sorted(stories, key=lambda x: x[0], reverse=True)
             stories = [each[1] for each in stories]
+            stories2 = stories
 
-
-            stories_returned += stories
 
             stories = []
 
@@ -583,8 +586,10 @@ class Search(generics.CreateAPIView):
             stories = sorted(stories, key=lambda x: x[0], reverse=True)
             stories = [each[1] for each in stories]
 
+            stories += stories2
 
-            stories_returned += stories
+
+            stories_returned = stories_returned.intersection(set(stories))
 
         if query_latitude!=0 and query_longitude!=0 and query_distance!=-1:
 
@@ -606,7 +611,7 @@ class Search(generics.CreateAPIView):
             stories = sorted(stories, key=lambda x: x[0], reverse=True)
             stories = [each[1] for each in stories]
 
-            stories_returned += stories
+            stories_returned = stories_returned.intersection(set(stories))
 
         if location_text != '':
             stories = []
@@ -623,9 +628,51 @@ class Search(generics.CreateAPIView):
             stories = sorted(stories, key=lambda x: x[0], reverse=True)
             stories = [each[1] for each in stories]
 
+            stories_returned = stories_returned.intersection(set(stories))
 
-            stories_returned += stories
-            
+        if max_latitude != -1:
+            stories = []
+
+            for each in stories_all:
+                locations = Location.objects.filter(story_id = each, type = "Real")
+                for each_location in locations:
+                    if each_location.latitude<=max_latitude:
+                        stories.append(each)
+
+            stories_returned = stories_returned.intersection(set(stories))
+
+        if max_longitude != -1:
+            stories = []
+
+            for each in stories_all:
+                locations = Location.objects.filter(story_id = each, type = "Real")
+                for each_location in locations:
+                    if each_location.longitude<=max_longitude:
+                        stories.append(each)
+
+            stories_returned = stories_returned.intersection(set(stories))
+
+        if min_latitude != -1:
+            stories = []
+
+            for each in stories_all:
+                locations = Location.objects.filter(story_id = each, type = "Real")
+                for each_location in locations:
+                    if each_location.latitude>=min_latitude:
+                        stories.append(each)
+
+            stories_returned = stories_returned.intersection(set(stories))
+
+        if min_longitude != -1:
+            stories = []
+
+            for each in stories_all:
+                locations = Location.objects.filter(story_id = each, type = "Real")
+                for each_location in locations:
+                    if each_location.longitude>=min_longitude:
+                        stories.append(each)
+
+            stories_returned = stories_returned.intersection(set(stories))
 
 
         stories_returned = list(set(stories_returned))
