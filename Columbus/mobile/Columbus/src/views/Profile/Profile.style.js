@@ -48,7 +48,7 @@ export const styles = StyleSheet.create({
     display: 'flex',
     paddingHorizontal: 16,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   biographyContainer: {

@@ -16,6 +16,7 @@ import CustomAvatar from '../Profile/components/CustomAvatar';
 import ConnectionModal from '../Profile/components/ConnectionModal/ConnectionModal';
 
 import {styles} from './OtherProfile.style';
+import CustomModal from '../../components/CustomModal';
 
 const OtherProfiles = ({navigation, route}) => {
   const {user, logout} = useAuth();
@@ -28,9 +29,18 @@ const OtherProfiles = ({navigation, route}) => {
   const [connectionModalHeaders, setConnectionModalHeaders] = useState('');
   const [isFollowing, setIsFollowing] = useState(false);
   const [isPublicProfile, setIsPublicProfile] = useState(true);
+  const [followButtonLoading, setFollowButtonLoading] = useState(false);
+  const [showCustomModal, setShowCustomModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity style={styles.headerBlockIconContainer}>
+          <Icon name="user-alt-slash" size={18} />
+          <Text>Block</Text>
+        </TouchableOpacity>
+      ),
       title: route.params.username,
     });
   }, [navigation, route.params.username]);
@@ -109,10 +119,6 @@ const OtherProfiles = ({navigation, route}) => {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-  };
-
   const openFollowersModal = () => {
     setConnectionModalData(userInfo.followers);
     setConnectionModalHeaders('Followers');
@@ -125,12 +131,66 @@ const OtherProfiles = ({navigation, route}) => {
     setShowConnectionsModal(true);
   };
 
+  const followRequest = useMutation(
+    params => SERVICE.postFollow(params, user.userInfo.token),
+    {
+      onSuccess(response) {
+        setFollowButtonLoading(false);
+        setShowCustomModal(true);
+        setModalMessage(response.data.return);
+        setIsFollowing(!isFollowing);
+      },
+      onError({response}) {
+        setFollowButtonLoading(false);
+        setShowCustomModal(true);
+        setModalMessage(response.data.return);
+      },
+    },
+  );
+
+  const handleFollow = async () => {
+    setFollowButtonLoading(true);
+    const data = JSON.stringify({
+      user_id: user.userInfo.user_id,
+      follow: route.params.userId,
+      action_follow: true,
+    });
+    try {
+      await followRequest.mutateAsync(data);
+    } catch (e) {
+      setFollowButtonLoading(false);
+      setShowCustomModal(true);
+      setModalMessage('An unexpected error occured! Please try again later.');
+    }
+  };
+
+  const handleUnFollow = async () => {
+    setFollowButtonLoading(true);
+    const data = JSON.stringify({
+      user_id: user.userInfo.user_id,
+      follow: route.params.userId,
+      action_follow: false,
+    });
+    try {
+      await followRequest.mutateAsync(data);
+    } catch (e) {
+      setFollowButtonLoading(false);
+      setShowCustomModal(true);
+      setModalMessage('An unexpected error occured! Please try again later.');
+    }
+  };
+
   if (loading) {
     return <PageSpinner></PageSpinner>;
   }
 
   return (
     <View style={styles.pageContainer}>
+      <CustomModal
+        showModal={showCustomModal}
+        closeModal={() => setShowCustomModal(false)}
+        message={modalMessage}
+      />
       <View style={styles.headerContainer}>
         <View style={styles.avatarContainer}>
           <CustomAvatar
@@ -182,9 +242,19 @@ const OtherProfiles = ({navigation, route}) => {
       </View>
       <View style={styles.editContainer}>
         {isFollowing ? (
-          <Button variant="outline">Unfollow</Button>
+          <Button
+            variant="outline"
+            isLoading={followButtonLoading}
+            onPress={handleUnFollow}>
+            Unfollow
+          </Button>
         ) : (
-          <Button variant="solid">Follow</Button>
+          <Button
+            variant="solid"
+            isLoading={followButtonLoading}
+            onPress={handleFollow}>
+            Follow
+          </Button>
         )}
       </View>
       {showConnectionsModal && (
@@ -216,7 +286,7 @@ const OtherProfiles = ({navigation, route}) => {
             </ScrollView>
           ) : (
             <Text style={{textAlign: 'center'}}>
-              You do not share any story!
+              {`${route.params.username} does not share any story!`}
             </Text>
           )
         ) : isFollowing ? (
@@ -236,7 +306,7 @@ const OtherProfiles = ({navigation, route}) => {
             </ScrollView>
           ) : (
             <Text style={{textAlign: 'center'}}>
-              You do not share any story!
+              {`${route.params.username} does not share any story!`}
             </Text>
           )
         ) : (
