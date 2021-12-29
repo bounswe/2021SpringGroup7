@@ -177,24 +177,56 @@ class PostEdit(generics.CreateAPIView):
                 story.save()
             except:
                 return JsonResponse({'return': 'text not in appropriate format'}, status=400)
-        if "multimedia" in body.keys():
+        if "multimedias" in body.keys():
             try:
-                story.multimedia = body["multimedia"]
-                story.save()
+                Multimedia.objects.filter(story_id=story).delete()
             except:
-                return JsonResponse({'return': 'multimedia not in appropriate format'}, status=400)
+                return JsonResponse({'return': 'multimedia not able to delete'}, status=400)
+
+            for multimedia_string in body["multimedias"]:
+                post_multimedia = Multimedia(story_id=story, path=multimedia_string)
+                post_multimedia.save()
         if "time_start" in body.keys():
             try:
-                story.time_start = body["time_start"]
-                story.save()
+                Date.objects.filter(story_id=story, start_end_type="start").delete()
             except:
-                return JsonResponse({'return': 'time_start not in appropriate format'}, status=400)
+                return JsonResponse({'return': 'time_start not able to delete'}, status=400)
+
+            post_time_start = Date(story_id=story, type=body["time_start"]["type"], start_end_type="start")
+            if "date" in body["time_start"].keys():
+                post_time_start.date = body["time_start"]["date"]
+            if "year" in body["time_start"].keys():
+                post_time_start.year = body["time_start"]["year"]
+            if "month" in body["time_start"].keys():
+                post_time_start.month = body["time_start"]["month"]
+            if "day" in body["time_start"].keys():
+                post_time_start.day = body["time_start"]["day"]
+            if "hour" in body["time_start"].keys():
+                post_time_start.hour = body["time_start"]["hour"]
+            if "minute" in body["time_start"].keys():
+                post_time_start.minute = body["time_start"]["minute"]
+            post_time_start.save()
+
         if "time_end" in body.keys():
             try:
-                story.time_end = body["time_end"]
-                story.save()
+                Date.objects.filter(story_id=story, start_end_type="end").delete()
             except:
-                return JsonResponse({'return': 'time_end not in appropriate format'}, status=400)
+                return JsonResponse({'return': 'time_end not able to delete'}, status=400)
+
+            post_time_end = Date(story_id=story, type=body["time_end"]["type"], start_end_type="end")
+            if "date" in body["time_end"].keys():
+                post_time_end.date = body["time_end"]["date"]
+            if "year" in body["time_end"].keys():
+                post_time_end.year = body["time_end"]["year"]
+            if "month" in body["time_end"].keys():
+                post_time_end.month = body["time_end"]["month"]
+            if "day" in body["time_end"].keys():
+                post_time_end.day = body["time_end"]["day"]
+            if "hour" in body["time_end"].keys():
+                post_time_end.hour = body["time_end"]["hour"]
+            if "minute" in body["time_end"].keys():
+                post_time_end.minute = body["time_end"]["minute"]
+            post_time_end.save()
 
         if "tags" in body.keys():
             try:
