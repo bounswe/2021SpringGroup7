@@ -20,17 +20,23 @@ class PostCreateSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=100)
     location = serializers.ListField(child=serializers.DictField(child=serializers.CharField()))
     tags = serializers.ListField(child=serializers.CharField())
+    multimedias = serializers.ListField(child=serializers.CharField())
+    time_start = serializers.DictField(child=serializers.CharField())
+    time_end = serializers.DictField(child=serializers.CharField())
     class Meta:
         model = Story
-        fields = ['title', 'text', 'multimedia', 'username', 'time_start', 'time_end', 'location', 'tags']
+        fields = ['title', 'text', 'multimedias', 'username', 'time_start', 'time_end', 'location', 'tags']
 
 class PostEditSerializer(serializers.ModelSerializer):
     location = serializers.ListField(child=serializers.DictField(child=serializers.CharField()))
     tags = serializers.ListField(child=serializers.CharField())
     story_id = serializers.IntegerField()
+    multimedias = serializers.ListField(child=serializers.CharField())
+    time_start = serializers.DictField(child=serializers.CharField())
+    time_end = serializers.DictField(child=serializers.CharField())
     class Meta:
         model = Story
-        fields = ['story_id', 'title', 'text', 'multimedia', 'time_start', 'time_end', 'location', 'tags']
+        fields = ['story_id', 'title', 'text', 'multimedias', 'time_start', 'time_end', 'location', 'tags']
 
 class PostDeleteSerializer(serializers.ModelSerializer):
     story_id = serializers.IntegerField()
@@ -198,4 +204,3 @@ class FollowRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Following
         fields = ['request_id', 'accept']
-
