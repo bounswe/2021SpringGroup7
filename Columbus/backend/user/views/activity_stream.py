@@ -22,7 +22,14 @@ class GetNotifications(generics.CreateAPIView):
         limit = int(body.get('limit'))
         follow_requests = ActivityStream.objects.filter(type='FollowRequest', target__username=username)
         follow_requests = follow_requests.order_by('-date')
-        other_notifications = ActivityStream.objects.filter(story__user_id__username=username).exclude(story=None) | \
+        other_notifications = ActivityStream.objects.filter(type='Like',
+                                                            story__user_id__username=username).exclude(story=None) | \
+                              ActivityStream.objects.filter(type='Unlike',
+                                                            story__user_id__username=username).exclude(story=None) | \
+                              ActivityStream.objects.filter(type='CommentCreate',
+                                                            story__user_id__username=username).exclude(story=None) | \
+                              ActivityStream.objects.filter(type='FollowRequest',
+                                                            story__user_id__username=username).exclude(story=None) | \
                               ActivityStream.objects.filter(type='Follow', target__username=username) | \
                               ActivityStream.objects.filter(type='Unfollow', target__username=username) | \
                               ActivityStream.objects.filter(type='CommentUpdate', comment__story_id__user_id__username=username) | \
