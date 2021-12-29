@@ -4,10 +4,7 @@ from django.db import models
 class Story(models.Model):
     title = models.CharField(max_length=100)
     text = models.CharField(max_length=3000, default="")
-    multimedia = models.CharField(max_length=100, default="")
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
-    time_start = models.DateField()
-    time_end = models.DateField(blank=True, null=True)
     createDateTime = models.DateTimeField(auto_now_add=True)
     lastUpdate = models.DateTimeField(auto_now=True)
     numberOfLikes = models.IntegerField(default=0)
@@ -16,14 +13,26 @@ class Story(models.Model):
 class SpamStory(models.Model):
     title = models.CharField(max_length=100)
     text = models.CharField(max_length=3000, default="")
-    multimedia = models.CharField(max_length=100, default="")
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
-    time_start = models.DateField()
-    time_end = models.DateField(blank=True, null=True)
     createDateTime = models.DateTimeField(auto_now_add=True)
     lastUpdate = models.DateTimeField(auto_now=True)
     numberOfLikes = models.IntegerField(default=0)
     numberOfComments = models.IntegerField(default=0)
+
+class Date(models.Model):
+    story_id = models.ForeignKey(Story,on_delete=models.CASCADE)
+    date = models.IntegerField(null=True)
+    year = models.IntegerField(null=True)
+    month = models.IntegerField(null=True)
+    day = models.IntegerField(null=True)
+    hour = models.IntegerField(null=True)
+    minute = models.IntegerField(null=True)
+    type = models.CharField(max_length=100, default="")
+    start_end_type = models.CharField(max_length=100, default="")
+
+class Multimedia(models.Model):
+    story_id = models.ForeignKey(Story,on_delete=models.CASCADE)
+    path = models.CharField(max_length=100)
 
 class Tag(models.Model):
     story_id = models.ForeignKey(Story,on_delete=models.CASCADE)
