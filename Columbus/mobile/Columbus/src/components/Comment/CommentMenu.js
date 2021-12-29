@@ -30,17 +30,17 @@ const CommentMenu = props => {
   const [pinable, setPinable] = useState(props.isPinnable);
   const [showEditMenu, setShowEditMenu] = useState(false);
   const [checkMenu, setCheckMenu] = useState(false);
-  const [token, setToken] = useState(user?.userInfo?.token)
-  const [editCommentValue, setEditCommentValue] = useState(props.data.text)
-
-  
+  const [token, setToken] = useState(user?.userInfo?.token);
+  const [editCommentValue, setEditCommentValue] = useState(props.data.text);
+  const [showReportMenu, setShowReportMenu] = useState(false);
+  const [reportValue, setReportValue] = useState('');
 
   const editComment = useMutation(
     params => SERVICE.editComment({params, token}),
     {
       onSuccess(response) {
         props.closeCallBack();
-        setCheckMenu(false)
+        setCheckMenu(false);
       },
       onError({response}) {
         console.log('res error: ', response);
@@ -49,13 +49,13 @@ const CommentMenu = props => {
   );
   const handleEditComment = async () => {
     const token = user?.userInfo?.token;
-    setToken(token)
+    setToken(token);
     const data = JSON.stringify({
       comment_id: props.data.id,
-      text:editCommentValue
+      text: editCommentValue,
     });
     try {
-      await editComment.mutateAsync(data,token);
+      await editComment.mutateAsync(data, token);
     } catch (e) {
       console.log('e: ', e);
     }
@@ -66,7 +66,7 @@ const CommentMenu = props => {
     {
       onSuccess(response) {
         props.closeCallBack();
-        setCheckMenu(false)
+        setCheckMenu(false);
       },
       onError({response}) {
         console.log('res error: ', response);
@@ -75,29 +75,24 @@ const CommentMenu = props => {
   );
   const handlePinComment = async () => {
     const token = user?.userInfo?.token;
-    setToken(token)
+    setToken(token);
     const data = JSON.stringify({
       comment_id: props.data.id,
-      story_id: props.data.story_id
+      story_id: props.data.story_id,
     });
     try {
-      console.log(data,token)
-      await pinComment.mutateAsync(data,token);
+      await pinComment.mutateAsync(data, token);
     } catch (e) {
       console.log('e: ', e);
     }
   };
-
-
-
-
 
   const deleteComment = useMutation(
     params => SERVICE.deleteComment({params, token}),
     {
       onSuccess(response) {
         props.closeCallBack();
-        setCheckMenu(false)
+        setCheckMenu(false);
       },
       onError({response}) {
         console.log('res error: ', response);
@@ -106,25 +101,89 @@ const CommentMenu = props => {
   );
   const handleDeleteComment = async () => {
     const token = user?.userInfo?.token;
-    setToken(token)
+    setToken(token);
     const data = JSON.stringify({
       comment_id: props.data.id,
     });
     try {
-      await deleteComment.mutateAsync(data,token);
+      await deleteComment.mutateAsync(data, token);
     } catch (e) {
       console.log('e: ', e);
     }
   };
+  const reportComment = useMutation(
+    params => SERVICE.reportComment({params, token}),
+    {
+      onSuccess(response) {
+        props.closeCallBack();
+        setCheckMenu(false);
+      },
+      onError({response}) {
+        console.log('res error: ', response);
+      },
+    },
+  );
+  const handleReportComment = async () => {
+    const token = user?.userInfo?.token;
+    setToken(token);
+    const data = JSON.stringify({
+      comment_id: props.data.id,
+      reporter_id: user?.userInfo?.user_id,
+      report: reportValue,
+    });
+    try {
+      await reportComment.mutateAsync(data, token);
+    } catch (e) {
+      console.log('e: ', e);
+    }
+  };
+
+  if (showReportMenu) {
+    return (
+      <>
+        <TextArea
+          variant="outline"
+          value={reportValue}
+          onChangeText={value => setReportValue(value)}
+          placeholder="Explain what is the problem with this comment"
+        />
+        <Button
+          variant="ghost"
+          colorScheme="blue"
+          onPress={() => handleReportComment()}>
+          {' '}
+          Report
+        </Button>
+        <Button
+          variant="ghost"
+          colorScheme="red"
+          onPress={() => props.closeCallBack()}>
+          {' '}
+          Cancel
+        </Button>
+      </>
+    );
+  }
+
   if (showEditMenu) {
     return (
       <>
-        <TextArea variant="outline" value={editCommentValue} onChangeText={value => setEditCommentValue(value)}/>
-        <Button variant="ghost" colorScheme="blue" onPress={()=>handleEditComment()}>
+        <TextArea
+          variant="outline"
+          value={editCommentValue}
+          onChangeText={value => setEditCommentValue(value)}
+        />
+        <Button
+          variant="ghost"
+          colorScheme="blue"
+          onPress={() => handleEditComment()}>
           {' '}
           Update Comment
         </Button>
-        <Button variant="ghost" colorScheme="red">
+        <Button
+          variant="ghost"
+          colorScheme="red"
+          onPress={() => props.closeCallBack()}>
           {' '}
           Cancel
         </Button>
@@ -156,7 +215,6 @@ const CommentMenu = props => {
           ml={6}
           mr={6}
           onPress={() => handleDeleteComment()}>
-          
           DELETE
         </Button>
         <Button
@@ -182,7 +240,10 @@ const CommentMenu = props => {
         </Button>
       )}
       {pinable && (
-        <Button variant="ghost" colorScheme="blue" onPress={()=>handlePinComment()}>
+        <Button
+          variant="ghost"
+          colorScheme="blue"
+          onPress={() => handlePinComment()}>
           {props.pinned ? 'Unpin' : 'Pin'}
         </Button>
       )}
@@ -194,7 +255,10 @@ const CommentMenu = props => {
           Edit
         </Button>
       ) : (
-        <Button variant="ghost" colorScheme="red">
+        <Button
+          variant="ghost"
+          colorScheme="red"
+          onPress={() => setShowReportMenu(true)}>
           Report
         </Button>
       )}

@@ -68,5 +68,10 @@ export const SERVICE = {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
+  reportComment: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/report_comment/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
 
 };
