@@ -74,9 +74,11 @@ class FollowSerializer(serializers.ModelSerializer):
 
 class BlockSerializer(serializers.ModelSerializer):
     action_block = serializers.BooleanField()
+    blocker = serializers.IntegerField()
+    blocked = serializers.IntegerField()
     class Meta:
         model = Blocking
-        fields = ['user_id_block','block','action_block']
+        fields = ['blocker','blocked','action_block']
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:

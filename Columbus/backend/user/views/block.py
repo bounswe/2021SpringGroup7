@@ -13,12 +13,12 @@ class Block(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
         body = request.data
-        required_areas = {'user_id_block', 'block','action_block'}
+        required_areas = {'blocker', 'blocked','action_block'}
         if set(body.keys()) != required_areas:
             return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
 
-        user_id_block = body.get('user_id_block')
-        block = body.get('block')
+        user_id_block = body.get('blocker')
+        block = body.get('blocked')
         action_block = body.get('action_block')
         try:
             user = User.objects.get(id=user_id_block)
