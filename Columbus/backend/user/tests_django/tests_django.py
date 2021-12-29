@@ -381,4 +381,111 @@ class LikePostTestCase(TestCase):
         response = like_post_api.get(request=request,story_id=1).content
         self.assertEqual(json.loads(response.decode('utf-8')), {'return': {'like': [{'user_id': self.user_id, 'username': 'user_name1', 'photo_url': 'temp.png'}], 'number_of_likes': 1}})
 
+class LikePostTestCase(TestCase):
+    def setUp(self):
+        user = User.objects.create(username="user_name1", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user.save()
+        self.user_id=user.id
+        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
+        story.save()
+        story.id = 1
+        story.save()
+
+    def test_like_post(self):
+        request = MockRequest(method='POST', body={"user_id": self.user_id, "story_id":1})
+        like_post_api = like.LikePost()
+        response = like_post_api.post(request=request).content
+        self.assertEqual(json.loads(response.decode('utf-8'))["response"], {"user_id": self.user_id, "story_id": 1, "isLiked": True})
+
+    def test_get_post_like(self):
+        request = MockRequest(method='POST', body={"user_id": self.user_id, "story_id":1})
+        like_post_api = like.LikePost()
+        response =  like_post_api.post(request=request).content
+        request = MockRequest(method='GET', body={})
+        like_post_api = like.GetPostLikes()
+        response = like_post_api.get(request=request,story_id=1).content
+        self.assertEqual(json.loads(response.decode('utf-8')), {'return': {'like': [{'user_id': self.user_id, 'username': 'user_name1', 'photo_url': 'temp.png'}], 'number_of_likes': 1}})
+
+
+class ActivityStreamTestCase(TestCase):
+
+    maxDiff = None
+
+    def setUp(self):
+        user = User.objects.create(username="user_name1", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user.save()
+        self.user_id=user.id
+        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
+        story.save()
+        story.id = 1
+        story.save()
+        requestLike = MockRequest(method='POST', body={"user_id": self.user_id, "story_id": 1})
+        like_post_api = like.LikePost()
+        response = like_post_api.post(request=requestLike).content
+        request = MockRequest(method='POST', body={"username": "user_name1", "story_id": 1, "text": "new text",
+                                                   "parent_comment_id": None})
+        comment_create_api = comment.CommentCreate()
+        response = comment_create_api.post(request=request).content
+        request = MockRequest(method='POST', body={"username": "user_name1"})
+        logout_api = logout.Logout()
+        response = logout_api.post(request=request).content
+
+
+    def test_activity_stream(self):
+        requestAS = MockRequest(method='POST', body={"limit": 10, "offset": 0})
+        activity_stream_post_api = activity_stream.ActivityStreamAPI()
+        activity_stream_response = activity_stream_post_api.post(request=requestAS).content
+        activity_dict = json.loads(activity_stream_response.decode('utf-8'))
+        for item in activity_dict['orderedItems']:
+            del item['date']
+        self.assertEqual(activity_dict,
+                         {'@context': 'https://www.w3.org/ns/activitystreams', 'summary': 'Activity stream',
+                          'type': 'OrderedCollection', 'total_items': 3, 'orderedItems': [
+                             {'@context': 'https://www.w3.org/ns/activitystreams', 'summary': 'user_name1 logged out ',
+                              'id': 3, 'type': 'Logout',
+                              'actor': {'type': 'https://schema.org/Person', '@id': 'user_name1'}},
+                             {'@context': 'https://www.w3.org/ns/activitystreams',
+                              'summary': 'user_name1 added comment to story : 1 ', 'id': 2, 'type': 'CommentCreate',
+                              'actor': {'type': 'https://schema.org/Person', '@id': 'user_name1'},
+                              'object': {'type': 'https://schema.org/ShortStory', '@id': 1}},
+                             {'@context': 'https://www.w3.org/ns/activitystreams', 'summary': 'user_name1 liked 1 ',
+                              'id': 1, 'type': 'Like',
+                              'actor': {'type': 'https://schema.org/Person', '@id': 'user_name1'},
+                              'object': {'type': 'https://schema.org/ShortStory', '@id': 1}}]})
+
+    def test_get_notifications(self):
+        requestAS = MockRequest(method='POST', body={'user_name':"user_name1", 'limit':10})
+        get_notifications_post_api = activity_stream.GetNotifications()
+        get_notifications_response = get_notifications_post_api.post(request=requestAS).content
+        activity_dict = json.loads(get_notifications_response.decode('utf-8'))
+        for item in activity_dict['other_notifications']['orderedItems']:
+             del item['date']
+        self.assertEqual(activity_dict,
+                         {'follow_requests': {'@context': 'https://www.w3.org/ns/notification',
+                                              'summary': 'Notifications List',
+                                              'type': 'OrderedCollection', 'total_items': 0, 'orderedItems': []},
+                          'numberOfOtherNotifications': 2,
+                          'other_notifications': {'@context': 'https://www.w3.org/ns/notification',
+                                                  'summary': 'Notifications List',     'type': 'OrderedCollection',
+                                                  'total_items': 2,
+                                                  'orderedItems': [{'@context': 'https://www.w3.org/ns/activitystreams',
+                                                                    'summary': 'user_name1 added comment to story with title : title ',
+                                                                    'id': 5, 'type': 'CommentCreate',
+                                                                    'actor': {'type': 'https://schema.org/Person',
+                                                                              '@id': 'user_name1'},
+                                                                    'object': {'type': 'https://schema.org/ShortStory',
+                                                                               '@id': 1}},
+                                                                   {'@context': 'https://www.w3.org/ns/activitystreams',
+                                                                    'summary': 'user_name1 liked story with title : title ',
+                                                                    'id': 4, 'type': 'Like',
+                                                                    'actor': {'type': 'https://schema.org/Person', '@id': 'user_name1'},
+                                                                    'object': {'type': 'https://schema.org/ShortStory',
+                                                                               '@id': 1}}]}}
+)
+
+
+
+
 

@@ -34,7 +34,7 @@ class GetNotifications(generics.CreateAPIView):
         follow_requests = create_story_notifications(follow_requests)
         notifications = create_story_notifications(other_notifications)
         response = {"follow_requests": follow_requests, "numberOfOtherNotifications": length, "other_notifications": notifications}
-        return Response(response, status=200)
+        return JsonResponse(response, status=200)
 
 
 class ActivityStreamAPI(generics.CreateAPIView):
@@ -56,7 +56,7 @@ class ActivityStreamAPI(generics.CreateAPIView):
             activities = ActivityStream.objects.filter(id__lte=offset).order_by('-date')[:limit]
 
         response = create_activity_response(activities)
-        return Response(response, status=200)
+        return JsonResponse(response, status=200)
 
 def _comment_create(activity):
     return {
