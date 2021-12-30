@@ -18,7 +18,7 @@ class AdminTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="test", last_name="test")
         self.profile = Profile.objects.create(user_id=self.user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
-        self.story = Story.objects.create(title="title", text="", multimedia="", user_id=self.user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        self.story = Story.objects.create(title="title", text="", user_id=self.user, numberOfLikes=0, numberOfComments=0)
         self.comment = Comment(story_id=self.story, text="new text", user_id=self.user)
         self.tag = Tag.objects.create(story_id=self.story, tag="travel")
         self.report_user = ReportUser(reported_id=self.user,reporter_id=self.user,report="dummy report")
@@ -103,5 +103,3 @@ class AdminTestCase(TestCase):
         response = admin_action_report_tag.post(request=request).content
         response = json.loads(response.decode('utf-8'))
         self.assertEqual(response["return"], 'Tag is carried to the spam folder')
-
-

@@ -131,8 +131,7 @@ class AdminActionReportStory(generics.CreateAPIView):
             return JsonResponse({'return': 'Report is deleted without any action'})
         else:
             reported_story=report.story_id
-            spam_story = SpamStory(title=reported_story.title, text=reported_story.text, multimedia=reported_story.multimedia, user_id=reported_story.user_id, time_start=reported_story.time_start,
-                  time_end=reported_story.time_end, numberOfLikes=0, numberOfComments=0)
+            spam_story = SpamStory(title=reported_story.title, text=reported_story.text, user_id=reported_story.user_id, numberOfLikes=0, numberOfComments=0)
             spam_story.save()
             reported_story.delete()
             report.delete()
