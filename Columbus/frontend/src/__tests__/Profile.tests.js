@@ -1,9 +1,9 @@
-import React from "react";
-import ReactDOM from "react-router-dom";
+import { render, screen, fireEvent } from '@testing-library/react'
+import '@testing-library/jest-dom'
+import { Profile, convertBirthday} from '../pages/Profile/Profile.js'
 
-import convertBirthday from '../pages/Profile/Profile.js'
 
-
-test('convert 1999-01-01 to human readable January 1, 1999', () => {
+test('convert birthday date to human readable format', () => {
   expect(convertBirthday('1999-01-01')).toBe('January 1, 1999');
 });
+
