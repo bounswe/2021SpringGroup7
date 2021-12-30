@@ -39,6 +39,22 @@ class ModelTestCase(TestCase):
         comment.save()
         profile = Profile(user_id=user)
         profile.save()
+        multimedia = Multimedia.objects.create(story_id=story, path="multimedia.jpg")
+        multimedia.id = 5
+        multimedia.save()
+        multimedia2 = Multimedia.objects.create(story_id=story, path="multimedia2.jpg")
+        multimedia2.id = 6
+        multimedia2.save()
+        date = Date.objects.create(story_id=story, date=19, type="century", start_end_type="start")
+        date.save()
+        date2 = Date.objects.create(story_id=story, date=198, type="decade", start_end_type="start")
+        date2.save()
+        date3 = Date.objects.create(story_id=story, year=1999, type="specific", start_end_type="start")
+        date3.save()
+        date4 = Date.objects.create(story_id=story, year=1966, month=3, day=2, type="specific", start_end_type="end")
+        date4.save()
+        date5 = Date.objects.create(story_id=story, year=1966, month=3, day=1, hour=15, minute=3, type="specific", start_end_type="start")
+        date5.save()
 
     def test_user_email_check(self):
         user = User.objects.get(username="user_name")
@@ -87,6 +103,51 @@ class ModelTestCase(TestCase):
         self.assertEqual(profile.photo_url, None)
         self.assertEqual(profile.biography, None)
         self.assertEqual(profile.birthday, None)
+
+    def test_multimedia_check(self):
+        multimedia = Multimedia.objects.get(id=5)
+        self.assertEqual(multimedia.path, 'multimedia.jpg')
+
+    def test_two_multimedia_check(self):
+        multimedia = Multimedia.objects.get(id=5)
+        multimedia2 = Multimedia.objects.get(id=6)
+        self.assertEqual(multimedia.story_id, multimedia2.story_id)
+
+    def test_date_century(self):
+        date = Date.objects.get(type="century")
+        self.assertEqual(date.date, 19)
+
+    def test_date_decade(self):
+        date = Date.objects.get(type="decade")
+        self.assertEqual(date.date, 198)
+        self.assertEqual(date.start_end_type, "start")
+
+    def test_date_specific_general(self):
+        date = Date.objects.get(year=1999)
+        self.assertEqual(date.type, "specific")
+        self.assertEqual(date.month, None)
+        self.assertEqual(date.hour, None)
+
+    def test_date_specific_end(self):
+        date = Date.objects.get(day=2)
+        self.assertEqual(date.type, "specific")
+        self.assertEqual(date.start_end_type, "end")
+        self.assertEqual(date.year, 1966)
+        self.assertEqual(date.month, 3)
+        self.assertEqual(date.minute, None)
+
+    def test_date_specific_end(self):
+        date = Date.objects.get(minute=3)
+        self.assertEqual(date.type, "specific")
+
+    def test_date_specific_story(self):
+        date = Date.objects.get(year=1999)
+        date2 = Date.objects.get(day=2)
+        self.assertEqual(date.type, "specific")
+        self.assertEqual(date2.type, "specific")
+        self.assertEqual(date.start_end_type, "start")
+        self.assertEqual(date2.start_end_type, "end")
+        self.assertEqual(date.story_id, date2.story_id)
 
 
 class HomePageTestCase(TestCase):
