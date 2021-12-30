@@ -14,8 +14,6 @@
     "@mui/lab": "^5.0.0-alpha.59",
     "@mui/material": "^5.2.3",
     "@mui/styles": "^5.1.1",
-    "@testing-library/jest-dom": "^5.15.0",
-    "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "aws-sdk": "^2.1046.0",
     "axios": "^0.24.0",
@@ -36,7 +34,7 @@
     "start": "react-scripts --openssl-legacy-provider start",
     "build:prod": "react-scripts --openssl-legacy-provider build",
     "build:dev": "REACT_APP_API_URL='http://ec2-18-197-57-123.eu-central-1.compute.amazonaws.com:8000' react-scripts --openssl-legacy-provider build",
-    "test": "react-scripts test",
+    "test": "jest ./src/__tests__/",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -56,5 +54,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "jest": "^26.6.0",
+    "jest-dom": "^4.0.0",
+    "react-test-renderer": "^17.0.2"
   }
 }
