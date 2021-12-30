@@ -18,13 +18,13 @@ class ModelTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         story.save()
-        story_missing_numbers = Story.objects.create(title="title1", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01")
+        story_missing_numbers = Story.objects.create(title="title1", text="", user_id=user)
         story_missing_numbers.save()
-        story_missing_time_end = Story.objects.create(title="title2", text="", multimedia="", user_id=user, time_start="2020-01-01")
+        story_missing_time_end = Story.objects.create(title="title2", text="", user_id=user)
         story_missing_time_end.save()
-        story_missing_text = Story.objects.create(title="title3", multimedia="", user_id=user, time_start="2020-01-01")
+        story_missing_text = Story.objects.create(title="title3", user_id=user)
         story_missing_text.save()
         tag = Tag.objects.create(story_id=story, tag="travel")
         tag.id = 3
@@ -48,10 +48,6 @@ class ModelTestCase(TestCase):
         story = Story.objects.get(title="title1")
         self.assertEqual(story.numberOfLikes, 0)
         self.assertEqual(story.numberOfComments, 0)
-
-    def test_missing_date_check(self):
-        story = Story.objects.get(title="title2")
-        self.assertEqual(story.time_end, None)
 
     def test_missing_text_check(self):
         story = Story.objects.get(title="title3")
@@ -97,11 +93,11 @@ class HomePageTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         story.save()
         user2 = User.objects.create(username="user_name2", email="user_email2@gmail.com", password="123456", first_name="umut", last_name="umut")
         user2.save()
-        story2 = Story.objects.create(title="title2", text="", multimedia="", user_id=user2, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story2 = Story.objects.create(title="title2", text="", user_id=user2, numberOfLikes=0, numberOfComments=0)
         story2.save()
         following = Following(user_id=user, follow=user2)
         following.save()
@@ -139,8 +135,8 @@ class ProfileInformationTestCase(TestCase):
         self.user=user
         self.user_temp = temp_user
         profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
-        story_user = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
-        story_temp = Story.objects.create(title="title", text="", multimedia="", user_id=temp_user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story_user = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
+        story_temp = Story.objects.create(title="title", text="", user_id=temp_user, numberOfLikes=0, numberOfComments=0)
         self.story_temp=story_temp
         self.story_user=story_user
         user.save()
@@ -175,7 +171,7 @@ class ProfileInformationTestCase(TestCase):
         response.pop('createDateTime')
         response.pop('lastUpdate')
         response = {'return':[response]}
-        expected_response = {'return': [{'title': 'title', 'text': '', 'multimedia': '', 'user_id': self.user_id, 'time_start': '2020-01-01', 'time_end': '2021-01-01', 'numberOfLikes': 0, 'numberOfComments': 0, 'owner_username': self.user.username, 'is_liked': False, 'story_id': self.story_user.id, 'locations': [], 'tags': [], 'photo_url': 'temp.png'}]}
+        expected_response = {'return': [{'title': 'title', 'text': '', 'multimedias': [], 'user_id': self.user_id, 'time_start': [], 'time_end': [], 'numberOfLikes': 0, 'numberOfComments': 0, 'owner_username': self.user.username, 'is_liked': False, 'story_id': self.story_user.id, 'locations': [], 'tags': [], 'photo_url': 'temp.png'}]}
         self.assertEqual(response,expected_response)
 
     def test_get_liked_posts(self):
@@ -192,7 +188,7 @@ class ProfileInformationTestCase(TestCase):
         response.pop('createDateTime')
         response.pop('lastUpdate')
         response = {'return':[response]}
-        expected_response = {'return': [{'title': 'title', 'text': '', 'multimedia': '', 'user_id': self.user_temp.id, 'time_start': '2020-01-01', 'time_end': '2021-01-01', 'numberOfLikes': 1, 'numberOfComments': 0, 'owner_username': 'temp_name', 'is_liked': True, 'story_id': self.story_temp.id, 'locations': [], 'tags': [], 'photo_url': None}]}
+        expected_response = {'return': [{'title': 'title', 'text': '', 'user_id': self.user_temp.id, 'multimedias': [], 'numberOfLikes': 1, 'numberOfComments': 0, 'owner_username': 'temp_name', 'is_liked': True, 'story_id': self.story_temp.id, 'locations': [], 'tags': [], 'photo_url': None, 'time_start': [], 'time_end': []}]}
 
         self.assertEqual(response,expected_response)
 
@@ -200,7 +196,7 @@ class PostEditTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         story.save()
         story.id = 1
         story.save()
@@ -223,7 +219,7 @@ class PostDeleteTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         story.save()
         story.id = 1
         story.save()
@@ -244,7 +240,7 @@ class CommentCreateTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         story.save()
         story.id = 1
         story.save()
@@ -265,7 +261,7 @@ class CommentUpdateTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         story.save()
         story.id = 1
         story.save()
@@ -289,7 +285,7 @@ class CommentDeleteTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         story.save()
         story.id = 1
         story.save()
@@ -314,7 +310,7 @@ class GetCommentTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
         story.save()
         story.id = 1
@@ -336,19 +332,19 @@ class PostCreateTestCase(TestCase):
         user.save()
 
     def test_post_create(self):
-        request = MockRequest(method='POST', body={"title":"title", "text":"", "multimedia":"", "username":"user_name", "time_start":"2020-01-01",
-                                                   "time_end":"2021-01-01", "numberOfLikes":0, "numberOfComments":0,
+        request = MockRequest(method='POST', body={"title":"title", "text":"", "multimedia":[""], "username":"user_name", "time_start":{"year": 1900,"type": "specific"},
+                                                   "time_end":{"year": 1901,"type": "specific"}, "numberOfLikes":0, "numberOfComments":0,
                                                    "location": [{'location':"bogazici", 'latitude':10, 'longitude':11, 'type':"school"}] })
         post_create_api = post.PostCreate()
         response = post_create_api.post(request=request).content
-        story = Story.objects.get(time_start="2020-01-01")
+        story = Story.objects.get(title="title")
         self.assertEqual(json.loads(response.decode('utf-8'))["return"], story.id)
 
     def test_post_create_check(self):
         request = MockRequest(method='POST',
-                              body={"title": "title", "text": "", "multimedia": "", "username": "user_name",
-                                    "time_start": "2020-01-01",
-                                    "time_end": "2021-01-01", "numberOfLikes": 0, "numberOfComments": 0,
+                              body={"title": "title", "text": "", "multimedia": [""], "username": "user_name",
+                                    "time_start": {"year": 1900,"type": "specific"},
+                                    "time_end": {"year": 1901,"type": "specific"}, "numberOfLikes": 0, "numberOfComments": 0,
                                     "location": [
                                         {'location': "bogazici",'longitude': 11, 'type': "school"}]})
         post_create_api = post.PostCreate()
@@ -360,7 +356,7 @@ class LikePostTestCase(TestCase):
         user = User.objects.create(username="user_name1", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
         self.user_id=user.id
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
         story.save()
         story.id = 1
@@ -386,7 +382,7 @@ class LikePostTestCase(TestCase):
         user = User.objects.create(username="user_name1", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
         self.user_id=user.id
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
         story.save()
         story.id = 1
@@ -416,7 +412,7 @@ class ActivityStreamTestCase(TestCase):
         user = User.objects.create(username="user_name1", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
         self.user_id=user.id
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
         story.save()
         story.id = 1
@@ -484,8 +480,3 @@ class ActivityStreamTestCase(TestCase):
                                                                     'object': {'type': 'https://schema.org/ShortStory',
                                                                                '@id': 1}}]}}
 )
-
-
-
-
-
