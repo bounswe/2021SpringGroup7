@@ -39,6 +39,7 @@ import VerticalMenu from "./VerticalMenu";
 import USER_SERVICE from "../../services/user";
 
 
+// takes yyyy-mm-dd, returns dd mm, yyyy
 function convertBirthday(birthday) {
 
   let birthdayReadable = ''
@@ -54,6 +55,7 @@ function convertBirthday(birthday) {
   return birthdayReadable
 
 }
+module.exports = convertBirthday;
 
 function Profile({...props}) {
   const navigate = useNavigate();
