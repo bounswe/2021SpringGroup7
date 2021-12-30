@@ -50,3 +50,10 @@ class ReportTestCase(TestCase):
         response = api.post(request=request).content
         response = json.loads(response.decode('utf-8'))
         self.assertEqual(type(response["return"]), int)
+
+    def test_report_user(self):
+        request = MockRequest(method='GET',body={'reported_username':self.user.username, 'reporter_username':self.user_temp.username, 'report':"dummy report"})
+        api = report.ReportUserAPI()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(type(response["return"]), int)
