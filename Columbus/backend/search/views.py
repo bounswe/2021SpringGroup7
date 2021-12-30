@@ -660,6 +660,18 @@ class Search(generics.CreateAPIView):
         max_longitude = body.get('max_longitude', -1)
         min_latitude = body.get('min_latitude', -1)
         min_longitude = body.get('min_longitude', -1)
+        search_date_type = body.get('search_date_type', '')
+        search_date = body.get('search_date', -1)
+        search_year_start = body.get('search_year_start', -1)
+        search_month_start = body.get('search_month_start', -1)
+        search_day_start = body.get('search_day_start', -1)
+        search_hour_start = body.get('search_hour_start', -1)
+        search_minute_start = body.get('search_minute_start', -1)
+        search_year_end = body.get('search_year_end', -1)
+        search_month_end = body.get('search_month_end', -1)
+        search_day_end = body.get('search_day_end', -1)
+        search_hour_end = body.get('search_hour_end', -1)
+        search_minute_end = body.get('search_minute_end', -1)
 
         if page_number<1:
             result = []
@@ -784,6 +796,71 @@ class Search(generics.CreateAPIView):
 
             stories_returned = stories_returned.intersection(set(stories))
 
+        if search_date_type != '':
+            stories = []
+            if search_date_type == "century":
+                for each in stories_all:
+                    dates = Date.objects.filter(story_id = each, type = "century", start_end_type = "start")
+                    for date in dates:
+                        if date.date==search_date:
+                            stories.append(each)
+                stories_returned = stories_returned.intersection(set(stories))
+
+            elif search_date_type == "decade":
+                for each in stories_all:
+                    dates = Date.objects.filter(story_id = each, type = "decade", start_end_type = "start")
+                    for date in dates:
+                        if date.date==search_date:
+                            stories.append(each)
+                stories_returned = stories_returned.intersection(set(stories))
+
+            elif search_date_type == "specific":
+                query_start_date = 0
+                if search_year_start!=-1:
+                    query_start_date += 518400*search_year_start
+                if search_month_start!=-1:
+                    query_start_date += 43200*search_month_start
+                if search_day_start!=-1:
+                    query_start_date += 1440*search_day_start
+                if search_hour_start!=-1:
+                    query_start_date += 60*search_hour_start
+                if search_minute_start!=-1:
+                    query_start_date += 1*search_minute_start
+
+                query_end_date = 0
+                if search_year_end!=-1:
+                    query_end_date += 518400*search_year_end
+                if search_month_end!=-1:
+                    query_end_date += 43200*search_month_end
+                if search_day_end!=-1:
+                    query_end_date += 1440*search_day_end
+                if search_hour_end!=-1:
+                    query_end_date += 60*search_hour_end
+                if search_minute_end!=-1:
+                    query_end_date += 1*search_minute_end
+
+                if query_end_date==0:
+                    query_end_date = query_start_date
+
+                for each in stories_all:
+                    story_start_date = Date.objects.filter(story_id = each, type = "specific", start_end_type = "start")
+                    if len(story_start_date)==0:
+                        continue
+                    story_start_date = date_to_minute(story_start_date[0])
+
+                    story_end_date = Date.objects.filter(story_id = each, type = "specific", start_end_type = "end")
+                    if len(story_end_date)==0:
+                        story_end_date = story_start_date
+                    else:
+                        story_end_date = date_to_minute(story_end_date[0])
+
+                    total = sorted([(query_start_date, "query_start_date"),(query_end_date, "query_end_date"),(story_start_date, "story_start_date"),(story_end_date, "story_end_date")])
+                    print(total)
+                    if (total[0][1][0]!=total[1][1][0]) or (total[0][1][0]==total[1][1][0] and total[1][0]==total[2][0]):
+                        stories.append(each)
+                stories_returned = stories_returned.intersection(set(stories))
+
+
 
         stories_returned = list(set(stories_returned))
         stories_returned = stories_returned[(page_number-1)*page_size: page_number*page_size]
@@ -849,3 +926,17 @@ class Search(generics.CreateAPIView):
 
 
         return JsonResponse({'return': result}, status=200)
+
+def date_to_minute(date):
+    temp_minute = 0
+    if date.year!=None:
+        temp_minute += 518400*date.year
+    if date.month!=None:
+        temp_minute += 43200*date.month
+    if date.day!=None:
+        temp_minute += 1440*date.day
+    if date.hour!=None:
+        temp_minute += 60*date.hour
+    if date.minute!=None:
+        temp_minute += 1*date.minute
+    return temp_minute

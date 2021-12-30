@@ -75,6 +75,18 @@ class SearchSerializer(serializers.ModelSerializer):
     max_longitude = serializers.FloatField()
     min_latitude = serializers.FloatField()
     min_longitude = serializers.FloatField()
+    search_date_type = serializers.CharField()
+    search_date = serializers.IntegerField()
+    search_year_start = serializers.IntegerField()
+    search_month_start = serializers.IntegerField()
+    search_day_start = serializers.IntegerField()
+    search_hour_start = serializers.IntegerField()
+    search_minute_start = serializers.IntegerField()
+    search_year_end = serializers.IntegerField()
+    search_month_end = serializers.IntegerField()
+    search_day_end = serializers.IntegerField()
+    search_hour_end = serializers.IntegerField()
+    search_minute_end = serializers.IntegerField()
     class Meta:
         model = Story
-        fields = ['username', 'search_text', 'page_number', 'page_size', 'query_latitude', 'query_longitude', 'query_distance', 'location_text', 'max_latitude', 'max_longitude', 'min_latitude', 'min_longitude']
+        fields = ['username', 'search_text', 'page_number', 'page_size', 'query_latitude', 'query_longitude', 'query_distance', 'location_text', 'max_latitude', 'max_longitude', 'min_latitude', 'min_longitude', 'search_date_type', 'search_date', 'search_year_start', 'search_month_start', 'search_day_start', 'search_hour_start', 'search_minute_start', 'search_year_end', 'search_month_end', 'search_day_end', 'search_hour_end', 'search_minute_end']
