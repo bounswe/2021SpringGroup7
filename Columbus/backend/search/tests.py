@@ -30,9 +30,9 @@ class ModelTestCase(TestCase):
         story5.save()
         location = Location(story_id=story, location="location", latitude=15, longitude=20, type="Real")
         location.save()
-        location2 = Location(story_id=story2, location="location", latitude=20, longitude=20, type="Real")
+        location2 = Location(story_id=story2, location="istanbul", latitude=20, longitude=20, type="Real")
         location2.save()
-        location3 = Location(story_id=story3, location="location", latitude=20, longitude=20, type="Real")
+        location3 = Location(story_id=story3, location="kızılay", latitude=20, longitude=20, type="Real")
         location3.save()
 
     def test_search_title_title(self):
@@ -163,6 +163,48 @@ class ModelTestCase(TestCase):
 
     def test_search_location_text_istanbul_combined_far(self):
         request = MockRequest(method='POST',body={"search_text": "istanbul", "query_latitude": 25, "query_longitude": 20, "query_distance": 2, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 0)
+
+    def test_search_text_location_istanbul(self):
+        request = MockRequest(method='POST',body={"location_text": "istanbul", "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 1)
+
+    def test_search_text_location_location(self):
+        request = MockRequest(method='POST',body={"location_text": "location", "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 1)
+
+    def test_search_text_location_location_dot(self):
+        request = MockRequest(method='POST',body={"location_text": "location.", "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 1)
+
+    def test_search_text_location_ankara(self):
+        request = MockRequest(method='POST',body={"location_text": "ankara", "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 0)
+
+    def test_search_text_location_istanbul_spelling(self):
+        request = MockRequest(method='POST',body={"location_text": "istanbu", "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 1)
+
+    def test_search_text_location_istanbul_spelling_search_text(self):
+        request = MockRequest(method='POST',body={"search_text": "yes", "location_text": "istanbu", "page_number": 1, "page_size": 10})
         api = Search()
         response = api.post(request=request).content
         response = json.loads(response.decode('utf-8'))
