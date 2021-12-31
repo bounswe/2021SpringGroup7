@@ -34,6 +34,16 @@ class ModelTestCase(TestCase):
         location2.save()
         location3 = Location(story_id=story3, location="kızılay", latitude=20, longitude=20, type="Real")
         location3.save()
+        date = Date.objects.create(story_id=story, date=19, type="century", start_end_type="start")
+        date.save()
+        date2 = Date.objects.create(story_id=story2, date=198, type="decade", start_end_type="start")
+        date2.save()
+        date3 = Date.objects.create(story_id=story3, year=1955, type="specific", start_end_type="start")
+        date3.save()
+        date4 = Date.objects.create(story_id=story3, year=1966, month=3, day=2, type="specific", start_end_type="end")
+        date4.save()
+        date5 = Date.objects.create(story_id=story4, year=1966, month=3, day=1, hour=15, minute=3, type="specific", start_end_type="start")
+        date5.save()
 
     def test_search_title_title(self):
         request = MockRequest(method='POST',body={"search_text": "title", "page_number": 1, "page_size": 10})
@@ -254,6 +264,83 @@ class ModelTestCase(TestCase):
 
     def test_search_min_latitude_eighteen_max_twentyone_longitude_out(self):
         request = MockRequest(method='POST',body={"min_latitude": 18, "max_latitude": 21, "min_longitude": 35, "max_longitude": 40, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 0)
+
+    def test_search_date_century_one(self):
+        request = MockRequest(method='POST',body={"search_date_type": "century", "search_date": 19, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 1)
+
+    def test_search_date_century_zero(self):
+        request = MockRequest(method='POST',body={"search_date_type": "century", "search_date": 18, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 0)
+
+    def test_search_date_decade_one(self):
+        request = MockRequest(method='POST',body={"search_date_type": "decade", "search_date": 198, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 1)
+
+    def test_search_date_decade_zero(self):
+        request = MockRequest(method='POST',body={"search_date_type": "decade", "search_date": 196, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 0)
+
+    def test_search_date_specific_1966(self):
+        request = MockRequest(method='POST',body={"search_date_type": "specific", "search_year_start": 1966, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 1)
+
+    def test_search_date_specific_1966_end(self):
+        request = MockRequest(method='POST',body={"search_date_type": "specific", "search_year_start": 1966, "search_year_end": 1967, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 2)
+
+    def test_search_date_specific_1968(self):
+        request = MockRequest(method='POST',body={"search_date_type": "specific", "search_year_start": 1968, "search_year_end": 1969, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 0)
+
+    def test_search_date_specific_1966_exact(self):
+        request = MockRequest(method='POST',body={"search_date_type": "specific", "search_year_start": 1966, "search_month_start": 3, "search_day_start": 2, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 1)
+
+    def test_search_date_specific_1966_exact_out(self):
+        request = MockRequest(method='POST',body={"search_date_type": "specific", "search_year_start": 1966, "search_month_start": 3, "search_day_start": 3, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 0)
+
+    def test_search_date_specific_1966_exact_in(self):
+        request = MockRequest(method='POST',body={"search_date_type": "specific", "search_year_start": 1966, "search_month_start": 3, "search_day_start": 1, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 1)
+
+    def test_search_date_specific_1966_exact_in_text(self):
+        request = MockRequest(method='POST',body={"search_text": "istanbul", "search_date_type": "specific", "search_year_start": 1966, "search_month_start": 3, "search_day_start": 1, "page_number": 1, "page_size": 10})
         api = Search()
         response = api.post(request=request).content
         response = json.loads(response.decode('utf-8'))
