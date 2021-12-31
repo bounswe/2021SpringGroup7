@@ -172,9 +172,11 @@ export default function Post(props) {
     const data = {
       text: commentValue,
       username: localStorage.getItem('username'),
+      story_id : storyData.story_id,
       date: "10 seconds ago",
+      parent_comment_id: 0
     };
-    POST_SERVICE.POST_COMMENT({ text: commentValue, username: localStorage.getItem('username'), story_id: storyData.story_id })
+    POST_SERVICE.POST_COMMENT({ text: commentValue, username: localStorage.getItem('username'), story_id: storyData.story_id, parent_comment_id: 0 })
       .then((response) => {
         setCommentCount(commentCount + 1)
         setSnackBarMessage("Your comment is added!");
@@ -193,7 +195,7 @@ export default function Post(props) {
   const showAddComment = () => {
     return (
 
-      <Paper style={{ padding: "10px 10px", marginTop: 10 }}>
+      <Paper style={{ padding: "20px 20px", marginTop: 10 }}>
         <Grid container wrap="nowrap" spacing={2}>
           <Grid item>
             <Link href="/">
@@ -304,7 +306,7 @@ export default function Post(props) {
               </Typography>
             </CardContent>
           </Grid>
-          {storyData ? [storyData.multimedia].map((item) => {
+          {storyData ? storyData.multimedias.map((item) => {
           return(<Grid item xs={5}>
             <CardMedia
               className={classes.media}
