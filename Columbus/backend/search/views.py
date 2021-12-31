@@ -13,6 +13,7 @@ import json
 import nltk
 import math
 from datetime import datetime
+import string
 
 
 class TitleExactSearch(generics.CreateAPIView):
@@ -686,7 +687,7 @@ class Search(generics.CreateAPIView):
 
             for each in stories_all:
 
-                distance_value = nltk.jaccard_distance(set(nltk.ngrams(search_text.lower(), n=2)), set(nltk.ngrams(each.title.lower(), n=2)))
+                distance_value = nltk.jaccard_distance(set(nltk.ngrams(search_text.lower().translate(str.maketrans('', '', string.punctuation)), n=2)), set(nltk.ngrams(each.title.lower().translate(str.maketrans('', '', string.punctuation)), n=2)))
                 similarity_value = 1-distance_value
                 if distance_value<0.75:
                     stories.append((similarity_value, each))
@@ -700,7 +701,7 @@ class Search(generics.CreateAPIView):
             stories = []
 
             for each in stories_all:
-                similarity_value = len(set(search_text.lower().split()).intersection(set(each.text.lower().split())))
+                similarity_value = len(set(search_text.lower().translate(str.maketrans('', '', string.punctuation)).split()).intersection(set(each.text.lower().translate(str.maketrans('', '', string.punctuation)).split())))
                 if similarity_value>0:
                     stories.append((similarity_value, each))
 
@@ -741,7 +742,7 @@ class Search(generics.CreateAPIView):
             for each in stories_all:
                 locations = Location.objects.filter(story_id = each)
                 for each_location in locations:
-                    distance_value = nltk.jaccard_distance(set(nltk.ngrams(location_text.lower(), n=2)), set(nltk.ngrams(each_location.location.lower(), n=2)))
+                    distance_value = nltk.jaccard_distance(set(nltk.ngrams(location_text.lower().translate(str.maketrans('', '', string.punctuation)), n=2)), set(nltk.ngrams(each_location.location.lower().translate(str.maketrans('', '', string.punctuation)), n=2)))
                     similarity_value = 1-distance_value
                     if distance_value<0.75:
                         stories.append((similarity_value, each))
