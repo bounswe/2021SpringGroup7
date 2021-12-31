@@ -724,7 +724,7 @@ class Search(generics.CreateAPIView):
                 for each_location in locations:
                     if query_latitude!=0 and query_longitude!=0 and each_location.latitude!=0 and each_location.longitude!=0:
                         distance = math.sqrt((query_latitude-each_location.latitude)**2+(query_longitude-each_location.longitude)**2)*111
-                        if distance<query_distance:
+                        if distance<=query_distance:
                             shortest_distance = distance
                 if shortest_distance!=1000000000:
                     stories.append((-1*shortest_distance, each))
@@ -889,13 +889,13 @@ class Search(generics.CreateAPIView):
                 serialized_obj = [each["fields"]["tag"] for each in serialized_obj]
                 each["tags"] = serialized_obj
 
-                multimedias = Multimedia.objects.filter(story_id=stories[i])
+                multimedias = Multimedia.objects.filter(story_id=stories_returned[i])
                 serialized_obj = serializers.serialize('json', multimedias)
                 serialized_obj = json.loads(str(serialized_obj))
                 serialized_obj = [each["fields"]["path"] for each in serialized_obj]
                 each["multimedias"] = serialized_obj
 
-                start_dates = Date.objects.filter(story_id=stories[i], start_end_type="start")
+                start_dates = Date.objects.filter(story_id=stories_returned[i], start_end_type="start")
                 serialized_obj = serializers.serialize('json', start_dates)
                 serialized_obj = json.loads(str(serialized_obj))
                 serialized_obj = [each["fields"] for each in serialized_obj]
@@ -903,7 +903,7 @@ class Search(generics.CreateAPIView):
                 [each.pop('start_end_type', None) for each in serialized_obj]
                 each["time_start"] = serialized_obj
 
-                end_dates = Date.objects.filter(story_id=stories[i], start_end_type="end")
+                end_dates = Date.objects.filter(story_id=stories_returned[i], start_end_type="end")
                 serialized_obj = serializers.serialize('json', end_dates)
                 serialized_obj = json.loads(str(serialized_obj))
                 serialized_obj = [each["fields"] for each in serialized_obj]

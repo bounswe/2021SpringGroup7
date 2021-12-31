@@ -31,7 +31,7 @@ class ModelTestCase(TestCase):
         tag.save()
         location = Location(story_id=story, location="location")
         location.save()
-        location_full = Location(story_id=story, location="location2", latitude=15, longitude=20, type="real")
+        location_full = Location(story_id=story, location="location2", latitude=15, longitude=20, type="Real")
         location_full.save()
         report = Report(story_id=story, reporter_id=user, report="report")
         report.save()
@@ -88,7 +88,7 @@ class ModelTestCase(TestCase):
         location = Location.objects.get(location="location2")
         self.assertEqual(location.latitude, 15)
         self.assertEqual(location.longitude, 20)
-        self.assertEqual(location.type, "real")
+        self.assertEqual(location.type, "Real")
 
     def test_report_check(self):
         report = Report.objects.get(report="report")
