@@ -209,3 +209,52 @@ class ModelTestCase(TestCase):
         response = api.post(request=request).content
         response = json.loads(response.decode('utf-8'))
         self.assertEqual(len(response["return"]), 0)
+
+    def test_search_min_latitude_zero(self):
+        request = MockRequest(method='POST',body={"min_latitude": 0, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 3)
+
+    def test_search_min_latitude_forty(self):
+        request = MockRequest(method='POST',body={"min_latitude": 40, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 0)
+
+    def test_search_min_latitude_eighteen(self):
+        request = MockRequest(method='POST',body={"min_latitude": 18, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 2)
+
+    def test_search_min_latitude_eighteen_max_nineteen(self):
+        request = MockRequest(method='POST',body={"min_latitude": 18, "max_latitude": 19, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 0)
+
+    def test_search_min_latitude_eighteen_max_twentyone(self):
+        request = MockRequest(method='POST',body={"min_latitude": 18, "max_latitude": 21, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 2)
+
+    def test_search_min_latitude_eighteen_max_twentyone_longitude_in(self):
+        request = MockRequest(method='POST',body={"min_latitude": 18, "max_latitude": 21, "min_longitude": 18, "max_longitude": 21, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 2)
+
+    def test_search_min_latitude_eighteen_max_twentyone_longitude_out(self):
+        request = MockRequest(method='POST',body={"min_latitude": 18, "max_latitude": 21, "min_longitude": 35, "max_longitude": 40, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 0)
