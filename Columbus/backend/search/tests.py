@@ -28,6 +28,12 @@ class ModelTestCase(TestCase):
         story4.save()
         story5 = Story.objects.create(title="bogazici", text="I study at Bogazici University", user_id=user, numberOfLikes=0, numberOfComments=0)
         story5.save()
+        location = Location(story_id=story, location="location", latitude=15, longitude=20, type="Real")
+        location.save()
+        location2 = Location(story_id=story2, location="location", latitude=20, longitude=20, type="Real")
+        location2.save()
+        location3 = Location(story_id=story3, location="location", latitude=20, longitude=20, type="Real")
+        location3.save()
 
     def test_search_title_title(self):
         request = MockRequest(method='POST',body={"search_text": "title", "page_number": 1, "page_size": 10})
@@ -108,6 +114,55 @@ class ModelTestCase(TestCase):
 
     def test_search_title_second_page(self):
         request = MockRequest(method='POST',body={"search_text": "boğaziçi", "page_number": 2, "page_size": 1})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 0)
+
+    def test_search_location_geographical_query_dist_1(self):
+        request = MockRequest(method='POST',body={"query_latitude": 15, "query_longitude": 20, "query_distance": 1, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 1)
+
+    def test_search_location_geographical_query_dist_0(self):
+        request = MockRequest(method='POST',body={"query_latitude": 15, "query_longitude": 20, "query_distance": 0, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 1)
+
+    def test_search_location_geographical_query_dist_minus_5(self):
+        request = MockRequest(method='POST',body={"query_latitude": 15, "query_longitude": 20, "query_distance": -5, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 0)
+
+    def test_search_location_geographical_query_dist_5(self):
+        request = MockRequest(method='POST',body={"query_latitude": 18, "query_longitude": 20, "query_distance": 5, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 0)
+
+    def test_search_location_geographical_query_dist_2(self):
+        request = MockRequest(method='POST',body={"query_latitude": 20, "query_longitude": 20, "query_distance": 2, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 2)
+
+    def test_search_location_text_istanbul_combined(self):
+        request = MockRequest(method='POST',body={"search_text": "istanbul", "query_latitude": 15, "query_longitude": 20, "query_distance": 2, "page_number": 1, "page_size": 10})
+        api = Search()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(len(response["return"]), 1)
+
+    def test_search_location_text_istanbul_combined_far(self):
+        request = MockRequest(method='POST',body={"search_text": "istanbul", "query_latitude": 25, "query_longitude": 20, "query_distance": 2, "page_number": 1, "page_size": 10})
         api = Search()
         response = api.post(request=request).content
         response = json.loads(response.decode('utf-8'))
