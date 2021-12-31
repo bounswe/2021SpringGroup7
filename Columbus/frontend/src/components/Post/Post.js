@@ -76,9 +76,9 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     backgroundColor: "#a67c52",
   },
-  chip : {
+  chip: {
     backgroundColor: "#007c3b",
-    color : "white"
+    color: "white"
   }
 }));
 
@@ -86,7 +86,7 @@ export default function Post(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [expandComment, setExpandComment] = useState(false);
-  
+
   const [storyData, setStoryData] = useState(null);
   const [curUser, setCurUser] = useState(false);
   const [commentValue, setCommentValue] = useState("");
@@ -105,16 +105,16 @@ export default function Post(props) {
     setLiked(props.post.is_liked)
     setLikeCount(props.post.numberOfLikes)
     setCommentCount(props.post.numberOfComments)
-    var postdata = {'story_id':props.post.story_id}
+    var postdata = { 'story_id': props.post.story_id }
     POST_SERVICE.GET_COMMENTS(postdata)
-    .then(resp => {
-      setComments(
-        resp.data.return
-      );
-    })
-    .catch((error) => { 
-      setSnackBarMessage(error.response.data.return);
-  });
+      .then(resp => {
+        setComments(
+          resp.data.return
+        );
+      })
+      .catch((error) => {
+        setSnackBarMessage(error.response.data.return);
+      });
   }, [props, openLocation]);
 
 
@@ -124,7 +124,7 @@ export default function Post(props) {
   const handleExpandComment = () => {
     setExpandComment(!expandComment);
   };
-  
+
 
 
   const handleClose = (event, reason) => {
@@ -136,24 +136,26 @@ export default function Post(props) {
   };
 
   const handleLike = () => {
-    var dat={
+    var dat = {
       "story_id": storyData.story_id,
       "user_id": localStorage.getItem('userid'),
     };
     POST_SERVICE.LIKE_POST(dat)
-    .then(response => {
-      if(response.data.response.isLiked==true){
-        setLikeCount(likeCount+1)
-        setSnackBarMessage('You liked this story!');}
-      else{
-        setLikeCount(likeCount-1)
-        setSnackBarMessage('You unliked this story!');}
-      setLiked(response.data.response.isLiked);
-    })
-    .catch((error) => {
-      
-      setSnackBarMessage(error.response.data.return);
-  });
+      .then(response => {
+        if (response.data.response.isLiked == true) {
+          setLikeCount(likeCount + 1)
+          setSnackBarMessage('You liked this story!');
+        }
+        else {
+          setLikeCount(likeCount - 1)
+          setSnackBarMessage('You unliked this story!');
+        }
+        setLiked(response.data.response.isLiked);
+      })
+      .catch((error) => {
+
+        setSnackBarMessage(error.response.data.return);
+      });
     setOpenSnackBar(true);
   };
   const handleOpenLocation = () => {
@@ -172,15 +174,15 @@ export default function Post(props) {
       username: localStorage.getItem('username'),
       date: "10 seconds ago",
     };
-    POST_SERVICE.POST_COMMENT({text:commentValue,username: localStorage.getItem('username'),story_id:storyData.story_id})
-    .then((response) => {
-        setCommentCount(commentCount+1)
+    POST_SERVICE.POST_COMMENT({ text: commentValue, username: localStorage.getItem('username'), story_id: storyData.story_id })
+      .then((response) => {
+        setCommentCount(commentCount + 1)
         setSnackBarMessage("Your comment is added!");
-      setOpenSnackBar(true);
-    }).catch((error) => {
-      setSnackBarMessage("Comment can not added!");
-      setOpenSnackBar(true);
-    });
+        setOpenSnackBar(true);
+      }).catch((error) => {
+        setSnackBarMessage("Comment can not added!");
+        setOpenSnackBar(true);
+      });
 
     const temp = comments;
     temp.push(data);
@@ -261,16 +263,16 @@ export default function Post(props) {
             <Grid item columns={2} alignItems="center" alignItems="center" spacing={3} >
               <Button onClick={handleOpenLocation} style={{ textTransform: 'none' }} >
                 {(storyData && storyData.locations && storyData.locations.length > 0)
-                  ? (<><LocationOn /><Typography variant="body2">{storyData.locations[0].location.length>14 ? 
-                                                                                                          storyData.locations[0].location.substring(0,10)+'...'
-                                                                                                          :storyData.locations[0].location}
-                                                                                                          </Typography>
+                  ? (<><LocationOn /><Typography variant="body2">{storyData.locations[0].location.length > 14 ?
+                    storyData.locations[0].location.substring(0, 10) + '...'
+                    : storyData.locations[0].location}
+                  </Typography>
                     {storyData.locations.length > 1 ?
                       (<><ArrowForward />
                         {storyData.locations.length > 2 ?
                           (<><Typography variant="body2">{"+" + (storyData.locations.length - 2)}</Typography>
                             <ArrowForward /></>) : null}
-                        <Typography variant="body2">{storyData.locations[storyData.locations.length - 1].location.length>14 ?  storyData.locations[storyData.locations.length - 1].location.substring(0,10)+'...':storyData.locations[storyData.locations.length - 1].location}</Typography></>) : null}</>) : ""}
+                        <Typography variant="body2">{storyData.locations[storyData.locations.length - 1].location.length > 14 ? storyData.locations[storyData.locations.length - 1].location.substring(0, 10) + '...' : storyData.locations[storyData.locations.length - 1].location}</Typography></>) : null}</>) : ""}
               </Button>
             </Grid>
           </Grid>
@@ -278,29 +280,8 @@ export default function Post(props) {
       >
 
       </CardHeader>
-      {expanded? null:<Grid item xs={11} justifyContent="center" alignContent="center">
-            <CardContent>
-              <Typography variant="body2" color="textSecondary" component="p">
-                {storyData ? storyData.text.substring(0,500)+"..."  : ""}
-                <div></div>
-                {storyData
-                  ? storyData.tags.map((item, index) => {
-                    return (
-                      <Chip
-                        className={classes.chip}
-                        key={index}
-                        onClick={() => console.log("we will add go to tag later")}
-                        size="small"
-                        label={item}
-                      />
-                    );
-                  })
-                  : ""}
-              </Typography>
-            </CardContent>
-          </Grid>}
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <Grid container justifyContent="center" spacing={2} columns = {2}>
+      {expanded ?
+        (<Grid container justifyContent="center" spacing={2} columns = {2}>
 
           <Grid item xs={11} justifyContent="center" alignContent="center">
             <CardContent>
@@ -331,50 +312,67 @@ export default function Post(props) {
             />
           </Grid>);}) :null}
           
-        </Grid> </Collapse>
+        </Grid>) : (<Grid container justifyContent="center" ><Grid item xs={11} justifyContent="center" alignContent="center">
+          <Typography variant="body2" color="textSecondary" component="p" >
+            {storyData ? (expanded ? storyData.text : (storyData.text.substring(0, 500) + "...")) : ""}
+            <div></div>
+            {storyData
+              ? storyData.tags.map((item, index) => {
+                return (
+                  <Chip
+                    className={classes.chip}
+                    key={index}
+                    onClick={() => console.log("we will add go to tag later")}
+                    size="small"
+                    label={item}
+                  />
+                );
+              })
+              : ""}
+          </Typography></Grid> </Grid>)}
 
 
-      
+
       <CardActions disableSpacing>
-      {localStorage.getItem('jwtToken') ? 
-        <div><Grid container columns={2} alignItems="center" spacing={2}><IconButton
-          aria-label="add to favorites"
-          color={liked ? "secondary" : ""}
-          onClick={handleLike}
-        >
-          <FavoriteIcon />
-        </IconButton>
-        <Typography>{likeCount}</Typography></Grid>
+        {localStorage.getItem('jwtToken') ?
+          <div><Grid container columns={2} alignItems="center" spacing={2}><IconButton
+            aria-label="add to favorites"
+            color={liked ? "secondary" : ""}
+            onClick={handleLike}
+          >
+            <FavoriteIcon />
+          </IconButton>
+            <Typography>{likeCount}</Typography></Grid>
 
 
-        <Snackbar
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-          open={openSnackBar}
-          autoHideDuration={6000}
-          onClose={handleClose}
-          message={snackBarMessage}
-          action={
-            <React.Fragment>
-              <IconButton
-                size="small"
-                aria-label="close"
-                color="inherit"
-                onClick={handleClose}
-              >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </React.Fragment>
-          }
-        />
+            <Snackbar
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              open={openSnackBar}
+              autoHideDuration={6000}
+              onClose={handleClose}
+              message={snackBarMessage}
+              action={
+                <React.Fragment>
+                  <IconButton
+                    size="small"
+                    aria-label="close"
+                    color="inherit"
+                    onClick={handleClose}
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                </React.Fragment>
+              }
+            />
 
-      <Grid container columns={2} alignItems="center" spacing={2}>
-        <IconButton onClick={handleExpandComment}>
-          <AddCommentIcon />
-        </IconButton><Typography>{commentCount}</Typography>
-        </Grid></div>:<div/>}
+            <Grid container columns={2} alignItems="center" spacing={2}>
+              <IconButton onClick={handleExpandComment}>
+                <AddCommentIcon />
+              </IconButton><Typography>{commentCount}</Typography>
+            </Grid></div> : <div />}
 
         <IconButton
           className={clsx(classes.expand, {
@@ -395,7 +393,7 @@ export default function Post(props) {
             {comments.map((item, index) => {
               if (item) {
                 return (
-                  <Comment comment={item} index = {index}/>
+                  <Comment comment={item} index={index} />
                 );
               }
             })}
