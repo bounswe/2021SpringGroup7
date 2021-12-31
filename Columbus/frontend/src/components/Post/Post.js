@@ -29,6 +29,7 @@ import AddCommentIcon from "@material-ui/icons/AddComment";
 import CloseIcon from "@material-ui/icons/Close";
 import ArrowForward from "@material-ui/icons/ArrowForward";
 import Add from "@material-ui/icons/Add";
+import Comment from "../Comment/Comment"
 import LocationDialog from '../Dialogs/PostLocationDialog/PostLocationDialog'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import POST_SERVICE from '../../services/post';
@@ -85,6 +86,7 @@ export default function Post(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [expandComment, setExpandComment] = useState(false);
+  
   const [storyData, setStoryData] = useState(null);
   const [curUser, setCurUser] = useState(false);
   const [commentValue, setCommentValue] = useState("");
@@ -122,7 +124,7 @@ export default function Post(props) {
   const handleExpandComment = () => {
     setExpandComment(!expandComment);
   };
-
+  
 
 
   const handleClose = (event, reason) => {
@@ -189,7 +191,7 @@ export default function Post(props) {
   const showAddComment = () => {
     return (
 
-      <Paper style={{ padding: "20px 20px", marginTop: 10 }}>
+      <Paper style={{ padding: "10px 10px", marginTop: 10 }}>
         <Grid container wrap="nowrap" spacing={2}>
           <Grid item>
             <Link href="/">
@@ -200,7 +202,7 @@ export default function Post(props) {
             <h4 style={{ margin: 0, textAlign: "left" }}>{localStorage.getItem('username')}</h4>
             <p style={{ textAlign: "left" }}>
               <TextField
-                style={{ width: "90%" }}
+                style={{ width: "90%", height: 20 }}
                 variant="filled"
                 value={commentValue}
                 onChange={(e) => setCommentValue(e.target.value)}
@@ -276,8 +278,29 @@ export default function Post(props) {
       >
 
       </CardHeader>
-      {expanded ?
-        (<Grid container justifyContent="center" spacing={2} columns = {2}>
+      {expanded? null:<Grid item xs={11} justifyContent="center" alignContent="center">
+            <CardContent>
+              <Typography variant="body2" color="textSecondary" component="p">
+                {storyData ? storyData.text.substring(0,500)+"..."  : ""}
+                <div></div>
+                {storyData
+                  ? storyData.tags.map((item, index) => {
+                    return (
+                      <Chip
+                        className={classes.chip}
+                        key={index}
+                        onClick={() => console.log("we will add go to tag later")}
+                        size="small"
+                        label={item}
+                      />
+                    );
+                  })
+                  : ""}
+              </Typography>
+            </CardContent>
+          </Grid>}
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Grid container justifyContent="center" spacing={2} columns = {2}>
 
           <Grid item xs={11} justifyContent="center" alignContent="center">
             <CardContent>
@@ -308,24 +331,7 @@ export default function Post(props) {
             />
           </Grid>);}) :null}
           
-        </Grid>) : (<Grid container justifyContent="center" ><Grid item xs={11} justifyContent="center" alignContent="center">
-          <Typography variant="body2" color="textSecondary" component="p" >
-            {storyData ? (expanded ? storyData.text : (storyData.text.substring(0, 500) + "...")) : ""}
-            <div></div>
-            {storyData
-              ? storyData.tags.map((item, index) => {
-                return (
-                  <Chip
-                    className={classes.chip}
-                    key={index}
-                    onClick={() => console.log("we will add go to tag later")}
-                    size="small"
-                    label={item}
-                  />
-                );
-              })
-              : ""}
-          </Typography></Grid> </Grid>)}
+        </Grid> </Collapse>
 
 
       
@@ -389,25 +395,7 @@ export default function Post(props) {
             {comments.map((item, index) => {
               if (item) {
                 return (
-                  <Paper
-                    key={index}
-                    style={{ padding: "20px 20px", marginTop: 10 }}
-                  >
-                    <Grid container wrap="nowrap" spacing={2}>
-                      <Grid item>
-                        <Avatar alt={item.username} src="" />
-                      </Grid>
-                      <Grid justifyContent="left" item xs zeroMinWidth>
-                        <h4 style={{ margin: 0, textAlign: "left" }}>
-                          {item.username}
-                        </h4>
-                        <p style={{ textAlign: "left" }}>{item.text}</p>
-                        <p style={{ textAlign: "left", color: "gray" }}>
-                          {new Date(item.date).toLocaleString('tr-TR')}
-                        </p>
-                      </Grid>
-                    </Grid>
-                  </Paper>
+                  <Comment comment={item} index = {index}/>
                 );
               }
             })}
