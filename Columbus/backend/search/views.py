@@ -856,7 +856,7 @@ class Search(generics.CreateAPIView):
                         story_end_date = date_to_minute(story_end_date[0])
 
                     total = sorted([(query_start_date, "query_start_date"),(query_end_date, "query_end_date"),(story_start_date, "story_start_date"),(story_end_date, "story_end_date")])
-                    print(total)
+                    
                     if (total[0][1][0]!=total[1][1][0]) or (total[0][1][0]==total[1][1][0] and total[1][0]==total[2][0]):
                         stories.append(each)
                 stories_returned = stories_returned.intersection(set(stories))
