@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text} from 'react-native';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
+import {View, Text, TouchableOpacity} from 'react-native';
 import {
   Button,
   Spinner,
@@ -7,19 +7,36 @@ import {
   ScrollView,
   VStack,
 } from 'native-base';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import {useAuth} from '../../context/AuthContext';
 import {SERVICE} from '../../services/services';
 import {useMutation} from 'react-query';
 import PageSpinner from '../../components/PageSpinner';
 import PostCard from '../../components/PostCard';
+import {styles} from './Home.style';
 
-const Home = () => {
-  const { user} = useAuth();
+const Home = ({navigation}) => {
+  const {user} = useAuth();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
 
   let token = '';
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          style={styles.headerNotificationIconContainer}
+          onPress={() =>
+            navigation.push('Notification', {username: user.userInfo.username})
+          }>
+          <Icon name="notifications" size={18} />
+          <Text>Notifications</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   useEffect(() => {
     if (user) {

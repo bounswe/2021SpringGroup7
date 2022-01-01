@@ -16,6 +16,7 @@ import Location from '../views/Location';
 import DetailedPost from '../views/DetailedPost';
 import EditProfile from '../views/Profile/views/EditProfile';
 import OtherProfiles from '../views/OtherProfiles/OtherProfiles';
+import Notification from '../views/Home/components/Notification';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -48,7 +49,11 @@ const HomeStack = () => (
       name="Profile"
       component={Profile}
     />
-
+    <Stack.Screen
+      options={{title: 'Notifications'}}
+      name="Notification"
+      component={Notification}
+    />
     <Stack.Screen name="DetailedPost" component={DetailedPost} />
   </Stack.Navigator>
 );
