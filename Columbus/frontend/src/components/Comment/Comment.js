@@ -25,12 +25,12 @@ export default function Comment(props) {
     setOpenSnackBar(false);
   };
   const handleComment = () => {
-
+    var today=new Date();
     const data = {
       text: commentValue,
       username: localStorage.getItem('username'),
       story_id: props.comment.story_id,
-      date: "10 seconds ago",
+      date: today.toISOString(),
       parent_comment_id: props.comment.id
     };
     POST_SERVICE.POST_COMMENT({ text: commentValue, username: localStorage.getItem('username'), story_id: props.comment.story_id, parent_comment_id: props.comment.id })
@@ -131,7 +131,7 @@ export default function Comment(props) {
       {comments.length===0? null :<>{comments.map((item, index) => {
         if (item) {
           return (
-            <Grid container wrap="nowrap" spacing={2} style={{ marginLeft: '4rem' }}>
+            <Grid container wrap="nowrap" spacing={2} style={{ marginLeft: '4rem', marginTop: 20}}>
               <Grid item>
                 <Avatar alt={item.username} src="" />
               </Grid>

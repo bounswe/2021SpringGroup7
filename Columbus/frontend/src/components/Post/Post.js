@@ -197,7 +197,6 @@ export default function Post(props) {
   const handleComment = () => {
     setExpandComment(true);
     var today=new Date();
-    console.log(today)
     const data = {
       text: commentValue,
       username: localStorage.getItem('username'),
@@ -303,6 +302,7 @@ export default function Post(props) {
                         <Typography variant="body2">{storyData.locations[storyData.locations.length - 1].location.length > 14 ? storyData.locations[storyData.locations.length - 1].location.substring(0, 10) + '...' : storyData.locations[storyData.locations.length - 1].location}</Typography></>) : null}</>) : ""}
               </Button>
             </Grid>
+            
           </Grid>
         }
       >
@@ -358,7 +358,9 @@ export default function Post(props) {
               })
               : ""}
           </Typography></Grid> </Grid>)}
-
+          <Typography style={{ textTransform: 'none',textAlign: "right", color: "gray", marginRight:25 }}>
+                  {new Date(props.post.createDateTime).toLocaleString('tr-TR')}
+                </Typography>
 
 
       <CardActions disableSpacing>
@@ -401,7 +403,8 @@ export default function Post(props) {
                 <AddCommentIcon />
               </IconButton><Typography>{commentCount}</Typography>
             </Grid></div> : <div />}
-
+        
+        
         <IconButton
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
@@ -410,8 +413,10 @@ export default function Post(props) {
           aria-expanded={expanded}
           aria-label="show more"
         >
+          
           <ExpandMoreIcon />
         </IconButton>
+        
       </CardActions>
       <Collapse in={expandComment} timeout="auto" unmountOnExit>
         <CardContent>
