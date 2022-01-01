@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import queryClient from '../../configs/reactQuery';
 import {AUTH_KEY} from '../../constants/storageKeys';
 import {SERVICE} from '../../services/services';
-import {useMutation, useQuery} from 'react-query';
+import {useMutation} from 'react-query';
 
 const AuthContext = createContext({
   user: {isAuthenticated: false},
@@ -37,6 +37,9 @@ function AuthProvider({children}) {
         setUser({
           userInfo: loginValues,
           isAuthenticated: true,
+        });
+        await fetchUserInfo.mutateAsync({
+          params: {userId: loginValues.user_id, token: loginValues.token},
         });
       }
     }

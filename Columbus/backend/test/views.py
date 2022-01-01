@@ -4,7 +4,6 @@ from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from .functions import upload_to_s3,download_from_s3
 from .serializers import *
 from django.http import JsonResponse
 
@@ -21,6 +20,5 @@ class Test(generics.RetrieveAPIView):
         path_in_s3 = 'deneme/hamza/1/deneme.png'
         #upload_to_s3(path_in_local,path_in_s3)
         path_in_local = './deneme_from_s3.png'
-        download_from_s3(path_in_local, path_in_s3)
         return JsonResponse({'return': 'ASD'})
 

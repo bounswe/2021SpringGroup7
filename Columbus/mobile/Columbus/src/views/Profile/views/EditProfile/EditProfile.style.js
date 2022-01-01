@@ -11,9 +11,27 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 12,
   },
   imageButtonText: {
     fontWeight: '500',
+  },
+  inputRowContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  switchContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dateContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    width: '30%',
   },
   biographyArea: {
     marginTop: 8,

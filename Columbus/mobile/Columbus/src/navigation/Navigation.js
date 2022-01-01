@@ -15,6 +15,7 @@ import Profile from '../views/Profile';
 import Location from '../views/Location';
 import DetailedPost from '../views/DetailedPost';
 import EditProfile from '../views/Profile/views/EditProfile';
+import OtherProfiles from '../views/OtherProfiles/OtherProfiles';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -86,11 +87,16 @@ const CreateStoryNavigation = () => (
 
 const ProfileNavigation = () => (
   <Stack.Navigator>
-    <Stack.Screen name="Profile Page" component={Profile} />
+    <Stack.Screen name="ProfilePage" component={Profile} />
     <Stack.Screen
       options={{title: 'Edit Profile'}}
       name="EditProfile"
       component={EditProfile}
+    />
+    <Stack.Screen
+      options={{title: 'Other Users Profile'}}
+      name="OtherProfiles"
+      component={OtherProfiles}
     />
   </Stack.Navigator>
 );

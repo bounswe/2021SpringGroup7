@@ -15,7 +15,7 @@ import PageSpinner from '../../components/PageSpinner';
 import PostCard from '../../components/PostCard';
 
 const Home = () => {
-  const {logout, user} = useAuth();
+  const { user} = useAuth();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
 
@@ -33,7 +33,6 @@ const Home = () => {
   const fetchStories = useMutation(params => SERVICE.fetchPost(params, token), {
     onSuccess(response) {
       setPosts(response.data.return);
-      console.log(response.data.return);
       setLoading(false);
     },
     onError({response}) {

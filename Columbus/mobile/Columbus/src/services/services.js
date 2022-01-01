@@ -28,6 +28,12 @@ export const SERVICE = {
     });
   },
 
+  postFollow: async (params, token) => {
+    return await API_INSTANCE.post(`/user/follow/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
   fetchUserInfo: params => {
     return API_INSTANCE.get(`/user/get_profile/${params.params.userId}/`, {
       headers: {Authorization: `TOKEN ${params.params.token}`},
@@ -53,4 +59,25 @@ export const SERVICE = {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
+  deleteComment: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/comment_delete/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  editComment: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/comment_update/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  pinComment: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/pin_comment/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  reportComment: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/report_comment/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
 };
