@@ -31,9 +31,9 @@ export default function Comment(props) {
       username: localStorage.getItem('username'),
       story_id: props.comment.story_id,
       date: "10 seconds ago",
-      parent_comment_id: props.comment.comment_id
+      parent_comment_id: props.comment.id
     };
-    POST_SERVICE.POST_COMMENT({ text: commentValue, username: localStorage.getItem('username'), story_id: props.comment.story_id, parent_comment_id: props.comment.comment_id })
+    POST_SERVICE.POST_COMMENT({ text: commentValue, username: localStorage.getItem('username'), story_id: props.comment.story_id, parent_comment_id: props.comment.id })
       .then((response) => {
         setSnackBarMessage("Your reply is added!");
         setOpenSnackBar(true);
@@ -48,7 +48,7 @@ export default function Comment(props) {
     setCommentValue("");
   };
   useEffect(() => {
-    //setComments(props.comment.subcomments);
+    setComments(props.comment.child_comments);
   }, [props])
   const handleReply = () => {
     setExpandReply(!expandReply);
@@ -128,7 +128,7 @@ export default function Comment(props) {
             />
         </Grid>
       </Grid>
-      {comments.map((item, index) => {
+      {comments.length===0? null :<>{comments.map((item, index) => {
         if (item) {
           return (
             <Grid container wrap="nowrap" spacing={2} style={{ marginLeft: '4rem' }}>
@@ -147,7 +147,7 @@ export default function Comment(props) {
             </Grid>
           );
         }
-      })}
+      })}</>}
     </Paper>
   );
 }

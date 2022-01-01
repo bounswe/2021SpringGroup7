@@ -34,6 +34,7 @@ import LocationDialog from '../Dialogs/PostLocationDialog/PostLocationDialog'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import POST_SERVICE from '../../services/post';
 import api from "../../services/post";
+import { tableBodyClasses } from "@mui/material";
 
 const imgLink =
   "https://images.pexels.com/photos/3747505/pexels-photo-3747505.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
@@ -115,9 +116,9 @@ export default function Post(props) {
       if(props.post.time_start[0].year)
         setStoryDate1(props.post.time_start[0].year)
       if(props.post.time_start[0].month)
-        setStoryDate1(props.post.time_start[0].month+"."+storyDate1)
+        setStoryDate1(props.post.time_start[0].month+"."+props.post.time_start[0].year)
       if(props.post.time_start[0].day)
-        setStoryDate1(props.post.time_start[0].day+"."+storyDate1)
+        setStoryDate1(props.post.time_start[0].day+"."+props.post.time_start[0].month+"."+props.post.time_start[0].year)
       }
     }
     if(props.post.time_end[0].type=="specific"){
@@ -128,20 +129,19 @@ export default function Post(props) {
       if(props.post.time_end[0].year)
         setStoryDate2(props.post.time_end[0].year)
       if(props.post.time_end[0].month)
-        setStoryDate2(props.post.time_end[0].month+"."+storyDate2)
+        setStoryDate2(props.post.time_end[0].month+"."+props.post.time_end[0].year)
       if(props.post.time_end[0].day)
-        setStoryDate2(props.post.time_end[0].day+"."+storyDate2)
+        setStoryDate2(props.post.time_end[0].day+"."+props.post.time_end[0].month+"."+props.post.time_end[0].year)
       }
     }
     var postdata = { 'story_id': props.post.story_id }
     POST_SERVICE.GET_COMMENTS(postdata)
       .then(resp => {
         setComments(
-          resp.data.return
+          resp.data.return.comments
         );
       })
       .catch((error) => {
-        setSnackBarMessage(error.response.data.return);
       });
   }, [props, openLocation]);
 
@@ -196,13 +196,15 @@ export default function Post(props) {
 
   const handleComment = () => {
     setExpandComment(true);
-
+    var today=new Date();
+    console.log(today)
     const data = {
       text: commentValue,
       username: localStorage.getItem('username'),
       story_id : storyData.story_id,
-      date: "10 seconds ago",
-      parent_comment_id: 0
+      date: today.toISOString(),
+      parent_comment_id: 0,
+      child_comments: []
     };
     POST_SERVICE.POST_COMMENT({ text: commentValue, username: localStorage.getItem('username'), story_id: storyData.story_id, parent_comment_id: 0 })
       .then((response) => {
@@ -416,13 +418,13 @@ export default function Post(props) {
           <div style={{ padding: 14 }} className="App">
             <h2>Comments</h2>
             {showAddComment()}
-            {comments.map((item, index) => {
+            {comments.length === 0? null : <>{comments.map((item, index) => {
               if (item) {
                 return (
                   <Comment comment={item} index={index} />
                 );
               }
-            })}
+            })}</>}
           </div>
         </CardContent>
       </Collapse>
