@@ -136,6 +136,7 @@ export default function Post(props) {
     }
     var postdata = { 'story_id': props.post.story_id }
     POST_SERVICE.GET_COMMENTS(postdata)
+<<<<<<< HEAD
       .then(resp => {
         setComments(
           resp.data.return.comments
@@ -143,6 +144,16 @@ export default function Post(props) {
       })
       .catch((error) => {
       });
+=======
+    .then(resp => {
+      setComments(
+        resp.data.return['comments']
+      );
+    })
+    .catch((error) => { 
+      setSnackBarMessage(error);
+  });
+>>>>>>> 26bf023 (datetype change)
   }, [props, openLocation]);
 
 

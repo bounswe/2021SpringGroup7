@@ -35,6 +35,7 @@ const filter = createFilterOptions();
 export default function CreatePostDialog({
   imgUrlInit = "",
   locationTypeInit = null,
+  dateTypeInit =null,
   locationInit = [],
   topicInit = "",
   storyInit = "",
@@ -50,6 +51,8 @@ export default function CreatePostDialog({
   const [file, setFile] = React.useState(null);
   const [fileUploadProgress, setFileUploadProgress] = React.useState(0);
   const [locationType, setLocationType] = React.useState(locationTypeInit);
+  const [dateType, setDateType] = React.useState(dateTypeInit);
+  const [dateTypeList, setDateTypeList] = React.useState([]);
   const [locations, setLocations] = React.useState(locationInit);
   const [errorIndex, setErrorIndex] = React.useState(null);
   const [topic, setTopic] = React.useState(topicInit);
@@ -62,7 +65,18 @@ export default function CreatePostDialog({
     apiKey: "AIzaSyBMNVI-Aep02o6TwwTechsvSzpRVlA13qo",
     onPlaceSelected: (place) => console.log(place),
   });
-
+  const handleDateTypeChange = (date) => {
+    if(date.target.value=="Day"){
+      setDateTypeList(["year","month","day"])
+    }
+    else if(date.target.value == "Month"){
+      setDateTypeList(["year","month"])
+    }
+    else if(date.target.value=="Year")
+      setDateTypeList(["year"])
+    setDateType(date.target.value);
+      
+  };
   const handleDateChange1 = (date) => {
     setStartDate(date);
   };
@@ -313,8 +327,25 @@ export default function CreatePostDialog({
             })
           )
         ) : null}
+        <FormControl fullWidth>
+          <InputLabel id="date-type">Date Type</InputLabel>
+          <Select
+            variant="standard"
+            value={dateType}
+            onChange={handleDateTypeChange}
+            label="Date Type"
+            required
+          >
+            <MenuItem value={"Century"}>Century</MenuItem>
+            <MenuItem value={"Decade"}>Decade</MenuItem>
+            <MenuItem value={"Year"}>Year</MenuItem>
+            <MenuItem value={"Month"}>Month</MenuItem>
+            <MenuItem value={"Day"}>Day</MenuItem>
+            <MenuItem value={"Start-End"}>Start-End</MenuItem>
+          </Select>
+        </FormControl>
         
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        {dateType=="Start-End"? (<MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Stack spacing={2} direction='row' justifyContent='space-around'>
           <Box>
           <KeyboardDatePicker
@@ -358,7 +389,26 @@ export default function CreatePostDialog({
             />
           </Box>
          </Stack>
-        </MuiPickersUtilsProvider>
+        </MuiPickersUtilsProvider>) : <MuiPickersUtilsProvider utils={DateFnsUtils}> <Box>
+          <KeyboardDatePicker
+            views={dateTypeList}
+            variant="inline"
+            format="yyyy-MM-dd"
+            placeholder="Year-Month-Day"
+            openTo="year"
+            margin="normal"
+            id="start-date-picker-inline"
+            label={dateType}
+            value={startDate}
+            onChange={handleDateChange1}
+            KeyboardButtonProps={{
+              "aria-label": "change date",
+            }}
+            required
+            maxDate={endDate ? endDate : Date.now()}
+            minDateMessage="Start date can't be after than end date"
+          />
+          </Box></MuiPickersUtilsProvider>}
         {errorIndex !==null ? <Typography>Please select a location on map for location {errorIndex+1}</Typography> : null}
         <Box>
         <Button type='submit' size='large' color="primary"  variant="contained">
