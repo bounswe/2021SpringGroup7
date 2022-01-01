@@ -16,6 +16,12 @@ export const SERVICE = {
     });
   },
 
+  fetchNotifications: async (params, token) => {
+    return await API_INSTANCE.post(`/user/get_notifications/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
   fetchUserPosts: async (params, token) => {
     return await API_INSTANCE.post(`/user/profile_post/`, params, {
       headers: {Authorization: `TOKEN ${token}`},
@@ -79,5 +85,4 @@ export const SERVICE = {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
-
 };
