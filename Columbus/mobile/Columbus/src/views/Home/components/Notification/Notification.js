@@ -32,10 +32,6 @@ const Notification = ({navigation, route}) => {
     params => SERVICE.fetchNotifications(params, user.userInfo.token),
     {
       onSuccess(response) {
-        console.log(
-          'response data: ',
-          response.data.other_notifications.orderedItems,
-        );
         setFollowRequest(response.data.follow_requests);
         setOtherNotifications(response.data.other_notifications);
         setLoading(false);
