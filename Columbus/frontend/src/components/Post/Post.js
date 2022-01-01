@@ -88,6 +88,8 @@ export default function Post(props) {
   const [expandComment, setExpandComment] = useState(false);
 
   const [storyData, setStoryData] = useState(null);
+  const [storyDate1, setStoryDate1] = useState("");
+  const [storyDate2, setStoryDate2] = useState("");
   const [curUser, setCurUser] = useState(false);
   const [commentValue, setCommentValue] = useState("");
   const [comments, setComments] = useState([]);
@@ -105,6 +107,32 @@ export default function Post(props) {
     setLiked(props.post.is_liked)
     setLikeCount(props.post.numberOfLikes)
     setCommentCount(props.post.numberOfComments)
+    if(props.post.time_start[0].type=="specific"){
+      if(props.post.time_start[0].date){
+        setStoryDate1(props.post.time_start[0].date)
+      }
+      else {
+      if(props.post.time_start[0].year)
+        setStoryDate1(props.post.time_start[0].year)
+      if(props.post.time_start[0].month)
+        setStoryDate1(props.post.time_start[0].month+"."+storyDate1)
+      if(props.post.time_start[0].day)
+        setStoryDate1(props.post.time_start[0].day+"."+storyDate1)
+      }
+    }
+    if(props.post.time_end[0].type=="specific"){
+      if(props.post.time_end[0].date){
+        setStoryDate2(props.post.time_end[0].date)
+      }
+      else {
+      if(props.post.time_end[0].year)
+        setStoryDate2(props.post.time_end[0].year)
+      if(props.post.time_end[0].month)
+        setStoryDate2(props.post.time_end[0].month+"."+storyDate2)
+      if(props.post.time_end[0].day)
+        setStoryDate2(props.post.time_end[0].day+"."+storyDate2)
+      }
+    }
     var postdata = { 'story_id': props.post.story_id }
     POST_SERVICE.GET_COMMENTS(postdata)
       .then(resp => {
@@ -257,11 +285,7 @@ export default function Post(props) {
             <Grid item columns={2} justifyContent="center" alignItems="center" spacing={3}>
               <Button>
                 <DateRange />
-                <Typography variant="h10"> {storyData
-                  ? storyData.time_start.substring(0, 14) +
-                  " / " +
-                  storyData.time_end.substring(0, 14)
-                  : " "} </Typography></Button></Grid>
+                <Typography variant="h10"> {storyDate1} - {storyDate2} </Typography></Button></Grid>
             <Grid item columns={2} alignItems="center" alignItems="center" spacing={3} >
               <Button onClick={handleOpenLocation} style={{ textTransform: 'none' }} >
                 {(storyData && storyData.locations && storyData.locations.length > 0)
