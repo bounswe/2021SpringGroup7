@@ -91,7 +91,6 @@ export default function Post(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [expandComment, setExpandComment] = useState(false);
-  const [expandSettings, setExpandSettings] = useState(false);
   const [storyData, setStoryData] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState("");
   const [storyDate1, setStoryDate1] = useState("");
@@ -245,6 +244,12 @@ export default function Post(props) {
   const handleSettings=()=>{
     setAnchor(null);
   }
+  const handleReport=()=>{
+    setAnchor(null);
+  }
+  const handleDelete=()=>{
+    setAnchor(null);
+  }
   const handleExpandSettings=(event)=>{
     setAnchor(event.currentTarget);
   };
@@ -301,7 +306,7 @@ export default function Post(props) {
               aria-controls={'primary-search-account-menu'}
               aria-haspopup="true"
               className={classes.button}
-              href="/Profile"
+              onClick={handleDelete}
               startIcon={<Delete />}
             >
               Delete Post
@@ -314,7 +319,7 @@ export default function Post(props) {
               aria-controls={'primary-search-account-menu'}
               aria-haspopup="true"
               className={classes.button}
-              href="/Profile"
+              onClick={handleReport}
               startIcon={<Report />}
             >
               Report Post
@@ -503,7 +508,7 @@ export default function Post(props) {
             {comments.length === 0? null : <>{comments.map((item, index) => {
               if (item) {
                 return (
-                  <Comment comment={item} index={index} />
+                  <Comment comment={item} storyUsername={props.post.owner_username} index={index} />
                 );
               }
             })}</>}

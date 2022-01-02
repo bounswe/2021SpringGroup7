@@ -11,12 +11,19 @@ import {
 } from "@material-ui/core";
 import POST_SERVICE from '../../services/post';
 import CloseIcon from "@material-ui/icons/Close";
+import Delete from "@material-ui/icons/Delete";
+import PushPinIcon from '@mui/icons-material/PushPin';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 export default function Comment(props) {
   const [expandReply, setExpandReply] = useState(false);
   const [comments, setComments] = useState([]);
   const [commentValue, setCommentValue] = useState("");
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
+  const [anchor, setAnchor] = useState(null);
+  const isMenuOpen = Boolean(anchor);
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -56,7 +63,66 @@ export default function Comment(props) {
   const handleReply = () => {
     setExpandReply(!expandReply);
   }
-
+  const handleExpandSettings=(event)=>{
+    setAnchor(event.currentTarget);
+  };
+  const handleSettings=()=>{
+    setAnchor(null);
+  }
+  const settingMenu = (
+    <Menu
+      elevation={5}
+      anchorEl={anchor}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
+      id={'primary-search-account-menu'}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={isMenuOpen}
+      onClose={handleSettings}
+    > 
+    {localStorage.getItem("username")==props.storyUsername? 
+    <><MenuItem >
+           <Button
+              size="small"
+              aria-label="account of current user"
+              aria-controls={'primary-search-account-menu'}
+              aria-haspopup="true"
+              startIcon={<Delete />}
+            >
+              Delete Comment
+            </Button>
+          
+      </MenuItem><MenuItem >
+           <Button
+              size="small"
+              aria-label="account of current user"
+              aria-controls={'primary-search-account-menu'}
+              aria-haspopup="true"
+              startIcon={<PushPinIcon />}
+            >
+              Pin Comment
+            </Button>
+          
+      </MenuItem></>:<MenuItem >
+           <Button
+              size="small"
+              aria-label="account of current user"
+              aria-controls={'primary-search-account-menu'}
+              aria-haspopup="true"
+              startIcon={<PushPinIcon />}
+            >
+              Pin Comment
+            </Button>
+          
+      </MenuItem>}
+            </Menu>
+  )
   const showAddComment = () => {
     return (
 
@@ -92,14 +158,18 @@ export default function Comment(props) {
       key={props.index}
       style={{ padding: "20px 20px", marginTop: 10 }}
     >
+      {settingMenu}
       <Grid container wrap="nowrap" spacing={2}>
         <Grid item>
           <Avatar alt={props.comment.username} src="" />
         </Grid>
+        
         <Grid justifyContent="left" item xs zeroMinWidth>
+        
           <h4 style={{ margin: 0, textAlign: "left" }}>
             {props.comment.username}
           </h4>
+          
           <p style={{ textAlign: "left" }}>{props.comment.text}</p>
           <p style={{ textAlign: "left", color: "gray" }}>
             {new Date(props.comment.date).toLocaleString('tr-TR')}
@@ -131,6 +201,7 @@ export default function Comment(props) {
               }
             />
         </Grid>
+        <Grid item><Button style={{ textAlign: "right" } } onClick={handleExpandSettings}><MoreVertIcon /></Button></Grid>
       </Grid>
       {comments.length===0? null :<>{comments.map((item, index) => {
         if (item) {
