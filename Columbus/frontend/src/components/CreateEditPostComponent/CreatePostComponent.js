@@ -361,7 +361,6 @@ export default function CreatePostDialog({
             label="Date Type"
             required
           >
-            <MenuItem value={"Century"}>Century</MenuItem>
             <MenuItem value={"Decade"}>Decade</MenuItem>
             <MenuItem value={"Year"}>Year</MenuItem>
             <MenuItem value={"Month"}>Month</MenuItem>
