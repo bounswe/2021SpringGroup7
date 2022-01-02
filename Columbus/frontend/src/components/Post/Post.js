@@ -89,6 +89,7 @@ export default function Post(props) {
   const [expandComment, setExpandComment] = useState(false);
 
   const [storyData, setStoryData] = useState(null);
+  const [profilePhoto, setProfilePhoto] = useState("");
   const [storyDate1, setStoryDate1] = useState("");
   const [storyDate2, setStoryDate2] = useState(null);
   const [curUser, setCurUser] = useState(false);
@@ -108,6 +109,9 @@ export default function Post(props) {
     setLiked(props.post.is_liked)
     setLikeCount(props.post.numberOfLikes)
     setCommentCount(props.post.numberOfComments)
+    if(props.post.photo_url!=null){
+      setProfilePhoto(props.post.photo_url)
+    }
     if(props.post.time_start[0].type=="specific"){
       if(props.post.time_start[0].date){
         setStoryDate1(props.post.time_start[0].date)
@@ -240,7 +244,7 @@ export default function Post(props) {
         <Grid container wrap="nowrap" spacing={2}>
           <Grid item>
             <Link href="/">
-              <Avatar alt="AT TA" src="" />
+              <Avatar alt="AT TA" src={profilePhoto} />
             </Link>
           </Grid>
           <Grid justifyContent="left" item xs zeroMinWidth>
@@ -273,7 +277,7 @@ export default function Post(props) {
           >
             <Grid container alignItems="center" spacing={2}>
               <Grid item>
-                <Avatar aria-label="recipe" className={classes.avatar}>
+                <Avatar aria-label="recipe" className={classes.avatar} src={ profilePhoto}>
                   {storyData
                     ? storyData.owner_username?.substring(0, 2).toUpperCase()
                     : "?"}
