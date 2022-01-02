@@ -40,8 +40,8 @@ export default function CreatePostDialog({
   topicInit = "",
   storyInit = "",
   tagsInit = [],
-  startDateInit = {},
-  endDateInit = {},
+  startDateInit = "",
+  endDateInit = "",
   setSnackBarMessage,
   setOpenSnackBar,
 }) {
