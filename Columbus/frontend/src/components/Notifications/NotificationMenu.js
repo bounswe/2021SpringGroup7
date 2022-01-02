@@ -259,38 +259,3 @@ const renderNotifications = (
   }
 
 }
-
-
-
-
-
-/*
- {!infoLoading ? <>{tabValue === "activity" ? 
-                                <>
-                                 {notifications.map((notification) => (
-                                    <>
-                                    <Divider textAlign="right"></Divider>
-                                      <ListItem key={notification}>
-                                        <Notification  notification={notification}></Notification>
-                                      </ListItem>
-                                    </>
-                                  ))}
-                                </> 
-                                : 
-                                <>
-                                 {followRequests.map((request) => (
-                                    <>
-                                    <Divider textAlign="right"></Divider>
-                                      <ListItem key={request}>
-                                        <Notification  notification={request}></Notification>
-                                      </ListItem>
-                                    </>
-                                  ))}
-                                </>}</>
-                      : <CircularProgress></CircularProgress>
-      }
-
-<Divider textAlign="right">{(new Date(notification['date'])).toLocaleString()}</Divider>
-*/
-
-
