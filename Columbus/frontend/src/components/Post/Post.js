@@ -260,7 +260,7 @@ export default function Post(props) {
         <Grid container wrap="nowrap" spacing={2}>
           <Grid item>
             <Link href="/">
-              <Avatar alt="AT TA" src={profilePhoto} />
+              <Avatar alt="AT TA" src={localStorage.getItem("profilePhoto")} />
             </Link>
           </Grid>
           <Grid justifyContent="left" item xs zeroMinWidth>
@@ -508,7 +508,7 @@ export default function Post(props) {
             {comments.length === 0? null : <>{comments.map((item, index) => {
               if (item) {
                 return (
-                  <Comment comment={item} storyUsername={props.post.owner_username} profilePhoto = {profilePhoto} index={index} />
+                  <Comment comment={item} storyUsername={props.post.owner_username} profilePhoto = {localStorage.getItem("profilePhoto")} index={index} />
                 );
               }
             })}</>}
