@@ -19,6 +19,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 export default function Comment(props) {
   const [expandReply, setExpandReply] = useState(false);
   const [comments, setComments] = useState([]);
+  const [deleted, setDeleted] = useState(false);
   const [commentValue, setCommentValue] = useState("");
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
@@ -70,6 +71,19 @@ export default function Comment(props) {
   const handleSettings=()=>{
     setAnchor(null);
   }
+  const handleDelete=()=>{
+    POST_SERVICE.COMMENT_DELETE({comment_id:props.comment.id })
+    .then((response)=>{
+      setSnackBarMessage("Comment deleted!")
+      setOpenSnackBar(true)
+      setDeleted(true)
+    })
+    .catch((error)=>{
+      setSnackBarMessage("Comment can not deleted!")
+      setOpenSnackBar(true)
+    })
+    setAnchor(null);
+  }
   const settingMenu = (
     <Menu
       elevation={5}
@@ -94,6 +108,7 @@ export default function Comment(props) {
               aria-label="account of current user"
               aria-controls={'primary-search-account-menu'}
               aria-haspopup="true"
+              onClick={handleDelete}
               startIcon={<Delete />}
             >
               Delete Comment
@@ -153,7 +168,30 @@ export default function Comment(props) {
       </Paper>
     );
   };
-
+  if(deleted){
+    return (<Snackbar
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "left",
+      }}
+      open={openSnackBar}
+      autoHideDuration={3000}
+      onClose={handleClose}
+      message={snackBarMessage}
+      action={
+        <React.Fragment>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleClose}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </React.Fragment>
+      }
+    />);
+  }
   return (
     <Paper
       key={props.index}

@@ -32,7 +32,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AddCommentIcon from "@material-ui/icons/AddComment";
 import CloseIcon from "@material-ui/icons/Close";
 import ArrowForward from "@material-ui/icons/ArrowForward";
-import Add from "@material-ui/icons/Add";
+import Edit from "@material-ui/icons/Edit";
 import Comment from "../Comment/Comment"
 import LocationDialog from '../Dialogs/PostLocationDialog/PostLocationDialog'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -90,6 +90,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Post(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
+  const [deleted, setDeleted] = useState(false);
   const [expandComment, setExpandComment] = useState(false);
   const [storyData, setStoryData] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState("");
@@ -248,6 +249,19 @@ export default function Post(props) {
     setAnchor(null);
   }
   const handleDelete=()=>{
+    POST_SERVICE.POST_DELETE({story_id:storyData.story_id })
+    .then((response)=>{
+      setSnackBarMessage("Post deleted!")
+      setOpenSnackBar(true)
+      setDeleted(true)
+    })
+    .catch((error)=>{
+      setSnackBarMessage("Post can not deleted!")
+      setOpenSnackBar(true)
+    })
+    setAnchor(null);
+  }
+  const handleEdit=()=>{
     setAnchor(null);
   }
   const handleExpandSettings=(event)=>{
@@ -299,7 +313,7 @@ export default function Post(props) {
       open={isMenuOpen}
       onClose={handleSettings}
     > {localStorage.getItem('username')==props.post.owner_username?
-              <MenuItem >
+             <> <MenuItem >
            <Button
               size="small"
               aria-label="account of current user"
@@ -312,7 +326,20 @@ export default function Post(props) {
               Delete Post
             </Button>
           
-      </MenuItem>:<MenuItem >
+      </MenuItem><MenuItem >
+           <Button
+              size="small"
+              aria-label="account of current user"
+              aria-controls={'primary-search-account-menu'}
+              aria-haspopup="true"
+              className={classes.button}
+              onClick={handleEdit}
+              startIcon={<Edit />}
+            >
+              Edit Post
+            </Button>
+          
+      </MenuItem></>:<MenuItem >
            <Button
               size="small"
               aria-label="account of current user"
@@ -328,6 +355,30 @@ export default function Post(props) {
       </MenuItem>}
             </Menu>
   )
+  if(deleted){
+    return (<Snackbar
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "left",
+      }}
+      open={openSnackBar}
+      autoHideDuration={3000}
+      onClose={handleClose}
+      message={snackBarMessage}
+      action={
+        <React.Fragment>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleClose}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </React.Fragment>
+      }
+    />);
+  }
   return (
     <Card className={classes.root} elevation={1}>
       <LocationDialog open={openLocation} handleClose={handleCloseLocation} locations={storyData ? storyData.locations : null} />
