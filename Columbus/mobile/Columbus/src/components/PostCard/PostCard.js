@@ -65,6 +65,7 @@ const PostCard = props => {
             data={{
               owner_username: postData.owner_username,
               photo_url: postData.photo_url,
+              user_id:postData.user_id
             }}
           />
           <Heading size="md" ml="-1">
