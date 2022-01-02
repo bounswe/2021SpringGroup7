@@ -349,7 +349,7 @@ export default function CreatePostDialog({
           </Select>
         </FormControl>
         
-        {dateType=="Start-End"? (<MuiPickersUtilsProvider utils={DateFnsUtils}>
+        {dateType.substring(0,9)=="Start-End"? (<MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Stack spacing={2} direction='row' justifyContent='space-around'>
           <Box>
           <KeyboardDatePicker
