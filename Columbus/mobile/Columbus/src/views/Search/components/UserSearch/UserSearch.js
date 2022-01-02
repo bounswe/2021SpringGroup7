@@ -7,6 +7,7 @@ import {useAuth} from '../../../../context/AuthContext';
 import {useMutation} from 'react-query';
 import getInitials from '../../../../utils/getInitial';
 import {styles} from './UserSearch.style';
+import PageSpinner from '../../../../components/PageSpinner/PageSpinner';
 
 const UserSearch = props => {
   const {user} = useAuth();
@@ -46,7 +47,7 @@ const UserSearch = props => {
 
   const handleOpenProfile = (user_id, username) => {
     if (user && user.userInfo.user_id === user_id) {
-      return props.navigation.push('ProfilePage');
+      return props.navigation.push('Profile');
     } else {
       return props.navigation.push('OtherProfiles', {
         userId: user_id,
@@ -75,8 +76,11 @@ const UserSearch = props => {
         </Button>
       </FormControl>
       <ScrollView style={{marginTop: 16}}>
-        {searchResult?.length === 0 && <Text>User is not found!</Text>}
+        {searchResult?.length === 0 && !isLoading && (
+          <Text>User is not found!</Text>
+        )}
         {searchResult?.length > 0 &&
+          !isLoading &&
           searchResult.map(user => {
             return (
               <TouchableOpacity
@@ -87,7 +91,7 @@ const UserSearch = props => {
                   alignSelf="center"
                   size="lg"
                   source={{
-                    uri: '',
+                    uri: user.photo_url ? user.photo_url : '',
                   }}>
                   {`${getInitials(user.username)}`}
                 </Avatar>
