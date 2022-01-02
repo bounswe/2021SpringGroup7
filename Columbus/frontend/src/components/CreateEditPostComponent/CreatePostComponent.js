@@ -40,8 +40,8 @@ export default function CreatePostDialog({
   topicInit = "",
   storyInit = "",
   tagsInit = [],
-  startDateInit = null,
-  endDateInit = null,
+  startDateInit = {},
+  endDateInit = {},
   setSnackBarMessage,
   setOpenSnackBar,
 }) {
@@ -66,22 +66,24 @@ export default function CreatePostDialog({
     onPlaceSelected: (place) => console.log(place),
   });
   const handleDateTypeChange = (date) => {
-    if(date.target.value=="Day"){
+    if(date.target.value=="Day" || date.target.value=="Start-End Day"){
       setDateTypeList(["year","month","day"])
     }
-    else if(date.target.value == "Month"){
+    else if(date.target.value == "Month" || date.target.value=="Start-End Month"){
       setDateTypeList(["year","month"])
     }
-    else if(date.target.value=="Year")
+    else if(date.target.value=="Year" || date.target.value=="Start-End Year")
       setDateTypeList(["year"])
     setDateType(date.target.value);
       
   };
   const handleDateChange1 = (date) => {
-    setStartDate(date);
+    const var1 ={type:"specific",year: date.year(),month: date.month(),day: date.day(),hour: null,minute: null};
+    setStartDate(var1);
   };
   const handleDateChange2 = (date) => {
-    setEndDate(date);
+    const var1 = {type:"specific",year: date.year(),month: date.month(),day: date.day(),hour: null,minute: null};
+    setEndDate(var1);
   };
 
   const handleDeleteTag = (tag) => () => {
@@ -148,8 +150,8 @@ export default function CreatePostDialog({
       tags: tags.map((tag) => tag.title),
       username: localStorage.getItem("username"),
       multimedia: imgUrl,
-      time_start: startDate.toISOString().substring(0, 10),
-      time_end: endDate.toISOString().substring(0, 10),
+      time_start: startDate,
+      time_end: endDate,
       location: locationType==="Virtual" ? locations.map((location) => ({"location": location.locationName, "latitude": 0, "longitude": 0, "type": locationType})) : locations.map((location) => ({"location": location.locationName, "latitude": location.geolocation.latitude, "longitude": location.geolocation.longitude, "type": locationType})),
     };
 
@@ -341,7 +343,9 @@ export default function CreatePostDialog({
             <MenuItem value={"Year"}>Year</MenuItem>
             <MenuItem value={"Month"}>Month</MenuItem>
             <MenuItem value={"Day"}>Day</MenuItem>
-            <MenuItem value={"Start-End"}>Start-End</MenuItem>
+            <MenuItem value={"Start-End Year"}>Start-End Year</MenuItem>
+            <MenuItem value={"Start-End Month"}>Start-End Month</MenuItem>
+            <MenuItem value={"Start-End Day"}>Start-End Day</MenuItem>
           </Select>
         </FormControl>
         
