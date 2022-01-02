@@ -34,6 +34,20 @@ export default function SettingsDialog(props) {
   const [message, setMessage] = useState('');
   const [openMessage, setOpenMessage] = useState(false);
 
+
+  useEffect(() => {
+
+      if(curProfileInfo['public']) 
+      {
+        setIsPublic(true);
+      }
+      else 
+      {
+        setIsPublic(false);
+      }
+
+  }, []);
+
   const handleCloseMessage = () => {
 		setOpenMessage(false);
         onClose();
@@ -70,7 +84,8 @@ export default function SettingsDialog(props) {
                                     'public'    : isPublic
                                   })
         .then((res) => {
-            setMessage("You have successfully updated your profile visibility mode!");
+            const mode = isPublic ? " Public":  " Private"
+            setMessage("You have successfully updated your profile visibility mode to" + mode +"!");
             setOpenMessage(true);
         })
         .catch((error) => {
@@ -104,9 +119,11 @@ export default function SettingsDialog(props) {
                       <InputLabel id="demo-simple-select-helper-label">Profile Visibility Options</InputLabel>
                       <Select
                           labelId="demo-simple-select-helper-label"
+                          defaultValue={curProfileInfo['public']}
                           value={isPublic}
                           label="Profile Visibility Options"
                           onChange={handleProfileVisibility}
+                         
                       >
                       <MenuItem value={true}>Public</MenuItem>
                       <MenuItem value={false}>Private</MenuItem>
