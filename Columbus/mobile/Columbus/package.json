@@ -1,0 +1,59 @@
+{
+  "name": "Columbus",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "source ~/.bash_profile && react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.15.11",
+    "@react-native-community/cli-platform-android": "^6.3.0",
+    "@react-native-community/datetimepicker": "^4.0.1",
+    "@react-native-community/masked-view": "^0.1.11",
+    "@react-native-community/viewpager": "^5.0.11",
+    "@react-navigation/bottom-tabs": "^6.0.9",
+    "@react-navigation/native": "^6.0.6",
+    "@react-navigation/stack": "^6.0.11",
+    "aws-sdk": "^2.1046.0",
+    "axios": "^0.24.0",
+    "base64-arraybuffer": "^1.0.1",
+    "moment": "^2.29.1",
+    "native-base": "^3.2.2",
+    "react": "17.0.2",
+    "react-native": "0.66.2",
+    "react-native-gesture-handler": "^1.10.3",
+    "react-native-image-picker": "^4.5.0",
+    "react-native-maps": "^0.29.4",
+    "react-native-pager-view": "^5.4.9",
+    "react-native-reanimated": "^2.2.4",
+    "react-native-safe-area-context": "^3.3.2",
+    "react-native-screens": "^3.9.0",
+    "react-native-snap-carousel": "^3.9.1",
+    "react-native-svg": "^12.1.1",
+    "react-native-tab-view": "^3.1.1",
+    "react-native-tags-input": "^1.0.10",
+    "react-native-uuid": "^2.0.1",
+    "react-native-vector-icons": "^9.0.0",
+    "react-navigation": "^4.4.4",
+    "react-query": "^3.33.5",
+    "rn-fetch-blob": "^0.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/runtime": "^7.16.3",
+    "@react-native-community/eslint-config": "^3.0.1",
+    "babel-jest": "^27.3.1",
+    "eslint": "^8.2.0",
+    "jest": "^27.3.1",
+    "metro-react-native-babel-preset": "^0.66.2",
+    "react-native-svg-transformer": "^0.14.3",
+    "react-test-renderer": "17.0.2"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
