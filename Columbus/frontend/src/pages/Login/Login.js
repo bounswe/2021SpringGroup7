@@ -50,6 +50,7 @@ export default function Login({setAuthenticated}){
             localStorage.setItem('jwtToken', 'TOKEN ' + response.data.return.token);
             localStorage.setItem('username', username);
             localStorage.setItem('userid',response.data.return.user_id);
+            localStorage.setItem('photo_url',response.data.return.photo_url);
             setAuthenticated(true)
         })
         .catch((error) => {
