@@ -32,7 +32,6 @@ const OtherProfiles = ({navigation, route}) => {
   const [followButtonLoading, setFollowButtonLoading] = useState(false);
   const [showCustomModal, setShowCustomModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (

@@ -85,4 +85,11 @@ export const SERVICE = {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
+  getLikes: async ({params, token}) => {
+    const uri= await "/user/get_likes/"+params+'/'
+    return await API_INSTANCE.get(uri, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
 };

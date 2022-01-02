@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Text, View} from 'native-base';
 
 function PostTimeInfo(props) {
+  console.log(`props`, props)
   return (
     <Text
         fontSize="xs"
@@ -14,7 +15,7 @@ function PostTimeInfo(props) {
         fontWeight="500"
         ml="-0.5"
         mt="-1">
-        {props.data}
+        {props.data.date}
       </Text>
   );
 }

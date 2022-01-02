@@ -46,6 +46,11 @@ const HomeStack = () => (
     />
     <Stack.Screen
       options={{title: 'Profile'}}
+      name="OtherProfiles"
+      component={OtherProfiles}
+    />
+      <Stack.Screen
+      options={{title: 'Profile'}}
       name="Profile"
       component={Profile}
     />
