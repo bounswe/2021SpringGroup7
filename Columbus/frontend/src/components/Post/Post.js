@@ -18,11 +18,15 @@ import {
   Snackbar,
   Chip,
 } from "@material-ui/core";
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+import Delete from '@material-ui/icons/Delete';
 import clsx from "clsx";
 import { red } from "@material-ui/core/colors";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import DateRange from "@material-ui/icons/DateRange";
 import LocationOn from "@material-ui/icons/LocationOn";
+import Report from "@material-ui/icons/Report";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AddCommentIcon from "@material-ui/icons/AddComment";
@@ -87,11 +91,13 @@ export default function Post(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [expandComment, setExpandComment] = useState(false);
-
+  const [expandSettings, setExpandSettings] = useState(false);
   const [storyData, setStoryData] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState("");
   const [storyDate1, setStoryDate1] = useState("");
   const [storyDate2, setStoryDate2] = useState(null);
+  const [anchor, setAnchor] = useState(null);
+  const isMenuOpen = Boolean(anchor);
   const [curUser, setCurUser] = useState(false);
   const [commentValue, setCommentValue] = useState("");
   const [comments, setComments] = useState([]);
@@ -236,7 +242,12 @@ export default function Post(props) {
     setCommentValue("");
   }
   };
-
+  const handleSettings=()=>{
+    setAnchor(null);
+  }
+  const handleExpandSettings=(event)=>{
+    setAnchor(event.currentTarget);
+  };
   const showAddComment = () => {
     return (
 
@@ -266,10 +277,56 @@ export default function Post(props) {
       </Paper>
     );
   };
-
+  const settingMenu = (
+    <Menu
+      elevation={5}
+      anchorEl={anchor}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
+      id={'primary-search-account-menu'}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={isMenuOpen}
+      onClose={handleSettings}
+    > {localStorage.getItem('username')==props.post.owner_username?
+              <MenuItem >
+           <Button
+              size="small"
+              aria-label="account of current user"
+              aria-controls={'primary-search-account-menu'}
+              aria-haspopup="true"
+              className={classes.button}
+              href="/Profile"
+              startIcon={<Delete />}
+            >
+              Delete Post
+            </Button>
+          
+      </MenuItem>:<MenuItem >
+           <Button
+              size="small"
+              aria-label="account of current user"
+              aria-controls={'primary-search-account-menu'}
+              aria-haspopup="true"
+              className={classes.button}
+              href="/Profile"
+              startIcon={<Report />}
+            >
+              Report Post
+            </Button>
+          
+      </MenuItem>}
+            </Menu>
+  )
   return (
     <Card className={classes.root} elevation={1}>
       <LocationDialog open={openLocation} handleClose={handleCloseLocation} locations={storyData ? storyData.locations : null} />
+      {settingMenu}
       <CardHeader
         avatar={
           <Link
@@ -290,9 +347,12 @@ export default function Post(props) {
           </Link>
         }
         action={
-          <IconButton aria-label="settings">
+          <IconButton aria-label="settings" onClick={handleExpandSettings}>
             <MoreVertIcon />
+            
           </IconButton>
+          
+          
         }
         title={<Typography variant="h5" >{storyData
           ? storyData.title
