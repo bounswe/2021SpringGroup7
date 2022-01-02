@@ -197,35 +197,41 @@ export default function Post(props) {
     setOpenLocation(false);
   };
 
-
+  const setTempCom = (data) =>{
+    const temp = comments;
+    temp.push(data);
+    setComments(temp);
+  }
   const handleComment = () => {
     setExpandComment(true);
     if(commentValue==""){
       setSnackBarMessage("You should write a comment")
       setOpenSnackBar(true)}
     else{var today=new Date();
-    const data = {
-      text: commentValue,
-      username: localStorage.getItem('username'),
-      story_id : storyData.story_id,
-      date: today.toISOString(),
-      parent_comment_id: 0,
-      child_comments: []
-    };
+      
     POST_SERVICE.POST_COMMENT({ text: commentValue, username: localStorage.getItem('username'), story_id: storyData.story_id, parent_comment_id: 0 })
       .then((response) => {
-        setCommentCount(commentCount + 1)
         setSnackBarMessage("Your comment is added!");
+        setCommentCount(commentCount + 1)
         setOpenSnackBar(true);
+        var idi = response.data.return
+        const data = {
+          text: commentValue,
+          username: localStorage.getItem('username'),
+          story_id : storyData.story_id,
+          date: today.toISOString(),
+          parent_comment_id: 0,
+          id:idi,
+          child_comments: []
+        };
+        setTempCom(data)
+        
       }).catch((error) => {
         setSnackBarMessage("Comment can not added!");
         setOpenSnackBar(true);
       });
-
-    const temp = comments;
-    temp.push(data);
-    setComments(temp);
-    setCommentValue("");}
+    setCommentValue("");
+  }
   };
 
   const showAddComment = () => {
@@ -389,7 +395,7 @@ export default function Post(props) {
                 horizontal: "left",
               }}
               open={openSnackBar}
-              autoHideDuration={6000}
+              autoHideDuration={3000}
               onClose={handleClose}
               message={snackBarMessage}
               action={
