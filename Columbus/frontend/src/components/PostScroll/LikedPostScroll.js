@@ -60,7 +60,6 @@ function LikedPostScroll({ userToBeViewed, userThatViews, ...props}) {
   {
       curPosts.length === 0 ? <Box className={classes.emptyBody}>
                                 <Typography>You have not liked any stories yet.</Typography>
-                              <NavLink to="/Home">Explore Stories</NavLink> 
                           </Box>
                         : <>
                               {curPosts.map((item) => {
