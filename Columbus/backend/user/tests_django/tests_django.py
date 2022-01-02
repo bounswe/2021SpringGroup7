@@ -1,9 +1,8 @@
 from django.test import TestCase
-from .models import *
+from ..models import *
 from django.contrib.auth.models import User
 import ast
-from .views import *
-import requests as rq
+from ..views import *
 
 class MockRequest:
     def __init__(self, method, body, user=None,uri="ec2-35"):
@@ -19,20 +18,20 @@ class ModelTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         story.save()
-        story_missing_numbers = Story.objects.create(title="title1", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01")
+        story_missing_numbers = Story.objects.create(title="title1", text="", user_id=user)
         story_missing_numbers.save()
-        story_missing_time_end = Story.objects.create(title="title2", text="", multimedia="", user_id=user, time_start="2020-01-01")
+        story_missing_time_end = Story.objects.create(title="title2", text="", user_id=user)
         story_missing_time_end.save()
-        story_missing_text = Story.objects.create(title="title3", multimedia="", user_id=user, time_start="2020-01-01")
+        story_missing_text = Story.objects.create(title="title3", user_id=user)
         story_missing_text.save()
         tag = Tag.objects.create(story_id=story, tag="travel")
         tag.id = 3
         tag.save()
         location = Location(story_id=story, location="location")
         location.save()
-        location_full = Location(story_id=story, location="location2", latitude=15, longitude=20, type="real")
+        location_full = Location(story_id=story, location="location2", latitude=15, longitude=20, type="Real")
         location_full.save()
         report = Report(story_id=story, reporter_id=user, report="report")
         report.save()
@@ -40,6 +39,22 @@ class ModelTestCase(TestCase):
         comment.save()
         profile = Profile(user_id=user)
         profile.save()
+        multimedia = Multimedia.objects.create(story_id=story, path="multimedia.jpg")
+        multimedia.id = 5
+        multimedia.save()
+        multimedia2 = Multimedia.objects.create(story_id=story, path="multimedia2.jpg")
+        multimedia2.id = 6
+        multimedia2.save()
+        date = Date.objects.create(story_id=story, date=19, type="century", start_end_type="start")
+        date.save()
+        date2 = Date.objects.create(story_id=story, date=198, type="decade", start_end_type="start")
+        date2.save()
+        date3 = Date.objects.create(story_id=story, year=1999, type="specific", start_end_type="start")
+        date3.save()
+        date4 = Date.objects.create(story_id=story, year=1966, month=3, day=2, type="specific", start_end_type="end")
+        date4.save()
+        date5 = Date.objects.create(story_id=story, year=1966, month=3, day=1, hour=15, minute=3, type="specific", start_end_type="start")
+        date5.save()
 
     def test_user_email_check(self):
         user = User.objects.get(username="user_name")
@@ -49,10 +64,6 @@ class ModelTestCase(TestCase):
         story = Story.objects.get(title="title1")
         self.assertEqual(story.numberOfLikes, 0)
         self.assertEqual(story.numberOfComments, 0)
-
-    def test_missing_date_check(self):
-        story = Story.objects.get(title="title2")
-        self.assertEqual(story.time_end, None)
 
     def test_missing_text_check(self):
         story = Story.objects.get(title="title3")
@@ -77,7 +88,7 @@ class ModelTestCase(TestCase):
         location = Location.objects.get(location="location2")
         self.assertEqual(location.latitude, 15)
         self.assertEqual(location.longitude, 20)
-        self.assertEqual(location.type, "real")
+        self.assertEqual(location.type, "Real")
 
     def test_report_check(self):
         report = Report.objects.get(report="report")
@@ -92,18 +103,62 @@ class ModelTestCase(TestCase):
         self.assertEqual(profile.photo_url, None)
         self.assertEqual(profile.biography, None)
         self.assertEqual(profile.birthday, None)
-        self.assertEqual(profile.location, None)
+
+    def test_multimedia_check(self):
+        multimedia = Multimedia.objects.get(id=5)
+        self.assertEqual(multimedia.path, 'multimedia.jpg')
+
+    def test_two_multimedia_check(self):
+        multimedia = Multimedia.objects.get(id=5)
+        multimedia2 = Multimedia.objects.get(id=6)
+        self.assertEqual(multimedia.story_id, multimedia2.story_id)
+
+    def test_date_century(self):
+        date = Date.objects.get(type="century")
+        self.assertEqual(date.date, 19)
+
+    def test_date_decade(self):
+        date = Date.objects.get(type="decade")
+        self.assertEqual(date.date, 198)
+        self.assertEqual(date.start_end_type, "start")
+
+    def test_date_specific_general(self):
+        date = Date.objects.get(year=1999)
+        self.assertEqual(date.type, "specific")
+        self.assertEqual(date.month, None)
+        self.assertEqual(date.hour, None)
+
+    def test_date_specific_end(self):
+        date = Date.objects.get(day=2)
+        self.assertEqual(date.type, "specific")
+        self.assertEqual(date.start_end_type, "end")
+        self.assertEqual(date.year, 1966)
+        self.assertEqual(date.month, 3)
+        self.assertEqual(date.minute, None)
+
+    def test_date_specific_end(self):
+        date = Date.objects.get(minute=3)
+        self.assertEqual(date.type, "specific")
+
+    def test_date_specific_story(self):
+        date = Date.objects.get(year=1999)
+        date2 = Date.objects.get(day=2)
+        self.assertEqual(date.type, "specific")
+        self.assertEqual(date2.type, "specific")
+        self.assertEqual(date.start_end_type, "start")
+        self.assertEqual(date2.start_end_type, "end")
+        self.assertEqual(date.story_id, date2.story_id)
 
 
 class HomePageTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         story.save()
         user2 = User.objects.create(username="user_name2", email="user_email2@gmail.com", password="123456", first_name="umut", last_name="umut")
         user2.save()
-        story2 = Story.objects.create(title="title2", text="", multimedia="", user_id=user2, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story2 = Story.objects.create(title="title2", text="", user_id=user2, numberOfLikes=0, numberOfComments=0)
         story2.save()
         following = Following(user_id=user, follow=user2)
         following.save()
@@ -140,9 +195,9 @@ class ProfileInformationTestCase(TestCase):
         self.user_id=user.id
         self.user=user
         self.user_temp = temp_user
-        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05',location=[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}])
-        story_user = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
-        story_temp = Story.objects.create(title="title", text="", multimedia="", user_id=temp_user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
+        story_user = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
+        story_temp = Story.objects.create(title="title", text="", user_id=temp_user, numberOfLikes=0, numberOfComments=0)
         self.story_temp=story_temp
         self.story_user=story_user
         user.save()
@@ -151,14 +206,14 @@ class ProfileInformationTestCase(TestCase):
         request = MockRequest(method='GET',body={},user=self.user)
         get_profile_info_api = profile.GetProfileInfo()
         response = get_profile_info_api.get(request=request,user_id=self.user_id).content
-        expected_response = {'response': {'first_name': 'hamza', 'last_name': 'hamza', 'birthday': '2021-05-05', 'location':[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}], 'photo_url': 'temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'followers': [], 'followings': [], 'biography': 'temp likes being cool','user_id':self.user_id,'public':True}}
+        expected_response = {'response': {'first_name': 'hamza', 'last_name': 'hamza', 'birthday': '2021-05-05', 'photo_url': 'temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'followers': [], 'followings': [], 'biography': 'temp likes being cool','user_id':self.user_id,'public':True}}
         self.assertEqual(json.loads(response.decode('utf-8')),expected_response)
 
     def test_set_profile_information(self):
-        request = MockRequest(method='POST', body={'user_id':self.user_id,'first_name': 'changed_hamza', 'last_name': 'changed_hamza','location':[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}], 'birthday': '2021-06-06','photo_url': 'changed_temp.png','biography': 'changed temp likes being cool','public':False})
+        request = MockRequest(method='POST', body={'user_id':self.user_id,'first_name': 'changed_hamza', 'last_name': 'changed_hamza', 'birthday': '2021-06-06','photo_url': 'changed_temp.png','biography': 'changed temp likes being cool','public':False})
         set_profile_info_api = profile.SetProfileInfo()
         response = set_profile_info_api.post(request=request).content
-        expected_response = {'response': {'first_name': 'changed_hamza', 'last_name': 'changed_hamza', 'birthday': '2021-06-06', 'location': [{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}], 'photo_url': 'changed_temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'biography': 'changed temp likes being cool','user_id':self.user_id,'public':False}}
+        expected_response = {'response': {'first_name': 'changed_hamza', 'last_name': 'changed_hamza', 'birthday': '2021-06-06','photo_url': 'changed_temp.png', 'username': 'user_name', 'email': 'user_email@gmail.com', 'biography': 'changed temp likes being cool','user_id':self.user_id,'public':False}}
 
         self.assertEqual(json.loads(response.decode('utf-8')), expected_response)
 
@@ -177,7 +232,7 @@ class ProfileInformationTestCase(TestCase):
         response.pop('createDateTime')
         response.pop('lastUpdate')
         response = {'return':[response]}
-        expected_response = {'return': [{'title': 'title', 'text': '', 'multimedia': '', 'user_id': self.user_id, 'time_start': '2020-01-01', 'time_end': '2021-01-01', 'numberOfLikes': 0, 'numberOfComments': 0, 'owner_username': self.user.username, 'is_liked': False, 'story_id': self.story_user.id, 'locations': [], 'tags': [], 'photo_url': 'temp.png'}]}
+        expected_response = {'return': [{'title': 'title', 'text': '', 'multimedias': [], 'user_id': self.user_id, 'time_start': [], 'time_end': [], 'numberOfLikes': 0, 'numberOfComments': 0, 'owner_username': self.user.username, 'is_liked': False, 'story_id': self.story_user.id, 'locations': [], 'tags': [], 'photo_url': 'temp.png'}]}
         self.assertEqual(response,expected_response)
 
     def test_get_liked_posts(self):
@@ -194,7 +249,7 @@ class ProfileInformationTestCase(TestCase):
         response.pop('createDateTime')
         response.pop('lastUpdate')
         response = {'return':[response]}
-        expected_response = {'return': [{'title': 'title', 'text': '', 'multimedia': '', 'user_id': self.user_temp.id, 'time_start': '2020-01-01', 'time_end': '2021-01-01', 'numberOfLikes': 1, 'numberOfComments': 0, 'owner_username': 'temp_name', 'is_liked': True, 'story_id': self.story_temp.id, 'locations': [], 'tags': [], 'photo_url': None}]}
+        expected_response = {'return': [{'title': 'title', 'text': '', 'user_id': self.user_temp.id, 'multimedias': [], 'numberOfLikes': 1, 'numberOfComments': 0, 'owner_username': 'temp_name', 'is_liked': True, 'story_id': self.story_temp.id, 'locations': [], 'tags': [], 'photo_url': None, 'time_start': [], 'time_end': []}]}
 
         self.assertEqual(response,expected_response)
 
@@ -202,7 +257,7 @@ class PostEditTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         story.save()
         story.id = 1
         story.save()
@@ -225,7 +280,7 @@ class PostDeleteTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         story.save()
         story.id = 1
         story.save()
@@ -246,7 +301,7 @@ class CommentCreateTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         story.save()
         story.id = 1
         story.save()
@@ -255,7 +310,7 @@ class CommentCreateTestCase(TestCase):
         request = MockRequest(method='POST', body={"username": "user_name", "story_id":1 , "text" : "new text","parent_comment_id":None})
         comment_create_api = comment.CommentCreate()
         response = comment_create_api.post(request=request).content
-        self.assertEqual(json.loads(response.decode('utf-8'))["return"], 1)
+        self.assertEqual(type(json.loads(response.decode('utf-8'))["return"]), int)
 
     def test_not_found_story_for_comment(self):
         request = MockRequest(method='POST', body={"username": "user_name", "story_id": 10, "text": "new text","parent_comment_id":None})
@@ -267,7 +322,7 @@ class CommentUpdateTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         story.save()
         story.id = 1
         story.save()
@@ -291,7 +346,7 @@ class CommentDeleteTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
         story.save()
         story.id = 1
         story.save()
@@ -316,8 +371,8 @@ class GetCommentTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
-        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05',location=[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}])
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
+        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
         story.save()
         story.id = 1
         story.save()
@@ -338,19 +393,19 @@ class PostCreateTestCase(TestCase):
         user.save()
 
     def test_post_create(self):
-        request = MockRequest(method='POST', body={"title":"title", "text":"", "multimedia":"", "username":"user_name", "time_start":"2020-01-01",
-                                                   "time_end":"2021-01-01", "numberOfLikes":0, "numberOfComments":0,
+        request = MockRequest(method='POST', body={"title":"title", "text":"", "multimedia":[""], "username":"user_name", "time_start":{"year": 1900,"type": "specific"},
+                                                   "time_end":{"year": 1901,"type": "specific"}, "numberOfLikes":0, "numberOfComments":0,
                                                    "location": [{'location':"bogazici", 'latitude':10, 'longitude':11, 'type':"school"}] })
         post_create_api = post.PostCreate()
         response = post_create_api.post(request=request).content
-        story = Story.objects.get(time_start="2020-01-01")
+        story = Story.objects.get(title="title")
         self.assertEqual(json.loads(response.decode('utf-8'))["return"], story.id)
 
     def test_post_create_check(self):
         request = MockRequest(method='POST',
-                              body={"title": "title", "text": "", "multimedia": "", "username": "user_name",
-                                    "time_start": "2020-01-01",
-                                    "time_end": "2021-01-01", "numberOfLikes": 0, "numberOfComments": 0,
+                              body={"title": "title", "text": "", "multimedia": [""], "username": "user_name",
+                                    "time_start": {"year": 1900,"type": "specific"},
+                                    "time_end": {"year": 1901,"type": "specific"}, "numberOfLikes": 0, "numberOfComments": 0,
                                     "location": [
                                         {'location': "bogazici",'longitude': 11, 'type': "school"}]})
         post_create_api = post.PostCreate()
@@ -362,8 +417,8 @@ class LikePostTestCase(TestCase):
         user = User.objects.create(username="user_name1", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
         user.save()
         self.user_id=user.id
-        story = Story.objects.create(title="title", text="", multimedia="", user_id=user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
-        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05',location=[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}])
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
+        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
         story.save()
         story.id = 1
         story.save()
@@ -381,24 +436,108 @@ class LikePostTestCase(TestCase):
         request = MockRequest(method='GET', body={})
         like_post_api = like.GetPostLikes()
         response = like_post_api.get(request=request,story_id=1).content
-        self.assertEqual(json.loads(response.decode('utf-8')), {'return': {'like': [{'user_id': 13, 'username': 'user_name1', 'photo_url': 'temp.png'}], 'number_of_likes': 1}})
+        self.assertEqual(json.loads(response.decode('utf-8')), {'return': {'like': [{'user_id': self.user_id, 'username': 'user_name1', 'photo_url': 'temp.png'}], 'number_of_likes': 1}})
 
-
-class FollowTestCase(TestCase):
+class LikePostTestCase(TestCase):
     def setUp(self):
-        user1 = User.objects.create(username="user_name1", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
-        user1.save()
-        self.user_id1 = user1.id
-        self.username1 = user1.username
-        user2 = User.objects.create(username="user_name2", email="user_email2@gmail.com", password="123456",
-                                    first_name="umut", last_name="umut")
-        user2.save()
-        self.user_id2 = user2.id
-        self.username2 = user2.username
+        user = User.objects.create(username="user_name1", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user.save()
+        self.user_id=user.id
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
+        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
+        story.save()
+        story.id = 1
+        story.save()
 
-    def test_follow(self):
-        request = MockRequest(method='POST', body={"user_id": self.user_id1, "follow":self.user_id2, "action_follow":True})
-        follow_api = follow.Follow()
-        response = follow_api.post(request=request).content
-        self.assertEqual(json.loads(response.decode('utf-8'))["return"], f'The user {self.username1} has followed {self.username2}')
+    def test_like_post(self):
+        request = MockRequest(method='POST', body={"user_id": self.user_id, "story_id":1})
+        like_post_api = like.LikePost()
+        response = like_post_api.post(request=request).content
+        self.assertEqual(json.loads(response.decode('utf-8'))["response"], {"user_id": self.user_id, "story_id": 1, "isLiked": True})
 
+    def test_get_post_like(self):
+        request = MockRequest(method='POST', body={"user_id": self.user_id, "story_id":1})
+        like_post_api = like.LikePost()
+        response =  like_post_api.post(request=request).content
+        request = MockRequest(method='GET', body={})
+        like_post_api = like.GetPostLikes()
+        response = like_post_api.get(request=request,story_id=1).content
+        self.assertEqual(json.loads(response.decode('utf-8')), {'return': {'like': [{'user_id': self.user_id, 'username': 'user_name1', 'photo_url': 'temp.png'}], 'number_of_likes': 1}})
+
+
+class ActivityStreamTestCase(TestCase):
+
+    maxDiff = None
+
+    def setUp(self):
+        user = User.objects.create(username="user_name1", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user.save()
+        self.user_id=user.id
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
+        profile = Profile.objects.create(user_id=user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
+        story.save()
+        story.id = 1
+        story.save()
+        requestLike = MockRequest(method='POST', body={"user_id": self.user_id, "story_id": 1})
+        like_post_api = like.LikePost()
+        response = like_post_api.post(request=requestLike).content
+        request = MockRequest(method='POST', body={"username": "user_name1", "story_id": 1, "text": "new text",
+                                                   "parent_comment_id": None})
+        comment_create_api = comment.CommentCreate()
+        response = comment_create_api.post(request=request).content
+        request = MockRequest(method='POST', body={"username": "user_name1"})
+        logout_api = logout.Logout()
+        response = logout_api.post(request=request).content
+
+
+    def test_activity_stream(self):
+        requestAS = MockRequest(method='POST', body={"limit": 10, "offset": 0})
+        activity_stream_post_api = activity_stream.ActivityStreamAPI()
+        activity_stream_response = activity_stream_post_api.post(request=requestAS).content
+        activity_dict = json.loads(activity_stream_response.decode('utf-8'))
+        for item in activity_dict['orderedItems']:
+            del item['date']
+        self.assertEqual(activity_dict,
+                         {'@context': 'https://www.w3.org/ns/activitystreams', 'summary': 'Activity stream',
+                          'type': 'OrderedCollection', 'total_items': 3, 'orderedItems': [
+                             {'@context': 'https://www.w3.org/ns/activitystreams', 'summary': 'user_name1 logged out ',
+                              'id': 3, 'type': 'Logout',
+                              'actor': {'type': 'https://schema.org/Person', '@id': 'user_name1'}},
+                             {'@context': 'https://www.w3.org/ns/activitystreams',
+                              'summary': 'user_name1 added comment to story : 1 ', 'id': 2, 'type': 'CommentCreate',
+                              'actor': {'type': 'https://schema.org/Person', '@id': 'user_name1'},
+                              'object': {'type': 'https://schema.org/ShortStory', '@id': 1}},
+                             {'@context': 'https://www.w3.org/ns/activitystreams', 'summary': 'user_name1 liked 1 ',
+                              'id': 1, 'type': 'Like',
+                              'actor': {'type': 'https://schema.org/Person', '@id': 'user_name1'},
+                              'object': {'type': 'https://schema.org/ShortStory', '@id': 1}}]})
+
+    def test_get_notifications(self):
+        requestAS = MockRequest(method='POST', body={'user_name':"user_name1", 'limit':10})
+        get_notifications_post_api = activity_stream.GetNotifications()
+        get_notifications_response = get_notifications_post_api.post(request=requestAS).content
+        activity_dict = json.loads(get_notifications_response.decode('utf-8'))
+        for item in activity_dict['other_notifications']['orderedItems']:
+             del item['date']
+        self.assertEqual(activity_dict,
+                         {'follow_requests': {'@context': 'https://www.w3.org/ns/notification',
+                                              'summary': 'Notifications List',
+                                              'type': 'OrderedCollection', 'total_items': 0, 'orderedItems': []},
+                          'numberOfOtherNotifications': 2,
+                          'other_notifications': {'@context': 'https://www.w3.org/ns/notification',
+                                                  'summary': 'Notifications List',     'type': 'OrderedCollection',
+                                                  'total_items': 2,
+                                                  'orderedItems': [{'@context': 'https://www.w3.org/ns/activitystreams',
+                                                                    'summary': 'user_name1 added comment to story with title : title ',
+                                                                    'id': 5, 'type': 'CommentCreate',
+                                                                    'actor': {'type': 'https://schema.org/Person',
+                                                                              '@id': 'user_name1'},
+                                                                    'object': {'type': 'https://schema.org/ShortStory',
+                                                                               '@id': 1}},
+                                                                   {'@context': 'https://www.w3.org/ns/activitystreams',
+                                                                    'summary': 'user_name1 liked story with title : title ',
+                                                                    'id': 4, 'type': 'Like',
+                                                                    'actor': {'type': 'https://schema.org/Person', '@id': 'user_name1'},
+                                                                    'object': {'type': 'https://schema.org/ShortStory',
+                                                                               '@id': 1}}]}}
+)

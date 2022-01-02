@@ -6,7 +6,7 @@ from rest_framework import generics
 from django.http import JsonResponse
 from ..models import *
 from django.contrib.auth.models import User
-from ..models import Following,Location
+from ..models import Following
 import json
 import ast
 from datetime import datetime, timezone
@@ -26,6 +26,7 @@ class GetProfileInfo(generics.ListAPIView):
         try:
             profile_info = Profile.objects.get(user_id=user_info)
         except:
+            Profile.objects.all(user_id=user_info).delete()
             profile_info = Profile.objects.create(user_id=user_info)
 
 
@@ -49,29 +50,28 @@ class GetProfileInfo(generics.ListAPIView):
             temp['photo_url'] = Profile.objects.get(user_id=user['user_id']).photo_url
             followers.append(temp)
 
-        if (not profile_info.public) and (request_owner.id not in list(Following.objects.filter(follow=user_info).values_list('user_id',flat=True))):
-            result_dict = {
-                'first_name': user_info.first_name,
-                'last_name': user_info.last_name,
-                'photo_url': profile_info.photo_url,
-                'username': user_info.username,
-                'followers_count': len(followers),
-                'followings_count': len(followings),
-                'biography': profile_info.biography,
-                'public': profile_info.public
-            }
-            return JsonResponse({'response': result_dict})
 
-        try:
-            location = ast.literal_eval(profile_info.location)
-        except:
-            location = None
+        if request_owner.id != user_info.id:
+            if (not profile_info.public) and (request_owner.id not in list(Following.objects.filter(follow=user_info).values_list('user_id',flat=True))):
+                result_dict = {
+                    'first_name': user_info.first_name,
+                    'last_name': user_info.last_name,
+                    'photo_url': profile_info.photo_url,
+                    'username': user_info.username,
+                    'followers_count': len(followers),
+                    'followings_count': len(followings),
+                    'biography': profile_info.biography,
+                    'public': profile_info.public,
+                    'request_owner.id':request_owner.id,
+                    'user.id':user_info.id
+                }
+                return JsonResponse({'response': result_dict})
+
 
         result_dict = {
             'first_name':user_info.first_name,
             'last_name': user_info.last_name,
             'birthday': profile_info.birthday,
-            'location': location,
             'photo_url':profile_info.photo_url,
             'username': user_info.username,
             'email': user_info.email,
@@ -101,17 +101,12 @@ class SetProfileInfo(generics.CreateAPIView):
         except:
             profile_info = Profile.objects.create(user_id=user_info)
 
-        required_areas_location = {'location', 'latitude', 'longitude', 'type'}
-        for each_location in body['location']:
-            if set(each_location.keys()) != required_areas_location:
-                return JsonResponse({'return': 'location not in appropriate format'}, status=400)
 
         dt = datetime.now(timezone.utc).astimezone()
         ActivityStream.objects.create(type='SetProfile', actor=user_info, date=dt)
         user_info.first_name = body['first_name']
         user_info.last_name = body['last_name']
         profile_info.biography = body['biography']
-        profile_info.location = body['location']
         profile_info.birthday = body['birthday']
         profile_info.photo_url = body['photo_url']
         profile_info.public = body['public']
@@ -121,7 +116,6 @@ class SetProfileInfo(generics.CreateAPIView):
             'first_name':user_info.first_name,
             'last_name': user_info.last_name,
             'birthday': profile_info.birthday,
-            'location': profile_info.location,
             'photo_url': profile_info.photo_url,
             'username': user_info.username,
             'email': user_info.email,

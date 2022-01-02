@@ -69,8 +69,7 @@ function ProfilePostScroll({ userToBeViewed, userThatViews, isShown}) {
   return (<>
   {
       curPosts.length === 0 ? <Box className={classes.emptyBody}>
-                                <Typography>You do not have any stories to view.</Typography>
-                              <NavLink to="/Home">Explore Stories</NavLink> 
+                                <Typography>You have not shared any stories yet.</Typography>
                           </Box>
                         : <>
                               {curPosts.map((item) => {

@@ -35,6 +35,7 @@ import EditProfileDialog from "../../components/Dialogs/EditProfileDialog/EditPr
 import FollowUnfollow from "./Profile.follow"
 import ProfilePostScroll from "../../components/PostScroll/ProfilePostScroll"
 import LikedPostScroll from "../../components/PostScroll/LikedPostScroll"
+import VerticalMenu from "./VerticalMenu";
 
 import USER_SERVICE from "../../services/user";
 import SettingsDialog from "../../components/Dialogs/SettingsDialog/SettingsDialog"
@@ -87,6 +88,8 @@ function Profile({...props}) {
                                                   "public": true
                                               });
 
+  const [isBlocked, setIsBlocked] = useState(false);
+  
   const [tabValue, setTabValue] = useState('shared');
   const [infoLoading, setInfoLoading] = useState(true);
 
@@ -94,6 +97,8 @@ function Profile({...props}) {
   const [followersOpen, setFollowersOpen] = useState(false);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
+  const [verticalMenuOpen, setVerticalMenuOpen] = useState(false);
+
 
   useEffect(() => {
 
@@ -149,10 +154,12 @@ function Profile({...props}) {
           setLoading(false);
       })
       .catch((error) => {
-        console.log('err ', error);
+        if(error.response.status == 403) {
+          setIsBlocked(true);
+        }
       });
 
-    }, [editProfileOpen, userId, isFollowClicked]);
+    }, [editProfileOpen, userId, isFollowClicked, isBlocked]);
 
 
   const handleTabChange = (event, newValue) => {
@@ -190,6 +197,11 @@ function Profile({...props}) {
     setEditProfileOpen(false);
   };
 
+  const handleVerticalMenuClose = () => {
+    setVerticalMenuOpen(false);
+  };
+
+
 
   if (loading) {
     return (
@@ -200,6 +212,17 @@ function Profile({...props}) {
       </Wrapper>
     );
   }
+
+  if (isBlocked) {
+    return (
+      <Wrapper>
+        <Box className={classes.emptyBody}>
+          You cannot view this user's profile ! You have blocked the user or it blocked you.
+        </Box>
+      </Wrapper>
+    );
+  }
+
   return (
     <div>
       <Wrapper>
@@ -284,8 +307,17 @@ function Profile({...props}) {
                                                         </SettingsDialog>
                                                       </>
                                                         :
-                                                        <></>}/>
-                    
+                                                        <>
+                                                        <VerticalMenu
+                                                          anchorEl={verticalMenuOpen}
+                                                          setAnchorEl={setVerticalMenuOpen}
+                                                          onClose={handleVerticalMenuClose}
+                                                          userThatIsToBeViewed={userId}
+                                                          usernameViewed={profileInfo['username']}
+                                                          userThatViews={curUserId}
+                                                          setIsBlocked={setIsBlocked}>
+                                                        </VerticalMenu></>}
+                                                        />                 
                     <CardContent>
                         {!profileInfo['biography'] ? <>
                                                 { curUserId === userId ? <>

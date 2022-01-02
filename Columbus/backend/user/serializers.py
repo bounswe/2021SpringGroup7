@@ -20,17 +20,23 @@ class PostCreateSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=100)
     location = serializers.ListField(child=serializers.DictField(child=serializers.CharField()))
     tags = serializers.ListField(child=serializers.CharField())
+    multimedias = serializers.ListField(child=serializers.CharField())
+    time_start = serializers.DictField(child=serializers.CharField())
+    time_end = serializers.DictField(child=serializers.CharField())
     class Meta:
         model = Story
-        fields = ['title', 'text', 'multimedia', 'username', 'time_start', 'time_end', 'location', 'tags']
+        fields = ['title', 'text', 'multimedias', 'username', 'time_start', 'time_end', 'location', 'tags']
 
 class PostEditSerializer(serializers.ModelSerializer):
     location = serializers.ListField(child=serializers.DictField(child=serializers.CharField()))
     tags = serializers.ListField(child=serializers.CharField())
     story_id = serializers.IntegerField()
+    multimedias = serializers.ListField(child=serializers.CharField())
+    time_start = serializers.DictField(child=serializers.CharField())
+    time_end = serializers.DictField(child=serializers.CharField())
     class Meta:
         model = Story
-        fields = ['story_id', 'title', 'text', 'multimedia', 'time_start', 'time_end', 'location', 'tags']
+        fields = ['story_id', 'title', 'text', 'multimedias', 'time_start', 'time_end', 'location', 'tags']
 
 class PostDeleteSerializer(serializers.ModelSerializer):
     story_id = serializers.IntegerField()
@@ -52,13 +58,12 @@ class LocationSerializer(serializers.ModelSerializer):
 class SetProfileSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField()
     birthday = serializers.DateTimeField()
-    location = LocationSerializer(many=True)
     biography = serializers.CharField()
     photo_url = serializers.CharField()
     public = serializers.BooleanField()
     class Meta:
         model = User
-        fields = ['user_id','first_name', 'last_name','photo_url','birthday','location','biography','public']
+        fields = ['user_id','first_name', 'last_name','photo_url','birthday','biography','public']
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -69,9 +74,11 @@ class FollowSerializer(serializers.ModelSerializer):
 
 class BlockSerializer(serializers.ModelSerializer):
     action_block = serializers.BooleanField()
+    blocker = serializers.IntegerField()
+    blocked = serializers.IntegerField()
     class Meta:
         model = Blocking
-        fields = ['user_id_block','block','action_block']
+        fields = ['blocker','blocked','action_block']
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -144,6 +151,16 @@ class ReportStorySerializer(serializers.ModelSerializer):
         model = Comment
         fields = ['username', 'story_id', 'text']
 
+class ReportCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReportComment
+        fields = ['comment_id', 'reporter_id', 'report']
+
+class ReportTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReportTag
+        fields = ['tag_id', 'reporter_id', 'report']
+
 class ReportUserSerializer(serializers.ModelSerializer):
     reported_username = serializers.CharField(max_length=100)
     reporter_username = serializers.CharField(max_length=100)
@@ -151,10 +168,41 @@ class ReportUserSerializer(serializers.ModelSerializer):
         model = ReportUser
         fields = ['reported_username', 'reporter_username', 'report']
 
+class AdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Admin
+        fields = ['login_hash']
+
+class AdminLoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Admin
+        fields = ['admin_username', 'admin_password']
+
+class AdminActionSerializer(serializers.ModelSerializer):
+    report_id = serializers.IntegerField()
+    safe = serializers.BooleanField()
+    class Meta:
+        model = Admin
+        fields = ['login_hash','report_id', 'safe']
+
+class BlackListSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=100)
+    class Meta:
+        model = Admin
+        fields = ['login_hash','username']
+
+
 class GetNotificationsSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(max_length=100)
     limit = serializers.IntegerField()
-
     class Meta:
         model = Comment
         fields = ['user_name', 'limit']
+
+class FollowRequestSerializer(serializers.ModelSerializer):
+    request_id = serializers.IntegerField()
+    accept = serializers.BooleanField()
+
+    class Meta:
+        model = Following
+        fields = ['request_id', 'accept']

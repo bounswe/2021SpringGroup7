@@ -72,9 +72,8 @@ function LikedPostScroll({ userToBeViewed, userThatViews, isShown }) {
   {
       curPosts.length === 0 ? <Box className={classes.emptyBody}>
                                 <Typography>You have not liked any stories yet.</Typography>
-                                <NavLink to="/Home">Explore Stories</NavLink> 
-                              </Box>
-                            : <>
+                          </Box>
+                        : <>
                               {curPosts.map((item) => {
                                                       return (
                                                         <Post key={item['story_id']} post={item} curUser={userThatViews}></Post>

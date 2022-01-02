@@ -1,9 +1,10 @@
 import React from 'react';
 import {Input, FormControl, WarningOutlineIcon} from 'native-base';
+import {View} from 'react-native';
 
 const CustomFormInput = props => {
   return (
-    <>
+    <View style={{width: props.width}}>
       {props.label && <FormControl.Label>{props.label}</FormControl.Label>}
       <Input
         variant={props.variant && props.variant}
@@ -16,7 +17,7 @@ const CustomFormInput = props => {
       <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
         {props.warningMessage}
       </FormControl.ErrorMessage>
-    </>
+    </View>
   );
 };
 

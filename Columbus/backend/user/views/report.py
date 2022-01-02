@@ -93,3 +93,77 @@ class ReportUserAPI(generics.CreateAPIView):
             return JsonResponse({'return': report.id})
         except:
             return JsonResponse({'return': 'error'}, status=400)
+
+class ReportCommentAPI(generics.CreateAPIView):
+    serializer_class = ReportCommentSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        body = request.data
+        required_areas = {'comment_id', 'reporter_id', 'report'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+
+
+        user_id = body.get('reporter_id')
+        comment_id = body.get('comment_id')
+        text = body.get('report')
+
+
+        try:
+            user_id = User.objects.get(pk=user_id)
+        except:
+            return JsonResponse({'return': 'user not found'}, status=400)
+
+
+        try:
+            comment = Comment.objects.get(pk=comment_id)
+        except:
+            return JsonResponse({'return': 'comment not found'}, status=400)
+
+        try:
+            report = ReportComment(comment_id=comment, report=text, reporter_id=user_id)
+            report.save()
+            dt = datetime.now(timezone.utc).astimezone()
+            ActivityStream.objects.create(type='ReportCommentCreate', actor=user_id, comment=comment, date=dt)
+            return JsonResponse({'return': report.id})
+        except:
+            return JsonResponse({'return': 'error'}, status=400)
+
+
+class ReportTagAPI(generics.CreateAPIView):
+    serializer_class = ReportTagSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        body = request.data
+        required_areas = {'tag_id', 'reporter_id', 'report'}
+        if set(body.keys()) != required_areas:
+            return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
+
+        user_id = body.get('reporter_id')
+        tag_id = body.get('tag_id')
+        text = body.get('report')
+
+        try:
+            user_id = User.objects.get(pk=user_id)
+        except:
+            return JsonResponse({'return': 'user not found'}, status=400)
+
+
+        try:
+            tag = Tag.objects.get(pk=tag_id)
+        except:
+            return JsonResponse({'return': 'tag not found'}, status=400)
+
+
+        try:
+            report = ReportTag(tag_id=tag, report=text, reporter_id=user_id)
+            report.save()
+            dt = datetime.now(timezone.utc).astimezone()
+            ActivityStream.objects.create(type='ReportTagCreate', actor=user_id, tag=tag, date=dt)
+            return JsonResponse({'return': report.id})
+        except:
+            return JsonResponse({'return': 'error'}, status=400)
