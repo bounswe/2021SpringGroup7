@@ -202,7 +202,8 @@ export default function Comment(props) {
               }
             />
         </Grid>
-        <Grid item><Button style={{ textAlign: "right" } } onClick={handleExpandSettings}><MoreVertIcon /></Button></Grid>
+        {localStorage.getItem("username")==props.storyUsername? 
+        <Grid item><Button style={{ textAlign: "right" } } onClick={handleExpandSettings}><MoreVertIcon /></Button></Grid>:null}
       </Grid>
       {comments.length===0? null :<>{comments.map((item, index) => {
         if (item) {
