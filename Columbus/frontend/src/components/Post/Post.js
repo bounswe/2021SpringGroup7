@@ -124,7 +124,6 @@ export default function Post(props) {
     else if(props.post.time_start[0].type=="decade")
       setStoryDate1(props.post.time_start[0].date+"0s")
     if(props.post.time_end.length >0 ){
-      console.log(props.post.time_end)
       if(props.post.time_end[0].type=="specific"){
         if(props.post.time_end[0].date){
           setStoryDate2(props.post.time_end[0].date)
