@@ -32,7 +32,7 @@ function UserInfo(props) {
         token:user.userInfo.token,
       });
     } else {
-      return navigation.navigate('OtherProfile', {
+      return navigation.navigate('OtherProfiles', {
         userId: props.data?.user_id,
         username:props.data?.owner_username,
         token:user.userInfo.token,
