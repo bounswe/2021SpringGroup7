@@ -16,6 +16,12 @@ export const SERVICE = {
     });
   },
 
+  fetchNotifications: async (params, token) => {
+    return await API_INSTANCE.post(`/user/get_notifications/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
   fetchUserPosts: async (params, token) => {
     return await API_INSTANCE.post(`/user/profile_post/`, params, {
       headers: {Authorization: `TOKEN ${token}`},
@@ -24,6 +30,12 @@ export const SERVICE = {
 
   postStory: async (params, token) => {
     return await API_INSTANCE.post(`/user/create_post/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
+  postFollow: async (params, token) => {
+    return await API_INSTANCE.post(`/user/follow/`, params, {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },

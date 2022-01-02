@@ -10,7 +10,7 @@ import {SERVICE} from '../../../services/services';
 
 function LikeAndShare(props) {
   const navigation = useNavigation();
-  const {logout, user} = useAuth();
+  const { user} = useAuth();
   const [liked, setLiked] = useState(props.data?.is_liked);
   const [showLikeModal, setShowLikeModal] = useState(false)
   const [token, setToken] = useState(user?.userInfo?.token)
@@ -78,7 +78,7 @@ const getLikeStory = useMutation(params => SERVICE.getLikes({params, token}), {
       justifyContent="flex-end"
       space={3}
       width={'65%'}>
-      <CommentSheet data={props.data?.story_id} />
+      <CommentSheet data={props.data?.story_id} own_post={props.data?.own_post}/>
       {!liked ? (
         <Icon name={'heart'} onPress={()=>like()} size={20} onLongPress={()=>getLike()}/>
       ) : (

@@ -3,6 +3,7 @@ from unittest import TestCase, mock
 from django.http import JsonResponse
 from .views import Register, Login, ChangePassword, confirmEmail, activate
 from .mock_objects import *
+import json
 
 
 
@@ -47,8 +48,8 @@ class Tests(TestCase):
         request = MockRequest(method='POST', body=body)
         login = Login()
         response = login.post(request=request).content
-        response = ast.literal_eval(response.decode('utf-8'))
-        assert response == {'return': {'first_name': 'basarili', 'last_name': 'oldu', 'user_id': 1, 'token': 'String'}}
+        response = json.loads(response.decode('utf-8'))
+        assert response == {'return': {'first_name': 'basarili', 'last_name': 'oldu','photo_url':None ,'user_id': 1, 'token': 'String'}}
 
 
     @mock.patch("django.contrib.auth.models.User.objects.get")
