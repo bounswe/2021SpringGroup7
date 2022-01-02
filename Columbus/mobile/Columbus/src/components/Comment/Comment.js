@@ -28,7 +28,7 @@ const Comment = props => {
           mt={1}
           elevation={5}
           source={{
-            uri: props.data?.username,
+            uri:  '${props.data?.photo_url}',
           }}>
           {props.data?.username.substring(0, 2).toUpperCase()}
         </Avatar>
