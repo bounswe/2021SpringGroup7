@@ -10,15 +10,27 @@ export default function Notification(props) {
 
     const { notification } = props;
 
+    const [message, setMessage] = useState('')
+
     return (
     <>
-        <Avatar sx={{ width: 30, height:30}}>{notification['actor']['@id'].substring(0,1)}</Avatar>
-        <Box sx={{flexGrow: 1}}></Box>
-        <Tooltip title={notification['summary']}>
-        <Typography  sx={{fontSize: 13}}>
-                {notification['summary'].substring(0,50) + '...'}
-        </Typography>
-        </Tooltip>
+        <Avatar 
+            sx={{ width: 30, height:30}}
+            >
+            {notification['actor']['@id'].substring(0,1).toUpperCase()}
+        </Avatar>
+        <Box sx={{flexGrow: 1}}/>
+        {notification['summary'].length < 50 ? 
+                                                <Typography  sx={{fontSize: 13}}>
+                                                      {notification['summary']}
+                                                </Typography>
+                                            :
+                                                <Tooltip title={notification['summary']}>
+                                                    <Typography  sx={{fontSize: 13}}>
+                                                            {notification['summary'].substring(0,50) + '...'}
+                                                    </Typography>
+                                                </Tooltip>
+        }
     </>
     )
 }
