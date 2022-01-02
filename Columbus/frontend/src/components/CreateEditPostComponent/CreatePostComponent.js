@@ -35,13 +35,13 @@ const filter = createFilterOptions();
 export default function CreatePostDialog({
   imgUrlInit = "",
   locationTypeInit = null,
-  dateTypeInit =null,
+  dateTypeInit ="",
   locationInit = [],
   topicInit = "",
   storyInit = "",
   tagsInit = [],
-  startDateInit = "",
-  endDateInit = "",
+  startDateInit = null,
+  endDateInit = null,
   setSnackBarMessage,
   setOpenSnackBar,
 }) {
@@ -56,11 +56,14 @@ export default function CreatePostDialog({
   const [locations, setLocations] = React.useState(locationInit);
   const [errorIndex, setErrorIndex] = React.useState(null);
   const [topic, setTopic] = React.useState(topicInit);
+  const [decade, setDecade] = React.useState("2020s");
   const [story, setStory] = React.useState(storyInit);
   const [tags, setTags] = React.useState(tagsInit);
   const [allTags, setAllTags] = React.useState([{ title: "Hello" }]);
   const [startDate, setStartDate] = React.useState(startDateInit);
+  const [startDateDict, setStartDateDict] = React.useState(null);
   const [endDate, setEndDate] = React.useState(endDateInit);
+  const [endDateDict, setEndDateDict] = React.useState(null);
   const { ref } = usePlacesWidget({
     apiKey: "AIzaSyBMNVI-Aep02o6TwwTechsvSzpRVlA13qo",
     onPlaceSelected: (place) => console.log(place),
@@ -77,13 +80,33 @@ export default function CreatePostDialog({
     setDateType(date.target.value);
       
   };
+  const handleDecade = (date) =>{
+    setDecade(date.target.value);
+    setStartDateDict({type:"decade",date: date.target.value});
+  }
   const handleDateChange1 = (date) => {
-    const var1 ={type:"specific",year: date.year(),month: date.month(),day: date.day(),hour: null,minute: null};
-    setStartDate(var1);
+    var year = date.getFullYear();
+    var month = null;
+    var day =null
+    if(dateTypeList.length==2)
+      month = date.getMonth();
+    if(dateTypeList.length==3)
+      day= date.getDay();
+    const var1 ={type:"specific",year: year,month: month,day: day,hour: null,minute: null};
+    setStartDate(date);
+    setStartDateDict(var1);
   };
   const handleDateChange2 = (date) => {
-    const var1 = {type:"specific",year: date.year(),month: date.month(),day: date.day(),hour: null,minute: null};
-    setEndDate(var1);
+    var year = date.getFullYear();
+    var month = null;
+    var day =null
+    if(dateTypeList.length==2)
+      month = date.getMonth();
+    if(dateTypeList.length==3)
+      day= date.getDay();
+    const var1 ={type:"specific",year: year,month: month,day: day,hour: null,minute: null};
+    setEndDate(date);
+    setEndDateDict(var1);
   };
 
   const handleDeleteTag = (tag) => () => {
@@ -150,8 +173,8 @@ export default function CreatePostDialog({
       tags: tags.map((tag) => tag.title),
       username: localStorage.getItem("username"),
       multimedia: imgUrl,
-      time_start: startDate,
-      time_end: endDate,
+      time_start: startDateDict,
+      time_end: endDateDict,
       location: locationType==="Virtual" ? locations.map((location) => ({"location": location.locationName, "latitude": 0, "longitude": 0, "type": locationType})) : locations.map((location) => ({"location": location.locationName, "latitude": location.geolocation.latitude, "longitude": location.geolocation.longitude, "type": locationType})),
     };
 
@@ -353,7 +376,7 @@ export default function CreatePostDialog({
         <Stack spacing={2} direction='row' justifyContent='space-around'>
           <Box>
           <KeyboardDatePicker
-            views={["year", "month", "date"]}
+            views={dateTypeList}
             variant="inline"
             format="yyyy-MM-dd"
             placeholder="Year-Month-Day"
@@ -376,7 +399,7 @@ export default function CreatePostDialog({
               variant="inline"
               format="yyyy-MM-dd"
               openTo="year"
-              views={["year", "month", "date"]}
+              views={dateTypeList}
               margin="normal"
               placeholder="Year-Month-Day"
               id="end-date-picker-inline"
@@ -393,7 +416,30 @@ export default function CreatePostDialog({
             />
           </Box>
          </Stack>
-        </MuiPickersUtilsProvider>) : <MuiPickersUtilsProvider utils={DateFnsUtils}> <Box>
+        </MuiPickersUtilsProvider>) : <>{dateType=="Decade"? <FormControl fullWidth >
+          <InputLabel id="decade" >Decade</InputLabel>
+          <Select
+            variant="standard"
+            value={decade}
+            onChange={handleDecade}
+            label="Decade"
+            required
+          >
+            <MenuItem value={190}>1900s</MenuItem>
+            <MenuItem value={191}>1910s</MenuItem>
+            <MenuItem value={192}>1920s</MenuItem>
+            <MenuItem value={193}>1930s</MenuItem>
+            <MenuItem value={194}>1940s</MenuItem>
+            <MenuItem value={195}>1950s</MenuItem>
+            <MenuItem value={196}>1960s</MenuItem>
+            <MenuItem value={197}>1970s</MenuItem>
+            <MenuItem value={198}>1980s</MenuItem>
+            <MenuItem value={199}>1990s</MenuItem>
+            <MenuItem value={200}>2000s</MenuItem>
+            <MenuItem value={201}>2010s</MenuItem>
+            <MenuItem value={202}>2020s</MenuItem>
+          </Select>
+        </FormControl>:<MuiPickersUtilsProvider utils={DateFnsUtils}> <Box>
           <KeyboardDatePicker
             views={dateTypeList}
             variant="inline"
@@ -412,7 +458,7 @@ export default function CreatePostDialog({
             maxDate={endDate ? endDate : Date.now()}
             minDateMessage="Start date can't be after than end date"
           />
-          </Box></MuiPickersUtilsProvider>}
+          </Box></MuiPickersUtilsProvider>}</>}
         {errorIndex !==null ? <Typography>Please select a location on map for location {errorIndex+1}</Typography> : null}
         <Box>
         <Button type='submit' size='large' color="primary"  variant="contained">
