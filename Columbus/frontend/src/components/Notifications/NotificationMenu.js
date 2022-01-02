@@ -10,6 +10,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 import Notification from "./Notification";
 import FollowRequest from "./FollowRequest";
@@ -61,7 +62,6 @@ const [infoLoading, setInfoLoading] = useState(true);
   }
 
   const handleTabChange = (event, newValue) => {
-    console.log('in tab value ', notifications )
     setTabValue(newValue);
   };
 
@@ -135,7 +135,7 @@ const renderNotifications = (
       </ListItem>
       <List>
         { notifications.length == 0 ? <>
-                                      <Divider textAlign="right"></Divider>
+                                      <Divider></Divider>
                                         <ListItem> 
                                           {'No activities to view.'}
                                         </ListItem>
@@ -144,7 +144,18 @@ const renderNotifications = (
                                     <>
                                     {notifications.map((notification) => (
                                                                 <>
-                                                                <Divider textAlign="right"></Divider>
+                                                                <Divider component="li"/>
+                                                                <li>
+                                                                  <Typography
+                                                                    sx={{ mt: 0.5, mr: 2, textAlign:"right"}}
+                                                                    color="text.secondary"
+                                                                    display="block"
+                                                                    variant="caption"
+                                                                  >
+                                                                    {(new Date(notification['date'])).toLocaleString()}
+                                                                  </Typography>
+                                                                </li>
+                                                                
                                                                   <ListItem key={notification}>
                                                                     <Notification  notification={notification}></Notification>
                                                                   </ListItem>
@@ -279,7 +290,7 @@ const renderNotifications = (
                       : <CircularProgress></CircularProgress>
       }
 
-
+<Divider textAlign="right">{(new Date(notification['date'])).toLocaleString()}</Divider>
 */
 
 
