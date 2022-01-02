@@ -34,7 +34,7 @@ class PostCreate(generics.CreateAPIView):
         time_start = body.get('time_start')
 
         text = body.get('text', '')
-        multimedia = body.get('multimedia', '')
+        multimedias = body.get('multimedias', [])
         time_end = body.get('time_end', None)
 
         tags = body.get('tags', [])
@@ -50,6 +50,15 @@ class PostCreate(generics.CreateAPIView):
                 return JsonResponse({'return': 'location not in appropriate format'}, status=400)
 
 
+        required_areas_date = {'type'}
+        if len(set(time_start.keys()).intersection(required_areas_date))!=1:
+            return JsonResponse({'return': 'start date not in appropriate format'}, status=400)
+
+        if time_end!= None:
+            required_areas_date = {'type'}
+            if len(set(time_end.keys()).intersection(required_areas_date))!=1:
+                return JsonResponse({'return': 'end date not in appropriate format'}, status=400)
+
         try:
             user_id = User.objects.get(username=username)
         except:
@@ -57,7 +66,7 @@ class PostCreate(generics.CreateAPIView):
 
 
         try:
-            story = self.create_story(title, text, multimedia, user_id, time_start, time_end)
+            story = self.create_story(title, text, user_id)
             story.save()
             dt = datetime.now(timezone.utc).astimezone()
             ActivityStream.objects.create(type='CreatePost', actor=user_id, story=story, date=dt)
@@ -67,12 +76,49 @@ class PostCreate(generics.CreateAPIView):
             for tag_string in tags:
                 post_tag = self.get_tag(story_id=story, tag=tag_string)
                 post_tag.save()
+            for multimedia_string in multimedias:
+                post_multimedia = self.get_multimedia(story_id=story, path=multimedia_string)
+                post_multimedia.save()
+
+            post_time_start = self.get_date(story_id=story, type=time_start["type"], start_end_type="start")
+            if "date" in time_start.keys():
+                post_time_start.date = time_start["date"]
+            if "year" in time_start.keys():
+                post_time_start.year = time_start["year"]
+            if "month" in time_start.keys():
+                post_time_start.month = time_start["month"]
+            if "day" in time_start.keys():
+                post_time_start.day = time_start["day"]
+            if "hour" in time_start.keys():
+                post_time_start.hour = time_start["hour"]
+            if "minute" in time_start.keys():
+                post_time_start.minute = time_start["minute"]
+            post_time_start.save()
+
+
+            if time_end!= None:
+                post_time_end = self.get_date(story_id=story, type=time_end["type"], start_end_type="end")
+                if "date" in time_end.keys():
+                    post_time_end.date = time_end["date"]
+                if "year" in time_end.keys():
+                    post_time_end.year = time_end["year"]
+                if "month" in time_end.keys():
+                    post_time_end.month = time_end["month"]
+                if "day" in time_end.keys():
+                    post_time_end.day = time_end["day"]
+                if "hour" in time_end.keys():
+                    post_time_end.hour = time_end["hour"]
+                if "minute" in time_end.keys():
+                    post_time_end.minute = time_end["minute"]
+                post_time_end.save()
+
+
             return JsonResponse({'return': story.id})
         except:
             return JsonResponse({'return': 'error'}, status=400)
 
-    def create_story(self, title, text, multimedia, user_id, time_start, time_end):
-        return Story(title=title, text=text, multimedia=multimedia, user_id=user_id, time_start=time_start, time_end=time_end, numberOfLikes=0, numberOfComments=0)
+    def create_story(self, title, text, user_id):
+        return Story(title=title, text=text, user_id=user_id, numberOfLikes=0, numberOfComments=0)
 
     def get_location(self, story_id, location, latitude, longitude, type):
         return Location(story_id=story_id, location=location, latitude=latitude, longitude=longitude, type=type)
@@ -80,6 +126,11 @@ class PostCreate(generics.CreateAPIView):
     def get_tag(self, story_id, tag):
         return Tag(story_id=story_id, tag=tag)
 
+    def get_multimedia(self, story_id, path):
+        return Multimedia(story_id=story_id, path=path)
+
+    def get_date(self, story_id, type, start_end_type):
+        return Date(story_id=story_id, type=type, start_end_type=start_end_type)
 
 
 class PostEdit(generics.CreateAPIView):
@@ -126,24 +177,56 @@ class PostEdit(generics.CreateAPIView):
                 story.save()
             except:
                 return JsonResponse({'return': 'text not in appropriate format'}, status=400)
-        if "multimedia" in body.keys():
+        if "multimedias" in body.keys():
             try:
-                story.multimedia = body["multimedia"]
-                story.save()
+                Multimedia.objects.filter(story_id=story).delete()
             except:
-                return JsonResponse({'return': 'multimedia not in appropriate format'}, status=400)
+                return JsonResponse({'return': 'multimedia not able to delete'}, status=400)
+
+            for multimedia_string in body["multimedias"]:
+                post_multimedia = Multimedia(story_id=story, path=multimedia_string)
+                post_multimedia.save()
         if "time_start" in body.keys():
             try:
-                story.time_start = body["time_start"]
-                story.save()
+                Date.objects.filter(story_id=story, start_end_type="start").delete()
             except:
-                return JsonResponse({'return': 'time_start not in appropriate format'}, status=400)
+                return JsonResponse({'return': 'time_start not able to delete'}, status=400)
+
+            post_time_start = Date(story_id=story, type=body["time_start"]["type"], start_end_type="start")
+            if "date" in body["time_start"].keys():
+                post_time_start.date = body["time_start"]["date"]
+            if "year" in body["time_start"].keys():
+                post_time_start.year = body["time_start"]["year"]
+            if "month" in body["time_start"].keys():
+                post_time_start.month = body["time_start"]["month"]
+            if "day" in body["time_start"].keys():
+                post_time_start.day = body["time_start"]["day"]
+            if "hour" in body["time_start"].keys():
+                post_time_start.hour = body["time_start"]["hour"]
+            if "minute" in body["time_start"].keys():
+                post_time_start.minute = body["time_start"]["minute"]
+            post_time_start.save()
+
         if "time_end" in body.keys():
             try:
-                story.time_end = body["time_end"]
-                story.save()
+                Date.objects.filter(story_id=story, start_end_type="end").delete()
             except:
-                return JsonResponse({'return': 'time_end not in appropriate format'}, status=400)
+                return JsonResponse({'return': 'time_end not able to delete'}, status=400)
+
+            post_time_end = Date(story_id=story, type=body["time_end"]["type"], start_end_type="end")
+            if "date" in body["time_end"].keys():
+                post_time_end.date = body["time_end"]["date"]
+            if "year" in body["time_end"].keys():
+                post_time_end.year = body["time_end"]["year"]
+            if "month" in body["time_end"].keys():
+                post_time_end.month = body["time_end"]["month"]
+            if "day" in body["time_end"].keys():
+                post_time_end.day = body["time_end"]["day"]
+            if "hour" in body["time_end"].keys():
+                post_time_end.hour = body["time_end"]["hour"]
+            if "minute" in body["time_end"].keys():
+                post_time_end.minute = body["time_end"]["minute"]
+            post_time_end.save()
 
         if "tags" in body.keys():
             try:

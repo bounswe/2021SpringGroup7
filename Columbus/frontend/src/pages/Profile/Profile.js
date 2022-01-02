@@ -34,6 +34,7 @@ import EditProfileDialog from "../../components/Dialogs/EditProfileDialog/EditPr
 import FollowUnfollow from "./Profile.follow"
 import ProfilePostScroll from "../../components/PostScroll/ProfilePostScroll"
 import LikedPostScroll from "../../components/PostScroll/LikedPostScroll"
+import VerticalMenu from "./VerticalMenu";
 
 import USER_SERVICE from "../../services/user";
 
@@ -85,8 +86,7 @@ function Profile({...props}) {
                                                   "biography": ""
                                               });
 
-  //const [sharedPosts, setSharedPosts] = useState(dummyPosts.slice(0,1));
-  const [likedPosts, setLikedPosts] = useState(dummyPosts.slice(1,4));
+  const [isBlocked, setIsBlocked] = useState(false);
   
   const [tabValue, setTabValue] = useState('shared');
   const [infoLoading, setInfoLoading] = useState(true);
@@ -94,6 +94,7 @@ function Profile({...props}) {
   const [followingsOpen, setFollowingsOpen] = useState(false);
   const [followersOpen, setFollowersOpen] = useState(false);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const [verticalMenuOpen, setVerticalMenuOpen] = useState(false);
 
 
   useEffect(() => {
@@ -101,33 +102,34 @@ function Profile({...props}) {
      USER_SERVICE.GET_PROFILEINFO(userId)
       .then((res) => {
         const proInfo = res.data.response;
-        console.log('profile info ',  res.data.response['username'])
-              setProfileInfo({
-                                "first_name": proInfo['first_name'],
-                                "last_name" : proInfo['last_name'],
-                                "birthday"  : proInfo['birthday'],
-                                "photo_url" : proInfo['photo_url'],
-                                "location"  : "",
-                                "username"  : proInfo['username'],
-                                "email"     : proInfo['email'],
-                                "followers" : proInfo['followers'],
-                                "followings": proInfo['followings'],
-                                "biography" : proInfo['biography']
-                                              }
-              ); 
-              if(res.data.response['followers'].some(follower => follower['user_id'].toString() === curUserId)) 
-              {
-                setIsCurUserFollowing(true);
-              } else {
-                setIsCurUserFollowing(false);
-              }
-              setInfoLoading(false);
+        setProfileInfo({
+                          "first_name": proInfo['first_name'],
+                          "last_name" : proInfo['last_name'],
+                          "birthday"  : proInfo['birthday'],
+                          "photo_url" : proInfo['photo_url'],
+                          "location"  : "",
+                          "username"  : proInfo['username'],
+                          "email"     : proInfo['email'],
+                          "followers" : proInfo['followers'],
+                          "followings": proInfo['followings'],
+                          "biography" : proInfo['biography']
+                                        }
+        ); 
+        if(res.data.response['followers'].some(follower => follower['user_id'].toString() === curUserId)) 
+        {
+          setIsCurUserFollowing(true);
+        } else {
+          setIsCurUserFollowing(false);
+        }
+        setInfoLoading(false);
         })
-        .catch((error) => {
-          console.log('err ', error);
-        });
+      .catch((error) => {
+        if(error.response.status == 403) {
+          setIsBlocked(true);
+        }
+      });
 
-    }, [editProfileOpen, userId, isFollowClicked]);
+    }, [editProfileOpen, userId, isFollowClicked, isBlocked]);
 
 
   const handleTabChange = (event, newValue) => {
@@ -157,6 +159,11 @@ function Profile({...props}) {
     setEditProfileOpen(false);
   };
 
+  const handleVerticalMenuClose = () => {
+    setVerticalMenuOpen(false);
+  };
+
+
 
   if (loading) {
     return (
@@ -167,6 +174,17 @@ function Profile({...props}) {
       </Wrapper>
     );
   }
+
+  if (isBlocked) {
+    return (
+      <Wrapper>
+        <Box className={classes.emptyBody}>
+          You cannot view this user's profile ! You have blocked the user or it blocked you.
+        </Box>
+      </Wrapper>
+    );
+  }
+
   return (
     <div>
       <Wrapper>
@@ -242,7 +260,20 @@ function Profile({...props}) {
                     <Card  variant="elevation">
                       <CardHeader 
                         title={profileInfo['first_name'] + " " + profileInfo['last_name']}
-                        subheader={profileInfo['username']}/>
+                        subheader={profileInfo['username']}
+                        action={curUserId === userId ? <></>
+                                                  : <>
+                                                   <VerticalMenu
+                                                    anchorEl={verticalMenuOpen}
+                                                    setAnchorEl={setVerticalMenuOpen}
+                                                    onClose={handleVerticalMenuClose}
+                                                    userThatIsToBeViewed={userId}
+                                                    usernameViewed={profileInfo['username']}
+                                                    userThatViews={curUserId}
+                                                    setIsBlocked={setIsBlocked}>
+                                                  </VerticalMenu>
+                                                    </>
+                                  }/>
                     
                     <CardContent>
                         {!profileInfo['biography'] ? <>

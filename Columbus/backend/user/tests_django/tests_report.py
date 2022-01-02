@@ -18,9 +18,9 @@ class ReportTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="test", last_name="test")
         self.user_temp = User.objects.create(username="user_name_temp", email="user_email_temp@gmail.com", password="123456",first_name="test", last_name="test")
-        self.profile = Profile.objects.create(user_id=self.user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05',location=[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}])
-        self.profile_temp = Profile.objects.create(user_id=self.user_temp,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05',location=[{"location": "changed_asd", "latitude": 1901, "longitude": 120, "type": "Real"}])
-        self.story = Story.objects.create(title="title", text="", multimedia="", user_id=self.user, time_start="2020-01-01", time_end="2021-01-01", numberOfLikes=0, numberOfComments=0)
+        self.profile = Profile.objects.create(user_id=self.user,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
+        self.profile_temp = Profile.objects.create(user_id=self.user_temp,photo_url='temp.png',biography='temp likes being cool',birthday='2021-05-05')
+        self.story = Story.objects.create(title="title", text="", user_id=self.user, numberOfLikes=0, numberOfComments=0)
         self.comment = Comment(story_id=self.story, text="new text", user_id=self.user)
         self.tag = Tag.objects.create(story_id=self.story, tag="travel")
         self.user_temp.save()
@@ -40,6 +40,20 @@ class ReportTestCase(TestCase):
     def test_report_tag(self):
         request = MockRequest(method='GET',body={'tag_id':self.tag.id, 'reporter_id':self.user.id, 'report':"dummy report"})
         api = report.ReportTagAPI()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(type(response["return"]), int)
+
+    def test_report_story(self):
+        request = MockRequest(method='GET',body={'username':self.user.username, 'story_id':self.story.id, 'text':"dummy report"})
+        api = report.ReportStory()
+        response = api.post(request=request).content
+        response = json.loads(response.decode('utf-8'))
+        self.assertEqual(type(response["return"]), int)
+
+    def test_report_user(self):
+        request = MockRequest(method='GET',body={'reported_username':self.user.username, 'reporter_username':self.user_temp.username, 'report':"dummy report"})
+        api = report.ReportUserAPI()
         response = api.post(request=request).content
         response = json.loads(response.decode('utf-8'))
         self.assertEqual(type(response["return"]), int)

@@ -70,6 +70,28 @@ class GetReportStory(generics.CreateAPIView):
             serialized_obj = [each["fields"]["tag"] for each in serialized_obj]
             each["tags"] = serialized_obj
 
+            multimedias = Multimedia.objects.filter(story_id=stories[i])
+            serialized_obj = serializers.serialize('json', multimedias)
+            serialized_obj = json.loads(str(serialized_obj))
+            serialized_obj = [each["fields"]["path"] for each in serialized_obj]
+            each["multimedias"] = serialized_obj
+
+            start_dates = Date.objects.filter(story_id=stories[i], start_end_type="start")
+            serialized_obj = serializers.serialize('json', start_dates)
+            serialized_obj = json.loads(str(serialized_obj))
+            serialized_obj = [each["fields"] for each in serialized_obj]
+            [each.pop('story_id', None) for each in serialized_obj]
+            [each.pop('start_end_type', None) for each in serialized_obj]
+            each["time_start"] = serialized_obj
+
+            end_dates = Date.objects.filter(story_id=stories[i], start_end_type="end")
+            serialized_obj = serializers.serialize('json', end_dates)
+            serialized_obj = json.loads(str(serialized_obj))
+            serialized_obj = [each["fields"] for each in serialized_obj]
+            [each.pop('story_id', None) for each in serialized_obj]
+            [each.pop('start_end_type', None) for each in serialized_obj]
+            each["time_end"] = serialized_obj
+
             profiles = Profile.objects.filter(user_id__username=stories[i].user_id.username)
             serialized_obj = serializers.serialize('json', profiles)
             serialized_obj = json.loads(str(serialized_obj))
@@ -109,8 +131,7 @@ class AdminActionReportStory(generics.CreateAPIView):
             return JsonResponse({'return': 'Report is deleted without any action'})
         else:
             reported_story=report.story_id
-            spam_story = SpamStory(title=reported_story.title, text=reported_story.text, multimedia=reported_story.multimedia, user_id=reported_story.user_id, time_start=reported_story.time_start,
-                  time_end=reported_story.time_end, numberOfLikes=0, numberOfComments=0)
+            spam_story = SpamStory(title=reported_story.title, text=reported_story.text, user_id=reported_story.user_id, numberOfLikes=0, numberOfComments=0)
             spam_story.save()
             reported_story.delete()
             report.delete()
@@ -360,4 +381,3 @@ class AdminActionReportTag(generics.CreateAPIView):
             reported_tag.delete()
             report.delete()
             return JsonResponse({'return': 'Tag is carried to the spam folder'})
-

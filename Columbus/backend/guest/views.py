@@ -62,11 +62,16 @@ class Login(generics.CreateAPIView):
         user = authenticate(request, username=user_name, password=password)
 
         if user is not None:
-
             auth_login(request, user)
             token, created = Token.objects.get_or_create(user=user)
             user_info = User.objects.get(username=user_name)
-            result_dict = {"first_name": user_info.first_name, "last_name": user_info.last_name, "user_id": user_info.id,"token": str(token)}
+            try:
+                profile = Profile.objects.get(user_id=user_info)
+                photo_url = profile.photo_url
+            except:
+                photo_url = None
+
+            result_dict = {"first_name": user_info.first_name, "last_name": user_info.last_name,"photo_url":photo_url ,"user_id": user_info.id,"token": str(token)}
             return JsonResponse({'return': result_dict})
         else:
             return JsonResponse({'return': 'Login is invalid'}, status=400)
@@ -189,6 +194,28 @@ class GuestPage(generics.CreateAPIView):
                 serialized_obj = json.loads(str(serialized_obj))
                 serialized_obj = [each["fields"]["tag"] for each in serialized_obj]
                 each["tags"] = serialized_obj
+
+                multimedias = Multimedia.objects.filter(story_id=stories[i])
+                serialized_obj = serializers.serialize('json', multimedias)
+                serialized_obj = json.loads(str(serialized_obj))
+                serialized_obj = [each["fields"]["path"] for each in serialized_obj]
+                each["multimedias"] = serialized_obj
+
+                start_dates = Date.objects.filter(story_id=stories[i], start_end_type="start")
+                serialized_obj = serializers.serialize('json', start_dates)
+                serialized_obj = json.loads(str(serialized_obj))
+                serialized_obj = [each["fields"] for each in serialized_obj]
+                [each.pop('story_id', None) for each in serialized_obj]
+                [each.pop('start_end_type', None) for each in serialized_obj]
+                each["time_start"] = serialized_obj
+
+                end_dates = Date.objects.filter(story_id=stories[i], start_end_type="end")
+                serialized_obj = serializers.serialize('json', end_dates)
+                serialized_obj = json.loads(str(serialized_obj))
+                serialized_obj = [each["fields"] for each in serialized_obj]
+                [each.pop('story_id', None) for each in serialized_obj]
+                [each.pop('start_end_type', None) for each in serialized_obj]
+                each["time_end"] = serialized_obj
 
                 try:
                     profiles = Profile.objects.filter(user_id__username=stories[i].user_id.username)

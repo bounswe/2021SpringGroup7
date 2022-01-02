@@ -97,6 +97,16 @@ const EditProfile = ({route, navigation}) => {
   };
 
   const sendRequest = async () => {
+    var d = new Date(birthday),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    const sendBirthDay = [year, month, day].join('-');
+
     const data = JSON.stringify({
       user_id: route.params.userInfo.user_id,
       first_name: firstName,
@@ -106,7 +116,7 @@ const EditProfile = ({route, navigation}) => {
         : route.params.userInfo.photo_url
         ? route.params.userInfo.photo_url
         : '',
-      birthday: birthday,
+      birthday: sendBirthDay,
       biography: biography,
       public: isPublic,
     });
@@ -211,8 +221,8 @@ const EditProfile = ({route, navigation}) => {
                 textColor="white"
                 value={birthday}
                 display="compact"
-                onChangeText={value => {
-                  setBirthday(new Date(value.timeStamp));
+                onChange={(event, value) => {
+                  setBirthday(value);
                 }}
               />
             </View>
