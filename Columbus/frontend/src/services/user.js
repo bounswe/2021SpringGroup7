@@ -34,8 +34,15 @@ const USER_SERVICE = {
                                                                                           }),   
   GET_NOTIFICATIONS: (username) => API_INSTANCE.post(`/user/get_notifications/`,{
                                                                                   "user_name":username,
-                                                                                  "limit": 10
-                                                                                }),                                                                                                                                                                                        
+                                                                                  "limit": 20
+                                                                                }), 
+  GET_FOLLOWREQUEST: () => API_INSTANCE.get(`/user/get_follow_request/`), 
+  
+  ACCEPT_FOLLOWREQUEST: (request_id) => API_INSTANCE.post(`/user/accept_follow_request/`,{
+                                                                                      "request_id": request_id,
+                                                                                      "accept": true
+                                                                                    }), 
+  
 
 };
 
