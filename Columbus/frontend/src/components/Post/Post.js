@@ -508,7 +508,7 @@ export default function Post(props) {
             {comments.length === 0? null : <>{comments.map((item, index) => {
               if (item) {
                 return (
-                  <Comment comment={item} storyUsername={props.post.owner_username} index={index} />
+                  <Comment comment={item} storyUsername={props.post.owner_username} profilePhoto = {profilePhoto} index={index} />
                 );
               }
             })}</>}

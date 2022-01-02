@@ -41,7 +41,8 @@ export default function Comment(props) {
       username: localStorage.getItem('username'),
       story_id: props.comment.story_id,
       date: today.toISOString(),
-      parent_comment_id: props.comment.id
+      parent_comment_id: props.comment.id,
+      photo_url:props.profilePhoto
     };
     POST_SERVICE.POST_COMMENT({ text: commentValue, username: localStorage.getItem('username'), story_id: props.comment.story_id, parent_comment_id: props.comment.id })
       .then((response) => {
@@ -130,7 +131,7 @@ export default function Comment(props) {
         <Grid container wrap="nowrap" spacing={2}>
           <Grid item>
             <Link href="/">
-              <Avatar alt="AT TA" src="" />
+              <Avatar alt="AT TA" src={props.profilePhoto} />
             </Link>
           </Grid>
           <Grid justifyContent="left" item xs zeroMinWidth>
@@ -161,7 +162,7 @@ export default function Comment(props) {
       {settingMenu}
       <Grid container wrap="nowrap" spacing={2}>
         <Grid item>
-          <Avatar alt={props.comment.username} src="" />
+          <Avatar alt={props.comment.username} src={props.comment.photo_url} />
         </Grid>
         
         <Grid justifyContent="left" item xs zeroMinWidth>
@@ -208,7 +209,7 @@ export default function Comment(props) {
           return (
             <Grid container wrap="nowrap" spacing={2} style={{ marginLeft: '4rem', marginTop: 20}}>
               <Grid item>
-                <Avatar alt={item.username} src="" />
+                <Avatar alt={item.username} src={item.photo_url} />
               </Grid>
               <Grid justifyContent="left" item xs zeroMinWidth>
                 <h4 style={{ margin: 0, textAlign: "left" }}>
