@@ -25,7 +25,10 @@ export default function Comment(props) {
     setOpenSnackBar(false);
   };
   const handleComment = () => {
-    var today=new Date();
+    if(commentValue==""){
+      setSnackBarMessage("You should write a comment")
+      setOpenSnackBar(true)}
+    else{var today=new Date();
     const data = {
       text: commentValue,
       username: localStorage.getItem('username'),
@@ -45,7 +48,7 @@ export default function Comment(props) {
     const temp = comments;
     temp.push(data);
     setComments(temp);
-    setCommentValue("");
+    setCommentValue("");}
   };
   useEffect(() => {
     setComments(props.comment.child_comments);
@@ -72,6 +75,7 @@ export default function Comment(props) {
                 variant="filled"
                 value={commentValue}
                 onChange={(e) => setCommentValue(e.target.value)}
+                required
               ></TextField>
             </p>
             <p style={{ textAlign: "right", color: "gray" }}>
