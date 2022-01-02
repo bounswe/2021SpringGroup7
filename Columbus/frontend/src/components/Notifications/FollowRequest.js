@@ -17,6 +17,7 @@ export default function FollowRequest(props) {
 
     const [message, setMessage] = useState('')
     const [actor, setActor] = useState('')
+    const [profilePhoto, setProfilePhoto] = useState('')
     const [requestID, setRequestID] = useState(null)
    
     const [openSnackBar, setOpenSnackBar] = useState(false);
@@ -28,6 +29,10 @@ export default function FollowRequest(props) {
         setActor(request['username']);
         setMessage(request['username'] + ' wants to follow you.');
         setRequestID(request['request_id'])
+        if(!!request['photo_url']) 
+        {
+            setProfilePhoto(request['photo_url']);
+        }
 
     }, [])
 
@@ -70,6 +75,7 @@ export default function FollowRequest(props) {
     <>
         <Avatar 
             sx={{ width: 30, height:30}}
+            src={profilePhoto}
             >
             {actor.substring(0,1).toUpperCase()}
         </Avatar>
