@@ -90,7 +90,7 @@ export default function Post(props) {
 
   const [storyData, setStoryData] = useState(null);
   const [storyDate1, setStoryDate1] = useState("");
-  const [storyDate2, setStoryDate2] = useState("");
+  const [storyDate2, setStoryDate2] = useState(null);
   const [curUser, setCurUser] = useState(false);
   const [commentValue, setCommentValue] = useState("");
   const [comments, setComments] = useState([]);
@@ -121,19 +121,22 @@ export default function Post(props) {
         setStoryDate1(props.post.time_start[0].day+"."+props.post.time_start[0].month+"."+props.post.time_start[0].year)
       }
     }
-    if(props.post.time_end[0].type=="specific"){
-      if(props.post.time_end[0].date){
-        setStoryDate2(props.post.time_end[0].date)
-      }
-      else {
-      if(props.post.time_end[0].year)
-        setStoryDate2(props.post.time_end[0].year)
-      if(props.post.time_end[0].month)
-        setStoryDate2(props.post.time_end[0].month+"."+props.post.time_end[0].year)
-      if(props.post.time_end[0].day)
-        setStoryDate2(props.post.time_end[0].day+"."+props.post.time_end[0].month+"."+props.post.time_end[0].year)
-      }
-    }
+    else if(props.post.time_start[0].type=="decade")
+      setStoryDate1(props.post.time_start[0].date+"0s")
+    if(props.post.time_end.length >0 ){
+      if(props.post.time_end[0].type=="specific"){
+        if(props.post.time_end[0].date){
+          setStoryDate2(props.post.time_end[0].date)
+        }
+        else {
+          if(props.post.time_end[0].year)
+            setStoryDate2(props.post.time_end[0].year)
+          if(props.post.time_end[0].month)
+            setStoryDate2(props.post.time_end[0].month+"."+props.post.time_end[0].year)
+          if(props.post.time_end[0].day)
+            setStoryDate2(props.post.time_end[0].day+"."+props.post.time_end[0].month+"."+props.post.time_end[0].year)
+        }
+      }}
     var postdata = { 'story_id': props.post.story_id }
     POST_SERVICE.GET_COMMENTS(postdata)
       .then(resp => {
@@ -193,32 +196,41 @@ export default function Post(props) {
     setOpenLocation(false);
   };
 
-
+  const setTempCom = (data) =>{
+    const temp = comments;
+    temp.push(data);
+    setComments(temp);
+  }
   const handleComment = () => {
     setExpandComment(true);
-    var today=new Date();
-    const data = {
-      text: commentValue,
-      username: localStorage.getItem('username'),
-      story_id : storyData.story_id,
-      date: today.toISOString(),
-      parent_comment_id: 0,
-      child_comments: []
-    };
+    if(commentValue==""){
+      setSnackBarMessage("You should write a comment")
+      setOpenSnackBar(true)}
+    else{var today=new Date();
+      
     POST_SERVICE.POST_COMMENT({ text: commentValue, username: localStorage.getItem('username'), story_id: storyData.story_id, parent_comment_id: 0 })
       .then((response) => {
-        setCommentCount(commentCount + 1)
         setSnackBarMessage("Your comment is added!");
+        setCommentCount(commentCount + 1)
         setOpenSnackBar(true);
+        var idi = response.data.return
+        const data = {
+          text: commentValue,
+          username: localStorage.getItem('username'),
+          story_id : storyData.story_id,
+          date: today.toISOString(),
+          parent_comment_id: 0,
+          id:idi,
+          child_comments: []
+        };
+        setTempCom(data)
+        
       }).catch((error) => {
         setSnackBarMessage("Comment can not added!");
         setOpenSnackBar(true);
       });
-
-    const temp = comments;
-    temp.push(data);
-    setComments(temp);
     setCommentValue("");
+  }
   };
 
   const showAddComment = () => {
@@ -239,9 +251,10 @@ export default function Post(props) {
                 variant="filled"
                 value={commentValue}
                 onChange={(e) => setCommentValue(e.target.value)}
+                required
               ></TextField>
             </p>
-            <p style={{ textAlign: "right", color: "gray" }}>
+            <p style={{ textAlign: "right", color: "gray", marginTop:40 }}>
               <Button onClick={handleComment}>COMMENT</Button>
             </p>
           </Grid>
@@ -284,9 +297,9 @@ export default function Post(props) {
         subheader={
           <Grid container columns={2} justifyContent="center" spacing={3}>
             <Grid item columns={2} justifyContent="center" alignItems="center" spacing={3}>
-              <Button>
+              <Button style={{textTransform: 'none'}}>
                 <DateRange />
-                <Typography variant="h10"> {storyDate1} - {storyDate2} </Typography></Button></Grid>
+                <Typography variant="body2" style={{marginLeft:5}}> {storyDate2? (storyDate1 + " - " + storyDate2):(storyDate1)} </Typography></Button></Grid>
             <Grid item columns={2} alignItems="center" alignItems="center" spacing={3} >
               <Button onClick={handleOpenLocation} style={{ textTransform: 'none' }} >
                 {(storyData && storyData.locations && storyData.locations.length > 0)
@@ -381,7 +394,7 @@ export default function Post(props) {
                 horizontal: "left",
               }}
               open={openSnackBar}
-              autoHideDuration={6000}
+              autoHideDuration={3000}
               onClose={handleClose}
               message={snackBarMessage}
               action={
