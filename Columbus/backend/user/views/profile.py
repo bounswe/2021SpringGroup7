@@ -146,5 +146,5 @@ class DeleteProfile(generics.CreateAPIView):
         if user:
             user = User.objects.get(id=user_id)
             user.delete()
-            return JsonResponse({'response': f'{request.user} is deleted'}, status=403)
+            return JsonResponse({'response': f'{request.user} is deleted'})
         return JsonResponse({'response': 'Provide valid password'})
