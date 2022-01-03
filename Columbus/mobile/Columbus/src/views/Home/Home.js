@@ -1,12 +1,12 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, RefreshControl} from 'react-native';
 import {
-  Button,
-  Spinner,
-  NativeBaseProvider,
+  View,
+  Text,
+  TouchableOpacity,
   ScrollView,
-  VStack,
-} from 'native-base';
+  RefreshControl,
+} from 'react-native';
+import {Button, Spinner, NativeBaseProvider, VStack} from 'native-base';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {useAuth} from '../../context/AuthContext';
@@ -21,8 +21,7 @@ const Home = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
-
-  let token = '';
+  const [token, setToken] = useState(user.userInfo.token);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -42,7 +41,7 @@ const Home = ({navigation}) => {
   useEffect(() => {
     console.log('ASDASD');
     if (user) {
-      token = user.userInfo.token;
+      setToken(user.userInfo.token);
       storiesRequest(user.userInfo.username);
     } else {
       setLoading(true);
