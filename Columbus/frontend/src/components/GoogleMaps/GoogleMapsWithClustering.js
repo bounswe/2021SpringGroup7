@@ -1,5 +1,5 @@
 import React from 'react'
-import { GoogleMap, InfoWindow, Marker, MarkerClusterer,useGoogleMap } from '@react-google-maps/api';
+import { GoogleMap, InfoWindow, Marker, MarkerClusterer } from '@react-google-maps/api';
 
 
 const containerStyle = {
@@ -8,22 +8,11 @@ const containerStyle = {
     margin: "5%",
 };
 
-  
-
-const options = {
-  //imagePath:
-  //  'https://columbus-test.s3.eu-central-1.amazonaws.com/markers/story', // so you must have m1.png, m2.png, m3.png, m4.png, m5.png and m6.png in that folder
-  //imageExtension: "png"
-}
 
 function createKey(story, location) {
   return story.story_id.toString() + story.createDateTime + location.location + location.latitude + location.longitude
 }
   
-// function handleClusterClick(cluster : Cluster){
-//   console.logcluster.markers
-// } 
-
 let markerStoryDict = {};
 
 const IstanbulGeolocation = {
@@ -47,7 +36,7 @@ export default function GoogleMapsWithClustering({center, stories, setStories, s
             onClick={e => setGeolocation({lat: e.latLng.lat(), lng: e.latLng.lng()})}
             zoom={10}
           >
-              <MarkerClusterer options={options} onClick={(cluster) => {
+              <MarkerClusterer onClick={(cluster) => {
                 setStories(cluster.getMarkers().map(marker => markerStoryDict[marker.getTitle()]))
               }}>
               {(clusterer) =>
