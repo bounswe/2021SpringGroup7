@@ -109,7 +109,7 @@ export default function CreatePostDialog({
       var year = date.getFullYear();
     var month = null;
     var day =null
-    if(dateTypeList.length>2){
+    if(dateTypeList.length>=2){
       month = date.getMonth()+1;}
     if(dateTypeList.length==3){
         day= date.getDate();}
