@@ -46,7 +46,6 @@ const StorySearch = props => {
     {
       onSuccess(response) {
         setSearchResult(response.data.return);
-        console.log(`response.data.return`, response.data.return)
         setIsLoading(false);
       },
       onError({response}) {
@@ -86,7 +85,6 @@ const StorySearch = props => {
     if(tags?.tagsArray.length>0){
       data['tags']=tags.tagsArray
     }
-    console.log(`data`, data)
     
     JSON.stringify(data);
 
