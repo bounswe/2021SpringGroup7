@@ -86,10 +86,22 @@ export const SERVICE = {
     });
   },
   getLikes: async ({params, token}) => {
-    const uri= await "/user/get_likes/"+params+'/'
+    const uri = (await '/user/get_likes/') + params + '/';
     return await API_INSTANCE.get(uri, {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
 
+  getSearchUsers: async (params, token) => {
+    console.log('here');
+    return await API_INSTANCE.post(`/search/user_search/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  getSearch: async (params, token) => {
+    console.log('here');
+    return await API_INSTANCE.post(`/search/search/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
 };

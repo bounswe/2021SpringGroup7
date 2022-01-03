@@ -19,7 +19,7 @@ const ConnectionModal = props => {
   const handleOpenProfile = (user_id, username) => {
     props.closeModal();
     if (user && user.userInfo.user_id === user_id) {
-      return props.navigation.push('ProfilePage');
+      return props.navigation.push('Profile');
     } else {
       return props.navigation.push('OtherProfiles', {
         userId: user_id,

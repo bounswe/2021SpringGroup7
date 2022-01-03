@@ -626,6 +626,11 @@ class UserSearch(generics.CreateAPIView):
                 result_temp["email"] = each["email"]
                 temp_user = User.objects.get(username = result_temp["username"])
                 result_temp["user_id"] = temp_user.id
+                try:
+                    temp_profile = Profile.objects.get(user_id__username = result_temp["username"])
+                    result_temp["photo_url"] = temp_profile.photo_url
+                except:
+                    result_temp["photo_url"] = None
                 result_new.append(result_temp)
             result = result_new
 
@@ -856,7 +861,7 @@ class Search(generics.CreateAPIView):
                         story_end_date = date_to_minute(story_end_date[0])
 
                     total = sorted([(query_start_date, "query_start_date"),(query_end_date, "query_end_date"),(story_start_date, "story_start_date"),(story_end_date, "story_end_date")])
-                    
+
                     if (total[0][1][0]!=total[1][1][0]) or (total[0][1][0]==total[1][1][0] and total[1][0]==total[2][0]):
                         stories.append(each)
                 stories_returned = stories_returned.intersection(set(stories))
