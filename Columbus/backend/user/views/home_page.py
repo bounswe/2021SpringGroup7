@@ -103,6 +103,8 @@ class HomePage(generics.CreateAPIView):
 
         else:
             result = []
-
-        result = filter_result(username,result)
+        try:
+            result = filter_result(username,result)
+        except:
+            pass
         return JsonResponse({'return': result}, status=200)
