@@ -1,3 +1,4 @@
+import requests
 from django.shortcuts import render
 from .serializers import *
 from rest_framework.authtoken.models import Token
@@ -14,7 +15,6 @@ import nltk
 import math
 from datetime import datetime
 import string
-
 
 class TitleExactSearch(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -678,6 +678,7 @@ class Search(generics.CreateAPIView):
         search_day_end = body.get('search_day_end', -1)
         search_hour_end = body.get('search_hour_end', -1)
         search_minute_end = body.get('search_minute_end', -1)
+        tags = body.get('tags', -1)
 
         if page_number<1:
             result = []
@@ -867,8 +868,47 @@ class Search(generics.CreateAPIView):
                 stories_returned = stories_returned.intersection(set(stories))
 
 
-
         stories_returned = list(set(stories_returned))
+        if tags != -1:
+            story_with_tags = []
+            for each in tags:
+                try:
+                    tags_normal = Tag.objects.filter(tag=each)
+                    for temp in tags_normal:
+                        try:
+                            story_with_tags.append(temp.story_id.id)
+                        except:
+                            continue
+                except:
+                    continue
+                wiki_params = {
+                    'action': 'wbsearchentities',
+                    'format': 'json',
+                    'language': 'en',
+                    'search': each
+                }
+                r = requests.get("https://www.wikidata.org/w/api.php", params=wiki_params)
+                wikidata = []
+                index = 0
+                for each in r.json()['search']:
+                    if index < 10:
+                        wikidata.append(each['label'])
+                    index = index + 1
+                for each_wd in list(set(wikidata)):
+                    try:
+                        tag_wd = Tag.objects.filter(tag=each_wd)
+                        for temp in tag_wd:
+                            try:
+                                story_with_tags.append(temp.story_id.id)
+                            except:
+                                continue
+                    except:
+                        continue
+            temp_stories = []
+            for each in stories_returned:
+                if each.id in story_with_tags:
+                    temp_stories.append(each)
+            stories_returned = temp_stories
         stories_returned = stories_returned[(page_number-1)*page_size: page_number*page_size]
         if len(stories_returned)!=0:
             serialized_obj = serializers.serialize('json', stories_returned)
