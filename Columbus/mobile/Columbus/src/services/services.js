@@ -93,8 +93,19 @@ export const SERVICE = {
   },
 
   getSearchUsers: async (params, token) => {
-    console.log('here');
     return await API_INSTANCE.post(`/search/user_search/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
+  postBlockUser: async (params, token) => {
+    return await API_INSTANCE.post(`/user/block/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
+  postReportUser: async (params, token) => {
+    return await API_INSTANCE.post(`/user/report_user/`, params, {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
