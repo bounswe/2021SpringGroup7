@@ -199,6 +199,8 @@ const OtherProfiles = ({navigation, route}) => {
           closeModal={() => setShowSpamModal(false)}
           reportedUsername={route.params.username}
           reporterUsername={user.userInfo.username}
+          blocker={user.userInfo.user_id}
+          blocked={route.params.userId}
           token={user.userInfo.token}
         />
       )}

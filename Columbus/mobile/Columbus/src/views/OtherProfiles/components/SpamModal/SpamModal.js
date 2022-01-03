@@ -54,8 +54,8 @@ const SpamModal = props => {
       }
     } else {
       const data = JSON.stringify({
-        blocker: props.reporterUsername,
-        blocked: props.reportedUsername,
+        blocker: props.blocker,
+        blocked: props.blocked,
         action_block: true,
       });
       try {
