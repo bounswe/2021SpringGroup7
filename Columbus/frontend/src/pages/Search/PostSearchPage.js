@@ -51,6 +51,30 @@ function getMaxDayByYearAndMonth(year, month){
   }
 }
 
+function getNewDate(searchParams, dateType){
+  let dateData = "";
+  if (dateType === "specific") {
+    dateData = {
+      startDate: {
+        year: parseInt(searchParams.get("startYear")),
+        month: parseInt(searchParams.get("startMonth")),
+        day: parseInt(searchParams.get("startDay"))
+      },
+      endDate: {
+        year: parseInt(searchParams.get("endYear")),
+        month: parseInt(searchParams.get("endMonth")),
+        day: parseInt(searchParams.get("endDay"))
+      },
+    };
+  } else if (dateType) {
+    console.log("here3")
+    if (searchParams.get("date")) {
+      dateData = parseInt(searchParams.get("date"));
+    }
+  }
+  return dateData;
+}
+
 export default function PostSearchPage() {
   let [searchParams, setSearchParams] = useSearchParams();
   const [allStories, setAllStories] = React.useState([]);
@@ -70,29 +94,10 @@ export default function PostSearchPage() {
   const [tagText, setTagText] = React.useState("");
   const [tags, setTags] = React.useState(searchParams.get("tags") ? searchParams.get("tags").split('|') : [])
   const [isLoading, setIsLoading] = React.useState(true);
-  const [date, setDate] = React.useState("");
+
+  const [date, setDate] = React.useState(getNewDate(searchParams, dateType));
   React.useEffect(() => {
-    let dateData = "";
-    if (dateType === "specific") {
-      dateData = {
-        startDate: {
-          year: searchParams.get("startYear"),
-          month: searchParams.get("startMonth"),
-          day: searchParams.get("startDay")
-        },
-        endDate: {
-          year: searchParams.get("endYear"),
-          month: searchParams.get("endMonth"),
-          day: searchParams.get("endDay")
-        },
-      };
-    } else if (dateType) {
-      console.log("here3")
-      if (searchParams.get("date")) {
-        dateData = parseInt(searchParams.get("date"));
-      }
-    }
-    setDate(dateData)
+    setDate(getNewDate(searchParams, dateType))
   }, [dateType])
   
 
@@ -347,7 +352,7 @@ export default function PostSearchPage() {
                       label="Start Year"
                       type="number"
                       variant="outlined"
-                      value={date ? date.startDate.year : null}
+                      value={date.startDate ? date.startDate.year : null}
                       onChange={handleStartYearChange}
                       inputProps={{min: 0, max: date.endDate.year ? date.endDate.year : new Date().getFullYear()}}
                       placeholder="Please enter the start year"
@@ -358,7 +363,7 @@ export default function PostSearchPage() {
                       label="Start Month"
                       type="number"
                       variant="outlined"
-                      value={date ? date.startDate.month : null}
+                      value={date.startDate ? date.startDate.month : null}
                       onChange={handleStartMonthChange}
                       inputProps={{min: 1, max: date.endDate.year === date.startDate.year ? date.endDate.month : 12 }}
                       placeholder="Please enter the start month"
@@ -368,7 +373,7 @@ export default function PostSearchPage() {
                       label="Start Day"
                       type="number"
                       variant="outlined"
-                      value={date ? date.startDate.day : null}
+                      value={date.startDate ? date.startDate.day : null}
                       onChange={handleStartDayChange}
                       inputProps={{min: 1, max: date.endDate.year === date.startDate.year && date.endDate.month === date.startDate.month ? date.endDate.day : getMaxDayByYearAndMonth(date.startDate.year, date.startDate.month)}}
                       placeholder="Please enter the start day"
@@ -380,7 +385,7 @@ export default function PostSearchPage() {
                       label="End Year"
                       type="number"
                       variant="outlined"
-                      value={date ? date.endDate.year : null}
+                      value={date.endDate ? date.endDate.year : null}
                       onChange={handleEndYearChange}
                       inputProps={{min: date.startDate.year, max: new Date().getFullYear()}}
                       placeholder="Please enter the end year"
@@ -390,7 +395,7 @@ export default function PostSearchPage() {
                       label="End Month"
                       type="number"
                       variant="outlined"
-                      value={date ? date.endDate.month : null}
+                      value={date.endDate ? date.endDate.month : null}
                       onChange={handleEndMonthChange}
                       inputProps={{min: date.endDate.year === date.startDate.year ? date.startDate.month : 1, max: 12 }}
                       placeholder="Please enter the end month"
@@ -400,7 +405,7 @@ export default function PostSearchPage() {
                       label="End Day"
                       type="number"
                       variant="outlined"
-                      value={date ? date.endDate.day : null}
+                      value={date.endDate ? date.endDate.day : null}
                       onChange={handleEndDayChange}
                       inputProps={{min: date.endDate.year === date.startDate.year && date.endDate.month === date.startDate.month ? date.endDate.day : 1, max: getMaxDayByYearAndMonth(date.endDate.year, date.endDate.month)}}
                       placeholder="Please enter the end day"
