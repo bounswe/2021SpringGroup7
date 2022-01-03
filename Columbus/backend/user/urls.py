@@ -40,4 +40,5 @@ path('admin/action_reported_tags', views.admin.AdminActionReportTag.as_view()),
 path('get_notifications/', views.activity_stream.GetNotifications.as_view()),
 path('get_follow_request/', views.follow.GetFollowRequest.as_view()),
 path('accept_follow_request/', views.follow.AcceptFollowRequest.as_view()),
+path('explore/', views.explore.Explore.as_view()),
 ]
