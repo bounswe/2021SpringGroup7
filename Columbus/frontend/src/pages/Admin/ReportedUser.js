@@ -23,7 +23,7 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 
 function ReportedUser(props) {
 
-  const { reportedUser, setUserAction } = props;
+  const { reportedUser, userAction, setUserAction } = props;
 
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [message, setMessage] = useState(false);
@@ -42,8 +42,8 @@ function ReportedUser(props) {
             setMessage(res.data.return);
             setOpenSnackBar(true);
             setTimeout(() => {
-                setUserAction(true);
-            }, 1000);   
+                setUserAction(!userAction);
+            }, 600);   
         })
       .catch((error) => {
 
@@ -58,8 +58,8 @@ function ReportedUser(props) {
           setMessage(res.data.return);
           setOpenSnackBar(true);
           setTimeout(() => {
-                setUserAction(true);
-            }, 1000);
+                setUserAction(!userAction);
+            }, 600);
         })
       .catch((error) => {
 
@@ -152,7 +152,7 @@ function ReportedUser(props) {
 
         <Snackbar 
             open={openSnackBar} 
-            autoHideDuration={6000} 
+            autoHideDuration={600} 
             onClose={handleCloseSnackbar}
             anchorOrigin={{
                 vertical: "bottom",

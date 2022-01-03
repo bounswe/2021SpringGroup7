@@ -23,7 +23,7 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 
 function ReportedStory(props) {
 
-  const { reportedUser, setUserAction } = props;
+  const { reportedStory, storyAction, setStoryAction } = props;
 
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [message, setMessage] = useState(false);
@@ -35,15 +35,15 @@ function ReportedStory(props) {
     setOpenSnackBar(false);
   };
 
-  const handleSafeUser = () => 
+  const handleSafeStory = () => 
   {
-      ADMIN_SERVICE.ACTION_REPORTEDUSER(reportedUser['report_id'],true)
+      ADMIN_SERVICE.ACTION_REPORTEDSTORY(reportedStory['report_id'],true)
       .then((res) => {
             setMessage(res.data.return);
             setOpenSnackBar(true);
             setTimeout(() => {
-                setUserAction(true);
-            }, 1000);   
+                setStoryAction(!storyAction);
+            }, 600);   
         })
       .catch((error) => {
 
@@ -51,15 +51,15 @@ function ReportedStory(props) {
     
   };
 
-    const handleUnsafeUser = () => 
+    const handleUnsafeStory = () => 
   {
-      ADMIN_SERVICE.ACTION_REPORTEDUSER(reportedUser['report_id'],false)
+      ADMIN_SERVICE.ACTION_REPORTEDSTORY(reportedStory['report_id'],false)
       .then((res) => {
           setMessage(res.data.return);
           setOpenSnackBar(true);
           setTimeout(() => {
-                setUserAction(true);
-            }, 1000);
+                setStoryAction(!storyAction);
+            }, 600);
         })
       .catch((error) => {
 
@@ -67,11 +67,11 @@ function ReportedStory(props) {
     
   };
 
-    if(reportedUser === "No Reported User") 
+    if(reportedStory === "T") 
   {
     return (
         <Container fixed>
-            No reported user.
+            No reported story.
         </Container>
       );
   }
@@ -80,7 +80,7 @@ function ReportedStory(props) {
   return (
       <>
         <Container fixed>
-            Reported User
+             Reported Story
              <List>
             <ListItem
              secondaryAction={
@@ -90,7 +90,7 @@ function ReportedStory(props) {
                             edge="end" 
                             aria-label="delete"
                             color="success"
-                            onClick={handleSafeUser}
+                            onClick={handleSafeStory}
                             endIcon={<CheckIcon/>}>
                         Safe
                         </Button>
@@ -99,19 +99,19 @@ function ReportedStory(props) {
                             edge="end" 
                             aria-label="delete"
                             color="error"
-                            onClick={handleUnsafeUser}
+                            onClick={handleUnsafeStory}
                             endIcon={<PriorityHighIcon/>}>
                         Unsafe
                         </Button>
                     </Stack>
                   }>
-            <ListItemAvatar>
-                <Avatar src={reportedUser['reported_user']['photo_url']}>
-                </Avatar>
-            </ListItemAvatar>
-            <ListItemText
-                primary={reportedUser['reported_user']['username']}
-            />
+                <ListItemAvatar>
+                    <Avatar src={reportedStory['reported_story']['photo_url']}>
+                    </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                    primary={reportedStory['reported_story']['owner_username']}
+                />
             </ListItem>                            
             </List>
             <Box>
@@ -126,22 +126,22 @@ function ReportedStory(props) {
                        />
                     <CardContent>
                             <Typography variant="h10" color="primary">
-                               {'Name'}
-                            </Typography>
-                            <Typography variant="body2" color="primary">
-                               {reportedUser['reported_user']['first_name'] + ' ' + reportedUser['reported_user']['last_name']}
-                            </Typography>
-                            <Typography variant="h10" color="primary">
-                               {'Email'}
+                               {'Story Owner'}
                             </Typography>
                             <Typography variant="body2">
-                                {reportedUser['reported_user']['email']}
+                                {reportedStory['reported_story']['owner_username']}
+                            </Typography>
+                            <Typography variant="h10" color="primary">
+                               {'Story Title'}
+                            </Typography>
+                            <Typography variant="body2">
+                               {reportedStory['reported_story']['title']}
                             </Typography>
                             <Typography variant="h10" color="primary">
                                {'Report Reason'}
                             </Typography>
                             <Typography variant="body2">
-                                {reportedUser['report_text']}
+                                {reportedStory['report']}
                             </Typography>
                       </CardContent>
                     </Card>
@@ -152,7 +152,7 @@ function ReportedStory(props) {
 
         <Snackbar 
             open={openSnackBar} 
-            autoHideDuration={6000} 
+            autoHideDuration={600} 
             onClose={handleCloseSnackbar}
             anchorOrigin={{
                 vertical: "bottom",
