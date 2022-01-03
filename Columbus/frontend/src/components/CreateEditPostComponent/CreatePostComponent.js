@@ -60,6 +60,7 @@ export default function CreatePostDialog({
   const [errorIndex, setErrorIndex] = React.useState(null);
   const [topic, setTopic] = React.useState(topicInit);
   const [decade, setDecade] = React.useState("2020s");
+  const [century, setCentury] = React.useState("19.");
   const [story, setStory] = React.useState(storyInit);
   const [tags, setTags] = React.useState(tagsInit);
   const [allTags, setAllTags] = React.useState([{ title: "Hello" }]);
@@ -86,6 +87,10 @@ export default function CreatePostDialog({
   const handleDecade = (date) =>{
     setDecade(date.target.value);
     setStartDateDict({type:"decade",date: date.target.value});
+  }
+  const handleCentury = (date) =>{
+    setCentury(date.target.value);
+    setStartDateDict({type:"century",date: date.target.value});
   }
   const handleDateChange1 = (date) => {
     if(date==null)
@@ -370,6 +375,7 @@ export default function CreatePostDialog({
             label="Date Type"
             required
           >
+            <MenuItem value={"Century"}>Century</MenuItem>
             <MenuItem value={"Decade"}>Decade</MenuItem>
             <MenuItem value={"Year"}>Year</MenuItem>
             <MenuItem value={"Month"}>Month</MenuItem>
@@ -406,7 +412,7 @@ export default function CreatePostDialog({
           onChange={handleDateChange2}
           renderInput={(params) => <TextField {...params} helperText={null} />}
               required
-              minDate={startDate ? startDate : new Date("1900-01-01")}
+              minDate={startDate ? startDate : new Date("1600-01-01")}
               maxDate={Date.now()}
               minDateMessage="End date can't be before than start date"
             /></LocalizationProvider>
@@ -435,6 +441,27 @@ export default function CreatePostDialog({
             <MenuItem value={201}>2010s</MenuItem>
             <MenuItem value={202}>2020s</MenuItem>
           </Select>
+        </FormControl>:<>{dateType=="Century"? <FormControl fullWidth >
+          <InputLabel id="century" >Century</InputLabel>
+          <Select
+            variant="standard"
+            value={century}
+            onChange={handleCentury}
+            label="Century"
+            required
+          >
+            <MenuItem value={10}>10.</MenuItem>
+            <MenuItem value={11}>11.</MenuItem>
+            <MenuItem value={12}>12.</MenuItem>
+            <MenuItem value={13}>13.</MenuItem>
+            <MenuItem value={14}>14.</MenuItem>
+            <MenuItem value={15}>15.</MenuItem>
+            <MenuItem value={16}>16.</MenuItem>
+            <MenuItem value={17}>17.</MenuItem>
+            <MenuItem value={18}>18.</MenuItem>
+            <MenuItem value={19}>19.</MenuItem>
+            <MenuItem value={20}>20.</MenuItem>
+          </Select>
         </FormControl>:<MuiPickersUtilsProvider utils={DateFnsUtils}> <Box>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
@@ -444,10 +471,10 @@ export default function CreatePostDialog({
           value={startDate}
           onChange={handleDateChange1}
           renderInput={(params) => <TextField {...params} helperText={null} />}
-          minDate={new Date("1900-01-01")}
+          minDate={new Date("1600-01-01")}
           maxDate={Date.now()}
         /></LocalizationProvider>
-          </Box></MuiPickersUtilsProvider>}</>}
+          </Box></MuiPickersUtilsProvider>}</>}</>}
         {errorIndex !==null ? <Typography>Please select a location on map for location {errorIndex+1}</Typography> : null}
         <Box>
         <Button type='submit' size='large' color="primary"  variant="contained">
