@@ -66,8 +66,11 @@ function getNewDate(searchParams, dateType){
         day: parseInt(searchParams.get("endDay"))
       },
     };
-  } else if (dateType) {
-    console.log("here3")
+  } else if (dateType === "decade") {
+    if (searchParams.get("date")) {
+      dateData = parseInt(searchParams.get("date")) * 10;
+    }
+  }else if(dateType){
     if (searchParams.get("date")) {
       dateData = parseInt(searchParams.get("date"));
     }
@@ -338,7 +341,7 @@ export default function PostSearchPage() {
                 id="outlined-basic"
                 label="Decade"
                 variant="outlined"
-                value={date}
+                value={date + "s"}
                 onChange={handleDateChange}
                 inputProps={{ pattern: "\\d{1,3}0s" }}
                 placeholder="1960s"
