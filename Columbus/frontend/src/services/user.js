@@ -58,11 +58,17 @@ const USER_SERVICE = {
                                                                                             "reported_username": reportedUser,
                                                                                             "reporter_username": reporterUser,
                                                                                             "report": reportMessage
+
                                                                                           }),  
   DELETE_PROFILE: (userId, password) => API_INSTANCE.post(`/user/delete_profile/`, {
                                                                                     "user_id": userId,
                                                                                     "password": password
                                                                                   }),                                                                                       
+  SEARCH_USER: (searchText) => API_INSTANCE.post(`/search/user_search/`, {
+                                                                          "search_text": searchText,
+                                                                          page_number: 1,
+                                                                          page_size: 99999
+                                                                        }),                                                                                     
 };
 
 export default USER_SERVICE;
