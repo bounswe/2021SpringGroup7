@@ -102,7 +102,7 @@ class GetReportStory(generics.CreateAPIView):
             result_dict['reporter_id'] = reported_story['reporter_id_id']
             result_dict['report_id'] = reported_story['id']
             result_list.append(result_dict)
-        return JsonResponse({'return': result_list}, status=400)
+        return JsonResponse({'return': result_list})
 
 class AdminActionReportStory(generics.CreateAPIView):
     serializer_class = AdminActionSerializer
@@ -291,7 +291,7 @@ class GetReportComment(generics.CreateAPIView):
             'reporter_id' : reported_comment.reporter_id.id
         }
 
-        return JsonResponse({'return': result_dict}, status=400)
+        return JsonResponse({'return': result_dict})
 
 class AdminActionReportComment(generics.CreateAPIView):
     serializer_class = AdminActionSerializer
