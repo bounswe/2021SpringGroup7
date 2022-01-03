@@ -95,6 +95,8 @@ export default function Post(props) {
   const classes = useStyles();
   const [reportMessageOpen, setReportMessageOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [storyTitle, setStoryTitle] = useState(props.post.title);
+  const [storyText, setStoryText] = useState(props.post.text);
   const [expanded, setExpanded] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [expandComment, setExpandComment] = useState(false);
@@ -306,6 +308,8 @@ export default function Post(props) {
     const data = new FormData(document.getElementById("editPost-form"));
     POST_SERVICE.POST_EDIT({title:data.get('topic'), text:data.get('story'), tags:storyData.tags, story_id:storyData.story_id})
     .then((response)=>{
+      setStoryText(data.get('story'))
+      setStoryTitle(data.get('topic'))
       setSnackBarMessage("Post editted!")
       setOpenSnackBar(true)
       editPostClose()
@@ -443,8 +447,8 @@ export default function Post(props) {
         open={editOpen}
         handleClose={editPostClose}
         edit={handleEdit}
-        topic={storyData.title}
-        story={storyData.text}
+        topic={storyTitle}
+        story={storyText}
         />:null}
       <LocationDialog open={openLocation} handleClose={handleCloseLocation} locations={storyData ? storyData.locations : null} />
       {settingMenu}
@@ -476,7 +480,7 @@ export default function Post(props) {
           
         }
         title={<Typography variant="h5" >{storyData
-          ? storyData.title
+          ? storyTitle
           : "?"}</Typography>}
 
         subheader={
@@ -512,7 +516,7 @@ export default function Post(props) {
           <Grid item xs={11} justifyContent="center" alignContent="center">
             <CardContent>
               <Typography variant="body2" color="textSecondary" component="p">
-                {storyData ? storyData.text  : ""}
+                {storyData ? storyText  : ""}
                 <div></div>
                 {storyData
                   ? storyData.tags.map((item, index) => {
@@ -540,7 +544,7 @@ export default function Post(props) {
           
         </Grid>) : (<Grid container justifyContent="center" ><Grid item xs={11} justifyContent="center" alignContent="center">
           <Typography variant="body2" color="textSecondary" component="p" >
-            {storyData ? (expanded ? storyData.text : (storyData.text.substring(0, 500) + "...")) : ""}
+            {storyData ? (expanded ? storyText : (storyText.substring(0, 500) + "...")) : ""}
             <div></div>
             {storyData
               ? storyData.tags.map((item, index) => {
