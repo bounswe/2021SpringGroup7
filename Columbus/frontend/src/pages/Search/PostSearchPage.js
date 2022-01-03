@@ -68,7 +68,7 @@ function getNewDate(searchParams, dateType){
     };
   } else if (dateType === "decade") {
     if (searchParams.get("date")) {
-      dateData = parseInt(searchParams.get("date")) * 10;
+      dateData = parseInt(searchParams.get("date")) * 10 + "s";
     }
   }else if(dateType){
     if (searchParams.get("date")) {
@@ -341,7 +341,7 @@ export default function PostSearchPage() {
                 id="outlined-basic"
                 label="Decade"
                 variant="outlined"
-                value={date + "s"}
+                value={date}
                 onChange={handleDateChange}
                 inputProps={{ pattern: "\\d{1,3}0s" }}
                 placeholder="1960s"
