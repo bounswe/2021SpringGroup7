@@ -26,13 +26,14 @@ export default function FollowerDialog(props) {
                     <List sx={{ pt: 0 }}>
                         {accounts.map((account) => (
                             <>                     
-                            <ListItem button component="a" href={'/Profile/' + (account['user_id'] || account['follow'])} key={account}>
+                            <ListItem button component="a" href={'/Profile/' + (account['user_id'])} key={account}>
                                 <ListItemAvatar>
-                                <Avatar>
+                                <Avatar
+                                    src={account['photo_url']}>
                                     <PersonIcon />
                                 </Avatar>
                                 </ListItemAvatar>
-                                <ListItemText primary={account['user_id__username'] || account['follow__username']} />
+                                <ListItemText primary={account['username']} />
                             </ListItem>
                              <Divider/>
                             </>
