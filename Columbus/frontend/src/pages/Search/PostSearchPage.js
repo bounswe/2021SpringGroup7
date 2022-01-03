@@ -78,16 +78,12 @@ export default function PostSearchPage() {
         startDate: {
           year: searchParams.get("startYear"),
           month: searchParams.get("startMonth"),
-          day: searchParams.get("startDay"),
-          hour: searchParams.get("startHour"),
-          minute: searchParams.get("startMin"),
+          day: searchParams.get("startDay")
         },
         endDate: {
           year: searchParams.get("endYear"),
           month: searchParams.get("endMonth"),
-          day: searchParams.get("endDay"),
-          hour: searchParams.get("endHour"),
-          minute: searchParams.get("endMin"),
+          day: searchParams.get("endDay")
         },
       };
     } else if (dateType) {
@@ -119,16 +115,12 @@ export default function PostSearchPage() {
         startDate: {
           year: null,
           month: null,
-          day: null,
-          hour: null,
-          minute: null,
+          day: null
         },
         endDate: {
           year: null,
           month: null,
-          day: null,
-          hour: null,
-          minute: null,
+          day: null
         },
       });
     }else {
@@ -159,18 +151,6 @@ export default function PostSearchPage() {
     setDate(newDate);
   };
 
-  const handleStartHourChange = (event) => {
-    let newDate = {...date}
-    newDate.startDate.hour = parseInt(event.target.value)
-    setDate(newDate);
-  };
-
-  const handleStartMinChange = (event) => {
-    let newDate = {...date}
-    newDate.startDate.minute = parseInt(event.target.value)
-    setDate(newDate);
-  };
-
   const handleEndYearChange = (event) => {
     let newDate = {...date}
     newDate.endDate.year = parseInt(event.target.value)
@@ -187,18 +167,6 @@ export default function PostSearchPage() {
   const handleEndDayChange = (event) => {
     let newDate = {...date}
     newDate.endDate.day = parseInt(event.target.value)
-    setDate(newDate);
-  };
-
-  const handleEndHourChange = (event) => {
-    let newDate = {...date}
-    newDate.endDate.hour = parseInt(event.target.value)
-    setDate(newDate);
-  };
-
-  const handleEndMinChange = (event) => {
-    let newDate = {...date}
-    newDate.endDate.minute = parseInt(event.target.value)
     setDate(newDate);
   };
 
@@ -263,17 +231,6 @@ export default function PostSearchPage() {
       if(date.startDate.day){
         searchData.search_day_start = date.startDate.day
       }
-      if(date.startDate.hour){
-        searchData.search_hour_start= date.startDate.hour
-      }
-
-      if(date.startDate.year){
-        searchData.search_year_start = date.startDate.year
-      }
-
-      if(date.startDate.minute){
-        searchData.search_minute_start= date.startDate.minute
-      }
       
       if(date.endDate.year){
         searchData.search_year_end= date.endDate.year
@@ -285,14 +242,6 @@ export default function PostSearchPage() {
       
       if(date.endDate.day){
         searchData.search_day_end= date.endDate.day
-      }
-      
-      if(date.endDate.hour){
-        searchData.search_hour_end= date.endDate.hour
-      }
-      
-      if(date.endDate.minute){
-        searchData.search_minute_end = date.endDate.minute
       }
       
     }else {
@@ -424,26 +373,6 @@ export default function PostSearchPage() {
                       inputProps={{min: 1, max: date.endDate.year === date.startDate.year && date.endDate.month === date.startDate.month ? date.endDate.day : getMaxDayByYearAndMonth(date.startDate.year, date.startDate.month)}}
                       placeholder="Please enter the start day"
                     /> : null}
-                    {date.startDate.day ? <TextField
-                      id="outlined-basic-year"
-                      label="Start Hour"
-                      type="number"
-                      variant="outlined"
-                      value={date ? date.startDate.hour : null}
-                      onChange={handleStartHourChange}
-                      inputProps={{ min: 0, max: date.endDate.year === date.startDate.year && date.endDate.month === date.startDate.month && date.endDate.day === date.startDate.day ? date.endDate.hour : 24 }}
-                      placeholder="Please enter the start hour"
-                    /> : null}
-                    {date.startDate.hour ? <TextField
-                      id="outlined-basic-year"
-                      label="Start Minute"
-                      type="number"
-                      variant="outlined"
-                      value={date ? date.startDate.minute : null}
-                      onChange={handleStartMinChange}
-                      inputProps={{ min: 0, max: date.endDate.year === date.startDate.year && date.endDate.month === date.startDate.month && date.endDate.day === date.startDate.day && date.endDate.hour === date.startDate.hour ? date.endDate.minute : 59 }}
-                      placeholder="Please enter the start minute"
-                    /> : null}
                   </Stack>
                   <Stack direction="row" spacing={1}>
                     <TextField
@@ -475,26 +404,6 @@ export default function PostSearchPage() {
                       onChange={handleEndDayChange}
                       inputProps={{min: date.endDate.year === date.startDate.year && date.endDate.month === date.startDate.month ? date.endDate.day : 1, max: getMaxDayByYearAndMonth(date.endDate.year, date.endDate.month)}}
                       placeholder="Please enter the end day"
-                    /> : null}
-                    {date.endDate.day ? <TextField
-                      id="outlined-basic-year"
-                      label="End Hour"
-                      type="number"
-                      variant="outlined"
-                      value={date ? date.endDate.hour : null}
-                      onChange={handleEndHourChange}
-                      inputProps={{ min: date.endDate.year === date.startDate.year && date.endDate.month === date.startDate.month && date.endDate.day === date.startDate.day ? date.startDate.hour : 0, max: 24 }}
-                      placeholder="Please enter the end hour"
-                    /> : null}
-                    {date.endDate.hour ? <TextField
-                      id="outlined-basic-year"
-                      label="End Minute"
-                      type="number"
-                      variant="outlined"
-                      value={date ? date.endDate.minute : null}
-                      onChange={handleEndMinChange}
-                      inputProps={{ min: date.endDate.year === date.startDate.year && date.endDate.month === date.startDate.month && date.endDate.day === date.startDate.day && date.endDate.hour === date.startDate.hour ? date.startDate.minute : 0, max: 59 }}
-                      placeholder="Please enter the end minute"
                     /> : null}
                   </Stack>
                 </Stack>
