@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -20,6 +21,8 @@ import {
 } from "@material-ui/core";
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
+import ReportMessageDialog from '../../components/Dialogs/ReportMessageDialog/ReportMessageDialog';
+import EditPostDialog from '../../components/Dialogs/EditPostDialog/EditPostDialog';
 import Delete from '@material-ui/icons/Delete';
 import clsx from "clsx";
 import { red } from "@material-ui/core/colors";
@@ -88,7 +91,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Post(props) {
+  const navigate = useNavigate();
   const classes = useStyles();
+  const [reportMessageOpen, setReportMessageOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [storyTitle, setStoryTitle] = useState(props.post.title);
+  const [storyText, setStoryText] = useState(props.post.text);
   const [expanded, setExpanded] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [expandComment, setExpandComment] = useState(false);
@@ -108,7 +116,7 @@ export default function Post(props) {
   const [likeCount, setLikeCount] = useState(0);
   const [commentCount, setCommentCount] = useState(0);
   const [openLocation, setOpenLocation] = useState(false);
-
+  var months =["January","February","March","April","May","June","July","August","September","October","November","December"]
 
   useEffect(() => {
     setStoryData(props.post);
@@ -127,13 +135,15 @@ export default function Post(props) {
       if(props.post.time_start[0].year)
         setStoryDate1(props.post.time_start[0].year)
       if(props.post.time_start[0].month)
-        setStoryDate1(props.post.time_start[0].month+"."+props.post.time_start[0].year)
+        setStoryDate1(months[props.post.time_start[0].month]+" "+props.post.time_start[0].year)
       if(props.post.time_start[0].day)
-        setStoryDate1(props.post.time_start[0].day+"."+props.post.time_start[0].month+"."+props.post.time_start[0].year)
+        setStoryDate1(props.post.time_start[0].day+" "+months[props.post.time_start[0].month]+" "+props.post.time_start[0].year)
       }
     }
     else if(props.post.time_start[0].type=="decade")
       setStoryDate1(props.post.time_start[0].date+"0s")
+    else if(props.post.time_start[0].type=="century")
+      setStoryDate1(props.post.time_start[0].date+". Century")
     if(props.post.time_end.length >0 ){
       if(props.post.time_end[0].type=="specific"){
         if(props.post.time_end[0].date){
@@ -143,9 +153,9 @@ export default function Post(props) {
           if(props.post.time_end[0].year)
             setStoryDate2(props.post.time_end[0].year)
           if(props.post.time_end[0].month)
-            setStoryDate2(props.post.time_end[0].month+"."+props.post.time_end[0].year)
+            setStoryDate2(months[props.post.time_end[0].month]+" "+props.post.time_end[0].year)
           if(props.post.time_end[0].day)
-            setStoryDate2(props.post.time_end[0].day+"."+props.post.time_end[0].month+"."+props.post.time_end[0].year)
+            setStoryDate2(props.post.time_end[0].day+" "+months[props.post.time_end[0].month]+" "+props.post.time_end[0].year)
         }
       }}
     var postdata = { 'story_id': props.post.story_id }
@@ -248,7 +258,36 @@ export default function Post(props) {
   const handleSettings=()=>{
     setAnchor(null);
   }
-  const handleReport=()=>{
+  const openReportMessage = (event) => {
+    setReportMessageOpen(true);
+  }
+
+  const closeReportMessage = (event) => {
+    setReportMessageOpen(false);
+  }
+  const editPostOpen = (event) => {
+    setEditOpen(true);
+  }
+
+  const editPostClose = (event) => {
+    setEditOpen(false);
+  }
+ 
+  const handleReport=(event)=>{
+
+    event.preventDefault();
+    const data = new FormData(document.getElementById("reportMessage-form"));
+
+    POST_SERVICE.POST_REPORT({story_id:storyData.story_id , username:localStorage.getItem("username"),text:data.get('reportMessage') })
+    .then((response)=>{
+      setSnackBarMessage("Post reported!")
+      setOpenSnackBar(true)
+      closeReportMessage()
+    })
+    .catch((error)=>{
+      setSnackBarMessage("Post can not reported!")
+      setOpenSnackBar(true)
+    })
     setAnchor(null);
   }
   const handleDelete=()=>{
@@ -264,7 +303,21 @@ export default function Post(props) {
     })
     setAnchor(null);
   }
-  const handleEdit=()=>{
+  const handleEdit=(event)=>{
+    event.preventDefault();
+    const data = new FormData(document.getElementById("editPost-form"));
+    POST_SERVICE.POST_EDIT({title:data.get('topic'), text:data.get('story'), tags:storyData.tags, story_id:storyData.story_id})
+    .then((response)=>{
+      setStoryText(data.get('story'))
+      setStoryTitle(data.get('topic'))
+      setSnackBarMessage("Post editted!")
+      setOpenSnackBar(true)
+      editPostClose()
+    })
+    .catch((error)=>{
+      setSnackBarMessage("Post can not editted!")
+      setOpenSnackBar(true)
+    })
     setAnchor(null);
   }
   const handleExpandSettings=(event)=>{
@@ -336,7 +389,7 @@ export default function Post(props) {
               aria-controls={'primary-search-account-menu'}
               aria-haspopup="true"
               className={classes.button}
-              onClick={handleEdit}
+              onClick={editPostOpen}
               startIcon={<Edit />}
             >
               Edit Post
@@ -349,7 +402,7 @@ export default function Post(props) {
               aria-controls={'primary-search-account-menu'}
               aria-haspopup="true"
               className={classes.button}
-              onClick={handleReport}
+              onClick={openReportMessage}
               startIcon={<Report />}
             >
               Report Post
@@ -384,6 +437,19 @@ export default function Post(props) {
   }
   return (
     <Card className={classes.root} elevation={1}>
+      <ReportMessageDialog
+        open={reportMessageOpen}
+        handleClose={closeReportMessage}
+        reportUser={handleReport}
+        />
+        {storyData?
+        <EditPostDialog
+        open={editOpen}
+        handleClose={editPostClose}
+        edit={handleEdit}
+        topic={storyTitle}
+        story={storyText}
+        />:null}
       <LocationDialog open={openLocation} handleClose={handleCloseLocation} locations={storyData ? storyData.locations : null} />
       {settingMenu}
       <CardHeader
@@ -414,7 +480,7 @@ export default function Post(props) {
           
         }
         title={<Typography variant="h5" >{storyData
-          ? storyData.title
+          ? storyTitle
           : "?"}</Typography>}
 
         subheader={
@@ -450,7 +516,7 @@ export default function Post(props) {
           <Grid item xs={11} justifyContent="center" alignContent="center">
             <CardContent>
               <Typography variant="body2" color="textSecondary" component="p">
-                {storyData ? storyData.text  : ""}
+                {storyData ? storyText  : ""}
                 <div></div>
                 {storyData
                   ? storyData.tags.map((item, index) => {
@@ -478,7 +544,7 @@ export default function Post(props) {
           
         </Grid>) : (<Grid container justifyContent="center" ><Grid item xs={11} justifyContent="center" alignContent="center">
           <Typography variant="body2" color="textSecondary" component="p" >
-            {storyData ? (expanded ? storyData.text : (storyData.text.substring(0, 500) + "...")) : ""}
+            {storyData ? (expanded ? storyText : (storyText.substring(0, 500) + "...")) : ""}
             <div></div>
             {storyData
               ? storyData.tags.map((item, index) => {
@@ -493,7 +559,9 @@ export default function Post(props) {
                 );
               })
               : ""}
-          </Typography></Grid> </Grid>)}
+          </Typography></Grid> </Grid>)}<Typography style={{ textTransform: 'none',textAlign: "right", color: "gray", marginRight:25 }}>
+                  Created at:
+                </Typography>
           <Typography style={{ textTransform: 'none',textAlign: "right", color: "gray", marginRight:25 }}>
                   {new Date(props.post.createDateTime).toLocaleString('tr-TR')}
                 </Typography>
