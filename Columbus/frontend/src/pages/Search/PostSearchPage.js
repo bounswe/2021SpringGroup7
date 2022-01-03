@@ -12,7 +12,7 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
 import MenuItem from "@material-ui/core/MenuItem";
-import { Paper, Select, makeStyles, Typography } from "@material-ui/core";
+import { Paper, Select, makeStyles, Typography, Chip, CircularProgress } from "@material-ui/core";
 
 const filterSectionRowStyle = {
   "margin-left": "5%",
@@ -67,7 +67,9 @@ export default function PostSearchPage() {
   const [dateType, setDateType] = React.useState(
     searchParams.get("dateType") ? searchParams.get("dateType") : ""
   );
-
+  const [tagText, setTagText] = React.useState("");
+  const [tags, setTags] = React.useState(searchParams.get("tags") ? searchParams.get("tags").split('|') : [])
+  const [isLoading, setIsLoading] = React.useState(true);
   const [date, setDate] = React.useState("");
   React.useEffect(() => {
     let dateData = "";
@@ -200,10 +202,13 @@ export default function PostSearchPage() {
     setDate(newDate);
   };
 
+  const handleAddTag = (event) => {
+    setTags(tags.concat(tagText))
+  }
 
   const handleSearch = (e) => {
     e.preventDefault()
-    search()
+    setIsLoading(true);
   };
 
   const handleCurrentLocation = () => {
@@ -235,6 +240,10 @@ export default function PostSearchPage() {
       "search_text": searchText,  
       "location_text": locationName,
       "search_date_type": dateType,
+    }
+
+    if(tags.length > 0 ){
+      searchData.tags = tags
     }
 
     if(geolocation.lat && geolocation.lng){
@@ -295,12 +304,13 @@ export default function PostSearchPage() {
     POST_SERVICE.SEARCH(searchData, localStorage.getItem("username")).then((response) => {
       setAllStories(response.data.return);
       setCurStories(response.data.return);
+      setIsLoading(false);
     });
   }
 
   React.useEffect(() => {
     search()
-  }, []);
+  }, [isLoading]);
   
   return (
     <Wrapper searchValue={searchText}>
@@ -534,7 +544,28 @@ export default function PostSearchPage() {
               </Stack>
               : null
             }
-            
+             <Stack
+                direction="row"
+                style={filterSectionRowStyle}
+                spacing={2}
+              >
+                <TextField
+                  id="outlined-basic"
+                  label="Tag"
+                  variant="outlined"
+                  value={tagText}
+                  onChange={(e) => setTagText(e.target.value)}
+                  placeholder="Tag"
+                />
+                <Button
+                  variant="contained"
+                  size="medium"
+                  onClick={handleAddTag}
+                >
+                  Add Tag
+                </Button>
+                {tags.map((tag, i) => <Chip label={tag} onDelete={() => setTags(tags.filter((val, index) => index!==i))}/>)}
+              </Stack>
           </Stack>
         </form>
       </Paper>
@@ -547,7 +578,7 @@ export default function PostSearchPage() {
           setGeolocation={setGeolocation}
         />
        : null}
-      {curStories.length>0 ? curStories.map((story) => (
+      {isLoading ? <CircularProgress>Loading...</CircularProgress> : curStories.length>0 ? curStories.map((story) => (
         <Post post={story} /> 
       )): <Typography>Could not found any stories matching the search criteria...</Typography>}
     </Wrapper>
