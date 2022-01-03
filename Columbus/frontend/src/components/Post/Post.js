@@ -43,8 +43,6 @@ import POST_SERVICE from '../../services/post';
 import api from "../../services/post";
 import { tableBodyClasses } from "@mui/material";
 
-import { useNavigate } from "react-router-dom";
-
 const imgLink =
   "https://images.pexels.com/photos/3747505/pexels-photo-3747505.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
 
