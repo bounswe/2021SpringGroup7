@@ -94,12 +94,10 @@ export default function CreatePostDialog({
       var year = date.getFullYear();
     var month = null;
     var day =null
-    if(dateTypeList.length==2){
-      if(date.getMonth)
-        month = date.getMonth();}
+    if(dateTypeList.length>2){
+        month = date.getMonth()+1;}
     if(dateTypeList.length==3){
-      if(date.getDay())
-        day= date.getDay();}
+        day= date.getDate();}
     const var1 ={type:"specific",year: year,month: month,day: day,hour: null,minute: null};
     setStartDate(date);
     setStartDateDict(var1);
@@ -111,12 +109,10 @@ export default function CreatePostDialog({
       var year = date.getFullYear();
     var month = null;
     var day =null
-    if(dateTypeList.length==2){
-      if(date.getMonth)
-        month = date.getMonth();}
+    if(dateTypeList.length>2){
+      month = date.getMonth()+1;}
     if(dateTypeList.length==3){
-      if(date.getDay())
-        day= date.getDay();}
+        day= date.getDate();}
     const var1 ={type:"specific",year: year,month: month,day: day,hour: null,minute: null};
     setEndDate(date);
     setEndDateDict(var1);
