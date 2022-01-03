@@ -54,13 +54,15 @@ const USER_SERVICE = {
                                                                                           "block": userThatIsBlocked,
                                                                                           "action_block": false
                                                                                         }), 
-  REPORT_USER: (reportedUser, reporterUser, reportMessage) => API_INSTANCE.post(`/user/report_user/`, {
-                                                                                          
+  REPORT_USER: (reportedUser, reporterUser, reportMessage) => API_INSTANCE.post(`/user/report_user/`, {                                                                                    
                                                                                             "reported_username": reportedUser,
                                                                                             "reporter_username": reporterUser,
                                                                                             "report": reportMessage
-                                                                                          }),                                                                                     
-
+                                                                                          }),  
+  DELETE_PROFILE: (userId, password) => API_INSTANCE.post(`/user/delete_profile/`, {
+                                                                                    "user_id": userId,
+                                                                                    "password": password
+                                                                                  }),                                                                                       
 };
 
 export default USER_SERVICE;

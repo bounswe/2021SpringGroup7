@@ -198,7 +198,7 @@ const renderMenu = (
                         variant="contained"
                         onClick={handleProfileMenuOpen}
                         startIcon={ <Badge badgeContent={0} >
-                                          <Avatar sx={{ width: 30, height:30 }} classname={classes.avatar}>{localStorage.getItem('username').substring(0,2)}</Avatar>
+                                          <Avatar sx={{ width: 30, height:30 }} classname={classes.avatar} src={localStorage.getItem('photo_url')}>{localStorage.getItem('username').substring(0,1).toUpperCase()}</Avatar>
                                     </Badge>}
                         style={{textTransform: 'none'}} 
                         >

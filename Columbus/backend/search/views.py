@@ -811,6 +811,24 @@ class Search(generics.CreateAPIView):
                     for date in dates:
                         if date.date==search_date:
                             stories.append(each)
+
+                    dates = Date.objects.filter(story_id = each, type = "decade", start_end_type = "start")
+                    for date in dates:
+                        if str(date.date)[:-1]==str(search_date):
+                            stories.append(each)
+
+                    dates = Date.objects.filter(story_id = each, type = "specific", start_end_type = "start")
+                    end_dates = Date.objects.filter(story_id = each, type = "specific", start_end_type = "end")
+                    for date in dates:
+                        if date.year!=None:
+                            if str(date.year)[:-2]==str(search_date):
+                                stories.append(each)
+                            if len(end_dates)==1:
+                                if end_dates[0].year!=None:
+                                    for temp_values in range(int(str(date.year)[:-2]), int(str(end_dates[0].year)[:-2])+1):
+                                        if str(temp_values)==str(search_date):
+                                            stories.append(each)
+
                 stories_returned = stories_returned.intersection(set(stories))
 
             elif search_date_type == "decade":
@@ -819,6 +837,18 @@ class Search(generics.CreateAPIView):
                     for date in dates:
                         if date.date==search_date:
                             stories.append(each)
+
+                    dates = Date.objects.filter(story_id = each, type = "specific", start_end_type = "start")
+                    end_dates = Date.objects.filter(story_id = each, type = "specific", start_end_type = "end")
+                    for date in dates:
+                        if date.year!=None:
+                            if str(date.year)[:-1]==str(search_date):
+                                stories.append(each)
+                            if len(end_dates)==1:
+                                if end_dates[0].year!=None:
+                                    for temp_values in range(int(str(date.year)[:-1]), int(str(end_dates[0].year)[:-1])+1):
+                                        if str(temp_values)==str(search_date):
+                                            stories.append(each)
                 stories_returned = stories_returned.intersection(set(stories))
 
             elif search_date_type == "specific":
