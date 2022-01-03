@@ -27,6 +27,8 @@ const Profile = ({navigation, route}) => {
   const [userInfo, setUserInfo] = useState(null);
   const [storyLoading, setStoryLoading] = useState(true);
   const [userStories, setUserStories] = useState([]);
+  const [userLikedStoryLoading, setUserLikedStoryLoading] = useState(true);
+  const [userLikedStories, setUserLikedStories] = useState([]);
   const [showConnectionsModal, setShowConnectionsModal] = useState(false);
   const [connectionModalData, setConnectionModalData] = useState(null);
   const [connectionModalHeaders, setConnectionModalHeaders] = useState('');
@@ -57,22 +59,40 @@ const Profile = ({navigation, route}) => {
       token = user.userInfo.token;
       userStoriesRequest(user.userInfo.username);
     }
-  }, [user]);
+  }, [user, navigation]);
 
   const fetchUserStories = useMutation(
-    params => SERVICE.fetchUserPosts(params, token),
+    params => SERVICE.fetchUserPosts(params, user.userInfo.token),
     {
       onSuccess(response) {
         setUserStories(response.data.return);
         setStoryLoading(false);
       },
       onError({response}) {
-        console.log('res error res: ', response);
+        setStoryLoading(false);
+        console.log('fetch story error: ', response);
+      },
+    },
+  );
+
+  const fetchUserLikedStories = useMutation(
+    params => SERVICE.fetchUserLikedPosts(params, user.userInfo.token),
+    {
+      onSuccess(response) {
+        console.log('res liked: ', response);
+        setUserLikedStories(response.data.return);
+        setUserLikedStoryLoading(false);
+      },
+      onError({response}) {
+        setUserLikedStoryLoading(false);
+        console.log('res liked error:  ', response);
       },
     },
   );
 
   const userStoriesRequest = async username => {
+    setStoryLoading(true);
+    setUserLikedStoryLoading(true);
     const data = JSON.stringify({
       username,
       page_number: 1,
@@ -80,8 +100,11 @@ const Profile = ({navigation, route}) => {
     });
     try {
       await fetchUserStories.mutateAsync(data);
+      await fetchUserLikedStories.mutateAsync(data);
     } catch (e) {
-      console.log('e: ', e);
+      setStoryLoading(false);
+      setUserLikedStoryLoading(false);
+      console.log('err: ', e);
     }
   };
 
@@ -119,17 +142,43 @@ const Profile = ({navigation, route}) => {
         </ScrollView>
       )}
       {!storyLoading && userStories.length === 0 && (
-        <Text style={{textAlign: 'center'}}>You do not share any story!</Text>
+        <View>
+          <Text style={{textAlign: 'center'}}>You do not share any story!</Text>
+          <Icon
+            style={{alignSelf: 'center'}}
+            name={'undo'}
+            size={18}
+            onPress={() => userStoriesRequest(user.userInfo.username)}
+          />
+        </View>
       )}
     </View>
   );
 
   const SecondRoute = () => (
-    <ScrollView style={{flex: 1}}>
-      <View>
-        <Text>qweqweqwe</Text>
-      </View>
-    </ScrollView>
+    <View style={styles.contentContainer}>
+      {userLikedStoryLoading && <Spinner></Spinner>}
+      {!userLikedStoryLoading && userLikedStories.length !== 0 && (
+        <ScrollView>
+          <VStack flex={1} px="3" space={10} alignItems="center" pb={10} mt={5}>
+            {userLikedStories.map(item => {
+              return <PostCard data={item} key={item.story_id} />;
+            })}
+          </VStack>
+        </ScrollView>
+      )}
+      {!userLikedStoryLoading && userLikedStories.length === 0 && (
+        <View>
+          <Text style={{textAlign: 'center'}}>You do not liked any story!</Text>
+          <Icon
+            style={{alignSelf: 'center'}}
+            name={'undo'}
+            size={18}
+            onPress={() => userStoriesRequest(user.userInfo.username)}
+          />
+        </View>
+      )}
+    </View>
   );
 
   const renderScene = SceneMap({
