@@ -17,7 +17,7 @@ import {styles} from './LocationSearch.style';
 import PageSpinner from '../../../../components/PageSpinner/PageSpinner';
 import MapView, {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
-import Icon from 'react-native-vector-icons/Entypo';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DetailedPost from '../../../DetailedPost';
 
 const getGeoLocation = () => {
@@ -127,11 +127,9 @@ const LocationSearch = props => {
             // image={{uri: user.photo_url }}
           >
             <Icon
-              name={'man'}
+              name={'human-handsup'}
               color="#ff8c00"
-              light
-              size={35}
-              onLongPress={() => getLike()}
+              size={45}
             />
           </Marker>
         )}

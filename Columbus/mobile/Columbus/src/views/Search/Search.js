@@ -21,7 +21,7 @@ const Search = ({navigation}) => {
 
   const FirstRoute = () => <UserSearch navigation={navigation} />;
 
-  const SecondRoute = () => <LocationSearch navigation={navigation}/>;
+  const SecondRoute = () => <TagSearch navigation={navigation}/>;
   
 
   const ThirdRoute = () => <LocationSearch navigation={navigation}/>;

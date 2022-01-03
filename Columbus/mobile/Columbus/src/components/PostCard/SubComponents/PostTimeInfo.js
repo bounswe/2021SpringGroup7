@@ -56,7 +56,7 @@ function PostTimeInfo(props) {
       fontWeight="500"
       ml="-0.5"
       mt="-1">
-      {props.data.date}
+      {dateToShow}
     </Text>
   );
 }
