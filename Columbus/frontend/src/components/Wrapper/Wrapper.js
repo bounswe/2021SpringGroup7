@@ -20,7 +20,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Wrapper = ({ children }) => {
+const Wrapper = ({ children, searchValue="" }) => {
   const classes = useStyles();
   const [darkMode, setDarkMode] = useState(false);
 
@@ -45,6 +45,7 @@ const Wrapper = ({ children }) => {
             sections={sections}
             theme={darkMode}
             onChange={(theme) => setDarkMode(!theme)}
+            searchValue={searchValue}
           />
           <main>{children}</main>
         </Container>
