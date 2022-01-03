@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Navigate } from 'react-router-dom'
+
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
@@ -30,12 +32,22 @@ export default function SettingsDialog(props) {
 
   const [password, setPassword] = useState(null);
   const [isPublic, setIsPublic] = useState(true);
+  const [isDeleted, setIsDeleted] = useState(null);
 
   const [message, setMessage] = useState('');
   const [openMessage, setOpenMessage] = useState(false);
 
 
   useEffect(() => {
+
+      if(!!localStorage.getItem('jwtToken')) 
+      {
+        setIsDeleted(false);
+      }
+      else 
+      {
+        setIsDeleted(true);
+      }
 
       if(curProfileInfo['public']) 
       {
@@ -59,11 +71,13 @@ export default function SettingsDialog(props) {
         .then((res) => {
             setMessage("You have successfully deleted your profile!");
             setOpenMessage(true);
-            navigate("/");
+            localStorage.setItem('jwtToken', null);
+            //navigate("/home")
         })
         .catch((error) => {
             setMessage("Delete profile not successful, try again later!");
             setOpenMessage(true);
+            
         })
   }
 
@@ -94,6 +108,11 @@ export default function SettingsDialog(props) {
         })
   };
 
+
+  if(isDeleted) 
+  {
+    return <Navigate to='/'/>
+  }
 
   return (
 
