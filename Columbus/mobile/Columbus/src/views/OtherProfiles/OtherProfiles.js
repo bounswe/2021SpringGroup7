@@ -30,6 +30,7 @@ const OtherProfiles = ({navigation, route}) => {
   const [connectionModalData, setConnectionModalData] = useState(null);
   const [connectionModalHeaders, setConnectionModalHeaders] = useState('');
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowRequest, setIsFollowRequest] = useState(false);
   const [isPublicProfile, setIsPublicProfile] = useState(true);
   const [followButtonLoading, setFollowButtonLoading] = useState(false);
   const [showCustomModal, setShowCustomModal] = useState(false);
@@ -137,10 +138,14 @@ const OtherProfiles = ({navigation, route}) => {
     params => SERVICE.postFollow(params, user.userInfo.token),
     {
       onSuccess(response) {
+        if (isPublicProfile) {
+          setIsFollowing(!isFollowing);
+        } else {
+          setIsFollowRequest(true);
+        }
         setFollowButtonLoading(false);
         setShowCustomModal(true);
         setModalMessage(response.data.return);
-        setIsFollowing(!isFollowing);
       },
       onError({response}) {
         setFollowButtonLoading(false);
@@ -255,12 +260,21 @@ const OtherProfiles = ({navigation, route}) => {
       </View>
       <View style={styles.editContainer}>
         {isFollowing ? (
-          <Button
-            variant="outline"
-            isLoading={followButtonLoading}
-            onPress={handleUnFollow}>
-            Unfollow
-          </Button>
+          isFollowRequest ? (
+            <Button
+              variant="outline"
+              isLoading={followButtonLoading}
+              onPress={handleUnFollow}>
+              Follow Request Sent!
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              isLoading={followButtonLoading}
+              onPress={handleUnFollow}>
+              Unfollow
+            </Button>
+          )
         ) : (
           <Button
             variant="solid"
