@@ -24,6 +24,7 @@ import {SERVICE} from '../../services/services';
 import PostCard from '../../components/PostCard';
 import ConnectionModal from './components/ConnectionModal/ConnectionModal';
 import {SceneMap, TabView} from 'react-native-tab-view';
+import {convertBirthday} from '../../utils/readableDate';
 
 const Profile = ({navigation, route}) => {
   const layout = useWindowDimensions();
@@ -155,48 +156,42 @@ const Profile = ({navigation, route}) => {
   const FirstRoute = () => (
     <View style={styles.contentContainer}>
       {storyLoading && <Spinner></Spinner>}
-      {!storyLoading && userStories.length !== 0 && (
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              onRefresh={handleRefresh}
-              refreshing={isRefreshing}
-            />
-          }>
+      <ScrollView
+        refreshControl={
+          <RefreshControl onRefresh={handleRefresh} refreshing={isRefreshing} />
+        }>
+        {!storyLoading && userStories.length !== 0 && (
           <VStack flex={1} px="3" space={10} alignItems="center" pb={10} mt={5}>
             {userStories.map(item => {
               return <PostCard data={item} key={item.story_id} />;
             })}
           </VStack>
-        </ScrollView>
-      )}
-      {!storyLoading && userStories.length === 0 && (
-        <Text style={{textAlign: 'center'}}>You do not share any story!</Text>
-      )}
+        )}
+        {!storyLoading && userStories.length === 0 && (
+          <Text style={{textAlign: 'center'}}>You do not share any story!</Text>
+        )}
+      </ScrollView>
     </View>
   );
 
   const SecondRoute = () => (
     <View style={styles.contentContainer}>
       {userLikedStoryLoading && <Spinner></Spinner>}
-      {!userLikedStoryLoading && userLikedStories.length !== 0 && (
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              onRefresh={handleRefresh}
-              refreshing={isRefreshing}
-            />
-          }>
+      <ScrollView
+        refreshControl={
+          <RefreshControl onRefresh={handleRefresh} refreshing={isRefreshing} />
+        }>
+        {!userLikedStoryLoading && userLikedStories.length !== 0 && (
           <VStack flex={1} px="3" space={10} alignItems="center" pb={10} mt={5}>
             {userLikedStories.map(item => {
               return <PostCard data={item} key={item.story_id} />;
             })}
           </VStack>
-        </ScrollView>
-      )}
-      {!userLikedStoryLoading && userLikedStories.length === 0 && (
-        <Text style={{textAlign: 'center'}}>You do not liked any story!</Text>
-      )}
+        )}
+        {!userLikedStoryLoading && userLikedStories.length === 0 && (
+          <Text style={{textAlign: 'center'}}>You do not liked any story!</Text>
+        )}
+      </ScrollView>
     </View>
   );
 
@@ -247,7 +242,7 @@ const Profile = ({navigation, route}) => {
             {userInfo.birthday && (
               <InfoWithIcon
                 iconName="birthday-cake"
-                data={userInfo.birthday}></InfoWithIcon>
+                data={convertBirthday(userInfo.birthday)}></InfoWithIcon>
             )}
           </View>
         </View>
