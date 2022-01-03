@@ -1,10 +1,9 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity,ScrollView,RefreshControl} from 'react-native';
 import {
   Button,
   Spinner,
   NativeBaseProvider,
-  ScrollView,
   VStack,
 } from 'native-base';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -20,8 +19,15 @@ const Home = ({navigation}) => {
   const {user} = useAuth();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const [token, setToken] = useState(user.userInfo.token)
 
-  let token = '';
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    storiesRequest(user.userInfo.username)
+    
+  }, []);
+
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -40,7 +46,7 @@ const Home = ({navigation}) => {
 
   useEffect(() => {
     if (user) {
-      token = user.userInfo.token;
+     setToken(user.userInfo.token)
       storiesRequest(user.userInfo.username);
     } else {
       setLoading(true);
@@ -51,9 +57,11 @@ const Home = ({navigation}) => {
     onSuccess(response) {
       setPosts(response.data.return);
       setLoading(false);
+      setRefreshing(false)
     },
     onError({response}) {
       console.log('res error: ', response);
+      setRefreshing(false)
     },
   });
 
@@ -76,7 +84,14 @@ const Home = ({navigation}) => {
 
   return (
     <NativeBaseProvider>
-      <ScrollView>
+      <ScrollView
+      refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+      >
         <VStack flex={1} px="3" space={10} alignItems="center" pb={10} mt={5}>
           {posts.map(item => {
             return <PostCard data={item} key={item.story_id} />;
