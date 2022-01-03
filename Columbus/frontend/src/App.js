@@ -9,6 +9,10 @@ import {Snackbar, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import Profile from "./pages/Profile"
 import {API_INSTANCE} from './config/api';
+import PostSearchPage from "./pages/Search/PostSearchPage";
+import UserSearchPage from "./pages/Search/UserSearchPage";
+import {LoadScript} from '@react-google-maps/api';
+import "react-datetime/css/react-datetime.css";
 
 function App() {
   const [Authenticated, setAuthenticated] = useState(!!localStorage.getItem("jwtToken"))
@@ -30,6 +34,9 @@ function App() {
 
   return (
     <div className="App">
+      <LoadScript
+          googleMapsApiKey="AIzaSyBKOGKEqH_j_aKxoUE46yhNx8XLOFEczaQ"
+        >
       <Router>
         <Routes>
         <Route
@@ -59,6 +66,14 @@ function App() {
             element={<Profile/>}
           />
           <Route
+            path="/Search"
+            element={<PostSearchPage/>}
+          />
+          <Route
+            path="/UserSearch"
+            element={<UserSearchPage/>}
+          />
+          <Route
             path="/Home/Story/Create"
             element={<CreatePostPage setSnackBarMessage={setSnackBarMessage} setOpenSnackBar={setOpenSnackBar}/>}
           />
@@ -86,6 +101,7 @@ function App() {
       </React.Fragment>
     }
   />
+  </LoadScript>
     </div>
   );
 }
