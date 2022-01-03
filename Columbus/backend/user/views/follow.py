@@ -42,7 +42,7 @@ class Follow(generics.CreateAPIView):
                 follow_relation = FollowRequest(user_id=user, follow=follow)
                 follow_relation.save()
                 dt = datetime.now(timezone.utc).astimezone()
-                ActivityStream.objects.create(type='FollowRequest', actor=user, target=follow, date=dt)
+                ActivityStream.objects.create(type='FollowRequest', actor=user, target=follow, date=dt, type_id=follow_relation.id)
                 return JsonResponse({'return': f'The user {user.username} has requested to follow {follow.username}'})
         else:
             try:
@@ -80,6 +80,8 @@ class GetFollowRequest(generics.ListAPIView):
             result_list.append(result_dict)
 
         return JsonResponse({'return': result_list})
+
+
 
 class AcceptFollowRequest(generics.CreateAPIView):
     serializer_class = FollowRequestSerializer
