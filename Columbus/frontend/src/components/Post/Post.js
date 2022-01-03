@@ -43,6 +43,8 @@ import POST_SERVICE from '../../services/post';
 import api from "../../services/post";
 import { tableBodyClasses } from "@mui/material";
 
+import { useNavigate } from "react-router-dom";
+
 const imgLink =
   "https://images.pexels.com/photos/3747505/pexels-photo-3747505.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
 
@@ -97,6 +99,7 @@ export default function Post(props) {
   const [editOpen, setEditOpen] = useState(false);
   const [storyTitle, setStoryTitle] = useState(props.post.title);
   const [storyText, setStoryText] = useState(props.post.text);
+  const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [expandComment, setExpandComment] = useState(false);
@@ -168,7 +171,7 @@ export default function Post(props) {
       })
       .catch((error) => {
       });
-  }, [props, openLocation]);
+  }, [props.post, openLocation]);
 
 
   const handleExpandClick = () => {
@@ -178,7 +181,32 @@ export default function Post(props) {
     setExpandComment(!expandComment);
   };
 
+  const handleDateClick = (e) => {
+    let urlParams = new URLSearchParams()
+    urlParams.set("dateType", props.post.time_start[0].type)
 
+    if(props.post.time_start[0].type=="specific"){
+
+      if(props.post.time_start[0].year)
+        urlParams.set("startYear", props.post.time_start[0].year)
+      if(props.post.time_start[0].month)
+        urlParams.set("startMonth", props.post.time_start[0].month)
+      if(props.post.time_start[0].day)
+        urlParams.set("startDay", props.post.time_start[0].day)
+      if(props.post.time_end[0]){
+        if(props.post.time_end[0].year)
+          urlParams.set("endYear", props.post.time_end[0].year)
+        if(props.post.time_end[0].month)
+          urlParams.set("endMonth", props.post.time_end[0].month)
+        if(props.post.time_end[0].day)
+          urlParams.set("endDay", props.post.time_end[0].day)
+      }
+    }else {
+      if(props.post.time_start[0].date)
+        urlParams.set("date", props.post.time_start[0].date)
+    }
+    navigate("/Search?" + urlParams.toString())
+  }
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -486,7 +514,7 @@ export default function Post(props) {
         subheader={
           <Grid container columns={2} justifyContent="center" spacing={3}>
             <Grid item columns={2} justifyContent="center" alignItems="center" spacing={3}>
-              <Button style={{textTransform: 'none'}}>
+              <Button style={{textTransform: 'none'}} onClick={handleDateClick}>
                 <DateRange />
                 <Typography variant="body2" style={{marginLeft:5}}> {storyDate2? (storyDate1 + " - " + storyDate2):(storyDate1)} </Typography></Button></Grid>
             <Grid item columns={2} alignItems="center" alignItems="center" spacing={3} >
@@ -524,7 +552,11 @@ export default function Post(props) {
                       <Chip
                         className={classes.chip}
                         key={index}
-                        onClick={() => console.log("we will add go to tag later")}
+                        onClick={() => {
+                          let search = new URLSearchParams()
+                          search.set("tags", item)
+                          navigate("/Search?" + search.toString())
+                        }}
                         size="small"
                         label={item}
                       />
@@ -552,7 +584,11 @@ export default function Post(props) {
                   <Chip
                     className={classes.chip}
                     key={index}
-                    onClick={() => console.log("we will add go to tag later")}
+                    onClick={() => {
+                      let search = new URLSearchParams()
+                      search.set("tags", item)
+                      navigate("/Search?" + search.toString())
+                    }}
                     size="small"
                     label={item}
                   />
