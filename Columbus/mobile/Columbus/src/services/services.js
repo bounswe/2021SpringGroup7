@@ -98,7 +98,6 @@ export const SERVICE = {
     });
   },
   getSearch: async (params, token) => {
-    
      return await API_INSTANCE.post(`/search/search/`, params, {
       headers: {Authorization: `TOKEN ${token}`},
     });
