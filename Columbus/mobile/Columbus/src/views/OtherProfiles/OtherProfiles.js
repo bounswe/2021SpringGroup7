@@ -17,6 +17,7 @@ import ConnectionModal from '../Profile/components/ConnectionModal/ConnectionMod
 
 import {styles} from './OtherProfile.style';
 import CustomModal from '../../components/CustomModal';
+import SpamModal from './components/SpamModal';
 
 const OtherProfiles = ({navigation, route}) => {
   const {user, logout} = useAuth();
@@ -25,6 +26,7 @@ const OtherProfiles = ({navigation, route}) => {
   const [storyLoading, setStoryLoading] = useState(true);
   const [userStories, setUserStories] = useState(null);
   const [showConnectionsModal, setShowConnectionsModal] = useState(false);
+  const [showSpamModal, setShowSpamModal] = useState(false);
   const [connectionModalData, setConnectionModalData] = useState(null);
   const [connectionModalHeaders, setConnectionModalHeaders] = useState('');
   const [isFollowing, setIsFollowing] = useState(false);
@@ -35,9 +37,10 @@ const OtherProfiles = ({navigation, route}) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity style={styles.headerBlockIconContainer}>
-          <Icon name="user-alt-slash" size={18} />
-          <Text>Block</Text>
+        <TouchableOpacity
+          style={styles.headerBlockIconContainer}
+          onPress={() => setShowSpamModal(true)}>
+          <Icon name="user-alt-slash" size={24} />
         </TouchableOpacity>
       ),
       title: route.params.username,
@@ -190,6 +193,15 @@ const OtherProfiles = ({navigation, route}) => {
         closeModal={() => setShowCustomModal(false)}
         message={modalMessage}
       />
+      {showSpamModal && (
+        <SpamModal
+          showModal={showSpamModal}
+          closeModal={() => setShowSpamModal(false)}
+          reportedUsername={route.params.username}
+          reporterUsername={user.userInfo.username}
+          token={user.userInfo.token}
+        />
+      )}
       <View style={styles.headerContainer}>
         <View style={styles.avatarContainer}>
           <CustomAvatar
