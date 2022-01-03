@@ -4,7 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-const MessageDialog = ({ open, handleClose, txt }) => {
+const MessageDialog = ({ open, handleClose, isDeleted, txt }) => {
   return (
     <Dialog
       open={open}
@@ -18,9 +18,16 @@ const MessageDialog = ({ open, handleClose, txt }) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} variant="contained" color="primary">
-          OK
-        </Button>
+        {isDeleted ? 
+                     <Button href="/" variant="contained" color="primary">
+                        OK
+                      </Button>
+                    :
+                    <Button onClick={handleClose} variant="contained" color="primary">
+                        OK
+                    </Button>
+                    }
+       
       </DialogActions>
     </Dialog>
   );

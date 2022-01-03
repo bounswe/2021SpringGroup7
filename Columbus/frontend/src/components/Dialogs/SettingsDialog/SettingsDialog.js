@@ -23,7 +23,9 @@ import CheckIcon from '@mui/icons-material/Check';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 import USER_SERVICE from "../../../services/user";
-import MessageDialog from "../MessageDialog/MessageDialog";
+import MessageDialog from "../MessageDialog/MessageDialog"
+
+import {API_INSTANCE} from "../../../config/api"
 
 export default function SettingsDialog(props) {
 
@@ -40,15 +42,6 @@ export default function SettingsDialog(props) {
 
   useEffect(() => {
 
-      if(!!localStorage.getItem('jwtToken')) 
-      {
-        setIsDeleted(false);
-      }
-      else 
-      {
-        setIsDeleted(true);
-      }
-
       if(curProfileInfo['public']) 
       {
         setIsPublic(true);
@@ -58,11 +51,11 @@ export default function SettingsDialog(props) {
         setIsPublic(false);
       }
 
-  }, []);
+  }, [isDeleted]);
 
   const handleCloseMessage = () => {
 		setOpenMessage(false);
-        onClose();
+    onClose();
 	};
 
   const handleDeleteProfile = (event) => {
@@ -71,8 +64,10 @@ export default function SettingsDialog(props) {
         .then((res) => {
             setMessage("You have successfully deleted your profile!");
             setOpenMessage(true);
-            localStorage.setItem('jwtToken', null);
-            //navigate("/home")
+            localStorage.removeItem("jwtToken");
+            localStorage.removeItem("username");
+            localStorage.removeItem("userid");
+            API_INSTANCE.defaults.headers.common['Authorization'] = null;
         })
         .catch((error) => {
             setMessage("Delete profile not successful, try again later!");
@@ -108,11 +103,6 @@ export default function SettingsDialog(props) {
         })
   };
 
-
-  if(isDeleted) 
-  {
-    return <Navigate to='/'/>
-  }
 
   return (
 
@@ -193,7 +183,7 @@ export default function SettingsDialog(props) {
         <Button onClick={onClose}>Cancel</Button>
       </DialogActions>
 
-      <MessageDialog open={openMessage} handleClose={handleCloseMessage} txt={message} />
+      <MessageDialog open={openMessage} handleClose={handleCloseMessage} isDeleted={true} txt={message} />
     </Dialog>
       
   );
