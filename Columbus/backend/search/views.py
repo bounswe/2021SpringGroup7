@@ -9,6 +9,7 @@ from rest_framework.decorators import api_view
 from rest_framework.schemas.openapi import AutoSchema
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from user.models import *
+from user.functions import filter_result,filter_user
 from django.core import serializers
 import json
 import nltk
@@ -110,8 +111,10 @@ class TitleExactSearch(generics.CreateAPIView):
 
         else:
             result = []
-
-
+        try:
+            result = filter_result(request.user.username, result)
+        except:
+            pass
         return JsonResponse({'return': result}, status=200)
 
 
@@ -211,7 +214,10 @@ class TitlePartialSearch(generics.CreateAPIView):
 
         else:
             result = []
-
+        try:
+            result = filter_result(request.user.username, result)
+        except:
+            pass
 
         return JsonResponse({'return': result}, status=200)
 
@@ -309,7 +315,10 @@ class TextExactSearch(generics.CreateAPIView):
 
         else:
             result = []
-
+        try:
+            result = filter_result(request.user.username, result)
+        except:
+            pass
 
         return JsonResponse({'return': result}, status=200)
 
@@ -416,7 +425,10 @@ class GeographicalSearch(generics.CreateAPIView):
 
         else:
             result = []
-
+        try:
+            result = filter_result(request.user.username, result)
+        except:
+            pass
 
         return JsonResponse({'return': result}, status=200)
 
@@ -523,7 +535,10 @@ class DateSearch(generics.CreateAPIView):
 
         else:
             result = []
-
+        try:
+            result = filter_result(request.user.username, result)
+        except:
+            pass
 
         return JsonResponse({'return': result}, status=200)
 
@@ -573,6 +588,11 @@ class LocationSearch(generics.CreateAPIView):
 
         else:
             result = []
+
+        try:
+            result = filter_result(request.user.username, result)
+        except:
+            pass
 
 
         return JsonResponse({'return': result}, status=200)
@@ -638,6 +658,11 @@ class UserSearch(generics.CreateAPIView):
         else:
             result = []
 
+
+        try:
+            result = filter_user(request.user.username, result)
+        except:
+            pass
 
         return JsonResponse({'return': result}, status=200)
 
@@ -999,7 +1024,10 @@ class Search(generics.CreateAPIView):
 
         else:
             result = []
-
+        try:
+            result = filter_result(request.user.username, result)
+        except:
+            pass
 
         return JsonResponse({'return': result}, status=200)
 

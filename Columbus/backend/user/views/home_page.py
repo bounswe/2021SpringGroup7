@@ -10,6 +10,7 @@ from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from ..models import *
 from django.core import serializers
 import json
+from ..functions import filter_result
 
 
 class HomePage(generics.CreateAPIView):
@@ -103,5 +104,5 @@ class HomePage(generics.CreateAPIView):
         else:
             result = []
 
-
+        result = filter_result(username,result)
         return JsonResponse({'return': result}, status=200)

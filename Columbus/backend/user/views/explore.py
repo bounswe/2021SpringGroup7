@@ -6,7 +6,7 @@ from ..models import *
 import json
 from django.http import JsonResponse
 from django.core import serializers
-
+from ..functions import filter_result
 
 class Explore(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -16,7 +16,7 @@ class Explore(generics.CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         body = request.data
-        required_areas = {'page_number', 'page_size'}
+        required_areas = {'username','page_number', 'page_size'}
         if set(body.keys()) != required_areas:
             return JsonResponse({'return': 'Required areas are:' + str(required_areas)}, status=400)
 
@@ -35,16 +35,21 @@ class Explore(generics.CreateAPIView):
         latest_posts = self.get_sorted_comments(stories, sort_key='date', page_number=page_number,
                                                         page_size=page_size,request=request)
 
-        result_dict = {'most_commented_sort':most_commented_posts,
+        try:
+            latest_posts = filter_result(request.user,latest_posts)
+            most_liked_posts = filter_result(request.user, most_liked_posts)
+            most_commented_posts = filter_result(request.user, most_commented_posts)
+        except:
+            pass
+
+        result_dict = {'most_commented_posts':most_commented_posts,
                        'most_liked_posts':most_liked_posts,
-                       'latest_post':latest_posts}
+                       'latest_posts':latest_posts}
 
         return JsonResponse({'return': result_dict})
 
 
     def get_sorted_comments(self,stories,sort_key,page_number,page_size,request):
-
-
         if sort_key=='comment':
             stories = sorted(stories, key=lambda story: story.numberOfComments, reverse=True)
         elif sort_key=='like':
