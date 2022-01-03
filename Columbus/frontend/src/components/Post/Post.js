@@ -18,17 +18,21 @@ import {
   Snackbar,
   Chip,
 } from "@material-ui/core";
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+import Delete from '@material-ui/icons/Delete';
 import clsx from "clsx";
 import { red } from "@material-ui/core/colors";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import DateRange from "@material-ui/icons/DateRange";
 import LocationOn from "@material-ui/icons/LocationOn";
+import Report from "@material-ui/icons/Report";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AddCommentIcon from "@material-ui/icons/AddComment";
 import CloseIcon from "@material-ui/icons/Close";
 import ArrowForward from "@material-ui/icons/ArrowForward";
-import Add from "@material-ui/icons/Add";
+import Edit from "@material-ui/icons/Edit";
 import Comment from "../Comment/Comment"
 import LocationDialog from '../Dialogs/PostLocationDialog/PostLocationDialog'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -86,14 +90,18 @@ const useStyles = makeStyles((theme) => ({
 export default function Post(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
+  const [deleted, setDeleted] = useState(false);
   const [expandComment, setExpandComment] = useState(false);
-
   const [storyData, setStoryData] = useState(null);
+  const [profilePhoto, setProfilePhoto] = useState("");
   const [storyDate1, setStoryDate1] = useState("");
   const [storyDate2, setStoryDate2] = useState(null);
+  const [anchor, setAnchor] = useState(null);
+  const isMenuOpen = Boolean(anchor);
   const [curUser, setCurUser] = useState(false);
   const [commentValue, setCommentValue] = useState("");
   const [comments, setComments] = useState([]);
+  const [pinComments, setPinComments] = useState([]);
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [liked, setLiked] = useState(false);
@@ -108,6 +116,9 @@ export default function Post(props) {
     setLiked(props.post.is_liked)
     setLikeCount(props.post.numberOfLikes)
     setCommentCount(props.post.numberOfComments)
+    if(props.post.photo_url!=null){
+      setProfilePhoto(props.post.photo_url)
+    }
     if(props.post.time_start[0].type=="specific"){
       if(props.post.time_start[0].date){
         setStoryDate1(props.post.time_start[0].date)
@@ -143,6 +154,7 @@ export default function Post(props) {
         setComments(
           resp.data.return.comments
         );
+        setPinComments(resp.data.return.pinned_comments);
       })
       .catch((error) => {
       });
@@ -220,6 +232,7 @@ export default function Post(props) {
           story_id : storyData.story_id,
           date: today.toISOString(),
           parent_comment_id: 0,
+          photo_url:localStorage.getItem("photo_url"),
           id:idi,
           child_comments: []
         };
@@ -232,7 +245,31 @@ export default function Post(props) {
     setCommentValue("");
   }
   };
-
+  const handleSettings=()=>{
+    setAnchor(null);
+  }
+  const handleReport=()=>{
+    setAnchor(null);
+  }
+  const handleDelete=()=>{
+    POST_SERVICE.POST_DELETE({story_id:storyData.story_id })
+    .then((response)=>{
+      setSnackBarMessage("Post deleted!")
+      setOpenSnackBar(true)
+      setDeleted(true)
+    })
+    .catch((error)=>{
+      setSnackBarMessage("Post can not deleted!")
+      setOpenSnackBar(true)
+    })
+    setAnchor(null);
+  }
+  const handleEdit=()=>{
+    setAnchor(null);
+  }
+  const handleExpandSettings=(event)=>{
+    setAnchor(event.currentTarget);
+  };
   const showAddComment = () => {
     return (
 
@@ -240,7 +277,7 @@ export default function Post(props) {
         <Grid container wrap="nowrap" spacing={2}>
           <Grid item>
             <Link href="/">
-              <Avatar alt="AT TA" src="" />
+              <Avatar alt="AT TA" src={localStorage.getItem("photo_url")} />
             </Link>
           </Grid>
           <Grid justifyContent="left" item xs zeroMinWidth>
@@ -262,10 +299,93 @@ export default function Post(props) {
       </Paper>
     );
   };
-
+  const settingMenu = (
+    <Menu
+      elevation={5}
+      anchorEl={anchor}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
+      id={'primary-search-account-menu'}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={isMenuOpen}
+      onClose={handleSettings}
+    > {localStorage.getItem('username')==props.post.owner_username?
+             <> <MenuItem >
+           <Button
+              size="small"
+              aria-label="account of current user"
+              aria-controls={'primary-search-account-menu'}
+              aria-haspopup="true"
+              className={classes.button}
+              onClick={handleDelete}
+              startIcon={<Delete />}
+            >
+              Delete Post
+            </Button>
+          
+      </MenuItem><MenuItem >
+           <Button
+              size="small"
+              aria-label="account of current user"
+              aria-controls={'primary-search-account-menu'}
+              aria-haspopup="true"
+              className={classes.button}
+              onClick={handleEdit}
+              startIcon={<Edit />}
+            >
+              Edit Post
+            </Button>
+          
+      </MenuItem></>:<MenuItem >
+           <Button
+              size="small"
+              aria-label="account of current user"
+              aria-controls={'primary-search-account-menu'}
+              aria-haspopup="true"
+              className={classes.button}
+              onClick={handleReport}
+              startIcon={<Report />}
+            >
+              Report Post
+            </Button>
+          
+      </MenuItem>}
+            </Menu>
+  )
+  if(deleted){
+    return (<Snackbar
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "left",
+      }}
+      open={openSnackBar}
+      autoHideDuration={3000}
+      onClose={handleClose}
+      message={snackBarMessage}
+      action={
+        <React.Fragment>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleClose}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </React.Fragment>
+      }
+    />);
+  }
   return (
     <Card className={classes.root} elevation={1}>
       <LocationDialog open={openLocation} handleClose={handleCloseLocation} locations={storyData ? storyData.locations : null} />
+      {settingMenu}
       <CardHeader
         avatar={
           <Link
@@ -273,7 +393,7 @@ export default function Post(props) {
           >
             <Grid container alignItems="center" spacing={2}>
               <Grid item>
-                <Avatar aria-label="recipe" className={classes.avatar}>
+                <Avatar aria-label="recipe" className={classes.avatar} src={ profilePhoto}>
                   {storyData
                     ? storyData.owner_username?.substring(0, 2).toUpperCase()
                     : "?"}
@@ -286,9 +406,12 @@ export default function Post(props) {
           </Link>
         }
         action={
-          <IconButton aria-label="settings">
+          <IconButton aria-label="settings" onClick={handleExpandSettings}>
             <MoreVertIcon />
+            
           </IconButton>
+          
+          
         }
         title={<Typography variant="h5" >{storyData
           ? storyData.title
@@ -436,10 +559,17 @@ export default function Post(props) {
           <div style={{ padding: 14 }} className="App">
             <h2>Comments</h2>
             {showAddComment()}
+            {pinComments.length === 0? null : <>{pinComments.map((item, index) => {
+              if (item) {
+                return (
+                  <Comment comment={item} isPinned={true} storyUsername={props.post.owner_username} profilePhoto = {localStorage.getItem("photo_url")} index={index} />
+                );
+              }
+            })}</>}
             {comments.length === 0? null : <>{comments.map((item, index) => {
               if (item) {
                 return (
-                  <Comment comment={item} index={index} />
+                  <Comment comment={item} isPinned={false} storyUsername={props.post.owner_username} profilePhoto = {localStorage.getItem("photo_url")} index={index} />
                 );
               }
             })}</>}
