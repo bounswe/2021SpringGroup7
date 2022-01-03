@@ -49,8 +49,8 @@ export default function Login({setAuthenticated}){
             API_INSTANCE.defaults.headers.common['Authorization'] = 'TOKEN ' + response.data.return.token;
             localStorage.setItem('jwtToken', 'TOKEN ' + response.data.return.token);
             localStorage.setItem('username', username);
-            localStorage.setItem('profilePhoto',response.data.return.photo_url)
             localStorage.setItem('userid',response.data.return.user_id);
+            localStorage.setItem('photo_url',response.data.return.photo_url);
             setAuthenticated(true)
         })
         .catch((error) => {

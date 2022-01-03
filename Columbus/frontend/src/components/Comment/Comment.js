@@ -16,15 +16,19 @@ import PushPinIcon from '@mui/icons-material/PushPin';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import MoreVertIcon from "@material-ui/icons/MoreVert";
+import { Pinpoint } from "aws-sdk";
 export default function Comment(props) {
   const [expandReply, setExpandReply] = useState(false);
   const [comments, setComments] = useState([]);
   const [deleted, setDeleted] = useState(false);
+  const [pinned, setPinned] = useState(props.isPinned);
   const [commentValue, setCommentValue] = useState("");
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [anchor, setAnchor] = useState(null);
   const isMenuOpen = Boolean(anchor);
+
+
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -70,6 +74,22 @@ export default function Comment(props) {
   };
   const handleSettings=()=>{
     setAnchor(null);
+  }
+  const handlePin=()=>{
+    POST_SERVICE.COMMENT_PIN({comment_id:props.comment.id, story_id:props.comment.story_id })
+    .then((response)=>{
+      if(response.data.response.isPinned){
+        setPinned(true)
+        setSnackBarMessage("Comment pinned!")
+        }
+      else{
+        setSnackBarMessage("Comment unpinned!")
+        setPinned(false)}
+      setOpenSnackBar(true)
+    })
+    .catch((error)=>{
+      setSnackBarMessage("Comment can not pinned!")
+      setOpenSnackBar(true)})
   }
   const handleDelete=()=>{
     POST_SERVICE.COMMENT_DELETE({comment_id:props.comment.id })
@@ -120,6 +140,7 @@ export default function Comment(props) {
               aria-label="account of current user"
               aria-controls={'primary-search-account-menu'}
               aria-haspopup="true"
+              onClick={handlePin}
               startIcon={<PushPinIcon />}
             >
               Pin Comment
@@ -197,7 +218,8 @@ export default function Comment(props) {
       key={props.index}
       style={{ padding: "20px 20px", marginTop: 10 }}
     >
-      {settingMenu}
+      <>{settingMenu}
+      {pinned?<Grid item ><PushPinIcon/></Grid>:null}</>
       <Grid container wrap="nowrap" spacing={2}>
         <Grid item>
           <Avatar alt={props.comment.username} src={props.comment.photo_url} />

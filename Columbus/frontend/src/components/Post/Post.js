@@ -101,6 +101,7 @@ export default function Post(props) {
   const [curUser, setCurUser] = useState(false);
   const [commentValue, setCommentValue] = useState("");
   const [comments, setComments] = useState([]);
+  const [pinComments, setPinComments] = useState([]);
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const [liked, setLiked] = useState(false);
@@ -153,6 +154,7 @@ export default function Post(props) {
         setComments(
           resp.data.return.comments
         );
+        setPinComments(resp.data.return.pinned_comments);
       })
       .catch((error) => {
       });
@@ -230,7 +232,7 @@ export default function Post(props) {
           story_id : storyData.story_id,
           date: today.toISOString(),
           parent_comment_id: 0,
-          photo_url:localStorage.getItem("profilePhoto"),
+          photo_url:localStorage.getItem("photo_url"),
           id:idi,
           child_comments: []
         };
@@ -275,7 +277,7 @@ export default function Post(props) {
         <Grid container wrap="nowrap" spacing={2}>
           <Grid item>
             <Link href="/">
-              <Avatar alt="AT TA" src={localStorage.getItem("profilePhoto")} />
+              <Avatar alt="AT TA" src={localStorage.getItem("photo_url")} />
             </Link>
           </Grid>
           <Grid justifyContent="left" item xs zeroMinWidth>
@@ -557,10 +559,17 @@ export default function Post(props) {
           <div style={{ padding: 14 }} className="App">
             <h2>Comments</h2>
             {showAddComment()}
+            {pinComments.length === 0? null : <>{pinComments.map((item, index) => {
+              if (item) {
+                return (
+                  <Comment comment={item} isPinned={true} storyUsername={props.post.owner_username} profilePhoto = {localStorage.getItem("photo_url")} index={index} />
+                );
+              }
+            })}</>}
             {comments.length === 0? null : <>{comments.map((item, index) => {
               if (item) {
                 return (
-                  <Comment comment={item} storyUsername={props.post.owner_username} profilePhoto = {localStorage.getItem("profilePhoto")} index={index} />
+                  <Comment comment={item} isPinned={false} storyUsername={props.post.owner_username} profilePhoto = {localStorage.getItem("photo_url")} index={index} />
                 );
               }
             })}</>}
