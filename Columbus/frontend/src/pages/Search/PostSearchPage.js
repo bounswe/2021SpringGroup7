@@ -66,8 +66,11 @@ function getNewDate(searchParams, dateType){
         day: parseInt(searchParams.get("endDay"))
       },
     };
-  } else if (dateType) {
-    console.log("here3")
+  } else if (dateType === "decade") {
+    if (searchParams.get("date")) {
+      dateData = parseInt(searchParams.get("date")) * 10 + "s";
+    }
+  }else if(dateType){
     if (searchParams.get("date")) {
       dateData = parseInt(searchParams.get("date"));
     }
