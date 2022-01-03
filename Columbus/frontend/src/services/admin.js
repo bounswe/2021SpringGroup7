@@ -21,7 +21,22 @@ const ADMIN_SERVICE = {
                                                                                     "login_hash": localStorage.getItem('login_hash'),
                                                                                     "report_id": reportId,
                                                                                     "safe": safe
-                                                                                    }),                                                                                 
+                                                                                    }),  
+    ACTION_REPORTEDSTORY: (reportId, safe) => API_INSTANCE.post("/user/admin/action_reported_stories", {
+                                                                                    "login_hash": localStorage.getItem('login_hash'),
+                                                                                    "report_id": reportId,
+                                                                                    "safe": safe
+                                                                                    }),    
+    ACTION_REPORTEDCOMMENT: (reportId, safe) => API_INSTANCE.post("/user/admin/action_reported_comments", {
+                                                                                    "login_hash": localStorage.getItem('login_hash'),
+                                                                                    "report_id": reportId,
+                                                                                    "safe": safe
+                                                                                    }),                    
+    ACTION_REPORTEDTAG: (reportId, safe) => API_INSTANCE.post("/user/admin/action_reported_tags", {
+                                                                                    "login_hash": localStorage.getItem('login_hash'),
+                                                                                    "report_id": reportId,
+                                                                                    "safe": safe
+                                                                                    }),                                                                                                                                                                                                                                                                                                                                                                                                                         
     };
 
 export default ADMIN_SERVICE;
