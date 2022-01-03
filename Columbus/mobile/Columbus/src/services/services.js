@@ -86,10 +86,36 @@ export const SERVICE = {
     });
   },
   getLikes: async ({params, token}) => {
-    const uri= await "/user/get_likes/"+params+'/'
+    const uri = (await '/user/get_likes/') + params + '/';
     return await API_INSTANCE.get(uri, {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
 
-};
+  getSearchUsers: async (params, token) => {
+    return await API_INSTANCE.post(`/search/user_search/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  getSearch: async (params, token) => {
+    
+     return await API_INSTANCE.post(`/search/search/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
+
+  postBlockUser: async (params, token) => {
+    return await API_INSTANCE.post(`/user/block/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
+  postReportUser: async (params, token) => {
+    return await API_INSTANCE.post(`/user/report_user/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  }
+}
+
+  

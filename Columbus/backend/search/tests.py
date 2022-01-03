@@ -274,7 +274,7 @@ class ModelTestCase(TestCase):
         api = Search()
         response = api.post(request=request).content
         response = json.loads(response.decode('utf-8'))
-        self.assertEqual(len(response["return"]), 1)
+        self.assertEqual(len(response["return"]), 4)
 
     def test_search_date_century_zero(self):
         request = MockRequest(method='POST',body={"search_date_type": "century", "search_date": 18, "page_number": 1, "page_size": 10})
@@ -295,7 +295,7 @@ class ModelTestCase(TestCase):
         api = Search()
         response = api.post(request=request).content
         response = json.loads(response.decode('utf-8'))
-        self.assertEqual(len(response["return"]), 0)
+        self.assertEqual(len(response["return"]), 2)
 
     def test_search_date_specific_1966(self):
         request = MockRequest(method='POST',body={"search_date_type": "specific", "search_year_start": 1966, "page_number": 1, "page_size": 10})

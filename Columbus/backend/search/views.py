@@ -1,3 +1,4 @@
+import requests
 from django.shortcuts import render
 from .serializers import *
 from rest_framework.authtoken.models import Token
@@ -14,7 +15,6 @@ import nltk
 import math
 from datetime import datetime
 import string
-
 
 class TitleExactSearch(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -626,6 +626,11 @@ class UserSearch(generics.CreateAPIView):
                 result_temp["email"] = each["email"]
                 temp_user = User.objects.get(username = result_temp["username"])
                 result_temp["user_id"] = temp_user.id
+                try:
+                    temp_profile = Profile.objects.get(user_id__username = result_temp["username"])
+                    result_temp["photo_url"] = temp_profile.photo_url
+                except:
+                    result_temp["photo_url"] = None
                 result_new.append(result_temp)
             result = result_new
 
@@ -673,6 +678,7 @@ class Search(generics.CreateAPIView):
         search_day_end = body.get('search_day_end', -1)
         search_hour_end = body.get('search_hour_end', -1)
         search_minute_end = body.get('search_minute_end', -1)
+        tags = body.get('tags', -1)
 
         if page_number<1:
             result = []
@@ -805,6 +811,24 @@ class Search(generics.CreateAPIView):
                     for date in dates:
                         if date.date==search_date:
                             stories.append(each)
+
+                    dates = Date.objects.filter(story_id = each, type = "decade", start_end_type = "start")
+                    for date in dates:
+                        if str(date.date)[:-1]==str(search_date):
+                            stories.append(each)
+
+                    dates = Date.objects.filter(story_id = each, type = "specific", start_end_type = "start")
+                    end_dates = Date.objects.filter(story_id = each, type = "specific", start_end_type = "end")
+                    for date in dates:
+                        if date.year!=None:
+                            if str(date.year)[:-2]==str(search_date):
+                                stories.append(each)
+                            if len(end_dates)==1:
+                                if end_dates[0].year!=None:
+                                    for temp_values in range(int(str(date.year)[:-2]), int(str(end_dates[0].year)[:-2])+1):
+                                        if str(temp_values)==str(search_date):
+                                            stories.append(each)
+
                 stories_returned = stories_returned.intersection(set(stories))
 
             elif search_date_type == "decade":
@@ -813,6 +837,18 @@ class Search(generics.CreateAPIView):
                     for date in dates:
                         if date.date==search_date:
                             stories.append(each)
+
+                    dates = Date.objects.filter(story_id = each, type = "specific", start_end_type = "start")
+                    end_dates = Date.objects.filter(story_id = each, type = "specific", start_end_type = "end")
+                    for date in dates:
+                        if date.year!=None:
+                            if str(date.year)[:-1]==str(search_date):
+                                stories.append(each)
+                            if len(end_dates)==1:
+                                if end_dates[0].year!=None:
+                                    for temp_values in range(int(str(date.year)[:-1]), int(str(end_dates[0].year)[:-1])+1):
+                                        if str(temp_values)==str(search_date):
+                                            stories.append(each)
                 stories_returned = stories_returned.intersection(set(stories))
 
             elif search_date_type == "specific":
@@ -856,14 +892,53 @@ class Search(generics.CreateAPIView):
                         story_end_date = date_to_minute(story_end_date[0])
 
                     total = sorted([(query_start_date, "query_start_date"),(query_end_date, "query_end_date"),(story_start_date, "story_start_date"),(story_end_date, "story_end_date")])
-                    
+
                     if (total[0][1][0]!=total[1][1][0]) or (total[0][1][0]==total[1][1][0] and total[1][0]==total[2][0]):
                         stories.append(each)
                 stories_returned = stories_returned.intersection(set(stories))
 
 
-
         stories_returned = list(set(stories_returned))
+        if tags != -1:
+            story_with_tags = []
+            for each in tags:
+                try:
+                    tags_normal = Tag.objects.filter(tag=each)
+                    for temp in tags_normal:
+                        try:
+                            story_with_tags.append(temp.story_id.id)
+                        except:
+                            continue
+                except:
+                    continue
+                wiki_params = {
+                    'action': 'wbsearchentities',
+                    'format': 'json',
+                    'language': 'en',
+                    'search': each
+                }
+                r = requests.get("https://www.wikidata.org/w/api.php", params=wiki_params)
+                wikidata = []
+                index = 0
+                for each in r.json()['search']:
+                    if index < 10:
+                        wikidata.append(each['label'])
+                    index = index + 1
+                for each_wd in list(set(wikidata)):
+                    try:
+                        tag_wd = Tag.objects.filter(tag=each_wd)
+                        for temp in tag_wd:
+                            try:
+                                story_with_tags.append(temp.story_id.id)
+                            except:
+                                continue
+                    except:
+                        continue
+            temp_stories = []
+            for each in stories_returned:
+                if each.id in story_with_tags:
+                    temp_stories.append(each)
+            stories_returned = temp_stories
         stories_returned = stories_returned[(page_number-1)*page_size: page_number*page_size]
         if len(stories_returned)!=0:
             serialized_obj = serializers.serialize('json', stories_returned)
