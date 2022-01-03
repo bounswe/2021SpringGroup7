@@ -71,7 +71,6 @@ const LocationSearch = props => {
 
   if (!userLocation) {
     getGeoLocation();
-    console.log(userLocation);
   }
   const handleSearchThisArea = () => {
     setDisableSearchButton(true);
@@ -85,7 +84,6 @@ const LocationSearch = props => {
         setSearchResult(response.data.return);
         setDisableSearchButton(false);
         setIsLoading(false);
-        console.log(response.data.return);
       },
       onError({response}) {
         setIsLoading(false);
