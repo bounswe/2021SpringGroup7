@@ -230,6 +230,7 @@ export default function Post(props) {
           story_id : storyData.story_id,
           date: today.toISOString(),
           parent_comment_id: 0,
+          photo_url:localStorage.getItem("profilePhoto"),
           id:idi,
           child_comments: []
         };
