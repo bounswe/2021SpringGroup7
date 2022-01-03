@@ -24,12 +24,13 @@ const OtherProfiles = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [storyLoading, setStoryLoading] = useState(true);
-  const [userStories, setUserStories] = useState(null);
+  const [userStories, setUserStories] = useState([]);
   const [showConnectionsModal, setShowConnectionsModal] = useState(false);
   const [showSpamModal, setShowSpamModal] = useState(false);
   const [connectionModalData, setConnectionModalData] = useState(null);
   const [connectionModalHeaders, setConnectionModalHeaders] = useState('');
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowRequest, setIsFollowRequest] = useState(false);
   const [isPublicProfile, setIsPublicProfile] = useState(true);
   const [followButtonLoading, setFollowButtonLoading] = useState(false);
   const [showCustomModal, setShowCustomModal] = useState(false);
@@ -60,23 +61,18 @@ const OtherProfiles = ({navigation, route}) => {
     {
       onSuccess(response) {
         setUserInfo(response.data.response);
-        setIsFollowing(
-          response.data.response['followers'].some(
-            follower => follower['user_id'] === user.userInfo.user_id,
-          ),
-        );
+        setIsFollowing(response.data.response?.followers);
         if (response.data.response.public) {
           userStoriesRequest(route.params.username);
           setIsPublicProfile(true);
         } else if (
           !response.data.response.public &&
-          response.data.response['followers'].some(
-            follower => follower['user_id'] === user.userInfo.user_id,
-          )
+          response.data.response?.followers
         ) {
           userStoriesRequest(route.params.username);
           setIsPublicProfile(false);
         } else {
+          setStoryLoading(false);
           setIsPublicProfile(false);
         }
         setLoading(false);
@@ -137,10 +133,15 @@ const OtherProfiles = ({navigation, route}) => {
     params => SERVICE.postFollow(params, user.userInfo.token),
     {
       onSuccess(response) {
+        if (isPublicProfile) {
+          setIsFollowing(!isFollowing);
+        } else {
+          setIsFollowing(!isFollowing);
+          setIsFollowRequest(true);
+        }
         setFollowButtonLoading(false);
         setShowCustomModal(true);
         setModalMessage(response.data.return);
-        setIsFollowing(!isFollowing);
       },
       onError({response}) {
         setFollowButtonLoading(false);
@@ -229,12 +230,22 @@ const OtherProfiles = ({navigation, route}) => {
             )}
             <InfoBox
               heading="Followers"
-              number={userInfo?.followers ? userInfo?.followers.length : 0}
-              handleModal={openFollowersModal}></InfoBox>
+              number={userInfo?.followers_count ? userInfo?.followers_count : 0}
+              handleModal={
+                userInfo.isPublic || userInfo?.followers
+                  ? openFollowersModal
+                  : () => 1
+              }></InfoBox>
             <InfoBox
               heading="Following"
-              number={userInfo?.followings ? userInfo?.followings.length : 0}
-              handleModal={openFollowingsModal}></InfoBox>
+              number={
+                userInfo?.followings_count ? userInfo?.followings_count : 0
+              }
+              handleModal={
+                userInfo.isPublic || userInfo?.followers
+                  ? openFollowingsModal
+                  : () => 1
+              }></InfoBox>
           </View>
           <View style={styles.mainInfoContainer}>
             {userInfo.birthday && (
@@ -255,12 +266,21 @@ const OtherProfiles = ({navigation, route}) => {
       </View>
       <View style={styles.editContainer}>
         {isFollowing ? (
-          <Button
-            variant="outline"
-            isLoading={followButtonLoading}
-            onPress={handleUnFollow}>
-            Unfollow
-          </Button>
+          isFollowRequest ? (
+            <Button
+              variant="outline"
+              isLoading={followButtonLoading}
+              onPress={handleUnFollow}>
+              Revert Follow Request!
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              isLoading={followButtonLoading}
+              onPress={handleUnFollow}>
+              Unfollow
+            </Button>
+          )
         ) : (
           <Button
             variant="solid"
