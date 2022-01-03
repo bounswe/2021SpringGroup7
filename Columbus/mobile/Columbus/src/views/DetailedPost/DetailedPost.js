@@ -22,6 +22,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const DetailedPost = props => {
   const post = props.route?.params?.postData;
+  
   const [index, setIndex] = useState(0);
 
   return (
@@ -69,7 +70,8 @@ const DetailedPost = props => {
           ) : (
             <></>
           )}
-          {post.locations[0].type != 'Virtual' ? (
+          
+          {post.locations[0].type != 'Virtual' && !props.dontShowMap ?  (
             <Box
               style={{
                 width: '100%',

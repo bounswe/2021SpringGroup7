@@ -163,7 +163,7 @@ function CommentSheet(props) {
               <VStack space={3} mt={5} mb={5}>
                 {pinnedComments.map((item, index) => {
                   return (
-                    <View style={{display: 'flex', flexDirection: 'column'}}>
+                    <View style={{display: 'flex', flexDirection: 'column'}} key={index}>
                       <Comment
                         reply={true}
                         pinned={true}
