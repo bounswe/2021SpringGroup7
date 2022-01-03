@@ -46,7 +46,11 @@ class GetReportStory(generics.CreateAPIView):
         except:
             return JsonResponse({'return': 'Invalid Hash'}, status=400)
         reported_story = Report.objects.all().values().first()
-        stories = Story.objects.filter(id=reported_story['story_id_id'])
+        try:
+            stories = Story.objects.filter(id=reported_story['story_id_id'])
+        except:
+            return JsonResponse({'return': 'There is no reported story'})
+
         serialized_obj = serializers.serialize('json', stories)
         serialized_obj = json.loads(str(serialized_obj))
         result = [each["fields"] for each in serialized_obj]
@@ -102,7 +106,7 @@ class GetReportStory(generics.CreateAPIView):
             result_dict['reporter_id'] = reported_story['reporter_id_id']
             result_dict['report_id'] = reported_story['id']
             result_list.append(result_dict)
-        return JsonResponse({'return': result_list}, status=400)
+        return JsonResponse({'return': result_list})
 
 class AdminActionReportStory(generics.CreateAPIView):
     serializer_class = AdminActionSerializer
@@ -276,7 +280,10 @@ class GetReportComment(generics.CreateAPIView):
             return JsonResponse({'return': 'Invalid Hash'}, status=400)
 
         reported_comment = ReportComment.objects.all().first()
-        comments = Comment.objects.filter(id=reported_comment.comment_id.id)
+        try:
+            comments = Comment.objects.filter(id=reported_comment.comment_id.id)
+        except:
+            return JsonResponse({'return': 'There is no reported comment'})
         serialized_obj = serializers.serialize('json', comments)
         serialized_obj = json.loads(str(serialized_obj))
         serialized_obj = [dict(each["fields"], **{"id": each["pk"]}) for each in serialized_obj]
@@ -291,7 +298,7 @@ class GetReportComment(generics.CreateAPIView):
             'reporter_id' : reported_comment.reporter_id.id
         }
 
-        return JsonResponse({'return': result_dict}, status=400)
+        return JsonResponse({'return': result_dict})
 
 class AdminActionReportComment(generics.CreateAPIView):
     serializer_class = AdminActionSerializer
@@ -340,7 +347,10 @@ class GetReportTag(generics.CreateAPIView):
             return JsonResponse({'return': 'Invalid Hash'}, status=400)
 
         reported_tag = ReportTag.objects.all().first()
-        tag = Tag.objects.filter(id=reported_tag.tag_id.id).values()[0]
+        try:
+            tag = Tag.objects.filter(id=reported_tag.tag_id.id).values()[0]
+        except:
+            return JsonResponse({'return': 'There is no reported tag'})
 
         result_dict = {
             "reported_tag":tag,
