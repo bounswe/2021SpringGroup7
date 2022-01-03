@@ -55,7 +55,7 @@ export default function GoogleMapsWithClustering({center, stories, setStories, s
                       story.locations.filter(location => location.type !== "Virtual").map(location => {
                        
                         const key = createKey(story, location);
-                        var marker = <Marker key={key} position={{lat:location.latitude%180-90, lng:location.longitude%180-90}} clusterer={clusterer} title={key} onClick={(e) => {
+                        var marker = <Marker key={key} position={{lat:location.latitude, lng:location.longitude}} clusterer={clusterer} title={key} onClick={(e) => {
                           openInfoWindow(key)
                           setStories([story])
                           }}>
