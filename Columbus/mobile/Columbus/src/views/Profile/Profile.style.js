@@ -1,6 +1,12 @@
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
+  headerExitIconContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignContent: 'center',
+    marginRight: 16,
+  },
   pageContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -42,22 +48,22 @@ export const styles = StyleSheet.create({
     display: 'flex',
     paddingHorizontal: 16,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   biographyContainer: {
     display: 'flex',
-    flex: 1,
+    marginVertical: 4,
     paddingHorizontal: 8,
   },
   editContainer: {
     display: 'flex',
-    flex: 1,
+    marginVertical: 8,
     paddingHorizontal: 8,
   },
   contentContainer: {
     display: 'flex',
     flex: 6,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
   },
 });

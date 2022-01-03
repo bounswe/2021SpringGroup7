@@ -47,16 +47,20 @@ const Login = ({navigation}) => {
         username: formData.username,
         ...response.data.return,
       };
-      login(data);
+      setLoginContext(data);
       setIsButtonLoading(false);
-      // navigation.navigate('HomePage');
     },
     onError({response}) {
       setIsButtonLoading(false);
-      setModalMessage(response.data.return);
+      setModalMessage(response.return);
       setShowModal(true);
     },
   });
+
+  const setLoginContext = async data => {
+    console.log('context set func');
+    await login(data);
+  };
 
   const handleLogin = async () => {
     setIsButtonLoading(true);

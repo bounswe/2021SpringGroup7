@@ -7,6 +7,7 @@ from ..models import Like,Story
 from django.contrib.auth.models import User
 from django.core import serializers
 import json
+from datetime import datetime, timezone
 
 class LikePost(generics.CreateAPIView):
     serializer_class = LikeSerializer
@@ -35,6 +36,8 @@ class LikePost(generics.CreateAPIView):
         if bool(like_relation):
             story.numberOfLikes = story.numberOfLikes - 1
             story.save()
+            dt = datetime.now(timezone.utc).astimezone()
+            ActivityStream.objects.create(type='Unlike', actor=user, story=story, date=dt)
             like_relation.delete()
             result_dict['isLiked'] = False
 
@@ -42,6 +45,8 @@ class LikePost(generics.CreateAPIView):
             like_relation = Like(story_id=story,user_id=user)
             like_relation.save()
             story.numberOfLikes = story.numberOfLikes + 1
+            dt = datetime.now(timezone.utc).astimezone()
+            ActivityStream.objects.create(type='Like', actor=user, story=story, date=dt)
             story.save()
             result_dict['isLiked'] = True
 
@@ -58,7 +63,14 @@ class GetPostLikes(generics.ListAPIView):
         except:
             return JsonResponse({'response': 'provide valid story_id or story does not exist'})
 
-        likers = list(Like.objects.filter(story_id=story_id).values('user_id','user_id__username'))
+        likers_query = Like.objects.filter(story_id=story_id).values('user_id','user_id__username')
+        likers = []
+        for user in likers_query:
+            temp = dict()
+            temp['user_id']=user['user_id']
+            temp['username'] = user['user_id__username']
+            temp['photo_url'] = Profile.objects.get(user_id=user['user_id']).photo_url
+            likers.append(temp)
 
         result_dict = {
             'like':likers,
@@ -104,10 +116,9 @@ class GetUserLikes(generics.CreateAPIView):
             serialized_obj = serializers.serialize('json', stories)
             serialized_obj = json.loads(str(serialized_obj))
             result = [each["fields"] for each in serialized_obj]
-            print(result)
             for i, each in enumerate(result):
                 each["owner_username"] = stories[i].user_id.username
-                each["is_liked"] = len(Like.objects.filter(story_id=stories[i], user_id__username=username))>0
+                each["is_liked"] = len(Like.objects.filter(story_id=stories[i], user_id__username=request.user))>0
                 each["story_id"] = stories[i].id
 
                 locations = Location.objects.filter(story_id=stories[i])
@@ -122,13 +133,35 @@ class GetUserLikes(generics.CreateAPIView):
                 serialized_obj = json.loads(str(serialized_obj))
                 serialized_obj = [each["fields"]["tag"] for each in serialized_obj]
                 each["tags"] = serialized_obj
+
+                multimedias = Multimedia.objects.filter(story_id=stories[i])
+                serialized_obj = serializers.serialize('json', multimedias)
+                serialized_obj = json.loads(str(serialized_obj))
+                serialized_obj = [each["fields"]["path"] for each in serialized_obj]
+                each["multimedias"] = serialized_obj
+
+                start_dates = Date.objects.filter(story_id=stories[i], start_end_type="start")
+                serialized_obj = serializers.serialize('json', start_dates)
+                serialized_obj = json.loads(str(serialized_obj))
+                serialized_obj = [each["fields"] for each in serialized_obj]
+                [each.pop('story_id', None) for each in serialized_obj]
+                [each.pop('start_end_type', None) for each in serialized_obj]
+                each["time_start"] = serialized_obj
+
+                end_dates = Date.objects.filter(story_id=stories[i], start_end_type="end")
+                serialized_obj = serializers.serialize('json', end_dates)
+                serialized_obj = json.loads(str(serialized_obj))
+                serialized_obj = [each["fields"] for each in serialized_obj]
+                [each.pop('story_id', None) for each in serialized_obj]
+                [each.pop('start_end_type', None) for each in serialized_obj]
+                each["time_end"] = serialized_obj
+                
                 try:
                     profiles = Profile.objects.filter(user_id__username=stories[i].user_id.username)
                     serialized_obj = serializers.serialize('json', profiles)
                     serialized_obj = json.loads(str(serialized_obj))
                     serialized_obj = [each["fields"]["photo_url"] for each in serialized_obj][0]
                     each["photo_url"] = serialized_obj
-                    print('asdasd')
                 except:
                     each["photo_url"] = None
         else:

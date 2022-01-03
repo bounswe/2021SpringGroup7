@@ -31,8 +31,38 @@ const USER_SERVICE = {
                                                                                           "username": username,
                                                                                           "page_number": pageNumber,
                                                                                           "page_size": pageSize
-                                                                                          }),                                                                                    
 
+                                                                                          }),   
+  GET_NOTIFICATIONS: (username) => API_INSTANCE.post(`/user/get_notifications/`,{
+                                                                                  "user_name":username,
+                                                                                  "limit": 20
+                                                                                }), 
+  GET_FOLLOWREQUEST: () => API_INSTANCE.get(`/user/get_follow_request/`), 
+  
+  ACCEPT_FOLLOWREQUEST: (request_id) => API_INSTANCE.post(`/user/accept_follow_request/`,{
+                                                                                      "request_id": request_id,
+                                                                                      "accept": true
+                                                                                    }), 
+ 
+  BLOCK_USER: (userThatBlocks, userThatIsBlocked) => API_INSTANCE.post(`/user/block/`, {
+                                                                                        "user_id_block": userThatBlocks,
+                                                                                        "block": userThatIsBlocked,
+                                                                                        "action_block": true
+                                                                                      }),   
+  UNBLOCK_USER: (userThatBlocks, userThatIsBlocked) => API_INSTANCE.post(`/user/block/`, {
+                                                                                          "user_id_block": userThatBlocks,
+                                                                                          "block": userThatIsBlocked,
+                                                                                          "action_block": false
+                                                                                        }), 
+  REPORT_USER: (reportedUser, reporterUser, reportMessage) => API_INSTANCE.post(`/user/report_user/`, {                                                                                    
+                                                                                            "reported_username": reportedUser,
+                                                                                            "reporter_username": reporterUser,
+                                                                                            "report": reportMessage
+                                                                                          }),  
+  DELETE_PROFILE: (userId, password) => API_INSTANCE.post(`/user/delete_profile/`, {
+                                                                                    "user_id": userId,
+                                                                                    "password": password
+                                                                                  }),                                                                                       
 };
 
 export default USER_SERVICE;

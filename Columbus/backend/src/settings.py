@@ -31,10 +31,7 @@ SECRET_KEY = 'django-insecure-8ilanq3gx*4+lhgst8iwt^jll@vit^$3#kjs4nc8+f5%=f$a+)
 
 DEBUG = env.get_value('DEBUG', default=False)
 
-BUCKET_NAME = 'columbus-multimedia-storage'
-S3_CLIENT = boto3.client('s3',aws_access_key_id=' ',
-                      aws_secret_access_key='',
-                      region_name='eu-west-1')
+
 
 
 ALLOWED_HOSTS = ['*']
@@ -67,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'user.middleware.block.CheckBlock'
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

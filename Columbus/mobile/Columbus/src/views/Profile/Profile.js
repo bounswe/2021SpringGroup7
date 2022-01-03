@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text} from 'react-native';
-import {Button} from 'native-base';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
+import {View, Text, TouchableOpacity} from 'react-native';
+import {Button, ScrollView, Spinner, VStack} from 'native-base';
 
 import InfoBox from './components/InfoBox';
 import InfoWithIcon from './components/InfoWithIcon';
@@ -11,33 +11,104 @@ import getInitials from '../../utils/getInitial';
 import {useAuth} from '../../context/AuthContext';
 
 import {styles} from './Profile.style';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+
+import {useMutation} from 'react-query';
+import {SERVICE} from '../../services/services';
+import PostCard from '../../components/PostCard';
+import ConnectionModal from './components/ConnectionModal/ConnectionModal';
 
 const Profile = ({navigation, route}) => {
-  const {user} = useAuth();
+  const {user, logout} = useAuth();
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
+  const [storyLoading, setStoryLoading] = useState(true);
+  const [userStories, setUserStories] = useState([]);
+  const [showConnectionsModal, setShowConnectionsModal] = useState(false);
+  const [connectionModalData, setConnectionModalData] = useState(null);
+  const [connectionModalHeaders, setConnectionModalHeaders] = useState('');
+
+  let token = '';
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          style={styles.headerExitIconContainer}
+          onPress={handleLogout}>
+          <Icon name="reply" size={18} />
+          <Text>Exit</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   useEffect(() => {
-    if (user && user?.userInfo && !userInfo) {
-      const data = user?.userInfo;
-      setUserInfo(data);
-      setLoading(false);
-    } else {
-      setLoading(true);
+    setLoading(true);
+    if (user) {
+      handleSetUserInfo(user.userInfo);
+      token = user.userInfo.token;
+      userStoriesRequest(user.userInfo.username);
     }
-  }, [user, userInfo, loading]);
+  }, [user]);
 
-  if (!userInfo && loading) {
+  const fetchUserStories = useMutation(
+    params => SERVICE.fetchUserPosts(params, token),
+    {
+      onSuccess(response) {
+        setUserStories(response.data.return);
+        setStoryLoading(false);
+      },
+      onError({response}) {
+        console.log('res error res: ', response);
+      },
+    },
+  );
+
+  const userStoriesRequest = async username => {
+    const data = JSON.stringify({
+      username,
+      page_number: 1,
+      page_size: 10,
+    });
+    try {
+      await fetchUserStories.mutateAsync(data);
+    } catch (e) {
+      console.log('e: ', e);
+    }
+  };
+
+  const handleSetUserInfo = async userData => {
+    await setUserInfo(userData);
+    setLoading(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+  };
+
+  const openFollowersModal = () => {
+    setConnectionModalData(userInfo.followers);
+    setConnectionModalHeaders('Followers');
+    setShowConnectionsModal(true);
+  };
+
+  const openFollowingsModal = () => {
+    setConnectionModalData(userInfo.followings);
+    setConnectionModalHeaders('Followings');
+    setShowConnectionsModal(true);
+  };
+
+  if (loading) {
     return <PageSpinner></PageSpinner>;
   }
 
   return (
     <View style={styles.pageContainer}>
-      {console.log('444')}
       <View style={styles.headerContainer}>
         <View style={styles.avatarContainer}>
           <CustomAvatar
-            imageUrl={userInfo?.imageUrl}
+            imageUrl={userInfo?.photo_url}
             initials={`${getInitials(userInfo.username)}`}
           />
 
@@ -52,32 +123,25 @@ const Profile = ({navigation, route}) => {
         </View>
         <View style={styles.headerRightSideContainer}>
           <View style={styles.infoBoxContainer}>
-            <InfoBox
-              heading="Story"
-              number={
-                userInfo?.stories ? userInfo?.stories?.length : 0
-              }></InfoBox>
+            {!storyLoading && userStories.length !== 0 && (
+              <InfoBox
+                heading="Story"
+                number={userStories ? userStories?.length : 0}></InfoBox>
+            )}
             <InfoBox
               heading="Followers"
-              number={
-                userInfo?.followers ? userInfo?.followers.length : 0
-              }></InfoBox>
+              number={userInfo?.followers ? userInfo?.followers.length : 0}
+              handleModal={openFollowersModal}></InfoBox>
             <InfoBox
               heading="Following"
-              number={
-                userInfo?.followings ? userInfo?.followings.length : 0
-              }></InfoBox>
+              number={userInfo?.followings ? userInfo?.followings.length : 0}
+              handleModal={openFollowingsModal}></InfoBox>
           </View>
           <View style={styles.mainInfoContainer}>
             {userInfo.birthday && (
               <InfoWithIcon
                 iconName="birthday-cake"
                 data={userInfo.birthday}></InfoWithIcon>
-            )}
-            {userInfo.location && (
-              <InfoWithIcon
-                iconName="map-marker-alt"
-                data={userInfo.location}></InfoWithIcon>
             )}
           </View>
         </View>
@@ -88,19 +152,42 @@ const Profile = ({navigation, route}) => {
       <View style={styles.editContainer}>
         <Button
           variant="outline"
-          onPress={() =>
+          onPress={() => {
             navigation.push('EditProfile', {
               userInfo,
-            })
-          }>
+              token: user.userInfo.token,
+            });
+          }}>
           Edit Profile
         </Button>
       </View>
+      {showConnectionsModal && (
+        <ConnectionModal
+          showModal={showConnectionsModal}
+          closeModal={() => setShowConnectionsModal(false)}
+          data={connectionModalData}
+          header={connectionModalHeaders}
+          navigation={navigation}
+        />
+      )}
       <View style={styles.contentContainer}>
-        {userInfo.stories && userInfo.stories.length !== 0 ? (
-          //TODO: Add story component
-          <></>
-        ) : (
+        {storyLoading && <Spinner></Spinner>}
+        {!storyLoading && userStories.length !== 0 && (
+          <ScrollView>
+            <VStack
+              flex={1}
+              px="3"
+              space={10}
+              alignItems="center"
+              pb={10}
+              mt={5}>
+              {userStories.map(item => {
+                return <PostCard data={item} key={item.story_id} />;
+              })}
+            </VStack>
+          </ScrollView>
+        )}
+        {!storyLoading && userStories.length === 0 && (
           <Text style={{textAlign: 'center'}}>You do not share any story!</Text>
         )}
       </View>
