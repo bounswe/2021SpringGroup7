@@ -1,5 +1,11 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, useWindowDimensions} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  RefreshControl,
+} from 'react-native';
 import {Button, ScrollView, Spinner, VStack} from 'native-base';
 
 import InfoBox from './components/InfoBox';
@@ -32,6 +38,7 @@ const Profile = ({navigation, route}) => {
   const [showConnectionsModal, setShowConnectionsModal] = useState(false);
   const [connectionModalData, setConnectionModalData] = useState(null);
   const [connectionModalHeaders, setConnectionModalHeaders] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [routes] = useState([
     {key: 'first', title: 'Shared'},
     {key: 'second', title: 'Liked'},
@@ -57,7 +64,7 @@ const Profile = ({navigation, route}) => {
     if (user) {
       handleSetUserInfo(user.userInfo);
       token = user.userInfo.token;
-      userStoriesRequest(user.userInfo.username);
+      userStoriesRequest();
     }
   }, [user, navigation]);
 
@@ -67,9 +74,11 @@ const Profile = ({navigation, route}) => {
       onSuccess(response) {
         setUserStories(response.data.return);
         setStoryLoading(false);
+        setIsRefreshing(false);
       },
       onError({response}) {
         setStoryLoading(false);
+        setIsRefreshing(false);
         console.log('fetch story error: ', response);
       },
     },
@@ -82,19 +91,21 @@ const Profile = ({navigation, route}) => {
         console.log('res liked: ', response);
         setUserLikedStories(response.data.return);
         setUserLikedStoryLoading(false);
+        setIsRefreshing(false);
       },
       onError({response}) {
         setUserLikedStoryLoading(false);
+        setIsRefreshing(false);
         console.log('res liked error:  ', response);
       },
     },
   );
 
-  const userStoriesRequest = async username => {
+  const userStoriesRequest = async () => {
     setStoryLoading(true);
     setUserLikedStoryLoading(true);
     const data = JSON.stringify({
-      username,
+      username: user.userInfo.username,
       page_number: 1,
       page_size: 10,
     });
@@ -129,11 +140,29 @@ const Profile = ({navigation, route}) => {
     setShowConnectionsModal(true);
   };
 
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await userStoriesRequest();
+    } catch (e) {
+      setIsRefreshing(false);
+      setStoryLoading(false);
+      setUserLikedStoryLoading(false);
+      console.log('err: ', e);
+    }
+  };
+
   const FirstRoute = () => (
     <View style={styles.contentContainer}>
       {storyLoading && <Spinner></Spinner>}
       {!storyLoading && userStories.length !== 0 && (
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              onRefresh={handleRefresh}
+              refreshing={isRefreshing}
+            />
+          }>
           <VStack flex={1} px="3" space={10} alignItems="center" pb={10} mt={5}>
             {userStories.map(item => {
               return <PostCard data={item} key={item.story_id} />;
@@ -142,15 +171,7 @@ const Profile = ({navigation, route}) => {
         </ScrollView>
       )}
       {!storyLoading && userStories.length === 0 && (
-        <View>
-          <Text style={{textAlign: 'center'}}>You do not share any story!</Text>
-          <Icon
-            style={{alignSelf: 'center'}}
-            name={'undo'}
-            size={18}
-            onPress={() => userStoriesRequest(user.userInfo.username)}
-          />
-        </View>
+        <Text style={{textAlign: 'center'}}>You do not share any story!</Text>
       )}
     </View>
   );
@@ -159,7 +180,13 @@ const Profile = ({navigation, route}) => {
     <View style={styles.contentContainer}>
       {userLikedStoryLoading && <Spinner></Spinner>}
       {!userLikedStoryLoading && userLikedStories.length !== 0 && (
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              onRefresh={handleRefresh}
+              refreshing={isRefreshing}
+            />
+          }>
           <VStack flex={1} px="3" space={10} alignItems="center" pb={10} mt={5}>
             {userLikedStories.map(item => {
               return <PostCard data={item} key={item.story_id} />;
@@ -168,15 +195,7 @@ const Profile = ({navigation, route}) => {
         </ScrollView>
       )}
       {!userLikedStoryLoading && userLikedStories.length === 0 && (
-        <View>
-          <Text style={{textAlign: 'center'}}>You do not liked any story!</Text>
-          <Icon
-            style={{alignSelf: 'center'}}
-            name={'undo'}
-            size={18}
-            onPress={() => userStoriesRequest(user.userInfo.username)}
-          />
-        </View>
+        <Text style={{textAlign: 'center'}}>You do not liked any story!</Text>
       )}
     </View>
   );
