@@ -14,7 +14,10 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
+import { useNavigate } from "react-router-dom";
 const LocationDialog = ({ open, handleClose,  locations }) => {
+  const navigate = useNavigate()
+  
   return (
     <Dialog
       open={open}
@@ -26,7 +29,13 @@ const LocationDialog = ({ open, handleClose,  locations }) => {
         {locations ? locations.map((item) => {
           return (
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={(e) => {
+              if(item.type==="Real"){
+                navigate(`/Search?locationType=${item.type}&lat=${item.latitude}&lng=${item.longitude}`)
+              }else {
+                navigate(`/Search?locationType=${item.type}&locationName=${item.location}`)
+              }
+            }}>
               <ListItemIcon>
                 <LocationOn />
               </ListItemIcon>

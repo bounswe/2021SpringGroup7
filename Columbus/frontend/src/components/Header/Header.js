@@ -33,8 +33,9 @@ import NotificationMenu from '../Notifications/NotificationMenu'
 export default function Header(props) {
   const classes = useStyles();
   const navigate = useNavigate();
-
+  
   const [anchorEl, setAnchorEl] = useState(null);
+  const [searchText, setSearchText] = useState(props.searchValue);
   const isMenuOpen = Boolean(anchorEl);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(null);
   const isNotificationMenuOpen = Boolean(isNotificationsOpen);
@@ -58,8 +59,11 @@ export default function Header(props) {
     API_INSTANCE.defaults.headers.common['Authorization'] = null;
   };
 
+  const handleSearchTextChange = (e) => {
+    setSearchText(e.target.value)
+  }
 
-
+const menuId = 'primary-search-account-menu';
 
 const renderMenu = (
     <Menu
@@ -133,12 +137,15 @@ const renderMenu = (
             <StyledInputBase
               placeholder="Search Location Stories…"
               inputProps={{ 'aria-label': 'search' }}
+              value={searchText}
+              onChange={handleSearchTextChange}
             />
             <Tooltip title="Search" arrow>
               <Button
                 variant="contained"
                 disableElevation
                 className={classes.button}
+                href={searchText.startsWith("@") ? `/UserSearch?searchText=${searchText}` : `/Search?searchText=${searchText}`}
               >
                 <SearchIcon />
               </Button>

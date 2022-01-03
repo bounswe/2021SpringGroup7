@@ -28,6 +28,12 @@ export const SERVICE = {
     });
   },
 
+  fetchUserLikedPosts: async (params, token) => {
+    return await API_INSTANCE.post(`/user/get_user_likes/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
   postStory: async (params, token) => {
     return await API_INSTANCE.post(`/user/create_post/`, params, {
       headers: {Authorization: `TOKEN ${token}`},

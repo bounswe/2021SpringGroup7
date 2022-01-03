@@ -96,8 +96,8 @@ const UserSearch = props => {
                   {`${getInitials(user.username)}`}
                 </Avatar>
                 <View style={{flexDirection: 'row'}}>
-                  {user.first_name!='' && <Text>{user.first_name + ' '}</Text>}
-                  {user.last_name!='' && <Text>{user.last_name}</Text>}
+                  {user.first_name !== '' && <Text>{user.first_name}</Text>}
+                  {user.last_name !== '' && <Text>{user.last_name}</Text>}
                 </View>
                 <Text>{user.username}</Text>
               </TouchableOpacity>
