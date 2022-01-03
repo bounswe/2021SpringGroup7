@@ -182,7 +182,7 @@ const LocationSearch = props => {
         <Actionsheet isOpen={isOpen} onClose={onClose}>
           <Actionsheet.Content>
             <DetailedPost
-              route={{params: {postData: clickedPost}}}></DetailedPost>
+              route={{params: {postData: clickedPost}}} dontShowMap={true}></DetailedPost>
           </Actionsheet.Content>
         </Actionsheet>
       </>
