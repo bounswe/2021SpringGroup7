@@ -41,7 +41,7 @@ function ProfilePostScroll({ userToBeViewed, userThatViews,...props}) {
 
   useEffect(() => {
    
-     USER_SERVICE.GET_PROFILEPOSTS(userToBeViewed,pageNumber,20)
+     USER_SERVICE.GET_PROFILEPOSTS(userToBeViewed,pageNumber,150)
                                             .then((res) => {
                                               setCurrentPosts(res.data.return)
                                               setIsLoading(false);
@@ -59,7 +59,11 @@ function ProfilePostScroll({ userToBeViewed, userThatViews,...props}) {
   return (<>
   {
       curPosts.length === 0 ? <Box className={classes.emptyBody}>
-                                <Typography>You have not shared any stories yet.</Typography>
+                                {userThatViews === userToBeViewed ?
+                                              <Typography>You have not shared any stories yet.</Typography>
+                                                                  :
+                                               <Typography>This user has not shared any stories yet.</Typography>       
+                                 }
                           </Box>
                         : <>
                               {curPosts.map((item) => {
@@ -77,55 +81,3 @@ function ProfilePostScroll({ userToBeViewed, userThatViews,...props}) {
 
 
 export default ProfilePostScroll;
-
-
-/*
-
-{
-      curPosts.length === 0 ? <Box className={classes.emptyBody}>
-                                <Typography>You do not have any stories to view.</Typography>
-                              <NavLink to="/Home">Explore Stories</NavLink> 
-                          </Box>
-                        : <InfiniteScroll
-                              dataLength={20} // ? 20
-                              next={fetchData}
-                              hasMore={hasMore}
-                              loader={<h4>Loading...</h4>}
-                              endMessage={
-                                          <p style={{ textAlign: 'center' }}>
-                                            <b>You have seen all of your stories!</b>
-                                          </p>
-                                          } 
-                              >
-                              {curPosts.map((item) => {
-                                                      return (
-                                                        <Post post={item} curUser={userThatViews}></Post>
-                                                      );
-                                                    })
-                                }
-                            </InfiniteScroll>
-      }
-
-
-*/
-
-    /*
-  var fetchData = () => {
-
-    console.log('hereee ')
-    USER_SERVICE.GET_PROFILEPOSTS(userToBeViewed,pageNumber,5)
-                                            .then((res) => {
-                                                if (res.data['return'].length === 0) {
-                                                      setHasMore(false);
-                                                      return;
-                                                  }
-                                                setCurrentPosts(curPosts.concat(res.data['return']))
-                                                setIsLoading(false);
-                                                console.log('return ', res.data['return'])
-                                            })
-                                            .catch((error) => {
-                                                console.log(error)
-                 });
-                      
-    setPageNumber(pageNumber+1);
-  };*/

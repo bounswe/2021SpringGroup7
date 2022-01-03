@@ -41,7 +41,7 @@ function LikedPostScroll({ userToBeViewed, userThatViews, ...props}) {
 
   useEffect(() => {
 
-      USER_SERVICE.GET_LIKEDPOSTS(userToBeViewed,pageNumber,20)
+      USER_SERVICE.GET_LIKEDPOSTS(userToBeViewed,pageNumber,150)
                                             .then((res) => {
                                               setCurrentPosts(res.data.return)
                                               setIsLoading(false);
@@ -59,7 +59,11 @@ function LikedPostScroll({ userToBeViewed, userThatViews, ...props}) {
   return (<>
   {
       curPosts.length === 0 ? <Box className={classes.emptyBody}>
-                                <Typography>You have not liked any stories yet.</Typography>
+                                {userThatViews === userToBeViewed ?
+                                              <Typography>You have not liked any stories yet.</Typography>
+                                                                  :
+                                               <Typography>This user has not liked any stories yet.</Typography>       
+                                 }
                           </Box>
                         : <>
                               {curPosts.map((item) => {
