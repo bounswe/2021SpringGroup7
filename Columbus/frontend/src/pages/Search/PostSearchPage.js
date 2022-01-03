@@ -108,7 +108,6 @@ export default function PostSearchPage() {
 
   const handleLocationTypeChange = (event) => {
     const filtered = allStories.filter(story => story.locations.some(location => location.type===event.target.value))
-    setAllStories(filtered)
     setCurStories(filtered)
     setLocationType(event.target.value);
   };
