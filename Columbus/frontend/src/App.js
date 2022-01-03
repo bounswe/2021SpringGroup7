@@ -19,9 +19,6 @@ function App() {
 
   const [adminAuthenticated, setAdminAuthenticated] = useState(!!localStorage.getItem("login_hash"))
 
-  console.log('log hash ', localStorage.getItem("login_hash"))
-  //localStorage.removeItem("login_hash")
-
   if(!!localStorage.getItem("jwtToken")){
       API_INSTANCE.defaults.headers.common['Authorization'] = localStorage.getItem("jwtToken");
     }
