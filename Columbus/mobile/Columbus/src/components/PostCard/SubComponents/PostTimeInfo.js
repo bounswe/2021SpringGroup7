@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {Text, View} from 'native-base';
 
 function PostTimeInfo(props) {
-  console.log(`props`, props.data)
   const data=props.data[0]
   let dateToShow=''
   if(data.type=='specific'){
@@ -63,4 +62,3 @@ function PostTimeInfo(props) {
 }
 
 export default PostTimeInfo;
-
