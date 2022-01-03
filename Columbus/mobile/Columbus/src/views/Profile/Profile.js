@@ -1,5 +1,5 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, useWindowDimensions} from 'react-native';
 import {Button, ScrollView, Spinner, VStack} from 'native-base';
 
 import InfoBox from './components/InfoBox';
@@ -17,9 +17,12 @@ import {useMutation} from 'react-query';
 import {SERVICE} from '../../services/services';
 import PostCard from '../../components/PostCard';
 import ConnectionModal from './components/ConnectionModal/ConnectionModal';
+import {SceneMap, TabView} from 'react-native-tab-view';
 
 const Profile = ({navigation, route}) => {
+  const layout = useWindowDimensions();
   const {user, logout} = useAuth();
+  const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [storyLoading, setStoryLoading] = useState(true);
@@ -27,6 +30,10 @@ const Profile = ({navigation, route}) => {
   const [showConnectionsModal, setShowConnectionsModal] = useState(false);
   const [connectionModalData, setConnectionModalData] = useState(null);
   const [connectionModalHeaders, setConnectionModalHeaders] = useState('');
+  const [routes] = useState([
+    {key: 'first', title: 'Shared'},
+    {key: 'second', title: 'Liked'},
+  ]);
 
   let token = '';
 
@@ -99,6 +106,37 @@ const Profile = ({navigation, route}) => {
     setShowConnectionsModal(true);
   };
 
+  const FirstRoute = () => (
+    <View style={styles.contentContainer}>
+      {storyLoading && <Spinner></Spinner>}
+      {!storyLoading && userStories.length !== 0 && (
+        <ScrollView>
+          <VStack flex={1} px="3" space={10} alignItems="center" pb={10} mt={5}>
+            {userStories.map(item => {
+              return <PostCard data={item} key={item.story_id} />;
+            })}
+          </VStack>
+        </ScrollView>
+      )}
+      {!storyLoading && userStories.length === 0 && (
+        <Text style={{textAlign: 'center'}}>You do not share any story!</Text>
+      )}
+    </View>
+  );
+
+  const SecondRoute = () => (
+    <ScrollView style={{flex: 1}}>
+      <View>
+        <Text>qweqweqwe</Text>
+      </View>
+    </ScrollView>
+  );
+
+  const renderScene = SceneMap({
+    first: FirstRoute,
+    second: SecondRoute,
+  });
+
   if (loading) {
     return <PageSpinner></PageSpinner>;
   }
@@ -170,26 +208,13 @@ const Profile = ({navigation, route}) => {
           navigation={navigation}
         />
       )}
-      <View style={styles.contentContainer}>
-        {storyLoading && <Spinner></Spinner>}
-        {!storyLoading && userStories.length !== 0 && (
-          <ScrollView>
-            <VStack
-              flex={1}
-              px="3"
-              space={10}
-              alignItems="center"
-              pb={10}
-              mt={5}>
-              {userStories.map(item => {
-                return <PostCard data={item} key={item.story_id} />;
-              })}
-            </VStack>
-          </ScrollView>
-        )}
-        {!storyLoading && userStories.length === 0 && (
-          <Text style={{textAlign: 'center'}}>You do not share any story!</Text>
-        )}
+      <View style={{flex: 7, padding: 8}}>
+        <TabView
+          navigationState={{index, routes}}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{width: layout.width}}
+        />
       </View>
     </View>
   );
