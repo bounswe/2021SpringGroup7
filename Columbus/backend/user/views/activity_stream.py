@@ -121,6 +121,7 @@ def _followrequest(activity):
             "summary": f"{activity.actor.username} has requested to follow {activity.target.username}",
             "id": activity.id,
             "type": "FollowRequest",
+            "type_id": activity.type_id,
             "date": activity.date,
             "actor": {
                 "type": "https://schema.org/Person",

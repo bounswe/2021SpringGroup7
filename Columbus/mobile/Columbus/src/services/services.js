@@ -28,6 +28,12 @@ export const SERVICE = {
     });
   },
 
+  fetchUserLikedPosts: async (params, token) => {
+    return await API_INSTANCE.post(`/user/get_user_likes/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
   postStory: async (params, token) => {
     return await API_INSTANCE.post(`/user/create_post/`, params, {
       headers: {Authorization: `TOKEN ${token}`},
@@ -98,7 +104,6 @@ export const SERVICE = {
     });
   },
   getSearch: async (params, token) => {
-    
      return await API_INSTANCE.post(`/search/search/`, params, {
       headers: {Authorization: `TOKEN ${token}`},
     });
@@ -113,6 +118,11 @@ export const SERVICE = {
 
   postReportUser: async (params, token) => {
     return await API_INSTANCE.post(`/user/report_user/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  postReportPost: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/report_story/`, params, {
       headers: {Authorization: `TOKEN ${token}`},
     });
   }

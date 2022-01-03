@@ -11,7 +11,14 @@ const POST_SERVICE = {
     POST_DELETE: (data) => API_INSTANCE.post(`/user/delete_post/`, data),
     POST_REPORT: (data) => API_INSTANCE.post(`/user/report_story/`, data),
     COMMENT_DELETE: (data) => API_INSTANCE.post(`/user/comment_delete/`, data),
-    COMMENT_PIN: (data) => API_INSTANCE.post(`/user/pin_comment/`, data)
+    COMMENT_PIN: (data) => API_INSTANCE.post(`/user/pin_comment/`, data),
+    SEARCH: (data, username) => 
+        API_INSTANCE.post("/search/search/", {
+            ...data,
+            page_number: 1,
+            page_size: 10000,
+            username: username
+        })
 };
 
 export default POST_SERVICE;

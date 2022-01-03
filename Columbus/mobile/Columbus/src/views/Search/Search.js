@@ -3,7 +3,7 @@ import {TabView, SceneMap} from 'react-native-tab-view';
 import {View, Text, useWindowDimensions} from 'react-native';
 import {ScrollView} from 'native-base';
 import UserSearch from './components/UserSearch';
-import TagSearch from './components/TagSearch';
+import StorySearch from './components/StorySearch';
 import LocationSearch from './components/LocationSearch';
 
 LocationSearch
@@ -14,14 +14,14 @@ const Search = ({navigation}) => {
 
   const [routes] = useState([
     {key: 'first', title: 'User'},
-    {key: 'second', title: 'Tag'},
+    {key: 'second', title: 'Story'},
     {key: 'third', title: 'Map'},
-    {key: 'fourth', title: 'Date'},
+   
   ]);
 
   const FirstRoute = () => <UserSearch navigation={navigation} />;
 
-  const SecondRoute = () => <TagSearch navigation={navigation}/>;
+  const SecondRoute = () => <StorySearch navigation={navigation}/>;
   
 
   const ThirdRoute = () => <LocationSearch navigation={navigation}/>;

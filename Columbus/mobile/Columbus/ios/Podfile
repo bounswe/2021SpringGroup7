@@ -18,6 +18,8 @@ target 'Columbus' do
 
   pod 'react-native-pager-view', :path => '../node_modules/react-native-pager-view'
 
+  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
+
   target 'ColumbusTests' do
     inherit! :complete
     # Pods for testing
