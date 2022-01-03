@@ -39,7 +39,6 @@ const Home = ({navigation}) => {
   }, [navigation]);
 
   useEffect(() => {
-    console.log('ASDASD');
     if (user) {
       setToken(user.userInfo.token);
       storiesRequest(user.userInfo.username);
