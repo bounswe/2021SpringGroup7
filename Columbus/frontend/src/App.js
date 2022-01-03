@@ -8,6 +8,8 @@ import CreatePostPage from "./pages/CreatePostPage";
 import {Snackbar, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import Profile from "./pages/Profile"
+import Admin from "./pages/Admin/Admin"
+import AdminLogin from "./pages/Admin/AdminLogin"
 import {API_INSTANCE} from './config/api';
 import PostSearchPage from "./pages/Search/PostSearchPage";
 import UserSearchPage from "./pages/Search/UserSearchPage";
@@ -19,7 +21,7 @@ function App() {
   const [openSnackBar, setOpenSnackBar] = React.useState(false);
   const [snackBarMessage, setSnackBarMessage] = React.useState("");
 
-  console.log(!!localStorage.getItem("jwtToken"))
+  const [adminAuthenticated, setAdminAuthenticated] = useState(!!localStorage.getItem("login_hash"))
 
   if(!!localStorage.getItem("jwtToken")){
       API_INSTANCE.defaults.headers.common['Authorization'] = localStorage.getItem("jwtToken");
@@ -76,6 +78,14 @@ function App() {
           <Route
             path="/Home/Story/Create"
             element={<CreatePostPage setSnackBarMessage={setSnackBarMessage} setOpenSnackBar={setOpenSnackBar}/>}
+          />
+           <Route
+            path="/admin/login"
+            element={adminAuthenticated ?  <Navigate replace to = "/admin" /> : <AdminLogin setAuthenticated={setAdminAuthenticated} />}
+          />
+           <Route
+            path="/admin"
+            element={ adminAuthenticated ? <Admin></Admin> : <Navigate replace to = "/admin/login" />}
           />
         </Routes>
       </Router>
