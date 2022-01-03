@@ -97,7 +97,6 @@ export default function Post(props) {
   const [editOpen, setEditOpen] = useState(false);
   const [storyTitle, setStoryTitle] = useState(props.post.title);
   const [storyText, setStoryText] = useState(props.post.text);
-  const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [expandComment, setExpandComment] = useState(false);
