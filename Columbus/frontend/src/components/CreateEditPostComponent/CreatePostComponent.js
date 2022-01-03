@@ -186,7 +186,7 @@ export default function CreatePostDialog({
       title: topic,
       tags: tags.map((tag) => tag.title),
       username: localStorage.getItem("username"),
-      multimedia: [imgUrl],
+      multimedias: [imgUrl],
       time_start: startDateDict,
       time_end: endDateDict,
       location: locationType==="Virtual" ? locations.map((location) => ({"location": location.locationName, "latitude": 0, "longitude": 0, "type": locationType})) : locations.map((location) => ({"location": location.locationName, "latitude": location.geolocation.latitude, "longitude": location.geolocation.longitude, "type": locationType})),
