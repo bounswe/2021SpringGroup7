@@ -412,7 +412,7 @@ export default function CreatePostDialog({
           onChange={handleDateChange2}
           renderInput={(params) => <TextField {...params} helperText={null} />}
               required
-              minDate={startDate ? startDate : new Date("1600-01-01")}
+              minDate={startDate ? startDate : new Date("1800-01-01")}
               maxDate={Date.now()}
               minDateMessage="End date can't be before than start date"
             /></LocalizationProvider>
@@ -427,6 +427,16 @@ export default function CreatePostDialog({
             label="Decade"
             required
           >
+            <MenuItem value={180}>1800s</MenuItem>
+            <MenuItem value={181}>1810s</MenuItem>
+            <MenuItem value={182}>1820s</MenuItem>
+            <MenuItem value={183}>1830s</MenuItem>
+            <MenuItem value={184}>1840s</MenuItem>
+            <MenuItem value={185}>1850s</MenuItem>
+            <MenuItem value={186}>1860s</MenuItem>
+            <MenuItem value={187}>1870s</MenuItem>
+            <MenuItem value={188}>1880s</MenuItem>
+            <MenuItem value={189}>1890s</MenuItem>
             <MenuItem value={190}>1900s</MenuItem>
             <MenuItem value={191}>1910s</MenuItem>
             <MenuItem value={192}>1920s</MenuItem>
@@ -471,7 +481,7 @@ export default function CreatePostDialog({
           value={startDate}
           onChange={handleDateChange1}
           renderInput={(params) => <TextField {...params} helperText={null} />}
-          minDate={new Date("1600-01-01")}
+          minDate={new Date("1800-01-01")}
           maxDate={Date.now()}
         /></LocalizationProvider>
           </Box></MuiPickersUtilsProvider>}</>}</>}
