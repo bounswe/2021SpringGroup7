@@ -230,7 +230,13 @@ const OtherProfiles = ({navigation, route}) => {
             )}
             <InfoBox
               heading="Followers"
-              number={userInfo?.followers_count ? userInfo?.followers_count : 0}
+              number={
+                userInfo?.followers
+                  ? userInfo?.followers.length
+                  : userInfo?.followers_count
+                  ? userInfo?.followers_count
+                  : 0
+              }
               handleModal={
                 userInfo.isPublic || userInfo?.followers
                   ? openFollowersModal
@@ -239,7 +245,11 @@ const OtherProfiles = ({navigation, route}) => {
             <InfoBox
               heading="Following"
               number={
-                userInfo?.followings_count ? userInfo?.followings_count : 0
+                userInfo?.followings
+                  ? userInfo?.followings.length
+                  : userInfo?.followings_count
+                  ? userInfo?.followings_count
+                  : 0
               }
               handleModal={
                 userInfo.isPublic || userInfo?.followers

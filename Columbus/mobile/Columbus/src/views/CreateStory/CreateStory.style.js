@@ -8,13 +8,15 @@ export const styles = StyleSheet.create({
   },
   imageContainer: {
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
   },
   image: {
     borderRadius: 8,
+    width: '100%',
+    height: 200,
   },
   imageButtonText: {
     fontWeight: '500',

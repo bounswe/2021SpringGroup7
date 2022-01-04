@@ -95,7 +95,7 @@ const LocationSearch = props => {
     setIsLoading(true);
     const data = JSON.stringify({
       page_number: 1,
-      page_size: 10,
+      page_size: 100,
       max_latitude: startLocation.latitude + startLocation.latitudeDelta,
       max_longitude: startLocation.longitude + startLocation.longitudeDelta,
       min_latitude: startLocation.latitude + -startLocation.latitudeDelta,
