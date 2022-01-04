@@ -23,6 +23,7 @@ import {useMutation} from 'react-query';
 import {SERVICE} from '../../services/services';
 import CustomModal from '../../components/CustomModal';
 import ProgressModal from '../../components/ProgressModal';
+import LocationModal from '../../components/LocationModal';
 
 const CreateStory = () => {
   let token = '';
@@ -50,6 +51,12 @@ const CreateStory = () => {
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+
+  const [showLocationModal, setShowLocationModal] = useState(false);
+  const [realLocationData, setRealLocationData] = useState({
+    longitude: 0,
+    latitude: 0,
+  });
 
   const handleChangeProfileImage = async () => {
     await ImagePicker.launchImageLibrary(
@@ -104,8 +111,8 @@ const CreateStory = () => {
       location: [
         {
           location: locationName,
-          latitude: 41.0768,
-          longitude: 29.0219,
+          latitude: realLocationData.latitude,
+          longitude: realLocationData.longitude,
           type: locationType,
         },
       ],
@@ -243,11 +250,23 @@ const CreateStory = () => {
                 onChange={value => setLocationName(value)}
               />
               <Text>*Geolocation</Text>
-              <Button mt={2} variant="outline">
+              <Button
+                mt={2}
+                variant="outline"
+                onPress={() => setShowLocationModal(true)}>
                 <Text>Choose geolocation</Text>
               </Button>
             </>
           )}
+          <LocationModal
+            showModal={showLocationModal}
+            onClose={() => setShowLocationModal(false)}
+            handleSaveDate={locationData => {
+              console.log('locaation: ', locationData);
+              setRealLocationData(locationData);
+              setShowLocationModal(false);
+            }}
+          />
           <Text>*Date</Text>
           <Button
             mt={2}
