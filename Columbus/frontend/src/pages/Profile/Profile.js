@@ -41,6 +41,7 @@ import USER_SERVICE from "../../services/user";
 import SettingsDialog from "../../components/Dialogs/SettingsDialog/SettingsDialog"
 
 
+// takes yyyy-mm-dd, returns dd mm, yyyy
 function convertBirthday(birthday) {
 
   let birthdayReadable = ''

@@ -28,14 +28,16 @@ export default function EditProfileDialog(props) {
  const [fileUploadProgress, setFileUploadProgress] = useState(0);
  const [file, setFile] = useState(curProfileInfo['profilePic']);
 
- const [dateValue, setDateValue] = useState(Date.now());
+ const [dateValue, setDateValue] = useState(new Date());
+ const [isDateChanged, setIsDateChanged] = useState(false);
 
  const [message, setMessage] = useState('');
  const [openMessage, setOpenMessage] = useState(false);
 
 
  useEffect(() => { 
-   if (!!curProfileInfo && !!curProfileInfo['birthday']) {
+   if (!!curProfileInfo && !!curProfileInfo['birthday']) 
+   {
    setDateValue(new Date( parseInt(curProfileInfo['birthday'].substring(0,4)),
                           parseInt(curProfileInfo['birthday'].substring(5,7)) - 1, 
                           parseInt(curProfileInfo['birthday'].substring(8,10)),
@@ -46,15 +48,19 @@ export default function EditProfileDialog(props) {
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
-    if(event.target.files[0]){
+    if(event.target.files[0])
+    {
       console.log(event.target.files[0])
         UploadProfileImage(localStorage.getItem('userid'), event.target.files[0], setImgUrl, setFileUploadProgress)
-    }else {
+    }
+    else 
+    {
       setFile(null);
     }
   };
 
   const handleDateChange = (newValue) => {
+    setIsDateChanged(true);
     setDateValue(newValue);
   };
 

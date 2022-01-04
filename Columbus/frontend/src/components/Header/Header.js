@@ -163,7 +163,7 @@ const renderMenu = (
                           variant="contained"
                           size="small"
                           aria-label="explore"
-                          href="/"
+                          href="/Explore"
                           startIcon={<ExploreIcon />}>
                           Explore
                         </Button>
