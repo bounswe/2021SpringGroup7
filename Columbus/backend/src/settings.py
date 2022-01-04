@@ -162,8 +162,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'junkcolumbus@gmail.com'
-EMAIL_HOST_PASSWORD = 'junk_Columbus_451'
+EMAIL_HOST_USER = 'columbuscustomerservicenoreply@gmail.com'
+EMAIL_HOST_PASSWORD = env.get_value("MAIL")
+
 
 REST_FRAMEWORK = {'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
                   'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.TokenAuthentication']
