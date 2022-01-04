@@ -135,9 +135,9 @@ export default function Post(props) {
       if(props.post.time_start[0].year)
         setStoryDate1(props.post.time_start[0].year)
       if(props.post.time_start[0].month)
-        setStoryDate1(months[props.post.time_start[0].month]+" "+props.post.time_start[0].year)
+        setStoryDate1(months[props.post.time_start[0].month-1]+" "+props.post.time_start[0].year)
       if(props.post.time_start[0].day)
-        setStoryDate1(props.post.time_start[0].day+" "+months[props.post.time_start[0].month]+" "+props.post.time_start[0].year)
+        setStoryDate1(props.post.time_start[0].day+" "+months[props.post.time_start[0].month-1]+" "+props.post.time_start[0].year)
       }
     }
     else if(props.post.time_start[0].type=="decade")
@@ -153,9 +153,9 @@ export default function Post(props) {
           if(props.post.time_end[0].year)
             setStoryDate2(props.post.time_end[0].year)
           if(props.post.time_end[0].month)
-            setStoryDate2(months[props.post.time_end[0].month]+" "+props.post.time_end[0].year)
+            setStoryDate2(months[props.post.time_end[0].month-1]+" "+props.post.time_end[0].year)
           if(props.post.time_end[0].day)
-            setStoryDate2(props.post.time_end[0].day+" "+months[props.post.time_end[0].month]+" "+props.post.time_end[0].year)
+            setStoryDate2(props.post.time_end[0].day+" "+months[props.post.time_end[0].month-1]+" "+props.post.time_end[0].year)
         }
       }}
     var postdata = { 'story_id': props.post.story_id }
