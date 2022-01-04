@@ -7,6 +7,12 @@ const DateFormModal = props => {
   const [latitude, setLatitude] = useState(41.0768);
   const [longitude, setLongitude] = useState(29.0219);
   const [marker, setMarker] = useState(null);
+  const [region, setRegion] = useState({
+    latitude: 41.0768,
+    longitude: 29.0219,
+    latitudeDelta: 5,
+    longitudeDelta: 5,
+  });
 
   const handleSaveDate = () => {
     const locationData = {
@@ -16,10 +22,25 @@ const DateFormModal = props => {
 
     props.handleSaveDate(locationData);
   };
-  const setLocation=(loc)=>{
-    setLatitude(loc.latitude)
-    setLongitude(loc.longitude)
-    setMarker(loc)
+  const setLocation = loc => {
+    setLatitude(loc.latitude);
+    setLongitude(loc.longitude);
+    setMarker(loc);
+  };
+
+  const zoomIn =()=>{
+    let newRegion={...region}
+    newRegion.latitudeDelta-=0.2*newRegion.latitudeDelta
+    newRegion.longitudeDelta-=0.2*newRegion.longitudeDelta
+    setRegion(newRegion)
+
+  }
+  const zoomOut =()=>{
+    let newRegion={...region}
+    newRegion.latitudeDelta+=0.2*newRegion.latitudeDelta
+    newRegion.longitudeDelta+=0.2*newRegion.longitudeDelta
+    setRegion(newRegion)
+
   }
 
   return (
@@ -31,13 +52,9 @@ const DateFormModal = props => {
           <Modal.Body>
             <MapView
               style={{width: '100%', height: 500, margin: 0}}
-              region={{
-                latitude: 41.0768,
-                longitude: 29.0219,
-                latitudeDelta: 5,
-                longitudeDelta: 5,
-              }}
-              onPress={(e)=>setLocation(e.nativeEvent.coordinate)}>
+              region={region}
+              onPress={e => setLocation(e.nativeEvent.coordinate)}
+              onRegionChangeComplete={e => setRegion(e)}>
               {marker !== null && (
                 <Marker
                   draggable
@@ -48,7 +65,27 @@ const DateFormModal = props => {
                   title={'location'}
                 />
               )}
+              
             </MapView>
+            <View style={{position: 'absolute', bottom: '20%', left: '5%'}}>
+                <Button
+                  m={2}
+
+                  onPress={() =>
+                    zoomIn()
+                  }
+                >
+                  Zoom In
+                </Button>
+                <Button
+                  m={2}
+                  onPress={() => {
+                    zoomOut();
+                  }}
+                >
+                  Zoom Out
+                </Button>
+              </View>
           </Modal.Body>
           <Modal.Footer>
             <Button.Group space={2}>
