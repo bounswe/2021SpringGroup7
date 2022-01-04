@@ -18,7 +18,7 @@ const Notification = ({navigation, route}) => {
   const [otherNotifications, setOtherNotifications] = useState([]);
   const [routes] = useState([
     {key: 'first', title: 'Follow Request'},
-    {key: 'second', title: 'Other Notifications'},
+    {key: 'second', title: 'Activity'},
   ]);
 
   useEffect(() => {
@@ -32,6 +32,7 @@ const Notification = ({navigation, route}) => {
     params => SERVICE.fetchNotifications(params, user.userInfo.token),
     {
       onSuccess(response) {
+        console.log('respnotif: ', response.data);
         setFollowRequest(response.data.follow_requests);
         setOtherNotifications(response.data.other_notifications);
         setLoading(false);
@@ -55,12 +56,28 @@ const Notification = ({navigation, route}) => {
     }
   };
 
+  const approveRequest = async isApprove => {
+    const data = JSON.stringify({
+      request_id: 0,
+      accept: isApprove,
+    });
+    try {
+      await fetchNotifications.mutateAsync(data);
+    } catch (e) {
+      console.log('e: ', e);
+    }
+  };
+
   const FirstRoute = () => (
     <ScrollView style={{flex: 1}}>
       <View>
         {followRequest?.orderedItems.length !== 0 ? (
           followRequest.orderedItems.map(notification => (
-            <NotificationItem notification={notification} />
+            <NotificationItem
+              notification={notification}
+              hasIcon={true}
+              handleApproveRequest={isApprove => approveRequest(isApprove)}
+            />
           ))
         ) : (
           <Text style={styles.nullNotificationText}>
