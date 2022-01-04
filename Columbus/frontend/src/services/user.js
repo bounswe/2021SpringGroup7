@@ -68,7 +68,12 @@ const USER_SERVICE = {
                                                                           "search_text": searchText,
                                                                           page_number: 1,
                                                                           page_size: 99999
-                                                                        }),                                                                                     
+                                                                        }), 
+  EXPLORE: () => API_INSTANCE.post(`/user/explore/`, {
+                                                          "username": localStorage.getItem('username'),
+                                                          "page_number": 1,
+                                                          "page_size": 50
+                                                      }),                                                                                                                                                           
 };
 
 export default USER_SERVICE;
