@@ -26,7 +26,7 @@ class GetProfileInfo(generics.ListAPIView):
         try:
             profile_info = Profile.objects.get(user_id=user_info)
         except:
-            Profile.objects.all(user_id=user_info).delete()
+            Profile.objects.filter(user_id=user_info).delete()
             profile_info = Profile.objects.create(user_id=user_info)
 
 

@@ -120,6 +120,7 @@ class ActivityStream(models.Model):
     class Meta:
         db_table = 'activity_stream'
     type = models.CharField(max_length=30)
+    type_id = models.CharField(max_length=30, null=True)
     actor = models.ForeignKey(User, on_delete=models.CASCADE,related_name='actor')
     target = models.ForeignKey(User, null=True, on_delete=models.CASCADE,related_name='target')
     comment = models.ForeignKey(Comment, null=True, on_delete=models.CASCADE)

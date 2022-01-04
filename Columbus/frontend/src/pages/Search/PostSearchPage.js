@@ -34,7 +34,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 
-function getMaxDayByYearAndMonth(year, month){
+export function getMaxDayByYearAndMonth(year, month){
   switch(month){
     case 1:
     case 3:
@@ -51,7 +51,7 @@ function getMaxDayByYearAndMonth(year, month){
   }
 }
 
-function getNewDate(searchParams, dateType){
+export function getNewDate(searchParams, dateType){
   let dateData = "";
   if (dateType === "specific") {
     dateData = {
@@ -66,8 +66,11 @@ function getNewDate(searchParams, dateType){
         day: parseInt(searchParams.get("endDay"))
       },
     };
-  } else if (dateType) {
-    console.log("here3")
+  } else if (dateType === "decade") {
+    if (searchParams.get("date")) {
+      dateData = parseInt(searchParams.get("date")) * 10 + "s";
+    }
+  }else if(dateType){
     if (searchParams.get("date")) {
       dateData = parseInt(searchParams.get("date"));
     }

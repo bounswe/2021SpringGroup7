@@ -14,14 +14,15 @@ const myBucket = new AWS.S3({
   region: REGION,
 });
 
-export function UploadImage(guid, file, setImageUrl, setProgress) {
+export async function UploadImage(guid, file, setImageUrl, setProgress) {
   const re = /(?:\.([^.]+))?$/;
   const ext = re.exec(file.fileName);
   console.log(ext);
   const url = `posts/${guid}${ext[0]}`;
 
+  const arrayBuffer = decode(file.base64);
   const params = {
-    Body: file,
+    Body: arrayBuffer,
     Bucket: S3_BUCKET,
     Key: url,
   };
@@ -32,8 +33,9 @@ export function UploadImage(guid, file, setImageUrl, setProgress) {
       setProgress(Math.round((evt.loaded / evt.total) * 100));
     })
     .send(err => {
-      if (err) console.log(err);
+      if (err) console.log('err image upload: ', err);
       setImageUrl('https://columbus-test.s3.eu-central-1.amazonaws.com/' + url);
+      return true;
     });
 }
 
