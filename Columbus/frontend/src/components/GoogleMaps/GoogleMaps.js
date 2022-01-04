@@ -20,7 +20,7 @@ return(<div>
         defaultZoom={8}
         defaultCenter={{ lat: 41, lng: 28 }}
    onClick = {handleClick} >
-        <Marker options={{icon:`https://mt.google.com/vt/icon/psize=16&font=fonts/arialuni_t.ttf&color=ff330000&name=icons/spotlight/spotlight-waypoint-b.png&ax=44&ay=48&scale=1`}} position = {marker} />
+        <Marker  position = {marker} />
     </GoogleMap>
     </div>);
   }
@@ -72,7 +72,7 @@ class LocationChooser extends React.Component{
                 setLongitude= {this.setLongitude}
                 setParentLocation = {this.setLocations}
                 isMarkerShown
-                googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+                googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKOGKEqH_j_aKxoUE46yhNx8XLOFEczaQ&v=3.exp&libraries=geometry,drawing,places"
                 loadingElement={<div style={{ height: `100%` }} />}
                 containerElement={<div style={{ height: `500px` }} />}
                 mapElement={<div style={{ height: `100%` }} />}
