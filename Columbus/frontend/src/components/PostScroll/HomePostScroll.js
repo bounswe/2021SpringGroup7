@@ -3,32 +3,11 @@ import React, { useState, useEffect } from "react";
 import { makeStyles, Box, CircularProgress, Typography } from "@material-ui/core";
 import { NavLink } from 'react-router-dom'
 
-//import InfiniteScroll from 'react-infinite-scroll-component';
-
 import Post from '../Post/Post'
 import USER_SERVICE from "../../services/user";
 import GUEST_SERVICE from "../../services/guest";
 
-const useStyles = makeStyles((theme) => ({
-  body: {
-    display: "flex",
-    flexDirection: "column",
-    minHeight: 680,
-    backgroundColor: "#dddcd0",
-  },
-  emptyBody: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: 680,
-    backgroundColor: "white",
-  },
-  emptyPost: {
-    marginTop: 16,
-  },
-}));
-
+import { useStyles } from './PostScroll.styles'
 
 function HomePostScroll({ isAuthenticatedX, curUser, ...props }) {
 
@@ -37,8 +16,6 @@ function HomePostScroll({ isAuthenticatedX, curUser, ...props }) {
   const [curPosts, setCurrentPosts] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-
-  //const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
     if(isAuthenticatedX) {
