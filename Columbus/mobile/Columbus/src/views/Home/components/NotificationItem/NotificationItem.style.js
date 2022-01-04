@@ -11,10 +11,19 @@ export const styles = StyleSheet.create({
     borderColor: '#4aa9ff',
   },
   notificationSummaryText: {
-    fontSize: 18,
+    fontSize: 14,
+    fontWeight: '700',
   },
   notificationDate: {
     fontSize: 14,
     alignSelf: 'flex-end',
+    color: 'gray',
+  },
+  approveRejectIconContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
   },
 });

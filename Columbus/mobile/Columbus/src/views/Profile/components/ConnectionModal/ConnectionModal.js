@@ -52,7 +52,9 @@ const ConnectionModal = props => {
               );
             })
           ) : (
-            <Text>You do not have any {props.header}!</Text>
+            <Text>{`${
+              props.username ? `${props.username} doesnt` : 'You dont'
+            } have any ${props.header}!`}</Text>
           )}
         </Modal.Body>
       </Modal.Content>

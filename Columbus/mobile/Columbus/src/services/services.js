@@ -46,6 +46,12 @@ export const SERVICE = {
     });
   },
 
+  acceptFollowReqest: async (params, token) => {
+    return await API_INSTANCE.post(`/user/accept_follow_request/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
   fetchUserInfo: params => {
     return API_INSTANCE.get(`/user/get_profile/${params.params.userId}/`, {
       headers: {Authorization: `TOKEN ${params.params.token}`},
@@ -104,11 +110,10 @@ export const SERVICE = {
     });
   },
   getSearch: async (params, token) => {
-     return await API_INSTANCE.post(`/search/search/`, params, {
+    return await API_INSTANCE.post(`/search/search/`, params, {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
-
 
   postBlockUser: async (params, token) => {
     return await API_INSTANCE.post(`/user/block/`, params, {
@@ -125,7 +130,5 @@ export const SERVICE = {
     return await API_INSTANCE.post(`/user/report_story/`, params, {
       headers: {Authorization: `TOKEN ${token}`},
     });
-  }
-}
-
-  
+  },
+};

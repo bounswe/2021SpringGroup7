@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {View, useWindowDimensions} from 'react-native';
 import {TabView, SceneMap} from 'react-native-tab-view';
 import {useMutation} from 'react-query';
+import CustomModal from '../../../../components/CustomModal';
 import PageSpinner from '../../../../components/PageSpinner/PageSpinner';
 import {useAuth} from '../../../../context/AuthContext';
 import {SERVICE} from '../../../../services/services';
@@ -16,9 +17,11 @@ const Notification = ({navigation, route}) => {
   const [index, setIndex] = useState(0);
   const [followRequest, setFollowRequest] = useState([]);
   const [otherNotifications, setOtherNotifications] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
   const [routes] = useState([
     {key: 'first', title: 'Follow Request'},
-    {key: 'second', title: 'Other Notifications'},
+    {key: 'second', title: 'Activity'},
   ]);
 
   useEffect(() => {
@@ -55,12 +58,47 @@ const Notification = ({navigation, route}) => {
     }
   };
 
+  const approveRequest = async (isApprove, id) => {
+    const data = JSON.stringify({
+      request_id: id,
+      accept: isApprove,
+    });
+    try {
+      await postApproveRequest.mutateAsync(data);
+    } catch (e) {
+      console.log('e: ', e);
+    }
+  };
+
+  const postApproveRequest = useMutation(
+    params => SERVICE.acceptFollowReqest(params, user.userInfo.token),
+    {
+      onSuccess(response) {
+        setModalMessage(response.data.return);
+        setShowModal(true);
+        setLoading(false);
+      },
+      onError({response}) {
+        setLoading(false);
+        setModalMessage(response.data.return);
+        setShowModal(true);
+        console.log('ERROR approve request:  ', response);
+      },
+    },
+  );
+
   const FirstRoute = () => (
     <ScrollView style={{flex: 1}}>
       <View>
         {followRequest?.orderedItems.length !== 0 ? (
           followRequest.orderedItems.map(notification => (
-            <NotificationItem notification={notification} />
+            <NotificationItem
+              notification={notification}
+              hasIcon={true}
+              handleApproveRequest={isApprove =>
+                approveRequest(isApprove, notification.type_id)
+              }
+            />
           ))
         ) : (
           <Text style={styles.nullNotificationText}>
@@ -92,17 +130,31 @@ const Notification = ({navigation, route}) => {
     second: SecondRoute,
   });
 
+  const closeModal = () => {
+    setModalMessage('');
+    setShowModal(false);
+    navigation.goBack();
+  };
+
   if (loading) {
     return <PageSpinner></PageSpinner>;
   }
 
   return (
-    <TabView
-      navigationState={{index, routes}}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{width: layout.width}}
-    />
+    <>
+      <TabView
+        navigationState={{index, routes}}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{width: layout.width}}
+      />
+      {/* Add disabled click out side of modal  */}
+      <CustomModal
+        showModal={showModal}
+        closeModal={closeModal}
+        message={modalMessage}
+      />
+    </>
   );
 };
 export default Notification;

@@ -307,6 +307,7 @@ const OtherProfiles = ({navigation, route}) => {
           data={connectionModalData}
           header={connectionModalHeaders}
           navigation={navigation}
+          username={route.params.username}
         />
       )}
       <View style={styles.contentContainer}>
