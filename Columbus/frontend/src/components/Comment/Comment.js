@@ -137,7 +137,7 @@ export default function Comment(props) {
       </MenuItem><MenuItem >
            <Button
               size="small"
-              aria-label="account of current user"
+              aria-label="account of current "
               aria-controls={'primary-search-account-menu'}
               aria-haspopup="true"
               onClick={handlePin}
@@ -176,13 +176,14 @@ export default function Comment(props) {
               <TextField
                 style={{ width: "90%" }}
                 variant="filled"
+                aria-label="comment area"
                 value={commentValue}
                 onChange={(e) => setCommentValue(e.target.value)}
                 required
               ></TextField>
             </p>
             <p style={{ textAlign: "right", color: "gray" }}>
-              <Button onClick={handleComment}>COMMENT</Button>
+              <Button aria-label="comment button" onClick={handleComment}>COMMENT</Button>
             </p>
           </Grid>
         </Grid>
@@ -236,7 +237,7 @@ export default function Comment(props) {
             {new Date(props.comment.date).toLocaleString('tr-TR')}
           </p>
           <p style={{ textAlign: "right", color: "gray" }}>
-            <Button onClick={handleReply}>REPLY</Button>
+            <Button aria-label="reply button" onClick={handleReply}>REPLY</Button>
           </p>
           {expandReply ? showAddComment() : null}
           <Snackbar
@@ -246,6 +247,7 @@ export default function Comment(props) {
               }}
               open={openSnackBar}
               autoHideDuration={6000}
+              aria-label="snackbar"
               onClose={handleClose}
               message={snackBarMessage}
               action={
