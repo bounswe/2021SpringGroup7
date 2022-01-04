@@ -8,22 +8,13 @@ import {
 } from 'react-native';
 import {Button, Spinner, NativeBaseProvider, VStack} from 'native-base';
 import Icon from 'react-native-vector-icons/Ionicons';
-const Nightmare = require('nightmare')
 import {useAuth} from '../../context/AuthContext';
 import {SERVICE} from '../../services/services';
 import {useMutation} from 'react-query';
 import PageSpinner from '../../components/PageSpinner';
 import PostCard from '../../components/PostCard';
 import {styles} from './Home.style';
-describe('test search results', () => {
-  it('should find ', function(done) {
-    this.timeout('10s')
- 
-    const nightmare = Nightmare()
-    
-      
-  })
-})
+
 const Home = ({navigation}) => {
   const {user} = useAuth();
   const [loading, setLoading] = useState(true);
