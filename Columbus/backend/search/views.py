@@ -964,6 +964,7 @@ class Search(generics.CreateAPIView):
                 if each.id in story_with_tags:
                     temp_stories.append(each)
             stories_returned = temp_stories
+        stories_returned = sorted(stories_returned, key=lambda story: story.createDateTime, reverse=True)
         stories_returned = stories_returned[(page_number-1)*page_size: page_number*page_size]
         if len(stories_returned)!=0:
             serialized_obj = serializers.serialize('json', stories_returned)
