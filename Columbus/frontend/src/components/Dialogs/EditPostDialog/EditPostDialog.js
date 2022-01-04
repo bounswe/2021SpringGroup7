@@ -23,7 +23,6 @@ const EditPostDialog = ({ open, handleClose, edit ,topic,story}) => {
                 component="form" 
                 onSubmit={edit} 
                 id="editPost-form"
-                noValidate
                 ><TextField
                 id="topic-label"
                 name="topic"
@@ -44,24 +43,22 @@ const EditPostDialog = ({ open, handleClose, edit ,topic,story}) => {
                     label="Story"
                     margin="dense"
                     multiline
-                    rows={4}
-                    value = {story1}
+                    value={story1}
                     onChange={(e) => setStory(e.target.value)}
+                    rows={4}
                     variant="filled"
                     autoFocus
                     required
                     />
+                    <Button onClick={handleClose} variant="outlined" color="error">
+            CANCEL
+            </Button>
+            <Button type="submit" variant="contained" color="error">
+            Edit
+            </Button>
             </Box>
         </DialogContent>
 
-        <DialogActions>
-            <Button onClick={handleClose} variant="outlined" color="error">
-            CANCEL
-            </Button>
-            <Button onClick={edit} variant="contained" color="error">
-            Edit
-            </Button>
-        </DialogActions>
     </Dialog>
   );
 };
