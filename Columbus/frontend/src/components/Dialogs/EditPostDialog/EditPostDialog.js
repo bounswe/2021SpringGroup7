@@ -5,6 +5,7 @@ import Dialog from "@mui/material/Dialog";
 import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from '@mui/material/DialogTitle';
 
 const EditPostDialog = ({ open, handleClose, edit ,topic,story}) => {
   const [topic1, setTopic] = useState(topic);
@@ -13,26 +14,21 @@ const EditPostDialog = ({ open, handleClose, edit ,topic,story}) => {
     <Dialog
       open={open}
       onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
     >
+      <DialogTitle>
+          Edit Post
+        </DialogTitle>
        <DialogContent dividers>
             <Box 
                 component="form" 
                 onSubmit={edit} 
-                id="editPost-form" 
-                sx={{
-                        '& .MuiTextField-root': { m: 1, width: '60ch' },
-                    }}
+                id="editPost-form"
                 noValidate
                 ><TextField
-                error
-                fullWidth
-                id="topic"
+                id="topic-label"
                 name="topic"
                 label="Topic"
                 margin="dense"
-                multiline
                 rows={1}
                 value={topic1}
                 onChange={(e) => setTopic(e.target.value)}
@@ -43,7 +39,7 @@ const EditPostDialog = ({ open, handleClose, edit ,topic,story}) => {
                 <TextField
                     error
                     fullWidth
-                    id="story"
+                    id="story-label"
                     name="story"
                     label="Story"
                     margin="dense"
