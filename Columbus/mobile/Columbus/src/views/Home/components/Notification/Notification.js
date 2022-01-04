@@ -148,6 +148,7 @@ const Notification = ({navigation, route}) => {
         onIndexChange={setIndex}
         initialLayout={{width: layout.width}}
       />
+      {/* Add disabled click out side of modal  */}
       <CustomModal
         showModal={showModal}
         closeModal={closeModal}
