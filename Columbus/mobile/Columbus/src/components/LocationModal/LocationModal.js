@@ -16,11 +16,11 @@ const DateFormModal = props => {
 
     props.handleSaveDate(locationData);
   };
-  const setLocation=(loc)=>{
-    setLatitude(loc.latitude)
-    setLongitude(loc.longitude)
-    setMarker(loc)
-  }
+  const setLocation = loc => {
+    setLatitude(loc.latitude);
+    setLongitude(loc.longitude);
+    setMarker(loc);
+  };
 
   return (
     <View>
@@ -37,7 +37,7 @@ const DateFormModal = props => {
                 latitudeDelta: 5,
                 longitudeDelta: 5,
               }}
-              onPress={(e)=>setLocation(e.nativeEvent.coordinate)}>
+              onPress={e => setLocation(e.nativeEvent.coordinate)}>
               {marker !== null && (
                 <Marker
                   draggable
