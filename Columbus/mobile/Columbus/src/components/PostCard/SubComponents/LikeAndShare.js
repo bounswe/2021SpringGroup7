@@ -129,6 +129,7 @@ function LikeAndShare(props) {
                 </HStack>
               );
             })}
+            {likers.length==0 && <Text>No Like</Text>}
           </Modal.Body>
         </Modal.Content>
       </Modal>
