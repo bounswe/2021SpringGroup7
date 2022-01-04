@@ -16,8 +16,20 @@ export const SERVICE = {
     });
   },
 
+  fetchNotifications: async (params, token) => {
+    return await API_INSTANCE.post(`/user/get_notifications/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
   fetchUserPosts: async (params, token) => {
     return await API_INSTANCE.post(`/user/profile_post/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
+  fetchUserLikedPosts: async (params, token) => {
+    return await API_INSTANCE.post(`/user/get_user_likes/`, params, {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
@@ -59,4 +71,61 @@ export const SERVICE = {
       headers: {Authorization: `TOKEN ${token}`},
     });
   },
-};
+  deleteComment: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/comment_delete/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  editComment: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/comment_update/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  pinComment: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/pin_comment/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  reportComment: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/report_comment/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  getLikes: async ({params, token}) => {
+    const uri = (await '/user/get_likes/') + params + '/';
+    return await API_INSTANCE.get(uri, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
+  getSearchUsers: async (params, token) => {
+    return await API_INSTANCE.post(`/search/user_search/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  getSearch: async (params, token) => {
+     return await API_INSTANCE.post(`/search/search/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
+
+  postBlockUser: async (params, token) => {
+    return await API_INSTANCE.post(`/user/block/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+
+  postReportUser: async (params, token) => {
+    return await API_INSTANCE.post(`/user/report_user/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  },
+  postReportPost: async ({params, token}) => {
+    return await API_INSTANCE.post(`/user/report_story/`, params, {
+      headers: {Authorization: `TOKEN ${token}`},
+    });
+  }
+}
+
+  

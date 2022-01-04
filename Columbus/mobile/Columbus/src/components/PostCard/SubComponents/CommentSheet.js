@@ -12,6 +12,7 @@ import {
   VStack,
   View,
   Spinner,
+  HStack,
 } from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
@@ -20,17 +21,18 @@ import Comment from '../../Comment';
 import {useAuth} from '../../../context/AuthContext';
 import {SERVICE} from '../../../services/services';
 import moment from 'moment';
-
 import {useMutation} from 'react-query';
 
 function CommentSheet(props) {
-  const { user} = useAuth();
+  const {user} = useAuth();
   const navigation = useNavigation();
   const {isOpen, onOpen, onClose} = useDisclose();
   const [comments, setComments] = useState([]);
   const [pinnedComments, setPinnedComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [commentToPost, setCommentToPost] = useState('');
+  const [reply, setReply] = useState(null);
+  const [refetch, setRefetch] = useState(false);
   let token = '';
 
   useEffect(() => {
@@ -39,14 +41,31 @@ function CommentSheet(props) {
     } else {
       setLoading(true);
     }
-  }, [user]);
+  }, [user, refetch]);
+
+  const refetchCallback = () => {
+    setRefetch(!refetch);
+  };
+  const replyCommentCallback = (id, index, isPinned) => {
+    if (isPinned) {
+      setReply({
+        username: pinnedComments[index].username,
+        storyId: pinnedComments[index].id,
+      });
+    } else {
+      setReply({
+        username: comments[index].username,
+        storyId: comments[index].id,
+      });
+    }
+  };
 
   const fetchComments = useMutation(
     params => SERVICE.fetchComments({params, token}),
     {
       onSuccess(response) {
         setComments(response.data.return.comments);
-        setPinnedComments(response.data.return.comments);
+        setPinnedComments(response.data.return.pinned_comments);
       },
       onError({response}) {
         console.log('res error: ', response);
@@ -72,16 +91,10 @@ function CommentSheet(props) {
     {
       onSuccess(response) {
         const {username} = user?.userInfo;
-        updated_comments = [
-          ...comments,
-          {
-            date: moment().format(`YYYY-MM-DDTHH:mm:ss.sssZ`).toString(),
-            text: commentToPost,
-            username: username,
-          },
-        ];
-        setComments(updated_comments);
+
         setCommentToPost('');
+        setReply(null);
+        setRefetch(!refetch);
       },
       onError({response}) {
         console.log('res error: ', response);
@@ -94,15 +107,25 @@ function CommentSheet(props) {
       return;
     }
     const userInfo = user?.userInfo;
-    console.log(user);
     token = userInfo.token;
-    const data = JSON.stringify({
-      username: userInfo.username,
-      story_id: props.data,
-      text: commentToPost,
-    });
+    let data = {};
+    if (reply) {
+      data = JSON.stringify({
+        username: userInfo.username,
+        story_id: props.data,
+        text: commentToPost,
+        parent_comment_id: reply.storyId,
+      });
+    } else {
+      data = JSON.stringify({
+        username: userInfo.username,
+        story_id: props.data,
+        text: commentToPost,
+        parent_comment_id: 0,
+      });
+    }
+
     try {
-      console.log(data);
       await commentOnPost.mutateAsync(data, token);
     } catch (e) {
       console.log('e: ', e);
@@ -140,12 +163,17 @@ function CommentSheet(props) {
               <VStack space={3} mt={5} mb={5}>
                 {pinnedComments.map((item, index) => {
                   return (
-                    <View style={{display: 'flex', flexDirection: 'column'}}>
+                    <View style={{display: 'flex', flexDirection: 'column'}} key={index}>
                       <Comment
+                        reply={true}
                         pinned={true}
                         data={item}
                         isChild={false}
+                        refetchCallback={() => refetchCallback()}
                         key={index}
+                        replyCallback={id =>
+                          replyCommentCallback(id, index, true)
+                        }
                         isPinnable={props.own_post}
                         isDeletable={
                           props.own_post ||
@@ -155,12 +183,13 @@ function CommentSheet(props) {
                       {item.child_comments?.length > 0 && (
                         <VStack space={3} mt={5} mb={5} pl="20%">
                           {item.child_comments.map(child_item => {
-                            console.log(child_item, 'child');
                             return (
                               <Comment
                                 data={child_item}
+                                reply={false}
                                 isChild={true}
                                 key={child_item.id}
+                                refetchCallback={() => refetchCallback()}
                                 isPinnable={false}
                                 isDeletable={
                                   props.own_post ||
@@ -179,10 +208,15 @@ function CommentSheet(props) {
                   return (
                     <View style={{display: 'flex', flexDirection: 'column'}}>
                       <Comment
+                        reply={true}
                         data={item}
                         isChild={false}
                         key={index}
                         isPinnable={props.own_post}
+                        replyCallback={id =>
+                          replyCommentCallback(id, index, false)
+                        }
+                        refetchCallback={() => refetchCallback()}
                         isDeletable={
                           props.own_post ||
                           item.username == user?.userInfo.username
@@ -192,12 +226,13 @@ function CommentSheet(props) {
                       {item.child_comments?.length > 0 && (
                         <VStack space={3} mt={5} mb={5} pl="20%">
                           {item.child_comments.map(child_item => {
-                            console.log(child_item, 'child');
                             return (
                               <Comment
+                                reply={false}
                                 data={child_item}
                                 isChild={true}
                                 key={child_item.id}
+                                refetchCallback={() => refetchCallback()}
                                 isPinnable={false}
                                 isDeletable={
                                   props.own_post ||
@@ -224,6 +259,17 @@ function CommentSheet(props) {
             variant="outline"
             value={commentToPost}
             onChangeText={value => setCommentToPost(value)}
+            InputLeftElement={
+              reply && (
+                <Button
+                  onPress={() => setReply(null)}
+                  variant="ghost"
+                  size="xs"
+                  rightIcon={<Icon name={'reply'} size={10} />}>
+                  Replying to {reply.username}
+                </Button>
+              )
+            }
             InputRightElement={
               <Button
                 size="xs"

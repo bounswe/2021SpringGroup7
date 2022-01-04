@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function ProfilePostScroll({ userToBeViewed, userThatViews,...props}) {
+function ProfilePostScroll({ userToBeViewed, userThatViews, isShown}) {
 
   const classes = useStyles();
   
@@ -56,11 +56,20 @@ function ProfilePostScroll({ userToBeViewed, userThatViews,...props}) {
   if(isLoading) {
     return <CircularProgress color="success" />
   }
+
+  if(!isShown) {
+  return (<>
+          <Box className={classes.emptyBody}>
+            <Typography>This is a private account and you have to follow to view user's likes!</Typography>
+          </Box>
+          </>)
+
+  }
+
   return (<>
   {
       curPosts.length === 0 ? <Box className={classes.emptyBody}>
-                                <Typography>You do not have any stories to view.</Typography>
-                              <NavLink to="/Home">Explore Stories</NavLink> 
+                                <Typography>You have not shared any stories yet.</Typography>
                           </Box>
                         : <>
                               {curPosts.map((item) => {

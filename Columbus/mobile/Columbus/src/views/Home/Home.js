@@ -1,41 +1,60 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text} from 'react-native';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
-  Button,
-  Spinner,
-  NativeBaseProvider,
+  View,
+  Text,
+  TouchableOpacity,
   ScrollView,
-  VStack,
-} from 'native-base';
+  RefreshControl,
+} from 'react-native';
+import {Button, Spinner, NativeBaseProvider, VStack} from 'native-base';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import {useAuth} from '../../context/AuthContext';
 import {SERVICE} from '../../services/services';
 import {useMutation} from 'react-query';
 import PageSpinner from '../../components/PageSpinner';
 import PostCard from '../../components/PostCard';
+import {styles} from './Home.style';
 
-const Home = () => {
-  const { user} = useAuth();
+const Home = ({navigation}) => {
+  const {user} = useAuth();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [token, setToken] = useState(user.userInfo.token);
 
-  let token = '';
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          style={styles.headerNotificationIconContainer}
+          onPress={() =>
+            navigation.push('Notification', {username: user.userInfo.username})
+          }>
+          <Icon name="notifications" size={18} />
+          <Text>Notifications</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   useEffect(() => {
     if (user) {
-      token = user.userInfo.token;
+      setToken(user.userInfo.token);
       storiesRequest(user.userInfo.username);
     } else {
       setLoading(true);
     }
-  }, [user]);
+  }, [user, isRefreshing]);
 
   const fetchStories = useMutation(params => SERVICE.fetchPost(params, token), {
     onSuccess(response) {
       setPosts(response.data.return);
+      setIsRefreshing(false);
       setLoading(false);
     },
     onError({response}) {
+      setIsRefreshing(false);
       console.log('res error: ', response);
     },
   });
@@ -49,8 +68,16 @@ const Home = () => {
     try {
       await fetchStories.mutateAsync(data);
     } catch (e) {
+      setIsRefreshing(false);
       console.log('e: ', e);
     }
+  };
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 550);
   };
 
   if (loading == true) {
@@ -59,7 +86,10 @@ const Home = () => {
 
   return (
     <NativeBaseProvider>
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl onRefresh={handleRefresh} refreshing={isRefreshing} />
+        }>
         <VStack flex={1} px="3" space={10} alignItems="center" pb={10} mt={5}>
           {posts.map(item => {
             return <PostCard data={item} key={item.story_id} />;

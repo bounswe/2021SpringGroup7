@@ -16,6 +16,7 @@ import Location from '../views/Location';
 import DetailedPost from '../views/DetailedPost';
 import EditProfile from '../views/Profile/views/EditProfile';
 import OtherProfiles from '../views/OtherProfiles/OtherProfiles';
+import Notification from '../views/Home/components/Notification';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -45,10 +46,24 @@ const HomeStack = () => (
     />
     <Stack.Screen
       options={{title: 'Profile'}}
+      name="OtherProfiles"
+      component={OtherProfiles}
+    />
+    <Stack.Screen
+      options={{title: 'Profile'}}
       name="Profile"
       component={Profile}
     />
-
+    <Stack.Screen
+      options={{title: 'Notifications'}}
+      name="Notification"
+      component={Notification}
+    />
+    <Stack.Screen
+      options={{title: 'Edit Profile'}}
+      name="EditProfile"
+      component={EditProfile}
+    />
     <Stack.Screen name="DetailedPost" component={DetailedPost} />
   </Stack.Navigator>
 );
@@ -71,6 +86,21 @@ const SearchNavigation = () => (
       options={{title: 'Search'}}
       name="SearchPage"
       component={Search}
+    />
+    <Stack.Screen
+      options={{title: 'Profile'}}
+      name="Profile"
+      component={Profile}
+    />
+    <Stack.Screen
+      options={{title: 'Other Users Profile'}}
+      name="OtherProfiles"
+      component={OtherProfiles}
+    />
+    <Stack.Screen
+      options={{title: 'Edit Profile'}}
+      name="EditProfile"
+      component={EditProfile}
     />
   </Stack.Navigator>
 );

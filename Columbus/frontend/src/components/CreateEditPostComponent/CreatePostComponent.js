@@ -11,6 +11,9 @@ import DateFnsUtils from "@date-io/date-fns";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
 import Grid from "@material-ui/core/Grid";
 import Chip from "@material-ui/core/Chip";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
@@ -35,6 +38,7 @@ const filter = createFilterOptions();
 export default function CreatePostDialog({
   imgUrlInit = "",
   locationTypeInit = null,
+  dateTypeInit ="",
   locationInit = [],
   topicInit = "",
   storyInit = "",
@@ -50,24 +54,73 @@ export default function CreatePostDialog({
   const [file, setFile] = React.useState(null);
   const [fileUploadProgress, setFileUploadProgress] = React.useState(0);
   const [locationType, setLocationType] = React.useState(locationTypeInit);
+  const [dateType, setDateType] = React.useState(dateTypeInit);
+  const [dateTypeList, setDateTypeList] = React.useState([]);
   const [locations, setLocations] = React.useState(locationInit);
   const [errorIndex, setErrorIndex] = React.useState(null);
   const [topic, setTopic] = React.useState(topicInit);
+  const [decade, setDecade] = React.useState("2020s");
+  const [century, setCentury] = React.useState("19.");
   const [story, setStory] = React.useState(storyInit);
   const [tags, setTags] = React.useState(tagsInit);
   const [allTags, setAllTags] = React.useState([{ title: "Hello" }]);
   const [startDate, setStartDate] = React.useState(startDateInit);
+  const [startDateDict, setStartDateDict] = React.useState(null);
   const [endDate, setEndDate] = React.useState(endDateInit);
+  const [endDateDict, setEndDateDict] = React.useState(null);
   const { ref } = usePlacesWidget({
     apiKey: "AIzaSyBMNVI-Aep02o6TwwTechsvSzpRVlA13qo",
     onPlaceSelected: (place) => console.log(place),
   });
-
+  const handleDateTypeChange = (date) => {
+    if(date.target.value=="Day" || date.target.value=="Start-End Day"){
+      setDateTypeList(["year","month","day"])
+    }
+    else if(date.target.value == "Month" || date.target.value=="Start-End Month"){
+      setDateTypeList(["year","month"])
+    }
+    else if(date.target.value=="Year" || date.target.value=="Start-End Year")
+      setDateTypeList(["year"])
+    setDateType(date.target.value);
+      
+  };
+  const handleDecade = (date) =>{
+    setDecade(date.target.value);
+    setStartDateDict({type:"decade",date: date.target.value});
+  }
+  const handleCentury = (date) =>{
+    setCentury(date.target.value);
+    setStartDateDict({type:"century",date: date.target.value});
+  }
   const handleDateChange1 = (date) => {
+    if(date==null)
+      return;
+    if(date.getFullYear())
+      var year = date.getFullYear();
+    var month = null;
+    var day =null
+    if(dateTypeList.length>=2){
+        month = date.getMonth()+1;}
+    if(dateTypeList.length==3){
+        day= date.getDate();}
+    const var1 ={type:"specific",year: year,month: month,day: day,hour: null,minute: null};
     setStartDate(date);
+    setStartDateDict(var1);
   };
   const handleDateChange2 = (date) => {
+    if(date==null)
+      return;
+    if(date.getFullYear())
+      var year = date.getFullYear();
+    var month = null;
+    var day =null
+    if(dateTypeList.length>=2){
+      month = date.getMonth()+1;}
+    if(dateTypeList.length==3){
+        day= date.getDate();}
+    const var1 ={type:"specific",year: year,month: month,day: day,hour: null,minute: null};
     setEndDate(date);
+    setEndDateDict(var1);
   };
 
   const handleDeleteTag = (tag) => () => {
@@ -133,9 +186,9 @@ export default function CreatePostDialog({
       title: topic,
       tags: tags.map((tag) => tag.title),
       username: localStorage.getItem("username"),
-      multimedia: imgUrl,
-      time_start: startDate.toISOString().substring(0, 10),
-      time_end: endDate.toISOString().substring(0, 10),
+      multimedias: [imgUrl],
+      time_start: startDateDict,
+      time_end: endDateDict,
       location: locationType==="Virtual" ? locations.map((location) => ({"location": location.locationName, "latitude": 0, "longitude": 0, "type": locationType})) : locations.map((location) => ({"location": location.locationName, "latitude": location.geolocation.latitude, "longitude": location.geolocation.longitude, "type": locationType})),
     };
 
@@ -313,52 +366,125 @@ export default function CreatePostDialog({
             })
           )
         ) : null}
+        <FormControl fullWidth>
+          <InputLabel id="date-type">Date Type</InputLabel>
+          <Select
+            variant="standard"
+            value={dateType}
+            onChange={handleDateTypeChange}
+            label="Date Type"
+            required
+          >
+            <MenuItem value={"Century"}>Century</MenuItem>
+            <MenuItem value={"Decade"}>Decade</MenuItem>
+            <MenuItem value={"Year"}>Year</MenuItem>
+            <MenuItem value={"Month"}>Month</MenuItem>
+            <MenuItem value={"Day"}>Day</MenuItem>
+            <MenuItem value={"Start-End Year"}>Start-End Year</MenuItem>
+            <MenuItem value={"Start-End Month"}>Start-End Month</MenuItem>
+            <MenuItem value={"Start-End Day"}>Start-End Day</MenuItem>
+          </Select>
+        </FormControl>
         
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        {dateType.substring(0,9)=="Start-End"? (<MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Stack spacing={2} direction='row' justifyContent='space-around'>
           <Box>
-          <KeyboardDatePicker
-            views={["year", "month", "date"]}
-            variant="inline"
-            format="yyyy-MM-dd"
-            placeholder="Year-Month-Day"
-            openTo="year"
-            margin="normal"
-            id="start-date-picker-inline"
-            label="Start Date"
-            value={startDate}
-            onChange={handleDateChange1}
-            KeyboardButtonProps={{
-              "aria-label": "change date",
-            }}
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <DatePicker
+          openTo="year"
+          views={dateTypeList}
+          label="Date picker"
+          value={startDate}
+          onChange={handleDateChange1}
+          renderInput={(params) => <TextField {...params} helperText={null} />}
             required
             maxDate={endDate ? endDate : Date.now()}
             minDateMessage="Start date can't be after than end date"
-          />
+          /></LocalizationProvider>
           </Box>
           <Box>
-            <KeyboardDatePicker
-              variant="inline"
-              format="yyyy-MM-dd"
-              openTo="year"
-              views={["year", "month", "date"]}
-              margin="normal"
-              placeholder="Year-Month-Day"
-              id="end-date-picker-inline"
-              label="End Date"
-              value={endDate}
-              onChange={handleDateChange2}
-              KeyboardButtonProps={{
-                "aria-label": "change date",
-              }}
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <DatePicker
+          openTo="year"
+          views={dateTypeList}
+          label="Date picker"
+          value={endDate}
+          onChange={handleDateChange2}
+          renderInput={(params) => <TextField {...params} helperText={null} />}
               required
-              minDate={startDate ? startDate : new Date("1900-01-01")}
+              minDate={startDate ? startDate : new Date("1800-01-01")}
               maxDate={Date.now()}
               minDateMessage="End date can't be before than start date"
-            />
+            /></LocalizationProvider>
           </Box>
          </Stack>
-        </MuiPickersUtilsProvider>
+        </MuiPickersUtilsProvider>) : <>{dateType=="Decade"? <FormControl fullWidth >
+          <InputLabel id="decade" >Decade</InputLabel>
+          <Select
+            variant="standard"
+            value={decade}
+            onChange={handleDecade}
+            label="Decade"
+            required
+          >
+            <MenuItem value={180}>1800s</MenuItem>
+            <MenuItem value={181}>1810s</MenuItem>
+            <MenuItem value={182}>1820s</MenuItem>
+            <MenuItem value={183}>1830s</MenuItem>
+            <MenuItem value={184}>1840s</MenuItem>
+            <MenuItem value={185}>1850s</MenuItem>
+            <MenuItem value={186}>1860s</MenuItem>
+            <MenuItem value={187}>1870s</MenuItem>
+            <MenuItem value={188}>1880s</MenuItem>
+            <MenuItem value={189}>1890s</MenuItem>
+            <MenuItem value={190}>1900s</MenuItem>
+            <MenuItem value={191}>1910s</MenuItem>
+            <MenuItem value={192}>1920s</MenuItem>
+            <MenuItem value={193}>1930s</MenuItem>
+            <MenuItem value={194}>1940s</MenuItem>
+            <MenuItem value={195}>1950s</MenuItem>
+            <MenuItem value={196}>1960s</MenuItem>
+            <MenuItem value={197}>1970s</MenuItem>
+            <MenuItem value={198}>1980s</MenuItem>
+            <MenuItem value={199}>1990s</MenuItem>
+            <MenuItem value={200}>2000s</MenuItem>
+            <MenuItem value={201}>2010s</MenuItem>
+            <MenuItem value={202}>2020s</MenuItem>
+          </Select>
+        </FormControl>:<>{dateType=="Century"? <FormControl fullWidth >
+          <InputLabel id="century" >Century</InputLabel>
+          <Select
+            variant="standard"
+            value={century}
+            onChange={handleCentury}
+            label="Century"
+            required
+          >
+            <MenuItem value={10}>10.</MenuItem>
+            <MenuItem value={11}>11.</MenuItem>
+            <MenuItem value={12}>12.</MenuItem>
+            <MenuItem value={13}>13.</MenuItem>
+            <MenuItem value={14}>14.</MenuItem>
+            <MenuItem value={15}>15.</MenuItem>
+            <MenuItem value={16}>16.</MenuItem>
+            <MenuItem value={17}>17.</MenuItem>
+            <MenuItem value={18}>18.</MenuItem>
+            <MenuItem value={19}>19.</MenuItem>
+            <MenuItem value={20}>20.</MenuItem>
+          </Select>
+        </FormControl>:<MuiPickersUtilsProvider utils={DateFnsUtils}> <Box>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <DatePicker
+          openTo="year"
+          views={dateTypeList}
+          label="Date picker"
+          value={startDate}
+          onChange={handleDateChange1}
+          renderInput={(params) => <TextField {...params} helperText={null} />}
+          minDate={new Date("1800-01-01")}
+          maxDate={Date.now()}
+        /></LocalizationProvider>
+          </Box></MuiPickersUtilsProvider>}</>}</>}
         {errorIndex !==null ? <Typography>Please select a location on map for location {errorIndex+1}</Typography> : null}
         <Box>
         <Button type='submit' size='large' color="primary"  variant="contained">

@@ -25,10 +25,19 @@ const Comment = props => {
   const [showModal, setShowModal] = useState(false);
   const [modalSize, setModalSize] = useState('sm');
   const { user} = useAuth();
-  
-
   const colors = ['amber.500', 'purple.500', 'red.500', 'blue.500'];
   const rand = Math.floor(Math.random() * colors.length);
+
+  const reply=(id)=>{
+    setShowModal(false)
+    props.replyCallback(id)
+  }
+
+  const closeModal=()=>{
+    setShowModal(false)
+    props.refetchCallback()
+  }
+
   return (
     <Box ml={4}  direction='column'>
       <HStack space={3}>
@@ -39,7 +48,7 @@ const Comment = props => {
           mt={1}
           elevation={5}
           source={{
-            uri: props.data?.photo_url,
+            uri:  '${props.data?.photo_url}',
           }}>
           {props.data?.username.substring(0, 2).toUpperCase()}
         </Avatar>
@@ -92,7 +101,12 @@ const Comment = props => {
           
 
           <Modal.Body>
-            <CommentMenu data={props?.data} pinned={props.pinned} isDeletable={props.isDeletable} isPinnable={props.isPinnable}></CommentMenu>
+            {props.reply ?
+             <CommentMenu closeCallBack={()=>closeModal()} replyCallback={()=>reply(props.data.id)} reply={props.reply} data={props?.data} pinned={props.pinned} isDeletable={props.isDeletable} isPinnable={props.isPinnable}></CommentMenu>
+             :
+             <CommentMenu closeCallBack={()=>closeModal()} reply={props.reply} data={props?.data} pinned={props.pinned} isDeletable={props.isDeletable} isPinnable={props.isPinnable}></CommentMenu>
+             }
+
           </Modal.Body>
         </Modal.Content>
       </Modal>

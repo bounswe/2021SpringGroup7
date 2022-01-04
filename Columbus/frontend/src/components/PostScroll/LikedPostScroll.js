@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function LikedPostScroll({ userToBeViewed, userThatViews, ...props}) {
+function LikedPostScroll({ userToBeViewed, userThatViews, isShown }) {
 
   const classes = useStyles();
   
@@ -56,11 +56,22 @@ function LikedPostScroll({ userToBeViewed, userThatViews, ...props}) {
   if(isLoading) {
     return <CircularProgress color="success" />
   }
+
+  if(!isShown) {
+
+    return (<>
+              <Box className={classes.emptyBody}>
+                <Typography>This is a private account and you have to follow to view user stories!</Typography>
+              </Box>
+              </>)
+
+  }
+
+
   return (<>
   {
       curPosts.length === 0 ? <Box className={classes.emptyBody}>
                                 <Typography>You have not liked any stories yet.</Typography>
-                              <NavLink to="/Home">Explore Stories</NavLink> 
                           </Box>
                         : <>
                               {curPosts.map((item) => {

@@ -21,6 +21,7 @@ import {useAuth} from '../../../../context/AuthContext';
 import {UploadProfileImage} from '../../../../configs/s3Api';
 import ProgressModal from '../../../../components/ProgressModal';
 import CustomModal from '../../../../components/CustomModal';
+import moment from 'moment';
 
 const EditProfile = ({route, navigation}) => {
   const [loading, setLoading] = useState(false);
@@ -30,6 +31,7 @@ const EditProfile = ({route, navigation}) => {
   const [imageFile, setImageFile] = React.useState(null);
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [showCustomModal, setShowCustomModal] = useState(false);
+  const [openDateModal, setOpenDateModal] = useState(false);
 
   const {updateUserInfo} = useAuth();
 
@@ -97,6 +99,13 @@ const EditProfile = ({route, navigation}) => {
   };
 
   const sendRequest = async () => {
+    var d = new Date(birthday),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    const sendBirthDay = [year, month, day].join('-');
     const data = JSON.stringify({
       user_id: route.params.userInfo.user_id,
       first_name: firstName,
@@ -106,11 +115,10 @@ const EditProfile = ({route, navigation}) => {
         : route.params.userInfo.photo_url
         ? route.params.userInfo.photo_url
         : '',
-      birthday: birthday,
+      birthday: sendBirthDay,
       biography: biography,
       public: isPublic,
     });
-
     try {
       await postUserInfo.mutateAsync(data);
     } catch (e) {
@@ -207,14 +215,26 @@ const EditProfile = ({route, navigation}) => {
                 style={{display: 'flex', justifyContent: 'flex-end'}}>
                 Birthday
               </FormControl.Label>
-              <DateTimePicker
-                textColor="white"
-                value={birthday}
-                display="compact"
-                onChangeText={value => {
-                  setBirthday(new Date(value.timeStamp));
-                }}
-              />
+              <Button
+                width={'95%'}
+                ml={2}
+                variant="outline"
+                onPress={() => setOpenDateModal(true)}>
+                <Text>{`${moment(birthday).utc().format('DD/MM/YYYY')}`}</Text>
+              </Button>
+              {openDateModal && (
+                <DateTimePicker
+                  textColor="white"
+                  display="spinner"
+                  value={birthday}
+                  onChange={(event, value) => {
+                    if (value !== undefined) {
+                      setBirthday(value);
+                    }
+                    setOpenDateModal(false);
+                  }}
+                />
+              )}
             </View>
           </View>
 

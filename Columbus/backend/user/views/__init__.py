@@ -11,3 +11,4 @@ from .block import *
 from .pin import *
 from .report import *
 from .admin import *
+from .explore import *
