@@ -51,7 +51,7 @@ const DateFormModal = props => {
     } else if (dateType === 'Century') {
       finalData = {
         time_start: {
-          century,
+          date: century,
           type: 'century',
         },
         time_end: null,
@@ -59,7 +59,7 @@ const DateFormModal = props => {
     } else if (dateType === 'Decade') {
       finalData = {
         time_start: {
-          decade,
+          date: decade,
           type: 'decade',
         },
         time_end: null,
