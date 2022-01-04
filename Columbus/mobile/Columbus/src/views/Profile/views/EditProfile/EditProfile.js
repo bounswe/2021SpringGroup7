@@ -39,7 +39,9 @@ const EditProfile = ({route, navigation}) => {
     route.params?.userInfo?.first_name ? route.params.userInfo.first_name : '',
   );
   const [isPublic, setIsPublic] = useState(
-    route.params?.userInfo?.public ? route.params.userInfo.public : true,
+    route.params.userInfo.public !== undefined
+      ? route.params.userInfo.public
+      : true,
   );
   const [lastName, setLastName] = useState(
     route.params?.userInfo?.last_name ? route.params.userInfo.last_name : '',
@@ -135,7 +137,6 @@ const EditProfile = ({route, navigation}) => {
         if (response.data.response) {
           // Add a modal to show correctly saved
           updateUserInformations(response.data.response);
-          navigation.goBack();
         }
       },
       onError({response}) {
@@ -147,6 +148,7 @@ const EditProfile = ({route, navigation}) => {
 
   const updateUserInformations = async data => {
     await updateUserInfo(data);
+    navigation.goBack();
   };
 
   const closeModal = () => {
