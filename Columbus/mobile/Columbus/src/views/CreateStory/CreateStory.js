@@ -22,6 +22,7 @@ import {UploadImage} from '../../configs/s3Api';
 import {useMutation} from 'react-query';
 import {SERVICE} from '../../services/services';
 import CustomModal from '../../components/CustomModal';
+import ProgressModal from '../../components/ProgressModal';
 
 const CreateStory = () => {
   let token = '';
@@ -36,6 +37,7 @@ const CreateStory = () => {
     tag: '',
     tagsArray: [],
   });
+  const [showProgressModal, setShowProgressModal] = useState(false);
   const [locationType, setLocationType] = useState('');
   const [locationName, setLocationName] = useState('');
   const [showDateModal, setShowDateModal] = useState(false);
@@ -51,23 +53,12 @@ const CreateStory = () => {
 
   const handleChangeProfileImage = async () => {
     await ImagePicker.launchImageLibrary(
-      {
-        mediaType: 'photo',
-        includeBase64: false,
-        maxHeight: 200,
-        maxWidth: 200,
-      },
+      {mediaType: 'mixed', includeBase64: true},
       response => {
-        setFile(response.assets[0]);
         setLoading(true);
-        if (response.assets[0]) {
+        if (response.assets) {
+          setFile(response.assets[0]);
           setImageUrl(response.assets[0].uri);
-          UploadImage(
-            guid,
-            response.assets[0],
-            setImageUrl,
-            setFileUploadProgress,
-          );
         } else {
           console.log('cancelled');
         }
@@ -79,11 +70,11 @@ const CreateStory = () => {
   const postStory = useMutation(params => SERVICE.postStory(params, token), {
     onSuccess(response) {
       setIsButtonLoading(false);
-      setModalMessage(response.data.return);
+      setModalMessage('Story is successfully created :)');
       setShowModal(true);
     },
     onError({response}) {
-      console.log('resopnse: ', response);
+      console.log('resopnse hata: ', response);
       setIsButtonLoading(false);
       setModalMessage(response.data.return);
       setShowModal(true);
@@ -92,22 +83,29 @@ const CreateStory = () => {
 
   const handleSendStory = async () => {
     setIsButtonLoading(true);
+    if (file) {
+      setShowProgressModal(true);
+      await UploadImage(guid, file, setImageUrl, setFileUploadProgress);
+    } else {
+      sendRequest();
+    }
+  };
 
+  const sendRequest = async () => {
     const userInfo = user?.userInfo;
     token = userInfo.token;
     const data = JSON.stringify({
       title: topic,
       text: story,
-      multimedia:
-        'https://media.istockphoto.com/photos/random-multicolored-spheres-computer-generated-abstract-form-of-large-picture-id1295274245?b=1&k=20&m=1295274245&s=170667a&w=0&h=4t-XT7aI_o42rGO207GPGAt9fayT6D-2kw9INeMYOgo=',
+      multimedias: [`${imageUrl ? imageUrl : ''}`],
       username: userInfo.username,
       time_start: timeStart,
       time_end: timeEnd,
       location: [
         {
           location: locationName,
-          latitude: 0,
-          longitude: 0,
+          latitude: 41.0768,
+          longitude: 29.0219,
           type: locationType,
         },
       ],
@@ -122,6 +120,12 @@ const CreateStory = () => {
     }
   };
 
+  const closeProgressModal = () => {
+    setShowProgressModal(false);
+    setFileUploadProgress(0);
+    sendRequest();
+  };
+
   const closeModal = () => {
     setShowModal(false);
     setModalMessage('');
@@ -134,6 +138,11 @@ const CreateStory = () => {
   return (
     <ScrollView>
       <View style={styles.pageContainer}>
+        <ProgressModal
+          showModal={showProgressModal}
+          closeModal={closeProgressModal}
+          progress={fileUploadProgress}
+        />
         <CustomModal
           showModal={showModal}
           closeModal={closeModal}
@@ -141,7 +150,11 @@ const CreateStory = () => {
         />
         <FormControl>
           <View style={styles.imageContainer}>
-            <Button variant="outline" onPress={handleChangeProfileImage}>
+            <Button
+              width={'100%'}
+              mb={8}
+              variant="outline"
+              onPress={handleChangeProfileImage}>
               <Text style={styles.imageButtonText}>Upload File</Text>
             </Button>
             {imageUrl ? (
@@ -153,22 +166,22 @@ const CreateStory = () => {
                   uri: `${imageUrl}`,
                 }}
                 fallbackSource={{
-                  uri: 'https://www.w3schools.com/css/img_lights.jpg',
+                  uri: 'https://productimages.hepsiburada.net/s/5/1500/9669876547634.jpg',
                 }}
               />
             ) : (
               <Box
+                width={'100%'}
+                height={100}
                 style={{
-                  backgroundColor: '#0077e6',
+                  borderColor: '#0077e6',
+                  borderWidth: 1,
                   borderRadius: 25,
-                  width: 100,
-                  height: 100,
+                  justifyContent: 'center',
                 }}>
-                {file ? (
-                  fileUploadProgress !== 100 ? (
-                    <Spinner></Spinner>
-                  ) : null
-                ) : null}
+                <Text style={{justifyContent: 'center', alignSelf: 'center'}}>
+                  Photo
+                </Text>
               </Box>
             )}
           </View>
@@ -208,10 +221,10 @@ const CreateStory = () => {
             placeholder="Choose a location type"
             borderColor="#4aa9ff"
             onValueChange={itemValue => setLocationType(itemValue)}>
-            <Select.Item label="Virtual" value="virtual" />
-            <Select.Item label="Real" value="real" />
+            <Select.Item label="Virtual" value="Virtual" />
+            <Select.Item label="Real" value="Real" />
           </Select>
-          {locationType && locationType === 'virtual' && (
+          {locationType && locationType === 'Virtual' && (
             <CustomFormInput
               label="*Location Name"
               placeholder="Enter location name"
@@ -220,7 +233,7 @@ const CreateStory = () => {
               onChange={value => setLocationName(value)}
             />
           )}
-          {locationType && locationType === 'real' && (
+          {locationType && locationType === 'Real' && (
             <>
               <CustomFormInput
                 label="*Location Name"
@@ -248,31 +261,93 @@ const CreateStory = () => {
               flexDirection: 'row',
               justifyContent: 'space-between',
             }}>
-            {timeStart && (
+            {timeStart?.century && (
               <Input
+                style={{textAlign: 'center', fontSize: 16}}
                 width="45%"
                 mt={2}
                 isDisabled
                 borderColor="#4aa9ff"
-                defaultValue={timeStart}
+                defaultValue={`${timeStart?.century}. century `}
               />
             )}
-            {timeEnd && (
+            {timeStart?.decade && (
               <Input
+                style={{textAlign: 'center', fontSize: 16}}
                 width="45%"
                 mt={2}
                 isDisabled
                 borderColor="#4aa9ff"
-                defaultValue={timeEnd}
+                defaultValue={`${timeStart?.decade}0's `}
+              />
+            )}
+            {timeStart?.day && (
+              <Input
+                style={{textAlign: 'center', fontSize: 16}}
+                width="45%"
+                mt={2}
+                isDisabled
+                borderColor="#4aa9ff"
+                defaultValue={`${timeStart?.day}-${timeStart?.month}-${timeStart?.year} `}
+              />
+            )}
+            {timeStart?.month && !timeStart?.day && (
+              <Input
+                style={{textAlign: 'center', fontSize: 16}}
+                width="45%"
+                mt={2}
+                isDisabled
+                borderColor="#4aa9ff"
+                defaultValue={`${timeStart?.month}-${timeStart?.year} `}
+              />
+            )}
+            {timeStart?.year && !timeStart?.month && (
+              <Input
+                style={{textAlign: 'center', fontSize: 16}}
+                width="45%"
+                mt={2}
+                isDisabled
+                borderColor="#4aa9ff"
+                defaultValue={`${timeStart?.year} `}
+              />
+            )}
+            {timeEnd?.day && (
+              <Input
+                style={{textAlign: 'center', fontSize: 16}}
+                width="45%"
+                mt={2}
+                isDisabled
+                borderColor="#4aa9ff"
+                defaultValue={`${timeEnd?.day}-${timeEnd?.month}-${timeEnd?.year} `}
+              />
+            )}
+            {timeEnd?.month && !timeEnd?.day && (
+              <Input
+                style={{textAlign: 'center', fontSize: 16}}
+                width="45%"
+                mt={2}
+                isDisabled
+                borderColor="#4aa9ff"
+                defaultValue={`${timeEnd?.month}-${timeEnd?.year} `}
+              />
+            )}
+            {timeEnd?.year && !timeEnd?.month && (
+              <Input
+                style={{textAlign: 'center', fontSize: 16}}
+                width="45%"
+                mt={2}
+                isDisabled
+                borderColor="#4aa9ff"
+                defaultValue={`${timeEnd?.year} `}
               />
             )}
           </Box>
           <DateFormModal
             showModal={showDateModal}
             onClose={() => setShowDateModal(false)}
-            handleSaveDate={(firstTime, secondTime) => {
-              setTimeStart(firstTime);
-              setTimeEnd(secondTime);
+            handleSaveDate={finalData => {
+              setTimeStart(finalData.time_start);
+              setTimeEnd(finalData.time_end);
               setShowDateModal(false);
             }}
           />
