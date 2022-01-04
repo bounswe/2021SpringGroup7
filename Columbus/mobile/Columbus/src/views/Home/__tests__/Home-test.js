@@ -1,8 +1,8 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import Intro from '../Intro';
+import Home from '../Home';
 
 test('renders correctly', () => {
-  const tree = renderer.create(<Intro />).toJSON();
+  const tree = renderer.create(<Home />).toJSON();
   expect(tree).toMatchSnapshot();
 });
