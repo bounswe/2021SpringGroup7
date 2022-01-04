@@ -86,9 +86,9 @@ const PostCard = props => {
       _light={{
         backgroundColor: 'gray.50',
       }}>
-      {postData?.multimedia?.length > 0 ? (
+      {postData?.multimedias?.length > 0 ? (
         <Box alignItems="center" h="150px">
-          <ImageCarousel data={[postData.multimedia]} />
+          <ImageCarousel data={postData.multimedias} />
         </Box>
       ) : (
         <></>
