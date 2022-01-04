@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
-import {Button, Modal} from 'native-base';
+import {Button, Modal, Text} from 'native-base';
 import MapView, {Marker} from 'react-native-maps';
 
 const DateFormModal = props => {
   const [latitude, setLatitude] = useState(41.0768);
   const [longitude, setLongitude] = useState(29.0219);
+  const [marker, setMarker] = useState(null);
 
   const handleSaveDate = () => {
     const locationData = {
@@ -15,6 +16,11 @@ const DateFormModal = props => {
 
     props.handleSaveDate(locationData);
   };
+  const setLocation=(loc)=>{
+    setLatitude(loc.latitude)
+    setLongitude(loc.longitude)
+    setMarker(loc)
+  }
 
   return (
     <View>
@@ -23,21 +29,26 @@ const DateFormModal = props => {
           <Modal.CloseButton />
           <Modal.Header>Choose Location</Modal.Header>
           <Modal.Body>
-            {/* <MapView
+            <MapView
+              style={{width: '100%', height: 500, margin: 0}}
               region={{
-                latitude,
-                longitude,
-                latitudeDelta: 0.3,
-                longitudeDelta: 0.3,
-              }}>
-              <Marker
-                coordinate={{
-                  latitude: latitude,
-                  longitude: longitude,
-                }}
-                title={'location'}
-              />
-            </MapView> */}
+                latitude: 41.0768,
+                longitude: 29.0219,
+                latitudeDelta: 5,
+                longitudeDelta: 5,
+              }}
+              onPress={(e)=>setLocation(e.nativeEvent.coordinate)}>
+              {marker !== null && (
+                <Marker
+                  draggable
+                  coordinate={{
+                    latitude: marker.latitude,
+                    longitude: marker.longitude,
+                  }}
+                  title={'location'}
+                />
+              )}
+            </MapView>
           </Modal.Body>
           <Modal.Footer>
             <Button.Group space={2}>

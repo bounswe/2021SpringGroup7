@@ -262,7 +262,6 @@ const CreateStory = () => {
             showModal={showLocationModal}
             onClose={() => setShowLocationModal(false)}
             handleSaveDate={locationData => {
-              console.log('locaation: ', locationData);
               setRealLocationData(locationData);
               setShowLocationModal(false);
             }}
