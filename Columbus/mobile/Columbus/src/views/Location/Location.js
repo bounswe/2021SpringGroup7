@@ -67,7 +67,7 @@ const Location = ( {navigation,route} ) => {
                 })}
               </MapView>
 <Heading textAlign="center" m={10}>
-                  <Text fontSize={20} >STORIES WILL BE SHOWN HERE </Text>
+                  
                 </Heading>
               
             </Box>)

@@ -5,9 +5,13 @@ import {useNavigation} from '@react-navigation/native';
 
 function LocationInfo(props) {
   const navigation = useNavigation();
+  const onCLick=()=>{
+if(props.data[0].type!=='Virtual')
+{navigation.navigate('Location', {props})}
+  }
   return (
     <Text
-      onPress={() => navigation.navigate('Location', {props})}
+      onPress={() => onCLick()}
       fontSize="xs"
       _light={{
         color: 'violet.500',
@@ -18,7 +22,7 @@ function LocationInfo(props) {
       fontWeight="500"
       ml="-0.5"
       mt="-1">
-      {props.data[0]?.location}  {props.data?.length>1 ? + props.data?.length : ''}
+      {props.data[0]?.location}  {props.data?.length>1 ? + '${props.data?.length}' : ''}
     </Text>
   );
 }
