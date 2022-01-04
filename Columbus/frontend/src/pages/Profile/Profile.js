@@ -57,7 +57,6 @@ function convertBirthday(birthday) {
   return birthdayReadable
 
 }
-module.exports = convertBirthday;
 
 function Profile({...props}) {
   const navigate = useNavigate();
