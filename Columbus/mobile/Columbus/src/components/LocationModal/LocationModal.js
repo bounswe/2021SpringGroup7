@@ -28,20 +28,18 @@ const DateFormModal = props => {
     setMarker(loc);
   };
 
-  const zoomIn =()=>{
-    let newRegion={...region}
-    newRegion.latitudeDelta-=0.2*newRegion.latitudeDelta
-    newRegion.longitudeDelta-=0.2*newRegion.longitudeDelta
-    setRegion(newRegion)
-
-  }
-  const zoomOut =()=>{
-    let newRegion={...region}
-    newRegion.latitudeDelta+=0.2*newRegion.latitudeDelta
-    newRegion.longitudeDelta+=0.2*newRegion.longitudeDelta
-    setRegion(newRegion)
-
-  }
+  const zoomIn = () => {
+    let newRegion = {...region};
+    newRegion.latitudeDelta -= 0.2 * newRegion.latitudeDelta;
+    newRegion.longitudeDelta -= 0.2 * newRegion.longitudeDelta;
+    setRegion(newRegion);
+  };
+  const zoomOut = () => {
+    let newRegion = {...region};
+    newRegion.latitudeDelta += 0.2 * newRegion.latitudeDelta;
+    newRegion.longitudeDelta += 0.2 * newRegion.longitudeDelta;
+    setRegion(newRegion);
+  };
 
   return (
     <View>
@@ -65,27 +63,19 @@ const DateFormModal = props => {
                   title={'location'}
                 />
               )}
-              
             </MapView>
-            <View style={{position: 'absolute', bottom: '20%', left: '5%'}}>
-                <Button
-                  m={2}
-
-                  onPress={() =>
-                    zoomIn()
-                  }
-                >
-                  Zoom In
-                </Button>
-                <Button
-                  m={2}
-                  onPress={() => {
-                    zoomOut();
-                  }}
-                >
-                  Zoom Out
-                </Button>
-              </View>
+            <View style={{position: 'absolute', bottom: '5%', left: '3%'}}>
+              <Button m={2} onPress={() => zoomIn()}>
+                Zoom In
+              </Button>
+              <Button
+                m={2}
+                onPress={() => {
+                  zoomOut();
+                }}>
+                Zoom Out
+              </Button>
+            </View>
           </Modal.Body>
           <Modal.Footer>
             <Button.Group space={2}>
