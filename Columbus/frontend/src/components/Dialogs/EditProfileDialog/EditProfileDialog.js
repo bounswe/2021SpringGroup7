@@ -74,15 +74,17 @@ export default function EditProfileDialog(props) {
     const data = new FormData(document.getElementById("edit-form"));
 
     let birthday = null
-    if(dateValue && isDateChanged) 
+    try 
     {
-      console.log(dateValue)
       var month = dateValue.getUTCMonth() + 1; //months from 1-12
       var day = dateValue.getUTCDate();
       var year = dateValue.getUTCFullYear();
-      birthday  = year + "-" + month + "-" + day;
-    }
+      birthday = year + "-" + month + "-" + day;
 
+    }
+    catch(err) {
+     
+    }
 
     USER_SERVICE.SET_PROFILEINFO({
                                     'user_id'   : localStorage.getItem('userid'),
