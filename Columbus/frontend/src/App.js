@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import Login from "./pages/Login";
 import EmailConfirmation from "./pages/EmailConfirmationPage";
 import Home from "./pages/Home";
+import Explore from "./pages/Explore/Explore"
 import CreatePostPage from "./pages/CreatePostPage";
 import {Snackbar, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
@@ -78,6 +79,11 @@ function App() {
           <Route
             path="/Home/Story/Create"
             element={<CreatePostPage setSnackBarMessage={setSnackBarMessage} setOpenSnackBar={setOpenSnackBar}/>}
+          />
+          <Route
+            exact
+            path="/Explore"
+            element={<Explore/>}
           />
            <Route
             path="/admin/login"
