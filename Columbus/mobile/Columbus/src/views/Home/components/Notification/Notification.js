@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {View, useWindowDimensions} from 'react-native';
 import {TabView, SceneMap} from 'react-native-tab-view';
 import {useMutation} from 'react-query';
+import CustomModal from '../../../../components/CustomModal';
 import PageSpinner from '../../../../components/PageSpinner/PageSpinner';
 import {useAuth} from '../../../../context/AuthContext';
 import {SERVICE} from '../../../../services/services';
@@ -16,6 +17,8 @@ const Notification = ({navigation, route}) => {
   const [index, setIndex] = useState(0);
   const [followRequest, setFollowRequest] = useState([]);
   const [otherNotifications, setOtherNotifications] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
   const [routes] = useState([
     {key: 'first', title: 'Follow Request'},
     {key: 'second', title: 'Activity'},
@@ -55,17 +58,34 @@ const Notification = ({navigation, route}) => {
     }
   };
 
-  const approveRequest = async isApprove => {
+  const approveRequest = async (isApprove, id) => {
     const data = JSON.stringify({
-      request_id: 0,
+      request_id: id,
       accept: isApprove,
     });
     try {
-      await fetchNotifications.mutateAsync(data);
+      await postApproveRequest.mutateAsync(data);
     } catch (e) {
       console.log('e: ', e);
     }
   };
+
+  const postApproveRequest = useMutation(
+    params => SERVICE.acceptFollowReqest(params, user.userInfo.token),
+    {
+      onSuccess(response) {
+        setModalMessage(response.data.return);
+        setShowModal(true);
+        setLoading(false);
+      },
+      onError({response}) {
+        setLoading(false);
+        setModalMessage(response.data.return);
+        setShowModal(true);
+        console.log('ERROR approve request:  ', response);
+      },
+    },
+  );
 
   const FirstRoute = () => (
     <ScrollView style={{flex: 1}}>
@@ -75,7 +95,9 @@ const Notification = ({navigation, route}) => {
             <NotificationItem
               notification={notification}
               hasIcon={true}
-              handleApproveRequest={isApprove => approveRequest(isApprove)}
+              handleApproveRequest={isApprove =>
+                approveRequest(isApprove, notification.type_id)
+              }
             />
           ))
         ) : (
@@ -108,17 +130,30 @@ const Notification = ({navigation, route}) => {
     second: SecondRoute,
   });
 
+  const closeModal = () => {
+    setModalMessage('');
+    setShowModal(false);
+    navigation.goBack();
+  };
+
   if (loading) {
     return <PageSpinner></PageSpinner>;
   }
 
   return (
-    <TabView
-      navigationState={{index, routes}}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{width: layout.width}}
-    />
+    <>
+      <TabView
+        navigationState={{index, routes}}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{width: layout.width}}
+      />
+      <CustomModal
+        showModal={showModal}
+        closeModal={closeModal}
+        message={modalMessage}
+      />
+    </>
   );
 };
 export default Notification;
