@@ -541,3 +541,31 @@ class ActivityStreamTestCase(TestCase):
                                                                     'object': {'type': 'https://schema.org/ShortStory',
                                                                                '@id': 1}}]}}
 )
+
+
+class GetPopularTagsTestCase(TestCase):
+    def setUp(self):
+        user = User.objects.create(username="user_name", email="user_email@gmail.com", password="123456", first_name="umut", last_name="umut")
+        user.save()
+        self.user_id=user.id
+        story = Story.objects.create(title="title", text="", user_id=user, numberOfLikes=0, numberOfComments=0)
+        story.save()
+        story.id = 1
+        user.id
+        story.save()
+        story2 = Story.objects.create(title="title2", text="2", user_id=user, numberOfLikes=0, numberOfComments=0)
+        story2.save()
+        story2.id = 2
+        story2.save()
+        tag = Tag.objects.create(story_id=story,tag="bogazici")
+        tag.save()
+        tag = Tag.objects.create(story_id=story, tag="university")
+        tag.save()
+        tag = Tag.objects.create(story_id=story2, tag="bogazici")
+        tag.save()
+
+    def test_post_delete_success(self):
+        request = MockRequest(method='POST', body={})
+        get_popular_tags_api = post.GetPopularTags()
+        response = get_popular_tags_api.get(request=request, user_id=self.user_id).content
+        self.assertEqual(json.loads(response.decode('utf-8'))['return'],  {'bogazici': 2, 'university': 1})
