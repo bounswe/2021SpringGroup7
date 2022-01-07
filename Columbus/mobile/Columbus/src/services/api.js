@@ -10,9 +10,9 @@ export const stageUrl =
   'http://ec2-18-197-57-123.eu-central-1.compute.amazonaws.com:8000';
 
 export const API_INSTANCE = axios.create({
-  baseURL: stageUrl,
+  baseURL: productionUrl,
   withCredentials: true,
-  timeout: 3000 * 12,
+  timeout: 3000 * 6,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',

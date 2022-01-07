@@ -107,7 +107,7 @@ const CreateStory = () => {
       multimedias: [`${imageUrl ? imageUrl : ''}`],
       username: userInfo.username,
       time_start: timeStart,
-      time_end: timeEnd,
+      time_end: timeEnd !== null ? timeEnd : '',
       location: [
         {
           location: locationName,
@@ -118,6 +118,7 @@ const CreateStory = () => {
       ],
       tags: tags.tagsArray,
     });
+
     try {
       await postStory.mutateAsync(data, token);
     } catch (e) {

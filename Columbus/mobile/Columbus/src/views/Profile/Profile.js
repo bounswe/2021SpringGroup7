@@ -208,6 +208,7 @@ const Profile = ({navigation, route}) => {
     <View style={styles.pageContainer}>
       <View style={styles.headerContainer}>
         <View style={styles.avatarContainer}>
+          {console.log('1234qwer: ', userInfo?.photo_url)}
           <CustomAvatar
             imageUrl={userInfo?.photo_url}
             initials={`${getInitials(userInfo.username)}`}

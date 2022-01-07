@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     padding: 16,
   },
   avatarName: {
-    padding: 8,
+    padding: 6,
     textAlign: 'center',
     fontWeight: '600',
   },
