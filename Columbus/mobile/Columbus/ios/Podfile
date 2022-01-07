@@ -20,6 +20,8 @@ target 'Columbus' do
 
   pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-async-storage/async-storage'
+
   target 'ColumbusTests' do
     inherit! :complete
     # Pods for testing

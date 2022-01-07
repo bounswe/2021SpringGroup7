@@ -7,8 +7,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import {Button, Spinner, NativeBaseProvider, VStack} from 'native-base';
-import Icon from 'react-native-vector-icons/Ionicons';
-
+import Icon from 'react-native-vector-icons';
 import {useAuth} from '../../context/AuthContext';
 import {SERVICE} from '../../services/services';
 import {useMutation} from 'react-query';
